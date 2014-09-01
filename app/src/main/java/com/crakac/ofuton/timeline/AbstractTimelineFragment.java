@@ -10,7 +10,6 @@ import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 
 import com.crakac.ofuton.C;
 import com.crakac.ofuton.util.ParallelTask;
@@ -39,7 +38,13 @@ public abstract class AbstractTimelineFragment extends AbstractStatusFragment {
 
     @Override
     public void onRefresh() {
+        updateDisplayedTime();
         loadNewTweets();
+    }
+
+    @Override
+    public void onLastItemVisible() {
+        loadPreviousTweets();
     }
 
     @Override
@@ -130,7 +135,7 @@ public abstract class AbstractTimelineFragment extends AbstractStatusFragment {
                     mSinceId = Math.max(mSinceId, result.iterator().next().getId());
                 } else {
                     removeFooterView();
-                    //mPtrListView.setOnLastItemVisibleListener(null);
+                    mListView.setOnLastItemVisibleListener(null);
                 }
             } else {
                 failToGetStatuses();

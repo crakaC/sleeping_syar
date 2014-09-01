@@ -6,13 +6,13 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 
+import com.crakac.ofuton.widget.ListViewEx;
 import com.crakac.ofuton.widget.ProgressTextView;
 
-abstract public class AbstractPtrFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
+abstract public class AbstractPtrFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, ListViewEx.OnLastItemVisibleListener {
     protected SwipeRefreshLayout mSwipeWidget;
-	protected ListView mListView;// 引っ張って更新できるやつの中身
+	protected ListViewEx mListView;// 引っ張って更新できるやつの中身
 	protected ProgressTextView mFooterView, mEmptyView;// 一番下のやつ,最初のやつ
 
 	@Override
@@ -25,13 +25,16 @@ abstract public class AbstractPtrFragment extends Fragment implements SwipeRefre
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.ptr_list, null);
+
+        // 引っ張って更新できるやつ
         mSwipeWidget = (SwipeRefreshLayout)view.findViewById(R.id.swipeRefresh);
-		// 引っ張って更新できるやつ
-		mListView = (ListView) view
-				.findViewById(R.id.listView1);
         mSwipeWidget.setOnRefreshListener(this);
-		// 中身のListView
+
+        mListView = (ListViewEx) view
+                .findViewById(R.id.listView1);
+        mListView.setOnLastItemVisibleListener(this);
 		mListView.setFastScrollEnabled(true);
+
 		mFooterView = new ProgressTextView(getActivity());
 		mFooterView.setText(R.string.read_more);
 		mFooterView.setBackgroundResource(R.color.timeline_background);
@@ -86,6 +89,9 @@ abstract public class AbstractPtrFragment extends Fragment implements SwipeRefre
 
     @Override
     public void onRefresh(){}
+
+    @Override
+    public void onLastItemVisible() {}
 
     protected void onClickFooterView(){}
 

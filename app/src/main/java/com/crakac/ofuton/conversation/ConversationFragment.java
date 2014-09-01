@@ -16,17 +16,22 @@ public class ConversationFragment extends AbstractStatusFragment {
 
     private long mReplyToStatusId = -1l;// ツイートを取得するときに使う．
     private LoadConversationTask mLoadConversationTask;
-    private boolean shouldLoadMore = true;
     private static final String TAG = ConversationFragment.class.getSimpleName();
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         initConversation();
+        mSwipeWidget.setEnabled(false);
     }
 
     @Override
     protected void onClickFooterView() {
+        loadPrevious(mReplyToStatusId);
+    }
+
+    @Override
+    public void onLastItemVisible() {
         loadPrevious(mReplyToStatusId);
     }
 
@@ -66,7 +71,7 @@ public class ConversationFragment extends AbstractStatusFragment {
                 }
             } else {
                 removeFooterView();
-                shouldLoadMore = false;
+                mListView.setOnLastItemVisibleListener(null);
                 Log.d(TAG, "shown all conversation");
             }
         } else {
