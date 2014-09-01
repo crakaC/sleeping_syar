@@ -103,7 +103,7 @@ public class HomeTimelineFragment extends AbstractTimelineFragment {
             mHandler.post(new Runnable() {
                 @Override
                 public void run() {
-                    mAdapter.insert(status, 0);
+                    insertQuietlyIfNotTop(status);
                     if (AppUtil.getBooleanPreference(R.string.notification)) {
                         if (AppUtil.getBooleanPreference(R.string.reply_notification)) {
                             Status st = (status.isRetweet()) ? status.getRetweetedStatus() : status;
@@ -183,6 +183,14 @@ public class HomeTimelineFragment extends AbstractTimelineFragment {
                     }
                 });
             }
+        }
+    }
+    private void insertQuietlyIfNotTop(twitter4j.Status status) {
+        int pos = mListView.getFirstVisiblePosition();
+        int offset = mListView.getChildAt(0).getTop();
+        mAdapter.insert(status, 0);
+        if (!(pos == 0 && offset == 0)) {
+            mListView.setSelectionFromTop(pos + 1, offset);
         }
     }
 }

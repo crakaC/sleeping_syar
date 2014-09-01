@@ -164,6 +164,7 @@ public abstract class AbstractTimelineFragment extends AbstractStatusFragment {
         protected void onPostExecute(List<twitter4j.Status> result) {
             if (result != null) {
                 int lastPos = mListView.getFirstVisiblePosition();// 新しいstatus追加前の一番上のポジションを保持
+                int offset = mListView.getChildAt(0).getTop();
                 for (ListIterator<twitter4j.Status> ite = result.listIterator(result.size()); ite.hasPrevious();) {
                     twitter4j.Status status = ite.previous();
                     if (mAdapter.getPosition(status) < 0) {
@@ -172,7 +173,7 @@ public abstract class AbstractTimelineFragment extends AbstractStatusFragment {
                 }
                 if (result.size() > 0) {
                     mSinceId = result.iterator().next().getId();
-                    mListView.setSelection(lastPos + result.size());// 追加した分ずらす
+                    mListView.setSelectionFromTop(lastPos + result.size(), offset);// 追加した分ずらす
                 }
             } else {
                 failToGetStatuses();
@@ -251,20 +252,12 @@ public abstract class AbstractTimelineFragment extends AbstractStatusFragment {
     }
 
     private SparseArray<View> getVisibleItems(){
-        SparseArray<View> views = new SparseArray<View>();
+        SparseArray<View> views = new SparseArray<>();
         try {
             int head = mListView.getFirstVisiblePosition();
             int tail = mListView.getLastVisiblePosition();
-            int bias;
-            if(head > 0){
-                head--;
-                bias = 0;
-            } else {
-                bias = 1;
-            }
-            tail = Math.min(tail, mListView.getCount());
-            for (int i = head; i < tail; i++) {
-                views.append(i, mListView.getChildAt(i - head + bias));
+            for (int i = head; i <= tail; i++) {
+                views.append(i, mListView.getChildAt(i-head));
             }
         } catch (Exception e) {
             e.printStackTrace();
