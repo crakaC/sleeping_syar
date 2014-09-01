@@ -4,7 +4,7 @@
 <item 
   android:state_selected="false"
   android:state_pressed="false" 
-  android:drawable="@color/dark_gray" />
+  android:drawable="@color/tab_background" />
 <item 
   android:state_pressed="true" 
   android:drawable="@color/droid_blue" />

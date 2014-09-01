@@ -2,6 +2,7 @@ package com.crakac.ofuton.widget;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.widget.AbsListView;
 import android.widget.ListView;
 
@@ -9,6 +10,7 @@ import android.widget.ListView;
  * Created by kosukeshirakashi on 2014/09/01.
  */
 public class ListViewEx extends ListView implements AbsListView.OnScrollListener{
+    private boolean mIsLastItemVisible = false;
     private OnLastItemVisibleListener mListener;
     public ListViewEx(Context c){
         super(c);
@@ -32,16 +34,16 @@ public class ListViewEx extends ListView implements AbsListView.OnScrollListener
 
     @Override
     public void onScrollStateChanged(AbsListView absListView, int i) {
+        if( i == SCROLL_STATE_IDLE && mIsLastItemVisible){
+            if (mListener != null) mListener.onLastItemVisible();
+        }
     }
 
     @Override
     public void onScroll(AbsListView absListView, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-        int lastItem = absListView.getLastVisiblePosition();
-        if ( lastItem == absListView.getAdapter().getCount() -1 &&
-                absListView.getChildAt(absListView.getChildCount() - 1).getBottom() <= absListView.getHeight())
-        {
-            if (mListener != null) mListener.onLastItemVisible();
-        }
+        int lastItem = firstVisibleItem + visibleItemCount;
+        mIsLastItemVisible = ( lastItem == totalItemCount &&
+            absListView.getChildAt(visibleItemCount - 1).getBottom() <= absListView.getHeight());
     }
 
     public static interface OnLastItemVisibleListener {

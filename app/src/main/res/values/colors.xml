@@ -6,6 +6,7 @@
     <color name="gray">#303030</color>
     <color name="dark_gray">#202020</color>
     <color name="dark_gray_transparent">#D01A1A1A</color>
+    <color name="tab_background">#181a1a</color>
     <color name="transparent_black">#20000000</color>
     <color name="gray_blue">#303540</color>
     <color name="gray_green">#304035</color>
@@ -23,5 +24,13 @@
     <color name="droid_darkyellow">#FF8800</color>
     <color name="droid_red">#FF4444</color>
     <color name="droid_darkred">#CC0000</color>
-
+    <color name="refresh1">#31b6e6</color>
+    <color name="refresh2">#73c7e6</color>
+    <color name="refresh4">#aadff2</color>
+    <color name="refresh3">#ffffff</color>
+<!--
+    <color name="gray_blue">#1c1f26</color>
+    <color name="gray_green">#1d2620</color>
+    <color name="gray_red">#261b1b</color>
+-->
 </resources>

@@ -29,6 +29,7 @@ abstract public class AbstractPtrFragment extends Fragment implements SwipeRefre
         // 引っ張って更新できるやつ
         mSwipeWidget = (SwipeRefreshLayout)view.findViewById(R.id.swipeRefresh);
         mSwipeWidget.setOnRefreshListener(this);
+        mSwipeWidget.setColorSchemeResources(R.color.refresh1, R.color.refresh2, R.color.refresh3, R.color.refresh4);
 
         mListView = (ListViewEx) view
                 .findViewById(R.id.listView1);

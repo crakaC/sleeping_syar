@@ -3,9 +3,12 @@ package com.crakac.ofuton.user;
 import twitter4j.PagableResponseList;
 import twitter4j.Twitter;
 import twitter4j.User;
+
+import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -64,7 +67,8 @@ public abstract class AbstractUserFragment extends AbstractPtrFragment {
 	}
 
 	private void initialize() {
-		if (mAdapter.getCount() > 0) {
+        mSwipeWidget.setEnabled(false);
+        if (mAdapter.getCount() > 0) {
 			Log.d(TAG, "mAdapter already has items.");
 			return;
 		}
@@ -72,7 +76,12 @@ public abstract class AbstractUserFragment extends AbstractPtrFragment {
 		loadUser();
 	}
 
-	private void loadUser() {
+    @Override
+    public void onLastItemVisible() {
+        loadUser();
+    }
+
+    private void loadUser() {
 		Log.d(TAG, "loadUser()");
 		if (mLoadTask != null
 				&& mLoadTask.getStatus() == AsyncTask.Status.RUNNING) {

@@ -68,6 +68,8 @@ public class ConversationFragment extends AbstractStatusFragment {
                 if (mFooterView.isShown()) {
                     mLoadConversationTask = null;
                     loadPrevious(mReplyToStatusId);
+                } else {
+                    setFooterViewStandby();
                 }
             } else {
                 removeFooterView();

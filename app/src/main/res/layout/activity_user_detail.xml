@@ -8,7 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="160dp"
         android:layout_alignParentTop="true"
-        android:background="@color/gray" >
+        android:background="@color/dark_gray" >
 
         <LinearLayout
             android:id="@+id/profile_contents"
@@ -81,7 +81,6 @@
                     android:id="@+id/userProfile"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/gray"
                     android:orientation="vertical"
                     android:padding="6dp" >
 
@@ -160,30 +159,23 @@
         android:layout_height="30dp"
         android:layout_above="@+id/pager"
         android:layout_alignParentRight="true"
-        android:background="@color/dark_gray" >
+        android:background="@color/tab_background" >
 
         <ImageView
             android:id="@+id/collapse"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_alignParentRight="true"
             android:background="@color/collapse_and_expand"
             android:src="@drawable/ic_collapse" />
 
         <View
             android:id="@+id/shortUnderLine"
-            android:layout_width="30dp"
-            android:layout_height="3dp"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
             android:layout_alignParentBottom="true"
             android:background="@color/transparent_black" />
 
-        <View
-            android:id="@+id/divider"
-            android:layout_width="1dp"
-            android:layout_height="30dp"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:background="@color/light_gray" />
     </RelativeLayout>
 
 </RelativeLayout>
