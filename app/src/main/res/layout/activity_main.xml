@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <!-- The main content view -->
+
+    <RelativeLayout
+        android:id="@+id/main_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <com.astuetz.PagerSlidingTabStrip
+            android:id="@+id/pagerTabStrip"
+            style="@style/HoloTab"
+            android:layout_alignParentTop="true" />
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/pager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/pagerTabStrip" />
+
+        <ImageView
+            android:id="@+id/tweetEveryWhere"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:src="@drawable/ic_compose_everywhere" />
+    </RelativeLayout>
+
+    <!-- The navigation drawer -->
+
+    <ListView
+        android:id="@+id/left_drawer"
+        android:layout_width="200dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:background="@color/dark_gray"
+        android:cacheColorHint="#00000000"
+        android:choiceMode="singleChoice"
+        android:divider="@color/light_gray"
+        android:dividerHeight="1dp"
+        android:listSelector="@android:color/transparent"
+        android:scrollingCache="false" />
+
+</android.support.v4.widget.DrawerLayout>

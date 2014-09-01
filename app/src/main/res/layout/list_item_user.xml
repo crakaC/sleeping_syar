@@ -1,0 +1,59 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/timeline_background"
+    android:padding="6dp" >
+
+    <ImageView
+        android:id="@+id/icon"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true" />
+
+    <TextView
+        android:id="@+id/name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/icon"
+        android:layout_marginLeft="8dp"
+        android:layout_toRightOf="@+id/icon"
+        android:text="@string/dummy"
+        android:textColor="@color/droid_blue"
+        android:textSize="12sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/name"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/name"
+        android:gravity="left|top"
+        android:text="@string/dummy"
+        android:textColor="@color/text"
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/text"
+        android:layout_below="@+id/text"
+        android:layout_marginTop="2dp"
+        android:gravity="left|top"
+        android:text="@string/dummy"
+        android:textColor="@color/sub_text"
+        android:textSize="10sp" />
+
+    <ImageView
+        android:id="@+id/lockedIcon"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_alignTop="@+id/name"
+        android:layout_toRightOf="@+id/name"
+        android:src="@drawable/ic_locked" />
+
+</RelativeLayout>

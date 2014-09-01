@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="@string/streaming_mode"
+        android:summary="ホーム画面にツイートが流れ出します"
+        android:title="@string/streaming_mode" />
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:dependency="@string/streaming_mode"
+        android:key="@string/notification"
+        android:summary="ストリーミングモード時のみ有効にできます"
+        android:title="@string/notification" />
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:dependency="@string/notification"
+        android:key="@string/reply_notification"
+        android:layout="?android:attr/preferenceLayoutChild"
+        android:title="@string/reply_notification" />
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:dependency="@string/notification"
+        android:key="@string/fav_notification"
+        android:layout="?android:attr/preferenceLayoutChild"
+        android:title="@string/fav_notification" />
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:dependency="@string/notification"
+        android:key="@string/rt_notification"
+        android:layout="?android:attr/preferenceLayoutChild"
+        android:title="@string/rt_notification" />
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:dependency="@string/notification"
+        android:key="@string/dm_notification"
+        android:layout="?android:attr/preferenceLayoutChild"
+        android:title="@string/dm_notification" />
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:dependency="@string/notification"
+        android:key="@string/new_follower_notification"
+        android:layout="?android:attr/preferenceLayoutChild"
+        android:title="@string/new_follower_notification" />
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="@string/enable_refresh_btn"
+        android:summary="引っ張って更新するのが面倒な人向け"
+        android:title="@string/enable_refresh_btn" />
+
+    <ListPreference
+        android:defaultValue="12"
+        android:dialogTitle="@string/font_size"
+        android:entries="@array/entries_font_size"
+        android:entryValues="@array/entryvalues_font_size"
+        android:key="@string/font_size"
+        android:title="@string/font_size" />
+    <ListPreference
+        android:defaultValue="@string/relative"
+        android:entries="@array/date_display_modes"
+        android:entryValues="@array/date_display_modes"
+        android:key="@string/date_display_mode"
+        android:title="@string/date_display_mode" />
+
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="@string/use_bigger_icon"
+        android:summary="画面が大きい端末の人向け"
+        android:title="@string/use_bigger_icon" />
+
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="@string/show_image_in_timeline"
+        android:summary="pic.twitter.comだけ"
+        android:title="@string/show_image_in_timeline" />
+
+    <PreferenceScreen
+        android:key="@string/version_info"
+        android:title="@string/version_info" >
+    </PreferenceScreen>
+    <PreferenceScreen
+        android:key="@string/goto_webpage"
+        android:title="@string/goto_webpage" >
+    </PreferenceScreen>
+
+</PreferenceScreen>

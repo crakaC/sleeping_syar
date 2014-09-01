@@ -1,0 +1,190 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res/com.crakac.ofuton"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <FrameLayout
+        android:id="@+id/profile"
+        android:layout_width="match_parent"
+        android:layout_height="160dp"
+        android:layout_alignParentTop="true"
+        android:background="@color/gray" >
+
+        <LinearLayout
+            android:id="@+id/profile_contents"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal" >
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:padding="4dp" >
+
+                <FrameLayout
+                    android:id="@+id/iconFrame"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:padding="4dp" >
+
+                    <ImageView
+                        android:id="@+id/icon"
+                        android:layout_width="108dp"
+                        android:layout_height="108dp"
+                        android:cropToPadding="true"
+                        android:scaleType="centerCrop" />
+                </FrameLayout>
+
+                <ImageView
+                    android:id="@+id/lockedIcon"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_alignBottom="@+id/iconFrame"
+                    android:layout_alignRight="@+id/iconFrame"
+                    android:src="@drawable/ic_locked"
+                    android:visibility="visible" />
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentBottom="true"
+                    android:layout_below="@+id/iconFrame"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginBottom="4dp"
+                    android:layout_marginTop="4dp"
+                    android:paddingLeft="4dp"
+                    android:paddingRight="4dp"
+                    android:background="@android:color/white" >
+
+                    <TextView
+                        android:id="@+id/relationText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:singleLine="true"
+                        android:gravity="center"
+                        android:text="@string/dummy"
+                        android:textColor="@color/droid_darkblue"
+                        android:textSize="12sp" />
+                </RelativeLayout>
+            </RelativeLayout>
+
+            <ScrollView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1.0"
+                android:fadingEdge="none" >
+
+                <LinearLayout
+                    android:id="@+id/userProfile"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/gray"
+                    android:orientation="vertical"
+                    android:padding="6dp" >
+
+                    <TextView
+                        android:id="@+id/location"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/location"
+                        android:textAppearance="@style/userDetail" />
+
+                    <TextView
+                        android:id="@+id/locationText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="3dp"
+                        android:text="@string/dummy"
+                        android:textAppearance="@style/userDetailText" />
+
+                    <TextView
+                        android:id="@+id/bio"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/bio"
+                        android:textAppearance="@style/userDetail" />
+
+                    <TextView
+                        android:id="@+id/bioText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="3dp"
+                        android:text="@string/dummy"
+                        android:textAppearance="@style/userDetailText" />
+
+                    <TextView
+                        android:id="@+id/url"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/url"
+                        android:textAppearance="@style/userDetail" />
+
+                    <TextView
+                        android:id="@+id/urlText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:autoLink="web"
+                        android:text="@string/dummy"
+                        android:textAppearance="@style/userDetailText" />
+                </LinearLayout>
+            </ScrollView>
+        </LinearLayout>
+
+        <ProgressBar
+            android:id="@+id/loading_spinner"
+            style="?android:progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center" />
+    </FrameLayout>
+
+    <com.astuetz.PagerSlidingTabStrip
+        android:id="@+id/tab"
+        style="@style/HoloTab"
+        android:layout_below="@+id/profile"
+        android:layout_toLeftOf="@+id/nav"
+        app:pstsShouldExpand="true" />
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/tab" />
+
+    <RelativeLayout
+        android:id="@+id/nav"
+        android:layout_width="31dp"
+        android:layout_height="30dp"
+        android:layout_above="@+id/pager"
+        android:layout_alignParentRight="true"
+        android:background="@color/dark_gray" >
+
+        <ImageView
+            android:id="@+id/collapse"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentRight="true"
+            android:background="@color/collapse_and_expand"
+            android:src="@drawable/ic_collapse" />
+
+        <View
+            android:id="@+id/shortUnderLine"
+            android:layout_width="30dp"
+            android:layout_height="3dp"
+            android:layout_alignParentBottom="true"
+            android:background="@color/transparent_black" />
+
+        <View
+            android:id="@+id/divider"
+            android:layout_width="1dp"
+            android:layout_height="30dp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:background="@color/light_gray" />
+    </RelativeLayout>
+
+</RelativeLayout>

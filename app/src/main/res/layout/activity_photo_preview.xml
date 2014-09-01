@@ -1,0 +1,20 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+        <ProgressBar
+            app:id="@+id/progressBar"
+            app:layout_width="wrap_content"
+            app:layout_height="wrap_content"
+            app:visibility="invisible"
+            app:layout_centerHorizontal="true"
+            app:layout_centerVertical="true" />
+
+        <uk.co.senab.photoview.PhotoView
+            android:id="@+id/iv_photo"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+
+</RelativeLayout>

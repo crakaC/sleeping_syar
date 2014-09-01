@@ -1,19 +1,146 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.crakac.ofuton" >
+    package="com.crakac.ofuton">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
+        android:name=".OfutonApp"
         android:allowBackup="true"
+        android:hardwareAccelerated="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
+        <receiver
+            android:name="SyarWidget"
+            android:label="SyarWidget" >
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/syar_widget" />
+        </receiver>
+
+        <service android:name="SyarWidget$SyarService" >
+            <intent-filter >
+                <action android:name="SYAR_ACTION"/>
+            </intent-filter>
+        </service>
+
         <activity
-            android:name=".MyActivity"
-            android:label="@string/app_name" >
+            android:name=".MainActivity"
+            android:label="@string/app_name"
+            android:launchMode="singleTask" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".SettingActivity"
+            android:label="@string/activity_setting"
+            android:launchMode="singleTask"
+            android:parentActivityName=".MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
+        </activity>
+        <activity
+            android:name=".dm.DmActivity"
+            android:label="@string/activity_dm"
+            android:launchMode="singleTask"
+            android:parentActivityName=".MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
+        </activity>
+        <activity
+            android:name=".dm.ComposeDmActivity"
+            android:label="@string/activity_dm_compose"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".lists.ListSelectActivity"
+            android:label="@string/activity_list"
+            android:launchMode="singleTask"
+            android:parentActivityName=".MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
+        </activity>
+        <activity
+            android:name=".TweetActivity"
+            android:label="@string/activity_tweet"
+            android:parentActivityName=".MainActivity"
+            android:windowSoftInputMode="adjustResize" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
+        </activity>
+        <activity
+            android:name=".PhotoPreviewActivity"
+            android:theme="@style/Theme.MyTrans" >
+        </activity>
+        <activity
+            android:name=".WebImagePreviewActivity"
+            android:exported="true"
+            android:multiprocess="true"
+            android:theme="@style/Theme.MyTrans" >
+            <intent-filter android:label="@string/app_name" >
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="twitpic.com"
+                    android:pathPrefix="/"
+                    android:scheme="http" />
+                <data
+                    android:host="img.ly"
+                    android:pathPrefix="/"
+                    android:scheme="http" />
+                <data
+                    android:host="gyazo.com"
+                    android:pathPrefix="/"
+                    android:scheme="http" />
+                <data
+                    android:host="p.twipple.jp"
+                    android:pathPrefix="/"
+                    android:scheme="http" />
+                <data
+                    android:host="instagram.com"
+                    android:pathPrefix="/p/"
+                    android:scheme="http" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".conversation.ConversationActivity"
+            android:label="@string/activity_conversation" />
+        <activity
+            android:name=".user.UserDetailActivity"
+            android:label="@string/activity_user_detail" />
+        <activity
+            android:name=".accounts.AccountActivity"
+            android:label="@string/activity_account"
+            android:launchMode="singleTask"
+            android:parentActivityName=".MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="ofuton"
+                    android:scheme="crakac" />
             </intent-filter>
         </activity>
     </application>

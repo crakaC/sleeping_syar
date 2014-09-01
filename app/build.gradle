@@ -8,14 +8,17 @@ android {
         applicationId "com.crakac.ofuton"
         minSdkVersion 8
         targetSdkVersion 20
-        versionCode 1
-        versionName "1.0"
+        versionCode 10
+        versionName "1.2.1"
     }
     buildTypes {
         release {
             runProguard false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+    packagingOptions {
+        exclude 'META-INF/LICENSE.txt'
     }
 }
 
@@ -24,5 +27,6 @@ dependencies {
     compile 'com.android.support:appcompat-v7:20.0.0'
     compile 'com.astuetz:pagerslidingtabstrip:1.0.1'
     compile 'com.github.chrisbanes.photoview:library:1.2.2'
+    compile 'asia.ivity.android:drag-sort-listview:1.0'
     compile project(':volley')
 }

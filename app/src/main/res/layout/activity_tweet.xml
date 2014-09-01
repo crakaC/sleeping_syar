@@ -1,0 +1,68 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="8dp" >
+
+    <EditText
+        android:id="@+id/input_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/navs"
+        android:layout_alignParentTop="true"
+        android:ems="10"
+        android:gravity="left|top"
+        android:inputType="textMultiLine"
+        android:textSize="13sp" >
+
+        <requestFocus />
+    </EditText>
+
+    <TextView
+        android:id="@+id/remainingText"
+        style="@style/remainingText"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/input_text"
+        android:text="@string/dummy" />
+
+    <LinearLayout
+        android:id="@+id/navs"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:gravity="right"
+        android:orientation="horizontal"
+        android:layout_marginTop="3dp" >
+
+        <ImageView
+            android:id="@+id/appendedImage"
+            android:visibility="gone"
+            android:cropToPadding="true"
+            android:scaleType="centerCrop"
+            android:clickable="true"
+            style="@style/optionItem" />
+
+        <ImageButton
+            android:id="@+id/tweetInfoBtn"
+            style="@style/optionItem"
+            android:src="@drawable/ic_menu_conversation"
+            android:visibility="gone" />
+
+        <ImageButton
+            android:id="@+id/appendPic"
+            style="@style/optionItem"
+            android:src="@drawable/btn_picture" />
+
+        <ImageButton
+            android:id="@+id/picFromCamera"
+            style="@style/optionItem"
+            android:src="@drawable/btn_camera" />
+
+        <ImageButton
+            android:id="@+id/action_tweet"
+            style="@style/optionItem"
+            android:src="@drawable/btn_pencil" />
+    </LinearLayout>
+
+</RelativeLayout>

@@ -1,0 +1,20 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res/com.crakac.ofuton"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <ListView
+        android:id="@+id/listView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:divider="@color/dark_gray"
+        android:dividerHeight="1dp" />
+
+    <com.crakac.ofuton.widget.ProgressTextView
+        android:id="@+id/emptyView"
+        android:visibility="invisible"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:text="@string/tap_to_reload" />
+
+</RelativeLayout>

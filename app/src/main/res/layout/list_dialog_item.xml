@@ -1,0 +1,41 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/status_action_list"
+    android:padding="8dp" >
+
+    <ImageView
+        android:id="@+id/checkMark"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:src="@drawable/ic_check"
+        android:visibility="visible" />
+
+    <TextView
+        android:id="@+id/listName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@+id/checkMark"
+        android:layout_marginLeft="8dp"
+        android:gravity="center_vertical"
+        android:text="@string/dummy"
+        android:textColor="@color/text"
+        android:textSize="15sp"
+        android:textStyle="bold" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="8dp"
+        android:visibility="visible"
+        android:layout_toRightOf="@+id/listName" />
+
+</RelativeLayout>

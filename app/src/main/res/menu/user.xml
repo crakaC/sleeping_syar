@@ -1,0 +1,40 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+     xmlns:sps="http://schemas.android.com/apk/res-auto" >
+
+    <item
+        android:id="@+id/menu_relation"
+        android:icon="@drawable/ic_menu_relation"
+        sps:showAsAction="never"
+        android:title="@string/dummy"/>
+    <item
+        android:id="@+id/menu_mention"
+        android:icon="@drawable/ic_menu_reply"
+        sps:showAsAction="never"
+        android:title="@string/send_mention">
+    </item>
+    <item
+        android:id="@+id/menu_dm"
+        android:icon="@drawable/ic_dm"
+        sps:showAsAction="never"
+        android:title="@string/send_dm">
+    </item>
+    <item
+        android:id="@+id/menu_block"
+        android:icon="@drawable/ic_menu_block"
+        sps:showAsAction="never"
+        android:title="@string/list">
+    </item>
+    <item
+        android:id="@+id/menu_list"
+        android:icon="@drawable/ic_menu_lists"
+        sps:showAsAction="never"
+        android:title="@string/list">
+    </item>
+    <item
+        android:id="@+id/menu_r4s"
+        android:icon="@drawable/ic_warning"
+        sps:showAsAction="never"
+        android:title="@string/r4s">
+    </item>
+
+</menu>   
