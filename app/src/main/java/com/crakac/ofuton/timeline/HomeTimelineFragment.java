@@ -30,7 +30,7 @@ public class HomeTimelineFragment extends AbstractTimelineFragment {
 
     // UserStream
     private TwitterStream mTwitterStream;
-    private boolean mIsStreaming;
+    private boolean mIsStreaming = false;
 
     private boolean mIsWakeup = false;
     private Status mFirstVisibleStatus;
@@ -133,8 +133,8 @@ public class HomeTimelineFragment extends AbstractTimelineFragment {
 
         @Override
         public void onStatus(final Status status) {
+            if(mAdapter.getPosition(status) >= 0) return;
             mSinceId = status.getId();
-            //Log.d("onStatus", status.getText());
             mHandler.post(new Runnable() {
                 @Override
                 public void run() {
@@ -221,16 +221,16 @@ public class HomeTimelineFragment extends AbstractTimelineFragment {
         }
     }
     private void insertQuietlyIfNotTop(twitter4j.Status status) {
+        if(mFooterView.isShown()) mAdapter.insertFirst(status);
         int pos = mListView.getFirstVisiblePosition();
         int offset = mListView.getChildAt(0).getTop();
-        if(!mIsWakeup){
-            mAdapter.insert(status, 0);
-            restorePosition();
-        } else if (pos == 0 && offset == 0 && isCurrentTab()) {
+        if (pos == 0 && offset == 0 && isCurrentTab() && mIsWakeup) {
             mAdapter.insertTopWithAnimation(status);
         } else {
-            mAdapter.insert(status, 0);
-            mListView.setSelectionFromTop(pos + 1, offset);
+            savePosition();
+            mAdapter.flushAnimationQueue();
+            mAdapter.insertFirst(status);
+            restorePosition();
         }
     }
 
@@ -241,6 +241,7 @@ public class HomeTimelineFragment extends AbstractTimelineFragment {
     }
 
     private void savePosition(){
+        if(mAdapter.isEmpty()) return;
         mFirstVisibleStatus = mAdapter.getItem(mListView.getFirstVisiblePosition());
         mFirstVisibleOffset = mListView.getChildAt(0).getTop();
     }

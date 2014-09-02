@@ -8,6 +8,13 @@
         android:title="@string/streaming_mode" />
     <CheckBoxPreference
         android:defaultValue="false"
+        android:key="@string/always_awake"
+        android:dependency="@string/streaming_mode"
+        android:summary="いつまでもTLを見続けたい人向け"
+        android:layout="?android:attr/preferenceLayoutChild"
+        android:title="@string/always_awake"/>
+    <CheckBoxPreference
+        android:defaultValue="false"
         android:dependency="@string/streaming_mode"
         android:key="@string/notification"
         android:summary="ストリーミングモード時のみ有効にできます"
@@ -73,6 +80,12 @@
         android:key="@string/show_image_in_timeline"
         android:summary="pic.twitter.comだけ"
         android:title="@string/show_image_in_timeline" />
+
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="@string/add_animation"
+        android:summary="ツイートにアニメーションを付ける"
+        android:title="@string/add_animation"/>
 
     <PreferenceScreen
         android:key="@string/version_info"

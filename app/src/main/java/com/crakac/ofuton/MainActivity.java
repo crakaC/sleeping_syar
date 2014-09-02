@@ -25,6 +25,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
@@ -119,6 +120,11 @@ public class MainActivity extends ActionBarActivity {
             return;
         }
         showRefreshMenu(AppUtil.getBooleanPreference(R.string.enable_refresh_btn));
+        if(AppUtil.getBooleanPreference(R.string.always_awake) && AppUtil.getBooleanPreference(R.string.streaming_mode)){
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        } else {
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        }
     }
 
     @Override

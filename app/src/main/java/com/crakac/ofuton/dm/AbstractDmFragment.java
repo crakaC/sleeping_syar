@@ -39,7 +39,7 @@ abstract public class AbstractDmFragment extends AbstractPtrFragment {
 			mAdapter = new DmAdapter(getActivity());
 		}
 	}
-	
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -80,7 +80,12 @@ abstract public class AbstractDmFragment extends AbstractPtrFragment {
 		loadNewMessages();
 	}
 
-	private void initDMs() {
+    @Override
+    public void onLastItemVisible() {
+        loadPreviousMessages();
+    }
+
+    private void initDMs() {
 		if (fetchPreviousTask != null
 				&& fetchPreviousTask.getStatus() == AsyncTask.Status.RUNNING) {
 			Log.d(TAG , ":initTask is already running.");

@@ -261,6 +261,11 @@ public final class AppUtil {
         return (int) (dp * scale + 0.5f);
     }
 
+    public static float pxToDp(int px){
+        final float scale = sContext.getResources().getDisplayMetrics().density;
+        return  (float)px / scale;
+    }
+
     public static void setActionBarIcon(ActionBar actionbar, ImageView view) {
         final int ACTIONBAR_ICON_DP = 32;
         BitmapDrawable b = (BitmapDrawable) view.getDrawable();

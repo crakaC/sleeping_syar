@@ -61,6 +61,7 @@
     <string name="new_follower_notification">フォロー</string>
     <string name="dm_notification">DM</string>
     <string name="streaming_mode">ストリーミングモード</string>
+    <string name="always_awake">常にスクリーンをON</string>
     <string name="font_size">フォントサイズ</string>
     <string name="enable_refresh_btn">右上にリロードボタンを表示</string>
     <string name="date_display_mode">時刻表記</string>
@@ -71,6 +72,7 @@
     <string name="drawer_close">close</string>
     <string name="use_bigger_icon">アイコンを高画質に</string>
     <string name="show_image_in_timeline">タイムラインに画像を表示</string>
+    <string name="add_animation">TweetをTween</string>
     <string name="goto_webpage">作者HP</string>
     <string name="homepage">http://crakac.com</string>
     <string name="save">保存する</string>
