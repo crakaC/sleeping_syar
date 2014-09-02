@@ -13,7 +13,8 @@
             android:layout_height="match_parent"
             android:divider="@color/dark_gray"
             android:dividerHeight="1dp"
-        />
+            android:fadingEdge="none"
+            />
     </android.support.v4.widget.SwipeRefreshLayout>
 
     <com.crakac.ofuton.widget.ProgressTextView
@@ -22,5 +23,11 @@
         android:layout_height="match_parent"
         app:text="@string/tap_to_reload"
         android:background='@color/empty_background' />
+
+    <ImageView
+        android:id="@+id/listViewCache"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"/>
 
 </RelativeLayout>

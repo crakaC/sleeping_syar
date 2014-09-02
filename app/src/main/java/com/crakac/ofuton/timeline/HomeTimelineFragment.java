@@ -10,10 +10,18 @@ import twitter4j.TwitterStream;
 import twitter4j.User;
 import twitter4j.UserMentionEntity;
 import twitter4j.UserStreamAdapter;
+
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
 
+import com.crakac.ofuton.MainActivity;
 import com.crakac.ofuton.R;
 import com.crakac.ofuton.util.AppUtil;
 import com.crakac.ofuton.util.TwitterUtils;
@@ -24,11 +32,23 @@ public class HomeTimelineFragment extends AbstractTimelineFragment {
     private TwitterStream mTwitterStream;
     private boolean mIsStreaming;
 
+    private boolean mIsWakeup = false;
+    private Status mFirstVisibleStatus;
+    private int mFirstVisibleOffset = 1;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mTwitterStream = TwitterUtils.getTwitterStreamInstance();
         mTwitterStream.addListener(new StreamListener());
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View v = super.onCreateView(inflater, container, savedInstanceState);
+        ImageView listCache = (ImageView)v.findViewById(R.id.listViewCache);
+        mAdapter.setListImageCache(mListView, listCache);
+        return v;
     }
 
     @Override
@@ -49,6 +69,20 @@ public class HomeTimelineFragment extends AbstractTimelineFragment {
                 mIsStreaming = false;
             }
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mIsWakeup = true;
+        restorePosition();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mIsWakeup = false;
+        savePosition();
     }
 
     @Override
@@ -100,6 +134,7 @@ public class HomeTimelineFragment extends AbstractTimelineFragment {
         @Override
         public void onStatus(final Status status) {
             mSinceId = status.getId();
+            //Log.d("onStatus", status.getText());
             mHandler.post(new Runnable() {
                 @Override
                 public void run() {
@@ -188,9 +223,32 @@ public class HomeTimelineFragment extends AbstractTimelineFragment {
     private void insertQuietlyIfNotTop(twitter4j.Status status) {
         int pos = mListView.getFirstVisiblePosition();
         int offset = mListView.getChildAt(0).getTop();
-        mAdapter.insert(status, 0);
-        if (!(pos == 0 && offset == 0)) {
+        if(!mIsWakeup){
+            mAdapter.insert(status, 0);
+            restorePosition();
+        } else if (pos == 0 && offset == 0 && isCurrentTab()) {
+            mAdapter.insertTopWithAnimation(status);
+        } else {
+            mAdapter.insert(status, 0);
             mListView.setSelectionFromTop(pos + 1, offset);
+        }
+    }
+
+    private boolean isCurrentTab(){
+        if(!isAdded()) return false;
+        MainActivity activity = (MainActivity)getActivity();
+        return activity.isCurrentTab(this);
+    }
+
+    private void savePosition(){
+        mFirstVisibleStatus = mAdapter.getItem(mListView.getFirstVisiblePosition());
+        mFirstVisibleOffset = mListView.getChildAt(0).getTop();
+    }
+
+    private void restorePosition(){
+        if(mFirstVisibleStatus != null){
+            int pos = mAdapter.getPosition(mFirstVisibleStatus);
+            mListView.setSelectionFromTop(pos, mFirstVisibleOffset);
         }
     }
 }

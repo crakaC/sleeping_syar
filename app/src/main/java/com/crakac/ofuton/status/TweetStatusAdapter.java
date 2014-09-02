@@ -6,6 +6,7 @@ import twitter4j.UserMentionEntity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -13,8 +14,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.TranslateAnimation;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.android.volley.toolbox.ImageLoader.ImageContainer;
@@ -28,12 +33,26 @@ import com.crakac.ofuton.util.NetUtil;
 import com.crakac.ofuton.util.TwitterUtils;
 import com.crakac.ofuton.widget.ColorOverlayOnTouch;
 
+import java.util.Queue;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ConcurrentSkipListSet;
+
+import static android.view.View.MeasureSpec;
+
 public class TweetStatusAdapter extends ArrayAdapter<Status> {
     private static Context sContext;
     private static LayoutInflater sInflater;
     private static Account sUserAccount;
     private static boolean shouldShowPreview = false;
     private static final String TAG = TweetStatusAdapter.class.getSimpleName();
+    private final Queue<Status> mAnimationQueue;
+    private final Set<Long> mAnimationSet;
+    private boolean mIsAnimationInProgress = false;
+
+    private ImageView mListImageCache;
+    private ListView mListView;
 
     private static class ViewHolder {
         View base;
@@ -69,12 +88,65 @@ public class TweetStatusAdapter extends ArrayAdapter<Status> {
         sInflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
 
         sUserAccount = TwitterUtils.getCurrentAccount();
+        mAnimationQueue = new ConcurrentLinkedQueue<>();
+        mAnimationSet = new TreeSet<>();
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         Status item = getItem(position);
-        return createView(item, convertView);
+        View v = createView(item, convertView);
+        if (mAnimationSet.contains(item.getId())){
+            mAnimationSet.remove(item.getId());
+
+            if(position!=0) return v;
+
+            v.measure(MeasureSpec.makeMeasureSpec(parent.getMeasuredWidth(), MeasureSpec.AT_MOST),
+                    MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
+            int height = v.getMeasuredHeight();
+            final Animation a  = AnimationUtils.loadAnimation(sContext, R.anim.new_status);
+            a.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
+                    mIsAnimationInProgress = true;
+                }
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    a.setAnimationListener(null);
+                    if(!mAnimationQueue.isEmpty()) {
+                        setListBitmapCache();
+                        insert(mAnimationQueue.poll(), 0);
+                    } else {
+                        mIsAnimationInProgress = false;
+                    }
+                }
+                @Override
+                public void onAnimationRepeat(Animation animation) {}
+            });
+            v.startAnimation(a);
+
+            if(getCount() > 1) {
+                Animation transAnim = new TranslateAnimation(0, 0, 0, height);
+                transAnim.setDuration(a.getDuration());
+                transAnim.setAnimationListener(new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {
+                        mListImageCache.setVisibility(View.VISIBLE);
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                        mListImageCache.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {
+                    }
+                });
+                mListImageCache.startAnimation(transAnim);
+            }
+        }
+        return v;
     }
 
     public void updateDisplayTime(int position, View view) {
@@ -321,4 +393,30 @@ public class TweetStatusAdapter extends ArrayAdapter<Status> {
     public void shouldShowInlinePreview(boolean showPreview){
         shouldShowPreview = showPreview;
     }
+
+    public void insertTopWithAnimation(twitter4j.Status status){
+        mAnimationSet.add(status.getId());
+        if(!mIsAnimationInProgress){
+            setListBitmapCache();
+            insert(status, 0);
+            Log.d("onStatus", "insert");
+        } else {
+            mAnimationQueue.add(status);
+            Log.d("onStatus", "add to queue");
+        }
+    }
+
+    public void setListImageCache(ListView lv, ImageView iv){
+        mListView = lv;
+        mListImageCache = iv;
+    }
+
+    private void setListBitmapCache(){
+        mListView.setDrawingCacheEnabled(true);
+        Bitmap b = mListView.getDrawingCache();
+        Bitmap bm = Bitmap.createBitmap(b);
+        mListImageCache.setImageBitmap(bm);
+        mListView.setDrawingCacheEnabled(false);
+    }
+
 }

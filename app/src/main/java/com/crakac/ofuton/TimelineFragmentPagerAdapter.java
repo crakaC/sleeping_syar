@@ -68,7 +68,7 @@ public class TimelineFragmentPagerAdapter extends FragmentPagerAdapter {
 	}
 	/**
 	 * add user's List.
-	 * @param id List ID
+	 * @param listId List ID
 	 * @param title List title. It is shown in Tab.
 	 */
 	public void addList(long listId, String title){
@@ -91,6 +91,7 @@ public class TimelineFragmentPagerAdapter extends FragmentPagerAdapter {
 		for(int i = 0; i < mFragments.size(); i++){
 			if(c.isInstance(mFragments.get(i))){
 				pos = i;
+                break;
 			}
 		}
 		if(pos < 0){
@@ -98,4 +99,15 @@ public class TimelineFragmentPagerAdapter extends FragmentPagerAdapter {
 		}
 		return pos;
 	}
+    public int getFragmentPosition(Fragment f){
+        int pos = -1;
+        for(int i = 0; i < mFragments.size(); i++){
+            if(f.equals(mFragments.get(i))){
+                pos = i;
+                break;
+            }
+        }
+        return pos;
+    }
+
 }
