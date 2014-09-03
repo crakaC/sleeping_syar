@@ -30,10 +30,6 @@ public class FavoriteTimelineFragment extends AbstractTimelineFragment {
 	}
 
 	@Override
-	protected void failToGetStatuses() {
-	}
-
-	@Override
 	public String getTimelineName() {
 		return "Favorites";
 	}

@@ -44,10 +44,6 @@ public abstract class AbstractStatusFragment extends AbstractPtrFragment {
 	    mAdapter.shouldShowInlinePreview(AppUtil.getBooleanPreference(R.string.show_image_in_timeline, true));
 	}
 
-	/**
-	 *
-	 * @return
-	 */
 	public TweetStatusAdapter getAdapter() {
 		return mAdapter;
 	}

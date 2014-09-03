@@ -11,11 +11,9 @@ import twitter4j.User;
 import twitter4j.UserMentionEntity;
 import twitter4j.UserStreamAdapter;
 
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -152,7 +150,7 @@ public class HomeTimelineFragment extends AbstractTimelineFragment {
                         if (AppUtil.getBooleanPreference(R.string.rt_notification)) {
                             if (status.isRetweet()
                                     && status.getRetweetedStatus().getUser().getId() == TwitterUtils
-                                            .getCurrentAccountId()) {
+                                    .getCurrentAccountId()) {
                                 AppUtil.showStatus(status);
                             }
                         }
@@ -221,15 +219,14 @@ public class HomeTimelineFragment extends AbstractTimelineFragment {
         }
     }
     private void insertQuietlyIfNotTop(twitter4j.Status status) {
-        if(mFooterView.isShown()) mAdapter.insertFirst(status);
-        int pos = mListView.getFirstVisiblePosition();
-        int offset = mListView.getChildAt(0).getTop();
-        if (pos == 0 && offset == 0 && isCurrentTab() && mIsWakeup) {
+        if (isTopOfListVisible()) {
             mAdapter.insertTopWithAnimation(status);
         } else {
-            savePosition();
+            if(mIsWakeup){
+                savePosition();
+            }
             mAdapter.flushAnimationQueue();
-            mAdapter.insertFirst(status);
+            mAdapter.insertFirstWithAnim(status);
             restorePosition();
         }
     }
@@ -251,5 +248,11 @@ public class HomeTimelineFragment extends AbstractTimelineFragment {
             int pos = mAdapter.getPosition(mFirstVisibleStatus);
             mListView.setSelectionFromTop(pos, mFirstVisibleOffset);
         }
+    }
+
+    private boolean isTopOfListVisible() {
+        int pos = mListView.getFirstVisiblePosition();
+        int offset = mListView.getChildAt(0).getTop();
+        return (pos == 0 && offset == 0 && isCurrentTab() && mIsWakeup);
     }
 }

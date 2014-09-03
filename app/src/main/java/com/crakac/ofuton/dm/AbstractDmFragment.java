@@ -81,7 +81,7 @@ abstract public class AbstractDmFragment extends AbstractPtrFragment {
 	}
 
     @Override
-    public void onLastItemVisible() {
+    public void onBottomOfLastItemShown() {
         loadPreviousMessages();
     }
 

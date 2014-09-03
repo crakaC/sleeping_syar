@@ -31,14 +31,8 @@ public class MentionsTimelineFragment extends AbstractTimelineFragment {
 	}
 
 	@Override
-	protected void failToGetStatuses() {
-	}
-
-	final String title = "Mentions";
-
-	@Override
 	public String getTimelineName() {
-		return title;
+		return "Mentions";
 	}
 
 }

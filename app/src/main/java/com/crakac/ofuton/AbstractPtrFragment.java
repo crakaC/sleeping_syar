@@ -92,6 +92,9 @@ abstract public class AbstractPtrFragment extends Fragment implements SwipeRefre
     public void onRefresh(){}
 
     @Override
+    public void onBottomOfLastItemShown() {}
+
+    @Override
     public void onLastItemVisible() {}
 
     protected void onClickFooterView(){}

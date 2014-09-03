@@ -50,10 +50,6 @@ public class ListTimelineFragment extends AbstractTimelineFragment {
 	}
 
 	@Override
-	protected void failToGetStatuses() {
-	}
-
-	@Override
 	public String getTimelineName() {
 		return getArguments().getString(C.LIST_TITLE);
 	}

@@ -18,7 +18,6 @@ import android.view.animation.TranslateAnimation;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.android.volley.toolbox.ImageLoader.ImageContainer;
@@ -87,12 +86,16 @@ public class TweetStatusAdapter extends ArrayAdapter<Status> {
     public void insert(Status status, int index) {
         super.insert(status, index);
         StatusPool.put(status.getId(), status);
-        if(!mAnimationMap.containsKey(status.getId())){
+        if (!mAnimationMap.containsKey(status.getId())) {
             mAnimationMap.put(status.getId(), ANIMATION_INSERT);
         }
     }
 
-    public void insertFirst(Status status){
+    public void insertOnly(Status status, int index){
+        super.insert(status, index);
+    }
+
+    public void insertFirstWithAnim(Status status){
         insert(status, 0);
     }
 
@@ -385,7 +388,7 @@ public class TweetStatusAdapter extends ArrayAdapter<Status> {
         if(!mIsAnimationInProgress && mAnimationQueue.isEmpty()){
             setListBitmapCache();
             mAnimationMap.put(status.getId(), ANIMATION_STREAMING);
-            insertFirst(status);
+            insertFirstWithAnim(status);
         } else {
             mAnimationQueue.add(status);
         }

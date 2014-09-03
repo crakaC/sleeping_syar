@@ -88,6 +88,7 @@ public class SettingActivity extends PreferenceActivity {
         versionInfo.setSummary(versionName != null ? versionName : "取得に失敗しました");
     }
 
+    @SuppressWarnings("deprecation")
     private void setStatusTween(){
         CheckBoxPreference inlinePref = (CheckBoxPreference) findPreference(getString(R.string.add_animation));
         inlinePref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {

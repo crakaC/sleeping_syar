@@ -4,6 +4,7 @@ import twitter4j.Status;
 import twitter4j.TwitterException;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.crakac.ofuton.C;
@@ -17,12 +18,17 @@ public class ConversationFragment extends AbstractStatusFragment {
     private long mReplyToStatusId = -1l;// ツイートを取得するときに使う．
     private LoadConversationTask mLoadConversationTask;
     private static final String TAG = ConversationFragment.class.getSimpleName();
+    private boolean mIsTweenEnable;
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         initConversation();
         mSwipeWidget.setEnabled(false);
+        if(AppUtil.getBooleanPreference(R.string.add_animation)){
+            removeFooterView();
+        }
+        mIsTweenEnable = AppUtil.getBooleanPreference(R.string.add_animation);
     }
 
     @Override
@@ -31,8 +37,13 @@ public class ConversationFragment extends AbstractStatusFragment {
     }
 
     @Override
+    public void onBottomOfLastItemShown() {
+        if(!mIsTweenEnable) loadPrevious(mReplyToStatusId);
+    }
+
+    @Override
     public void onLastItemVisible() {
-        loadPrevious(mReplyToStatusId);
+        if(mIsTweenEnable) loadPrevious(mReplyToStatusId);
     }
 
     @Override
@@ -53,7 +64,7 @@ public class ConversationFragment extends AbstractStatusFragment {
             return;
         }
         Status firstStatus = (Status) getArguments().getSerializable(C.STATUS);
-        mAdapter.add(firstStatus);
+        mAdapter.insertOnly(firstStatus, 0);
         mReplyToStatusId = firstStatus.getInReplyToStatusId();
         loadPrevious(mReplyToStatusId);
     }

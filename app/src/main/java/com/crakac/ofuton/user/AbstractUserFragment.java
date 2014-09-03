@@ -77,7 +77,7 @@ public abstract class AbstractUserFragment extends AbstractPtrFragment {
 	}
 
     @Override
-    public void onLastItemVisible() {
+    public void onBottomOfLastItemShown() {
         loadUser();
     }
 

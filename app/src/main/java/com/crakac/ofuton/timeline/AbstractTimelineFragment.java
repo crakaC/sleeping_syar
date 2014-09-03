@@ -43,7 +43,7 @@ public abstract class AbstractTimelineFragment extends AbstractStatusFragment {
     }
 
     @Override
-    public void onLastItemVisible() {
+    public void onBottomOfLastItemShown() {
         loadPreviousTweets();
     }
 
@@ -224,7 +224,7 @@ public abstract class AbstractTimelineFragment extends AbstractStatusFragment {
      * 取得に失敗した時によぶやつ
      *
      */
-    protected abstract void failToGetStatuses();
+    protected void failToGetStatuses(){}
 
     /**
      * FragmentPagerAdapterに渡してタイトルを表示するためのやつ
