@@ -317,13 +317,15 @@ public class MainActivity extends ActionBarActivity {
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             SlideMenu item = getItem(position);
-            if (convertView == null) {
+            if(item.getMenuId() == MenuID.syar){
+                convertView = mInflater.inflate(R.layout.slide_menu_syar, null);
+            } else {
                 convertView = mInflater.inflate(R.layout.slide_menu_item, null);
+                TextView text = (TextView) convertView.findViewById(R.id.menu_name);
+                text.setText(item.getText());
+                ImageView icon = (ImageView) convertView.findViewById(R.id.menu_icon);
+                icon.setImageResource(item.getIconId());
             }
-            ImageView icon = (ImageView) convertView.findViewById(R.id.menu_icon);
-            TextView text = (TextView) convertView.findViewById(R.id.menu_name);
-            icon.setImageResource(item.getIconId());
-            text.setText(item.getText());
             return convertView;
         }
     }
