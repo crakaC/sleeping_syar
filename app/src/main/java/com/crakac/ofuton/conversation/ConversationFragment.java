@@ -1,11 +1,10 @@
 package com.crakac.ofuton.conversation;
 
-import twitter4j.Status;
-import twitter4j.TwitterException;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import android.view.View;
 
 import com.crakac.ofuton.C;
 import com.crakac.ofuton.R;
@@ -13,22 +12,20 @@ import com.crakac.ofuton.status.StatusPool;
 import com.crakac.ofuton.timeline.AbstractStatusFragment;
 import com.crakac.ofuton.util.AppUtil;
 
+import twitter4j.Status;
+import twitter4j.TwitterException;
+
 public class ConversationFragment extends AbstractStatusFragment {
 
     private long mReplyToStatusId = -1l;// ツイートを取得するときに使う．
     private LoadConversationTask mLoadConversationTask;
     private static final String TAG = ConversationFragment.class.getSimpleName();
-    private boolean mIsTweenEnable;
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initConversation();
         mSwipeWidget.setEnabled(false);
-        if(AppUtil.getBooleanPreference(R.string.add_animation)){
-            removeFooterView();
-        }
-        mIsTweenEnable = AppUtil.getBooleanPreference(R.string.add_animation);
     }
 
     @Override
@@ -38,12 +35,7 @@ public class ConversationFragment extends AbstractStatusFragment {
 
     @Override
     public void onBottomOfLastItemShown() {
-        if(!mIsTweenEnable) loadPrevious(mReplyToStatusId);
-    }
-
-    @Override
-    public void onLastItemVisible() {
-        if(mIsTweenEnable) loadPrevious(mReplyToStatusId);
+        loadPrevious(mReplyToStatusId);
     }
 
     @Override
@@ -64,7 +56,7 @@ public class ConversationFragment extends AbstractStatusFragment {
             return;
         }
         Status firstStatus = (Status) getArguments().getSerializable(C.STATUS);
-        mAdapter.insertOnly(firstStatus, 0);
+        mAdapter.insert(firstStatus, 0);
         mReplyToStatusId = firstStatus.getInReplyToStatusId();
         loadPrevious(mReplyToStatusId);
     }

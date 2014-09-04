@@ -42,23 +42,11 @@ import twitter4j.UserMentionEntity;
 import static android.view.View.MeasureSpec;
 
 public class TweetStatusAdapter extends ArrayAdapter<Status> {
-    public static final int ANIMATION_STREAMING = 0;
-    public static final int ANIMATION_ADD = 1;
-    public static final int ANIMATION_INSERT = 2;
-
     private static Context sContext;
     private static LayoutInflater sInflater;
     private static Account sUserAccount;
     private static boolean shouldShowPreview = false;
     private static final String TAG = TweetStatusAdapter.class.getSimpleName();
-    private final Handler mHandler;
-    private final LinkedList<Status> mAnimationQueue;
-    private final Map<Long, Integer> mAnimationMap;
-    private boolean mIsAnimationInProgress = false;
-    private boolean mIsAnimationEnable;
-
-    private ImageView mListImageCache;
-    private ListView mListView;
 
     private static class ViewHolder {
         View base;
@@ -79,31 +67,12 @@ public class TweetStatusAdapter extends ArrayAdapter<Status> {
     public void add(Status status) {
         super.add(status);
         StatusPool.put(status.getId(), status);
-        mAnimationMap.put(status.getId(), ANIMATION_ADD);
     }
 
     @Override
     public void insert(Status status, int index) {
         super.insert(status, index);
         StatusPool.put(status.getId(), status);
-        if (!mAnimationMap.containsKey(status.getId())) {
-            mAnimationMap.put(status.getId(), ANIMATION_INSERT);
-        }
-    }
-
-    public void insertOnly(Status status, int index){
-        super.insert(status, index);
-    }
-
-    public void insertFirstWithAnim(Status status){
-        insert(status, 0);
-    }
-
-    public void flushAnimationQueue(){
-        for (Status st : mAnimationQueue) {
-            insert(st, 0);
-        }
-        mAnimationQueue.clear();
     }
 
     public TweetStatusAdapter(Context context) {
@@ -113,30 +82,12 @@ public class TweetStatusAdapter extends ArrayAdapter<Status> {
         sInflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
 
         sUserAccount = TwitterUtils.getCurrentAccount();
-        mAnimationQueue = new LinkedList<>();
-        mAnimationMap = new TreeMap<>();
-        mHandler = new Handler(context.getMainLooper());
-        mIsAnimationEnable = AppUtil.getBooleanPreference(R.string.add_animation);
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         Status item = getItem(position);
-        View v = createView(item, convertView);
-        if (mAnimationMap.containsKey(item.getId())){
-            int animMode = mAnimationMap.remove(item.getId());
-            switch (animMode){
-                case ANIMATION_STREAMING:
-                    startStreamingAnimation(v);
-                    break;
-                case ANIMATION_ADD:
-                case ANIMATION_INSERT:
-                    if (mIsAnimationEnable)
-                        startAddAnimation(v, animMode);
-                    break;
-            }
-        }
-        return v;
+        return createView(item, convertView);
     }
 
     public void updateDisplayTime(int position, View view) {
@@ -382,110 +333,5 @@ public class TweetStatusAdapter extends ArrayAdapter<Status> {
 
     public void shouldShowInlinePreview(boolean showPreview){
         shouldShowPreview = showPreview;
-    }
-
-    public void insertTopWithAnimation(twitter4j.Status status){
-        if(!mIsAnimationInProgress && mAnimationQueue.isEmpty()){
-            setListBitmapCache();
-            mAnimationMap.put(status.getId(), ANIMATION_STREAMING);
-            insertFirstWithAnim(status);
-        } else {
-            mAnimationQueue.add(status);
-        }
-    }
-
-    public void setListImageCache(ListView lv, ImageView iv){
-        mListView = lv;
-        mListImageCache = iv;
-    }
-
-    private void setListBitmapCache(){
-        mListView.setDrawingCacheEnabled(true);
-        Bitmap b = mListView.getDrawingCache();
-        Bitmap bm = Bitmap.createBitmap(b);
-        mListImageCache.setImageBitmap(bm);
-        mListView.setDrawingCacheEnabled(false);
-    }
-
-    private void startStreamingAnimation(View targetView){
-        final Animation a = AnimationUtils.loadAnimation(sContext, R.anim.streaming_status);
-        a.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
-                mIsAnimationInProgress = true;
-            }
-
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                mIsAnimationInProgress = false;
-                a.setAnimationListener(null);
-                if (!mAnimationQueue.isEmpty()) {
-                    mHandler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (!mAnimationQueue.isEmpty()) {
-                                setListBitmapCache();
-                                Status next = mAnimationQueue.poll();
-                                mAnimationMap.put(next.getId(), ANIMATION_STREAMING);
-                                insert(next, 0);
-                            }
-                        }
-                    }, 5);
-                }
-            }
-            @Override
-            public void onAnimationRepeat(Animation animation) {}
-        });
-        targetView.startAnimation(a);
-
-        int wspec = MeasureSpec.makeMeasureSpec(mListView.getWidth(), MeasureSpec.AT_MOST);
-        int hspec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED);
-        Log.d("MeasureSpec",String.format("%d, %d", wspec, hspec));
-        try {
-            targetView.measure(wspec, hspec);
-        } catch (Exception someDeviceBrokenException){}
-        int height = targetView.getMeasuredHeight();
-        long d = (long) (AppUtil.pxToDp(height) * 2.5f);
-        Log.d("AnimDuration", d + "");
-
-        Animation transAnim = new TranslateAnimation(0, 0, 0, height + mListView.getDividerHeight());
-        transAnim.setDuration(a.getDuration() / 2);
-        transAnim.setInterpolator(sContext, android.R.anim.accelerate_decelerate_interpolator);
-        Log.d("AnimationStart", "enable ImageCache");
-        mListImageCache.setVisibility(View.VISIBLE);
-        transAnim.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
-            }
-
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                mListImageCache.setVisibility(View.GONE);
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-            }
-        });
-        mListImageCache.startAnimation(transAnim);
-    }
-
-    private void startAddAnimation(View targetView, int animMode){
-        int w = 0;
-        if (mListView != null) {
-            w = mListView.getMeasuredWidth();
-        }
-        Animation a = null;
-        switch (animMode){
-            case ANIMATION_ADD:
-                a = AnimationUtils.loadAnimation(getContext(), R.anim.previous_status);
-                break;
-            case ANIMATION_INSERT:
-                a = AnimationUtils.loadAnimation(getContext(), R.anim.new_status);
-                break;
-        }
-        if(a != null) {
-            targetView.startAnimation(a);
-        }
     }
 }

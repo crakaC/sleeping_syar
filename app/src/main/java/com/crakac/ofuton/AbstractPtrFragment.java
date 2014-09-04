@@ -35,6 +35,7 @@ abstract public class AbstractPtrFragment extends Fragment implements SwipeRefre
                 .findViewById(R.id.listView1);
         mListView.setOnLastItemVisibleListener(this);
 		mListView.setFastScrollEnabled(true);
+        mListView.setSmoothScrollbarEnabled(true);
 
 		mFooterView = new ProgressTextView(getActivity());
 		mFooterView.setText(R.string.read_more);

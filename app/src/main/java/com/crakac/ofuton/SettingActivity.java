@@ -24,7 +24,6 @@ public class SettingActivity extends PreferenceActivity {
         setDateDisplayMode();
         setInlinePreview();
         displayVersionInfo();
-        setStatusTween();
         authorsWebsite();
     }
 
@@ -86,18 +85,6 @@ public class SettingActivity extends PreferenceActivity {
         PreferenceScreen versionInfo;
         versionInfo = (PreferenceScreen) findPreference(getString(R.string.version_info));
         versionInfo.setSummary(versionName != null ? versionName : "取得に失敗しました");
-    }
-
-    @SuppressWarnings("deprecation")
-    private void setStatusTween(){
-        CheckBoxPreference inlinePref = (CheckBoxPreference) findPreference(getString(R.string.add_animation));
-        inlinePref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-            @Override
-            public boolean onPreferenceChange(Preference preference, Object newValue) {
-                ReloadChecker.requestHardReload(true);
-                return true;
-            }
-        });
     }
 
     /**
