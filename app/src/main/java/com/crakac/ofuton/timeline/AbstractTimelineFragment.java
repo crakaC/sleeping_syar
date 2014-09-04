@@ -1,8 +1,5 @@
 package com.crakac.ofuton.timeline;
 
-import java.util.List;
-import java.util.ListIterator;
-
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,6 +10,9 @@ import android.view.ViewGroup;
 
 import com.crakac.ofuton.C;
 import com.crakac.ofuton.util.ParallelTask;
+
+import java.util.List;
+import java.util.ListIterator;
 
 public abstract class AbstractTimelineFragment extends AbstractStatusFragment {
 
@@ -25,7 +25,6 @@ public abstract class AbstractTimelineFragment extends AbstractStatusFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);// BaseStatusActionFragment内でTwitterInstanceを生成する
-        setRetainInstance(true);// インスタンスを保持　画面が回転しても取得したTweetが消えなくなる
         mUserId = getArguments().getLong(C.USER_ID);
     }
 
@@ -152,7 +151,9 @@ public abstract class AbstractTimelineFragment extends AbstractStatusFragment {
             setEmptyViewStandby();
             setFooterViewStandby();
         }
-    };
+    }
+
+    ;
 
     class FetchNewStatusTask extends ParallelTask<Void, Void, List<twitter4j.Status>> {
         @Override
@@ -163,18 +164,14 @@ public abstract class AbstractTimelineFragment extends AbstractStatusFragment {
         @Override
         protected void onPostExecute(List<twitter4j.Status> result) {
             if (result != null) {
-                int lastPos = mListView.getFirstVisiblePosition();// 新しいstatus追加前の一番上のポジションを保持
-                int offset = mListView.getChildAt(0).getTop();
-                for (ListIterator<twitter4j.Status> ite = result.listIterator(result.size()); ite.hasPrevious();) {
+                savePosition();
+                for (ListIterator<twitter4j.Status> ite = result.listIterator(result.size()); ite.hasPrevious(); ) {
                     twitter4j.Status status = ite.previous();
                     if (mAdapter.getPosition(status) < 0) {
                         mAdapter.insert(status, 0);
                     }
                 }
-                if (result.size() > 0) {
-                    mSinceId = result.iterator().next().getId();
-                    mListView.setSelectionFromTop(lastPos + result.size(), offset);// 追加した分ずらす
-                }
+                restorePosition();
             } else {
                 failToGetStatuses();
                 Log.d(TAG + getTimelineName(), "fail to get Tilmeline");
@@ -222,9 +219,9 @@ public abstract class AbstractTimelineFragment extends AbstractStatusFragment {
 
     /**
      * 取得に失敗した時によぶやつ
-     *
      */
-    protected void failToGetStatuses(){}
+    protected void failToGetStatuses() {
+    }
 
     /**
      * FragmentPagerAdapterに渡してタイトルを表示するためのやつ
@@ -235,29 +232,29 @@ public abstract class AbstractTimelineFragment extends AbstractStatusFragment {
 
     public void updateDisplayedTime() {
         SparseArray<View> visibleItems = getVisibleItems();
-        for(int i = 0; i < visibleItems.size(); i++){
+        for (int i = 0; i < visibleItems.size(); i++) {
             int position = visibleItems.keyAt(i);
             View v = visibleItems.get(position);
             mAdapter.updateDisplayTime(position, v);
         }
     }
 
-    public void getViews(){
+    public void getViews() {
         SparseArray<View> visibleItems = getVisibleItems();
-        for(int i = 0; i < visibleItems.size(); i++){
+        for (int i = 0; i < visibleItems.size(); i++) {
             int position = visibleItems.keyAt(i);
             View v = visibleItems.get(position);
             mAdapter.getView(position, v, null);
         }
     }
 
-    private SparseArray<View> getVisibleItems(){
+    private SparseArray<View> getVisibleItems() {
         SparseArray<View> views = new SparseArray<>();
         try {
             int head = mListView.getFirstVisiblePosition();
             int tail = mListView.getLastVisiblePosition();
             for (int i = head; i <= tail; i++) {
-                views.append(i, mListView.getChildAt(i-head));
+                views.append(i, mListView.getChildAt(i - head));
             }
         } catch (Exception e) {
             e.printStackTrace();

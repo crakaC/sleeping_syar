@@ -31,10 +31,7 @@ public class HomeTimelineFragment extends AbstractTimelineFragment {
     private TwitterStream mTwitterStream;
     private boolean mIsStreaming = false;
 
-    private boolean mIsWakeup = false;
     private boolean mIsOverflowing = false;
-    private Status mFirstVisibleStatus;
-    private int mFirstVisibleOffset = 1;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -46,7 +43,6 @@ public class HomeTimelineFragment extends AbstractTimelineFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = super.onCreateView(inflater, container, savedInstanceState);
-        ImageView listCache = (ImageView)v.findViewById(R.id.listViewCache);
         mListView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -80,14 +76,12 @@ public class HomeTimelineFragment extends AbstractTimelineFragment {
     @Override
     public void onResume() {
         super.onResume();
-        mIsWakeup = true;
         restorePosition();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        mIsWakeup = false;
         mIsOverflowing = false;
         savePosition();
     }
@@ -145,7 +139,7 @@ public class HomeTimelineFragment extends AbstractTimelineFragment {
                 @Override
                 public void run() {
                     insertQuietly(status);
-                    if(isFirstItemVisible() && isCurrentTab() && mIsWakeup){
+                    if(isFirstItemVisible() && isCurrentTab() && isResumed()){
                         mListView.smoothScrollToPosition(0);
                         mIsOverflowing = true;
                     } else if(mIsOverflowing){
@@ -232,13 +226,6 @@ public class HomeTimelineFragment extends AbstractTimelineFragment {
             }
         }
     }
-    private void insertQuietly(twitter4j.Status status) {
-        if(mIsWakeup){
-            savePosition();
-        }
-        mAdapter.insert(status, 0);
-        restorePosition();
-    }
 
     private boolean isCurrentTab(){
         if(!isAdded()) return false;
@@ -246,20 +233,4 @@ public class HomeTimelineFragment extends AbstractTimelineFragment {
         return activity.isCurrentTab(this);
     }
 
-    private void savePosition(){
-        if(mAdapter.isEmpty()) return;
-        mFirstVisibleStatus = mAdapter.getItem(mListView.getFirstVisiblePosition());
-        mFirstVisibleOffset = mListView.getChildAt(0).getTop();
-    }
-
-    private void restorePosition(){
-        if(mFirstVisibleStatus != null){
-            int pos = mAdapter.getPosition(mFirstVisibleStatus);
-            mListView.setSelectionFromTop(pos, mFirstVisibleOffset);
-        }
-    }
-
-    private boolean isFirstItemVisible(){
-        return mListView.getFirstVisiblePosition() == 0;
-    }
 }

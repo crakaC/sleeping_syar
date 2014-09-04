@@ -1,5 +1,6 @@
 package com.crakac.ofuton.timeline;
 
+import twitter4j.Status;
 import twitter4j.Twitter;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -44,7 +45,36 @@ public abstract class AbstractStatusFragment extends AbstractPtrFragment {
 	    mAdapter.shouldShowInlinePreview(AppUtil.getBooleanPreference(R.string.show_image_in_timeline, true));
 	}
 
-	public TweetStatusAdapter getAdapter() {
+    public TweetStatusAdapter getAdapter() {
 		return mAdapter;
 	}
+
+    private Status mFirstVisibleStatus;
+    private int mFirstVisibleOffset = -1;
+
+    protected void savePosition() {
+        if (mAdapter.isEmpty()) return;
+        mFirstVisibleStatus = mAdapter.getItem(mListView.getFirstVisiblePosition());
+        mFirstVisibleOffset = mListView.getChildAt(0).getTop();
+    }
+
+    protected void restorePosition() {
+        if (mFirstVisibleStatus != null) {
+            int pos = mAdapter.getPosition(mFirstVisibleStatus);
+            mListView.setSelectionFromTop(pos, mFirstVisibleOffset);
+        }
+    }
+
+    protected void insertQuietly(twitter4j.Status status) {
+        if (isResumed()) {
+            savePosition();
+        }
+        mAdapter.insert(status, 0);
+        restorePosition();
+    }
+
+    protected boolean isFirstItemVisible() {
+        return mListView.getFirstVisiblePosition() == 0;
+    }
+
 }
