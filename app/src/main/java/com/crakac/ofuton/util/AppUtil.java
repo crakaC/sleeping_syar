@@ -134,7 +134,7 @@ public final class AppUtil {
         } else if (diff < MINUTE) {
             return diff / SEC + "s";
         } else if (diff < HOUR) {
-            return diff / MINUTE + "m" + ( diff % MINUTE / SEC ) + "s";
+            return diff / MINUTE + "m";// + ( diff % MINUTE / SEC ) + "s";
         } else if (diff < DAY) {
             return (diff / HOUR) + "h" + (diff % HOUR / MINUTE) + "m";
         } else if (diffYear == 0) {
