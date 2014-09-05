@@ -57,7 +57,6 @@ public class TweetActivity extends ActionBarActivity implements View.OnClickList
     private static final String IMAGE_URI = "IMAGE_URI";
 
     private EditText mInputText;
-    private Twitter mTwitter;
     private File mAppendingFile; // 画像のアップロードに使用
     private TextView mRemainingText;// 残り文字数を表示
     private View mTweetBtn, mAppendPicBtn, mCameraBtn, mInfoBtn;// つぶやくボタン，画像追加ボタン，リプライ元情報ボタン
@@ -72,16 +71,10 @@ public class TweetActivity extends ActionBarActivity implements View.OnClickList
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        final Intent intent = getIntent();// reply時に必要なデータとかハッシュタグとかが入ってる
-        mReplyId = intent.getLongExtra(C.REPLY_ID, -1);// reply先ID
-        mReplyName = intent.getStringExtra(C.SCREEN_NAME);// リプライ先スクリーンネーム
-        mMentionUser = (User) intent.getSerializableExtra(C.USER);
-        mHashTag = intent.getStringExtra(C.HASH_TAG);// ハッシュタグ
 
         // レイアウトを読み込み
         setContentView(R.layout.activity_tweet);
 
-        mTwitter = TwitterUtils.getTwitterInstance();// Twitter周りのやつ
         mInputText = (EditText) findViewById(R.id.input_text);// 入力欄
         mTweetBtn = (View) findViewById(R.id.action_tweet);// ツイートボタン
         mAppendPicBtn = (View) findViewById(R.id.appendPic);// 画像添付ボダン
@@ -92,15 +85,56 @@ public class TweetActivity extends ActionBarActivity implements View.OnClickList
 
         // 画像添付ボタンタップの動作
         mAppendPicBtn.setOnClickListener(this);
-
         // カメラボタンタップの動作
         mCameraBtn.setOnClickListener(this);
-
         // 添付画像ミニプレビュータップの動作
         mAppendedImageView.setOnClickListener(this);
         mAppendedImageView.setOnTouchListener(new ColorOverlayOnTouch());
 
+        // tweetボタンの動作
+        mTweetBtn.setOnClickListener(this);
+
+        // 文章に変更があったら残り文字数を変化させる
+        mInputText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                setRemainLength(s);
+            }
+        });
+
+        setReplyData();
+
+        Intent i = getIntent();
+        if(Intent.ACTION_SEND.equals(i.getAction())){
+            Bundle b = i.getExtras();
+            if(b != null){
+                String text = b.getString(Intent.EXTRA_TEXT);
+                if(text != null){
+                    mInputText.setText(text);
+                }
+            }
+        }
+
+        // アクティビティ開始時の残り文字数をセットする．リプライ時やハッシュタグ時のときも140字にならないために．
+        setRemainLength(mInputText.getEditableText());
+    }
+
+    private void setReplyData(){
+        final Intent intent = getIntent();// reply時に必要なデータとかハッシュタグとかが入ってる
         final ActionBar actionbar = getSupportActionBar();
+
+        mReplyId = intent.getLongExtra(C.REPLY_ID, -1);// reply先ID
+        mReplyName = intent.getStringExtra(C.SCREEN_NAME);// リプライ先スクリーンネーム
+        mMentionUser = (User) intent.getSerializableExtra(C.USER);
+        mHashTag = intent.getStringExtra(C.HASH_TAG);// ハッシュタグ
 
         // リプライ時は@screen_nameを事前に打ち込んでおき，リプライ先表示ボタンを有効にする
         if (mReplyName != null) {
@@ -135,26 +169,6 @@ public class TweetActivity extends ActionBarActivity implements View.OnClickList
             mInputText.setText(mInputText.getText().toString() + " " + mHashTag);
         }
 
-        // tweetボタンの動作
-        mTweetBtn.setOnClickListener(this);
-
-        // 文章に変更があったら残り文字数を変化させる
-        mInputText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                setRemainLength(s);
-            }
-        });
-        // アクティビティ開始時の残り文字数をセットする．リプライ時やハッシュタグ時のときも140字にならないために．
-        setRemainLength(mInputText.getEditableText());
     }
 
     private final static int PREVIEW_APPENDED_IMAGE = 1;
@@ -258,7 +272,6 @@ public class TweetActivity extends ActionBarActivity implements View.OnClickList
             }
             if (mAppendingFile == null) {
                 AppUtil.showToast("ファイルの読み込みに失敗しました");
-                return;
             } else {
                 setAppendingImagePreview(mAppendingFile);
                 enableTweetButton(true);
@@ -304,7 +317,7 @@ public class TweetActivity extends ActionBarActivity implements View.OnClickList
                     if (mAppendingFile != null) {
                         params[0].media(mAppendingFile);
                     }
-                    return mTwitter.updateStatus(params[0]);
+                    return TwitterUtils.getTwitterInstance().updateStatus(params[0]);
                 } catch (TwitterException e) {
                     e.printStackTrace();
                 }
