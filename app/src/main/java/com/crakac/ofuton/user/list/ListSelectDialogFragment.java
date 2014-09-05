@@ -1,8 +1,5 @@
 package com.crakac.ofuton.user.list;
 
-import twitter4j.Twitter;
-import twitter4j.TwitterException;
-import twitter4j.UserList;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.graphics.Color;
@@ -22,12 +19,17 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+
 import com.crakac.ofuton.R;
 import com.crakac.ofuton.timeline.AbstractStatusFragment;
 import com.crakac.ofuton.util.AppUtil;
 import com.crakac.ofuton.util.ParallelTask;
 import com.crakac.ofuton.util.TwitterList;
 import com.crakac.ofuton.util.TwitterUtils;
+
+import twitter4j.Twitter;
+import twitter4j.TwitterException;
+import twitter4j.UserList;
 
 @SuppressLint("ValidFragment")
 public class ListSelectDialogFragment extends DialogFragment {
@@ -106,7 +108,7 @@ public class ListSelectDialogFragment extends DialogFragment {
 				};
 				addTask.executeParallel(listId);
 			}
-			
+
 			private void removeList(long listId, final ProgressBar pBar, final ImageView check) {
 				//プログレスバーを表示
 				check.setVisibility(View.INVISIBLE);
@@ -182,7 +184,7 @@ public class ListSelectDialogFragment extends DialogFragment {
 		Log.d(TAG, "onDestroy()");
 		super.onDestroy();
 	}
-	
+
 	public void setAdapter(TwitterListAdapter adapter){
 		mAdapter = adapter;
 	}

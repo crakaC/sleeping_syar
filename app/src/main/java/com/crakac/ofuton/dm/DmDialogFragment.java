@@ -1,11 +1,5 @@
 package com.crakac.ofuton.dm;
 
-import java.util.TreeSet;
-
-import twitter4j.DirectMessage;
-import twitter4j.MediaEntity;
-import twitter4j.URLEntity;
-import twitter4j.UserMentionEntity;
 import android.app.Dialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -27,6 +21,13 @@ import com.crakac.ofuton.status.ClickActionAdapter;
 import com.crakac.ofuton.status.action.ClickAction;
 import com.crakac.ofuton.status.action.LinkAction;
 import com.crakac.ofuton.status.action.UserDetailAction;
+
+import java.util.TreeSet;
+
+import twitter4j.DirectMessage;
+import twitter4j.MediaEntity;
+import twitter4j.URLEntity;
+import twitter4j.UserMentionEntity;
 
 /**
  * DMをタップした時に出てくるダイアログ

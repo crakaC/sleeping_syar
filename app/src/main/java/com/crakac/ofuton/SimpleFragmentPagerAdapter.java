@@ -1,15 +1,15 @@
 package com.crakac.ofuton;
 
 
-import java.util.ArrayList;
-
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
+import java.util.ArrayList;
+
 public class SimpleFragmentPagerAdapter extends FragmentPagerAdapter{
 	protected ArrayList<Fragment> mFragments;
-	
+
 	public SimpleFragmentPagerAdapter(FragmentManager fm) {
 		super(fm);
 		mFragments = new ArrayList<Fragment>();

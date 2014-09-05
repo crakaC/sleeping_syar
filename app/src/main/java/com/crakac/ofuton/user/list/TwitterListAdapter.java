@@ -1,12 +1,5 @@
 package com.crakac.ofuton.user.list;
 
-import java.util.HashMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
-import twitter4j.PagableResponseList;
-import twitter4j.Twitter;
-import twitter4j.TwitterException;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Handler;
@@ -22,6 +15,14 @@ import android.widget.TextView;
 import com.crakac.ofuton.R;
 import com.crakac.ofuton.util.TwitterList;
 import com.crakac.ofuton.util.TwitterUtils;
+
+import java.util.HashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+import twitter4j.PagableResponseList;
+import twitter4j.Twitter;
+import twitter4j.TwitterException;
 
 public class TwitterListAdapter extends ArrayAdapter<TwitterList> {
 	private LayoutInflater mInflater;
@@ -56,9 +57,9 @@ public class TwitterListAdapter extends ArrayAdapter<TwitterList> {
 
 	/**
 	 * リストにユーザーが登録されているかチェックする
-	 * 
+	 *
 	 * @author Kosuke
-	 * 
+	 *
 	 */
 	private class ListCheckTask implements Runnable {
 		private ProgressBar pBar;

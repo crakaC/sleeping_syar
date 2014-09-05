@@ -1,13 +1,5 @@
 package com.crakac.ofuton.status;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import twitter4j.HashtagEntity;
-import twitter4j.MediaEntity;
-import twitter4j.Status;
-import twitter4j.URLEntity;
-import twitter4j.UserMentionEntity;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.graphics.Color;
@@ -43,6 +35,15 @@ import com.crakac.ofuton.status.action.TofuBusterAction;
 import com.crakac.ofuton.status.action.UserDetailAction;
 import com.crakac.ofuton.timeline.AbstractStatusFragment;
 import com.crakac.ofuton.util.TwitterUtils;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import twitter4j.HashtagEntity;
+import twitter4j.MediaEntity;
+import twitter4j.Status;
+import twitter4j.URLEntity;
+import twitter4j.UserMentionEntity;
 
 /**
  * ツイートをタップした時に出てくるダイアログ

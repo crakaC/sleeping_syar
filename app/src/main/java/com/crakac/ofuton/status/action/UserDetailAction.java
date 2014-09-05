@@ -1,12 +1,13 @@
 package com.crakac.ofuton.status.action;
 
-import twitter4j.User;
 import android.content.Context;
 import android.content.Intent;
 
-import com.crakac.ofuton.R;
 import com.crakac.ofuton.C;
+import com.crakac.ofuton.R;
 import com.crakac.ofuton.user.UserDetailActivity;
+
+import twitter4j.User;
 
 public class UserDetailAction extends ClickAction {
 	private User user;
@@ -21,7 +22,7 @@ public class UserDetailAction extends ClickAction {
 		super(context, 0, R.drawable.ic_menu_user);
 		this.screenName = screenName;
 	}
-	
+
 	public UserDetailAction(Context context, User user) {
 		super(context, 0, R.drawable.ic_menu_user);
 		this.user = user;

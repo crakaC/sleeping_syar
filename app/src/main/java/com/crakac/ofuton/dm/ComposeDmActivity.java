@@ -1,8 +1,5 @@
 package com.crakac.ofuton.dm;
 
-import twitter4j.DirectMessage;
-import twitter4j.Twitter;
-import twitter4j.TwitterException;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -22,6 +19,10 @@ import com.crakac.ofuton.util.NetUtil;
 import com.crakac.ofuton.util.NetworkImageListener;
 import com.crakac.ofuton.util.ParallelTask;
 import com.crakac.ofuton.util.TwitterUtils;
+
+import twitter4j.DirectMessage;
+import twitter4j.Twitter;
+import twitter4j.TwitterException;
 
 public class ComposeDmActivity extends ActionBarActivity {
 	private static final int MAX_TEXT_LENGTH = 140;

@@ -1,14 +1,5 @@
 package com.crakac.ofuton;
 
-import java.io.File;
-import java.io.IOException;
-
-import twitter4j.Status;
-import twitter4j.StatusUpdate;
-import twitter4j.Twitter;
-import twitter4j.TwitterException;
-import twitter4j.User;
-import twitter4j.UserMentionEntity;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Intent;
@@ -38,6 +29,16 @@ import com.crakac.ofuton.util.NetworkImageListener;
 import com.crakac.ofuton.util.ParallelTask;
 import com.crakac.ofuton.util.TwitterUtils;
 import com.crakac.ofuton.widget.ColorOverlayOnTouch;
+
+import java.io.File;
+import java.io.IOException;
+
+import twitter4j.Status;
+import twitter4j.StatusUpdate;
+import twitter4j.Twitter;
+import twitter4j.TwitterException;
+import twitter4j.User;
+import twitter4j.UserMentionEntity;
 
 /**
  * ツイート作成アクティビティ

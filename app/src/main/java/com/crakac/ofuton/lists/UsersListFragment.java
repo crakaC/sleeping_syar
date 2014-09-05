@@ -1,10 +1,5 @@
 package com.crakac.ofuton.lists;
 
-import java.util.List;
-import java.util.TreeSet;
-
-import twitter4j.TwitterException;
-import twitter4j.UserList;
 import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
@@ -28,6 +23,12 @@ import com.crakac.ofuton.util.ParallelTask;
 import com.crakac.ofuton.util.TwitterList;
 import com.crakac.ofuton.util.TwitterUtils;
 import com.crakac.ofuton.widget.ProgressTextView;
+
+import java.util.List;
+import java.util.TreeSet;
+
+import twitter4j.TwitterException;
+import twitter4j.UserList;
 
 public class UsersListFragment extends Fragment{
 

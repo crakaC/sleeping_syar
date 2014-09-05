@@ -1,10 +1,5 @@
 package com.crakac.ofuton.timeline;
 
-import java.util.List;
-
-import twitter4j.Paging;
-import twitter4j.Status;
-import twitter4j.TwitterException;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,10 +8,16 @@ import android.view.ViewGroup;
 
 import com.crakac.ofuton.C;
 
+import java.util.List;
+
+import twitter4j.Paging;
+import twitter4j.Status;
+import twitter4j.TwitterException;
+
 public class ListTimelineFragment extends AbstractTimelineFragment {
 	private long listId;
 	private String listTitle;
-	
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {

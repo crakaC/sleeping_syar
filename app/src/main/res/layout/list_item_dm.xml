@@ -1,7 +1,6 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/tweet_status"
-    style="@style/timeline" >
+    style="@style/timeline">
 
     <ImageView
         android:id="@+id/icon"

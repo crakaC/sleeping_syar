@@ -3,21 +3,15 @@ package com.crakac.ofuton.status;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.view.animation.TranslateAnimation;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.android.volley.toolbox.ImageLoader.ImageContainer;
@@ -31,15 +25,9 @@ import com.crakac.ofuton.util.NetUtil;
 import com.crakac.ofuton.util.TwitterUtils;
 import com.crakac.ofuton.widget.ColorOverlayOnTouch;
 
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.TreeMap;
-
 import twitter4j.MediaEntity;
 import twitter4j.Status;
 import twitter4j.UserMentionEntity;
-
-import static android.view.View.MeasureSpec;
 
 public class TweetStatusAdapter extends ArrayAdapter<Status> {
     private static Context sContext;

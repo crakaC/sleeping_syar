@@ -1,6 +1,5 @@
 package com.crakac.ofuton.widget;
 
-import android.graphics.PorterDuff;
 import android.graphics.PorterDuff.Mode;
 import android.view.MotionEvent;
 import android.view.View;

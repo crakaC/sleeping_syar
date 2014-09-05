@@ -1,6 +1,5 @@
 package com.crakac.ofuton.status;
 
-import twitter4j.Status;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -10,8 +9,10 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
-import com.crakac.ofuton.R;
 import com.crakac.ofuton.C;
+import com.crakac.ofuton.R;
+
+import twitter4j.Status;
 
 /**
  * TweetActivityから，リプライ時にリプライ先のツイート情報を表示するためのDialogFragment

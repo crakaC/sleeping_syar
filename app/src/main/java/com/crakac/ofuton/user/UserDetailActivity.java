@@ -1,13 +1,5 @@
 package com.crakac.ofuton.user;
 
-import java.util.List;
-
-import twitter4j.Relationship;
-import twitter4j.Twitter;
-import twitter4j.TwitterException;
-import twitter4j.URLEntity;
-import twitter4j.User;
-import twitter4j.UserList;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
@@ -50,6 +42,15 @@ import com.crakac.ofuton.util.ProgressDialogFragment;
 import com.crakac.ofuton.util.TwitterList;
 import com.crakac.ofuton.util.TwitterUtils;
 import com.crakac.ofuton.widget.ColorOverlayOnTouch;
+
+import java.util.List;
+
+import twitter4j.Relationship;
+import twitter4j.Twitter;
+import twitter4j.TwitterException;
+import twitter4j.URLEntity;
+import twitter4j.User;
+import twitter4j.UserList;
 
 public class UserDetailActivity extends FinishableActionbarActivity {
     enum Relation {

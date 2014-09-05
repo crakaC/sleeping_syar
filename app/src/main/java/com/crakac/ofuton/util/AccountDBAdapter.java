@@ -1,10 +1,5 @@
 package com.crakac.ofuton.util;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.res.AssetManager;
@@ -12,13 +7,18 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+
 public class AccountDBAdapter {
 	static final String DATABASE_NAME = "acount.db";
 	static final int DATABASE_VERSION = 1;
-	
+
 	public static final String ACCOUNT_TABLE = "users";
 	public static final String LIST_TABLE = "lists";
-	
+
 	public static final String COL_USERID = "UserID";
 
 	public static final String COL_SCREEN_NAME = "ScreenName";
@@ -30,11 +30,11 @@ public class AccountDBAdapter {
 	public static final String COL_LIST_ID = "ListID";
 	public static final String COL_LIST_NAME = "Name";
 	public static final String COL_LIST_LONGNAME = "FullName";
-	
+
 	protected final Context context;
 	protected DatabaseHelper dbHelper;
 	protected SQLiteDatabase db;
-	
+
 	public AccountDBAdapter(Context context){
 		this.context = context;
 		dbHelper = new DatabaseHelper(this.context);
@@ -64,7 +64,7 @@ public class AccountDBAdapter {
 			}
 			onCreate(db);
 		}
-		
+
 		/**
 		 * 引数に指定したassets内のsqlを実行する
 		 * @param db
@@ -84,7 +84,7 @@ public class AccountDBAdapter {
 				e.printStackTrace();
 			}
 		}
-		
+
 		/**
 		 * ファイルから文字列を読み込む
 		 * @param is
@@ -95,7 +95,7 @@ public class AccountDBAdapter {
 			BufferedReader br = null;
 			try{
 				br = new BufferedReader(new InputStreamReader(is));
-				
+
 				StringBuilder sb = new StringBuilder();
 				String str;
 				while((str = br.readLine())!=null){
@@ -114,15 +114,15 @@ public class AccountDBAdapter {
 		db = dbHelper.getWritableDatabase();
 		return this;
 	}
-	
+
 	public void close(){
 		dbHelper.close();
 	}
-	
+
 	public Cursor getAllAccounts(){
 		return db.query(ACCOUNT_TABLE, null, null, null, null, null, null);
 	}
-	
+
 	public boolean accountExists(long userId){
 		String[] columns = { COL_USERID };
 		Cursor c = db.query(ACCOUNT_TABLE, columns, COL_USERID+"="+userId, null, null, null, null);
@@ -187,13 +187,13 @@ public class AccountDBAdapter {
 		String[] whereArgs = new String[]{ Long.toString(list.getListId()), Long.toString(list.getUserId())};
 		return db.delete(LIST_TABLE, whereClause, whereArgs ) > 0;
 	}
-	
+
 	/**
 	 * ユーザーIDのリストを全部消す．
 	 * @param userId
 	 * @return
 	 */
 	public boolean deleteLists(long userId){
-		return db.delete(LIST_TABLE, COL_USERID + "=" + userId, null) > 0;		
+		return db.delete(LIST_TABLE, COL_USERID + "=" + userId, null) > 0;
 	}
 }

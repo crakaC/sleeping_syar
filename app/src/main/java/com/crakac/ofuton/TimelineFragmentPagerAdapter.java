@@ -1,8 +1,5 @@
 package com.crakac.ofuton;
 
-import java.util.ArrayList;
-import java.util.Stack;
-
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -14,6 +11,9 @@ import com.crakac.ofuton.timeline.FavoriteTimelineFragment;
 import com.crakac.ofuton.timeline.HomeTimelineFragment;
 import com.crakac.ofuton.timeline.ListTimelineFragment;
 import com.crakac.ofuton.timeline.MentionsTimelineFragment;
+
+import java.util.ArrayList;
+import java.util.Stack;
 
 public class TimelineFragmentPagerAdapter extends FragmentPagerAdapter {
 
@@ -80,12 +80,12 @@ public class TimelineFragmentPagerAdapter extends FragmentPagerAdapter {
 		add(lf);
 	}
 
-	
-	
+
+
 	public ArrayList<AbstractTimelineFragment> getFragments(){
 		return mFragments;
 	}
-	
+
 	public int getFragmentPosition(Class<? extends Fragment> c){
 		int pos = -1;
 		for(int i = 0; i < mFragments.size(); i++){

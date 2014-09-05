@@ -1,7 +1,5 @@
 package com.crakac.ofuton;
 
-import java.io.File;
-
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
@@ -9,6 +7,8 @@ import android.support.v4.content.Loader;
 import android.util.Log;
 
 import com.crakac.ofuton.util.AsyncBitmapLoader;
+
+import java.io.File;
 
 public class PhotoPreviewActivity extends AbstractPreviewActivity implements LoaderCallbacks<Bitmap> {
 

@@ -1,6 +1,5 @@
 package com.crakac.ofuton.dm;
 
-import twitter4j.DirectMessage;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +11,8 @@ import android.widget.TextView;
 import com.crakac.ofuton.R;
 import com.crakac.ofuton.util.AppUtil;
 import com.crakac.ofuton.util.NetUtil;
+
+import twitter4j.DirectMessage;
 
 public class DmAdapter extends ArrayAdapter<DirectMessage> {
 
