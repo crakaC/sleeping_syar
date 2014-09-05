@@ -74,6 +74,7 @@
         <activity
             android:name=".TweetActivity"
             android:label="@string/activity_tweet"
+            android:configChanges="orientation|screenSize"
             android:parentActivityName=".MainActivity"
             android:windowSoftInputMode="adjustResize" >
             <meta-data
