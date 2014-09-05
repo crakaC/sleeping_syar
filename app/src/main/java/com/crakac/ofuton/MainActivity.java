@@ -177,7 +177,7 @@ public class MainActivity extends ActionBarActivity {
             return true;
         case R.id.refresh:// reload
             for (AbstractTimelineFragment f : mAdapter.getFragments()) {
-                f.loadNewTweets();
+                f.refresh();
             }
             AppUtil.showToast("Refresh！");
             return true;

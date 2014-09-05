@@ -76,7 +76,7 @@ public abstract class AbstractTimelineFragment extends AbstractStatusFragment {
         mFetchStatusTask.executeParallel();
     }
 
-    public void loadNewTweets() {
+    private void loadNewTweets() {
         // 読み込み中なら何もしない
         if (isRunning(mFetchStatusTask)) {
             Log.d(TAG + getTimelineName(), "cannot loadNewTweets(): task is running.");
@@ -260,5 +260,10 @@ public abstract class AbstractTimelineFragment extends AbstractStatusFragment {
             e.printStackTrace();
         }
         return views;
+    }
+
+    public void refresh(){
+        mSwipeWidget.setRefreshing(true);
+        loadNewTweets();
     }
 }

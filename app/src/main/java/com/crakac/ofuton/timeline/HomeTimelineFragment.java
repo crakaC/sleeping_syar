@@ -232,4 +232,10 @@ public class HomeTimelineFragment extends AbstractTimelineFragment {
         return activity.isCurrentTab(this);
     }
 
+    @Override
+    public void refresh() {
+        if(!mIsStreaming){
+            super.refresh();
+        }
+    }
 }
