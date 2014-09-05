@@ -162,7 +162,9 @@ public class MainActivity extends ActionBarActivity {
 
     @Override
     public void onBackPressed() {
-        if (mSearchView != null && !mSearchView.isIconified()) {
+        if (mDrawerLayout.isDrawerOpen(mDrawerList)){
+            mDrawerLayout.closeDrawer(GravityCompat.START);
+        } else if (mSearchView != null && !mSearchView.isIconified()) {
             mSearchView.setIconified(true);
         } else {
             super.onBackPressed();
