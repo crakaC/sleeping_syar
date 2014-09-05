@@ -1,8 +1,5 @@
 package com.crakac.ofuton;
 
-import java.util.List;
-
-import twitter4j.Status;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
@@ -12,8 +9,12 @@ import android.support.v4.content.Loader;
 import com.crakac.ofuton.status.StatusPool;
 import com.crakac.ofuton.timeline.AbstractStatusFragment;
 
+import java.util.List;
+
+import twitter4j.Status;
+
 public class SearchFragment extends AbstractStatusFragment implements LoaderCallbacks<List<Status>>{
-    private final int SEARCH_LOADER = 0; 
+    private final int SEARCH_LOADER = 0;
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {

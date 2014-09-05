@@ -12,7 +12,7 @@ public class DmActivity extends ActionBarActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		// レイアウトとタイトルの設定
-		setContentView(R.layout.activity_dm);
+		setContentView(R.layout.activity_simple_tab);
 		DmFragmentPagerAdapter pagerAdapter = new DmFragmentPagerAdapter(getSupportFragmentManager());
 		pagerAdapter.add(new DmReceivedFragment());
 		pagerAdapter.add(new DmSentFragment());
