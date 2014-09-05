@@ -1,13 +1,13 @@
 package com.crakac.ofuton.util;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.v4.content.AsyncTaskLoader;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 
 public class AsyncBitmapLoader extends AsyncTaskLoader<Bitmap> {
     private File mPath;

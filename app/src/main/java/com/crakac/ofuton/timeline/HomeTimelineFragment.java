@@ -1,5 +1,18 @@
 package com.crakac.ofuton.timeline;
 
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.view.LayoutInflater;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.ViewGroup;
+
+import com.crakac.ofuton.MainActivity;
+import com.crakac.ofuton.R;
+import com.crakac.ofuton.util.AppUtil;
+import com.crakac.ofuton.util.TwitterUtils;
+
 import java.util.List;
 
 import twitter4j.DirectMessage;
@@ -10,20 +23,6 @@ import twitter4j.TwitterStream;
 import twitter4j.User;
 import twitter4j.UserMentionEntity;
 import twitter4j.UserStreamAdapter;
-
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.view.LayoutInflater;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-
-import com.crakac.ofuton.MainActivity;
-import com.crakac.ofuton.R;
-import com.crakac.ofuton.util.AppUtil;
-import com.crakac.ofuton.util.TwitterUtils;
 public class HomeTimelineFragment extends AbstractTimelineFragment {
     private final String title = "Home";
 

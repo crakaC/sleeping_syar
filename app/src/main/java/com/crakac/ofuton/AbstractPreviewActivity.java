@@ -1,15 +1,16 @@
 package com.crakac.ofuton;
 
-import com.crakac.ofuton.util.AppUtil;
-
-import uk.co.senab.photoview.PhotoViewAttacher;
-import uk.co.senab.photoview.PhotoViewAttacher.OnViewTapListener;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
+
+import com.crakac.ofuton.util.AppUtil;
+
+import uk.co.senab.photoview.PhotoViewAttacher;
+import uk.co.senab.photoview.PhotoViewAttacher.OnViewTapListener;
 
 abstract public class AbstractPreviewActivity extends FragmentActivity {
 

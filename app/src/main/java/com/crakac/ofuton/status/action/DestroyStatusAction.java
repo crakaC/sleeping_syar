@@ -1,7 +1,5 @@
 package com.crakac.ofuton.status.action;
 
-import twitter4j.Twitter;
-import twitter4j.TwitterException;
 import android.content.Context;
 
 import com.crakac.ofuton.R;
@@ -9,6 +7,9 @@ import com.crakac.ofuton.status.TweetStatusAdapter;
 import com.crakac.ofuton.util.AppUtil;
 import com.crakac.ofuton.util.ParallelTask;
 import com.crakac.ofuton.util.TwitterUtils;
+
+import twitter4j.Twitter;
+import twitter4j.TwitterException;
 
 public class DestroyStatusAction extends ClickAction {
 	private TweetStatusAdapter statusAdapter;

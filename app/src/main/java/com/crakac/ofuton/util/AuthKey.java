@@ -1,9 +1,9 @@
 package com.crakac.ofuton.util;
 
+import android.content.Context;
+
 import com.crakac.ofuton.C;
 import com.crakac.ofuton.R;
-
-import android.content.Context;
 
 /**
  * Twitter consumer key and consumer secret.
@@ -13,7 +13,7 @@ import android.content.Context;
 public class AuthKey {
 	private String mConsumerKey;
 	private String mConsumerSecret;
-	
+
 	//リソースから引っ張ってくるだけじゃあセキュリティ上よろしくないので，暗号化したファイルから読み込むようにしたい．
 	private void loadConsumerKey(Context context){
 		if(C.IS_PRODUCT){
@@ -22,7 +22,7 @@ public class AuthKey {
 			mConsumerKey = context.getString(R.string.twitter_consumer_key_debug);
 		}
 	}
-	
+
 	private void loadConsumerSecret(Context context){
 		if(C.IS_PRODUCT){
 			mConsumerSecret = context.getString(R.string.twitter_consumer_secret);
@@ -30,16 +30,16 @@ public class AuthKey {
 			mConsumerSecret = context.getString(R.string.twitter_consumer_secret_debug);
 		}
 	}
-	
+
 	public AuthKey(Context context){
 		loadConsumerKey(context);
 		loadConsumerSecret(context);
 	}
-	
+
 	public String getConsumerKey() {
 		return mConsumerKey;
 	}
-	
+
 	public String getConsumerSecret() {
 		return mConsumerSecret;
 	}

@@ -4,6 +4,11 @@
 
 package com.crakac.ofuton.util;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+import android.database.Cursor;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,10 +20,6 @@ import twitter4j.TwitterStreamFactory;
 import twitter4j.auth.AccessToken;
 import twitter4j.conf.Configuration;
 import twitter4j.conf.ConfigurationBuilder;
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
-import android.database.Cursor;
 
 public class TwitterUtils {
 	//private static final String TAG = TwitterUtils.class.getSimpleName();
@@ -29,7 +30,7 @@ public class TwitterUtils {
 	private static Account currentAccount;
 	private static String mConsumerKey;
 	private static String mConsumerSecret;
-	
+
 	private static Configuration createConfiguration(){
 		ConfigurationBuilder cb = new ConfigurationBuilder();
 		cb.setOAuthConsumerKey(mConsumerKey);
@@ -47,7 +48,7 @@ public class TwitterUtils {
 
 	/**
 	 * Return Twitter instance without request token
-	 * 
+	 *
 	 * @param context
 	 * @return
 	 */
@@ -57,10 +58,10 @@ public class TwitterUtils {
 		Twitter twitter = factory.getInstance();
 		return twitter;
 	}
-	
+
 	/**
 	 * Twitter instance
-	 * 
+	 *
 	 * @param context
 	 * @return
 	 */
@@ -88,7 +89,7 @@ public class TwitterUtils {
 
 	/**
 	 * Store access_token to preference.
-	 * 
+	 *
 	 * @param context
 	 * @param accessToken
 	 */
@@ -103,7 +104,7 @@ public class TwitterUtils {
 
 	/**
 	 * load access token from preference
-	 * 
+	 *
 	 * @param context
 	 * @return
 	 */
@@ -121,7 +122,7 @@ public class TwitterUtils {
 
 	/**
 	 * return current user's twitter id
-	 * 
+	 *
 	 * @param context
 	 * @return user id
 	 */

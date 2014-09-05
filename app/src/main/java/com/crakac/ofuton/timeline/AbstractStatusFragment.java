@@ -1,7 +1,5 @@
 package com.crakac.ofuton.timeline;
 
-import twitter4j.Status;
-import twitter4j.Twitter;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +11,9 @@ import com.crakac.ofuton.status.StatusClickListener;
 import com.crakac.ofuton.status.TweetStatusAdapter;
 import com.crakac.ofuton.util.AppUtil;
 import com.crakac.ofuton.util.TwitterUtils;
+
+import twitter4j.Status;
+import twitter4j.Twitter;
 
 public abstract class AbstractStatusFragment extends AbstractPtrFragment {
 

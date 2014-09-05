@@ -1,11 +1,5 @@
 package com.crakac.ofuton;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import android.annotation.SuppressLint;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -27,12 +21,20 @@ import android.view.ContextMenu.ContextMenuInfo;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.MimeTypeMap;
+
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader.ImageContainer;
 import com.crakac.ofuton.util.AppUtil;
 import com.crakac.ofuton.util.NetUtil;
 import com.crakac.ofuton.util.NetworkImageListener;
 import com.crakac.ofuton.util.Util;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class WebImagePreviewActivity extends AbstractPreviewActivity implements LoaderCallbacks<String>{
     private static final String TAG = WebImagePreviewActivity.class.getSimpleName();

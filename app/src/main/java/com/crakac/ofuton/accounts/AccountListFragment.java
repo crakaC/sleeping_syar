@@ -1,8 +1,5 @@
 package com.crakac.ofuton.accounts;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -30,6 +27,9 @@ import com.crakac.ofuton.util.DialogManager;
 import com.crakac.ofuton.util.NetUtil;
 import com.crakac.ofuton.util.ParallelTask;
 import com.crakac.ofuton.util.TwitterUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class AccountListFragment extends Fragment{
 

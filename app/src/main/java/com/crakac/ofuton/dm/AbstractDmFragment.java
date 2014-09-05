@@ -1,10 +1,5 @@
 package com.crakac.ofuton.dm;
 
-import java.util.List;
-import java.util.ListIterator;
-
-import twitter4j.DirectMessage;
-import twitter4j.Twitter;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -20,6 +15,12 @@ import com.crakac.ofuton.util.AppUtil;
 import com.crakac.ofuton.util.ParallelTask;
 import com.crakac.ofuton.util.TwitterUtils;
 
+import java.util.List;
+import java.util.ListIterator;
+
+import twitter4j.DirectMessage;
+import twitter4j.Twitter;
+
 abstract public class AbstractDmFragment extends AbstractPtrFragment {
 	private long mSinceId = Long.MIN_VALUE, mMaxId = Long.MAX_VALUE;
 	int mCount = 20;
@@ -28,7 +29,7 @@ abstract public class AbstractDmFragment extends AbstractPtrFragment {
 	private ParallelTask<Void, Void, List<DirectMessage>> fetchNewTask,
 			fetchPreviousTask;
 	private static final String TAG = DmActivity.class.getSimpleName();
-	
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -64,12 +65,12 @@ abstract public class AbstractDmFragment extends AbstractPtrFragment {
 		initDMs();
 		return view;
 	}
-	
+
 	@Override
 	protected void onClickEmptyView() {
 		initDMs();
 	}
-	
+
 	@Override
 	protected void onClickFooterView() {
 		loadPreviousMessages();
@@ -110,7 +111,7 @@ abstract public class AbstractDmFragment extends AbstractPtrFragment {
 		fetchNewTask = new FetchNewMessageTask();
 		fetchNewTask.executeParallel();
 	}
-	
+
 	private void loadPreviousMessages() {
 		if (fetchPreviousTask != null
 				&& fetchPreviousTask.getStatus() == AsyncTask.Status.RUNNING) {
@@ -124,7 +125,7 @@ abstract public class AbstractDmFragment extends AbstractPtrFragment {
 	private void failToGetMessages(){
 		AppUtil.showToast("DMの取得に失敗しました");
 	}
-	
+
 	@Override
 	public void onPause() {
 		super.onPause();
@@ -137,11 +138,11 @@ abstract public class AbstractDmFragment extends AbstractPtrFragment {
 			}
 		}
 	}
-	
+
 	private boolean isRunning(AsyncTask<?,?,?> task){
 		return task != null && task.getStatus() == AsyncTask.Status.RUNNING;
 	}
-	
+
 	private class FetchDirectMessageTask extends ParallelTask<Void, Void, List<DirectMessage>>{
 		@Override
 		protected void onPreExecute() {
@@ -181,9 +182,9 @@ abstract public class AbstractDmFragment extends AbstractPtrFragment {
 			setEmptyViewStandby();
 		}
 	}
-	
+
 	private class FetchNewMessageTask extends ParallelTask<Void, Void, List<DirectMessage>> {
-		
+
 		@Override
 		protected List<DirectMessage> doInBackground(Void... params) {
 			return newMessages(mSinceId, mCount);
@@ -207,7 +208,7 @@ abstract public class AbstractDmFragment extends AbstractPtrFragment {
 			}
             mSwipeWidget.setRefreshing(false);
 		}
-		
+
 		@Override
 		protected void onCancelled() {
 			super.onCancelled();
@@ -215,7 +216,7 @@ abstract public class AbstractDmFragment extends AbstractPtrFragment {
             mSwipeWidget.setRefreshing(false);
 		}
 	}
-	
+
 	abstract protected List<DirectMessage> newMessages(long sinceId, int counts);
 	abstract protected List<DirectMessage> fetchMessages(long maxId, int counts);
 

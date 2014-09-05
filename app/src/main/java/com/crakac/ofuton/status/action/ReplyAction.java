@@ -3,8 +3,8 @@ package com.crakac.ofuton.status.action;
 import android.content.Context;
 import android.content.Intent;
 
-import com.crakac.ofuton.R;
 import com.crakac.ofuton.C;
+import com.crakac.ofuton.R;
 import com.crakac.ofuton.TweetActivity;
 
 public class ReplyAction extends ClickAction {

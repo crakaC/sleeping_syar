@@ -1,14 +1,8 @@
 package com.crakac.ofuton.user;
 
-import twitter4j.PagableResponseList;
-import twitter4j.Twitter;
-import twitter4j.User;
-
-import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +14,10 @@ import com.crakac.ofuton.AbstractPtrFragment;
 import com.crakac.ofuton.C;
 import com.crakac.ofuton.util.ParallelTask;
 import com.crakac.ofuton.util.TwitterUtils;
+
+import twitter4j.PagableResponseList;
+import twitter4j.Twitter;
+import twitter4j.User;
 
 public abstract class AbstractUserFragment extends AbstractPtrFragment {
 
@@ -93,7 +91,7 @@ public abstract class AbstractUserFragment extends AbstractPtrFragment {
 
 	/**
 	 * ユーザーを読み込むやつ
-	 * 
+	 *
 	 * @param cursor
 	 * @return
 	 */

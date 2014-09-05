@@ -3,8 +3,8 @@ package com.crakac.ofuton.status.action;
 import android.content.Context;
 import android.content.Intent;
 
-import com.crakac.ofuton.R;
 import com.crakac.ofuton.C;
+import com.crakac.ofuton.R;
 import com.crakac.ofuton.TweetActivity;
 
 public class HashtagAction extends ClickAction {
@@ -13,7 +13,7 @@ public class HashtagAction extends ClickAction {
 		super(context, 0, R.drawable.ic_menu_hashtag);
 		this.tag = tag;
 	}
-	
+
 	@Override
 	public String getText() {
 		return "#" + tag;

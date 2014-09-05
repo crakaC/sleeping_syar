@@ -1,8 +1,5 @@
 package com.crakac.ofuton.status.action;
 
-import twitter4j.Paging;
-import twitter4j.Twitter;
-import twitter4j.TwitterException;
 import android.content.Context;
 import android.util.Log;
 
@@ -12,12 +9,16 @@ import com.crakac.ofuton.util.AppUtil;
 import com.crakac.ofuton.util.ParallelTask;
 import com.crakac.ofuton.util.TwitterUtils;
 
+import twitter4j.Paging;
+import twitter4j.Twitter;
+import twitter4j.TwitterException;
+
 public class CancelRetweetAction extends ClickAction {
 	private twitter4j.Status selectedStatus;
 	private static final String TAG = CancelRetweetAction.class.getSimpleName();
 	//private TweetStatusAdapter statusAdapter;
 	/**
-	 * 
+	 *
 	 * @param context リソース呼び出し用
 	 * @param adapter リツイート後に中身を変更するために必要
 	 */

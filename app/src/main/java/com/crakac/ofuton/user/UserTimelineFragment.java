@@ -1,13 +1,13 @@
 package com.crakac.ofuton.user;
 
+import com.crakac.ofuton.timeline.AbstractTimelineFragment;
+import com.crakac.ofuton.util.AppUtil;
+
 import java.util.List;
 
 import twitter4j.Paging;
 import twitter4j.Status;
 import twitter4j.TwitterException;
-
-import com.crakac.ofuton.timeline.AbstractTimelineFragment;
-import com.crakac.ofuton.util.AppUtil;
 
 public class UserTimelineFragment extends AbstractTimelineFragment {
 

@@ -1,10 +1,6 @@
 package com.crakac.ofuton.accounts;
 
 
-import twitter4j.Twitter;
-import twitter4j.TwitterException;
-import twitter4j.auth.AccessToken;
-import twitter4j.auth.RequestToken;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -17,6 +13,11 @@ import com.crakac.ofuton.util.AppUtil;
 import com.crakac.ofuton.util.DialogManager;
 import com.crakac.ofuton.util.ParallelTask;
 import com.crakac.ofuton.util.TwitterUtils;
+
+import twitter4j.Twitter;
+import twitter4j.TwitterException;
+import twitter4j.auth.AccessToken;
+import twitter4j.auth.RequestToken;
 
 public class AccountActivity extends ActionBarActivity{
 	private RequestToken mRequestToken;

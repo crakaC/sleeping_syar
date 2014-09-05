@@ -1,17 +1,5 @@
 package com.crakac.ofuton.util;
 
-import java.text.NumberFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.Random;
-
-import twitter4j.EntitySupport;
-import twitter4j.MediaEntity;
-import twitter4j.Status;
-import twitter4j.TwitterException;
-import twitter4j.URLEntity;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -29,6 +17,19 @@ import android.widget.Toast;
 
 import com.crakac.ofuton.R;
 import com.crakac.ofuton.status.TweetStatusAdapter;
+
+import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.Random;
+
+import twitter4j.EntitySupport;
+import twitter4j.MediaEntity;
+import twitter4j.Status;
+import twitter4j.TwitterException;
+import twitter4j.URLEntity;
 
 public final class AppUtil {
     private static Context sContext;
@@ -59,10 +60,6 @@ public final class AppUtil {
      */
     public static int getFontSize() {
         return Integer.valueOf(getSharedPreference().getString(FONT_SIZE_KEY, "12"));// ListPreferenceは値をStringで保存すると思われるのでこうする
-    }
-
-    public static boolean getPreferenceValue(String key) {
-        return getSharedPreference().getBoolean(key, false);
     }
 
     public static boolean getBooleanPreference(int resId) {
