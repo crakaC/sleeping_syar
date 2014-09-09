@@ -24,6 +24,9 @@ import com.crakac.ofuton.util.AppUtil;
 import com.crakac.ofuton.util.NetUtil;
 import com.crakac.ofuton.util.TwitterUtils;
 import com.crakac.ofuton.widget.ColorOverlayOnTouch;
+import com.crakac.ofuton.widget.MultipleImagePreview;
+
+import java.util.List;
 
 import twitter4j.MediaEntity;
 import twitter4j.Status;
@@ -47,7 +50,7 @@ public class TweetStatusAdapter extends ArrayAdapter<Status> {
         ImageView icon;
         ImageView smallIcon;
         ImageView favicon;
-        ImageView image;
+        MultipleImagePreview imagePreview;
         ImageView lockedIcon;
     }
 
@@ -155,33 +158,44 @@ public class TweetStatusAdapter extends ArrayAdapter<Status> {
         // ☆
         setFavIcon(holder.favicon, status);
 
-        setImagePreview(holder.image, status);
+        setImagePreview(holder.imagePreview, status);
     }
 
-    private static void setImagePreview(final ImageView image, Status status) {
-        image.setVisibility(View.GONE);
+    private static void setImagePreview(final MultipleImagePreview imagePreview, Status status) {
+        imagePreview.setVisibility(View.GONE);
         if (!shouldShowPreview) return;
         if (status.getMediaEntities().length == 0)
             return;
-        image.setVisibility(View.VISIBLE);
-        final MediaEntity media = status.getMediaEntities()[0];
-        image.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(sContext, WebImagePreviewActivity.class);
-                intent.setData(Uri.parse(media.getMediaURL()));
-                sContext.startActivity(intent);
-                ((Activity) sContext).overridePendingTransition(android.R.anim.fade_in, 0);
-            }
-        });
 
-        ImageContainer container = (ImageContainer) image.getTag();
-        if(container != null) {
-            container.cancelRequest();
-            image.setImageResource(android.R.color.transparent);
+        imagePreview.setVisibility(View.VISIBLE);
+
+        final MediaEntity[] medias = status.getExtendedMediaEntities();
+
+        imagePreview.setImageCounts(medias.length);
+        imagePreview.initLayout();
+        List<ImageView> imageViews = imagePreview.getImageViews();
+
+        for(int i = 0; i < medias.length; i++){
+            final ImageView imageView = imageViews.get(i);
+            imageView.setVisibility(View.VISIBLE);
+            final MediaEntity media = medias[i];
+            imageView.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(sContext, WebImagePreviewActivity.class);
+                    intent.setData(Uri.parse(media.getMediaURL()));
+                    sContext.startActivity(intent);
+                    ((Activity) sContext).overridePendingTransition(android.R.anim.fade_in, 0);
+                }
+            });
+            ImageContainer container = (ImageContainer) imageView.getTag();
+            if (container != null) {
+                container.cancelRequest();
+                //imageView.setImageResource(android.R.color.transparent);
+            }
+            container = NetUtil.fetchNetworkImageAsync(imageView, media.getMediaURL());
+            imageView.setTag(container);
         }
-        container = NetUtil.fetchNetworkImageAsync(image, media.getMediaURL());
-        image.setTag(container);
     }
 
     /**
@@ -226,8 +240,7 @@ public class TweetStatusAdapter extends ArrayAdapter<Status> {
         holder.icon.setOnTouchListener(new ColorOverlayOnTouch());
         holder.smallIcon = (ImageView) convertView.findViewById(R.id.smallIcon);
         holder.retweetedBy = (TextView) convertView.findViewById(R.id.retweeted_by);
-        holder.image = (ImageView) convertView.findViewById(R.id.image);
-        holder.image.setOnTouchListener(new ColorOverlayOnTouch());
+        holder.imagePreview = (MultipleImagePreview) convertView.findViewById(R.id.image);
         holder.favicon = (ImageView) convertView.findViewById(R.id.favedStar);
         holder.lockedIcon = (ImageView) convertView.findViewById(R.id.lockedIcon);
     }
