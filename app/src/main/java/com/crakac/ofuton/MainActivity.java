@@ -7,11 +7,15 @@ import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -50,6 +54,7 @@ public class MainActivity extends ActionBarActivity {
     private TimelineFragmentPagerAdapter mAdapter;
     private ImageView mTweetBtn;
     private Menu mMenu;
+    private SearchView mSearchView;
     /* Navigation drawer */
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
@@ -149,7 +154,21 @@ public class MainActivity extends ActionBarActivity {
         inflater.inflate(R.menu.main, menu);
         this.mMenu = menu;
         showRefreshMenu(AppUtil.getBooleanPreference(R.string.enable_refresh_btn));
+        mSearchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.search));
+        mSearchView.setOnQueryTextListener(mOnQueryTextListener);
+        mSearchView.setOnCloseListener(mOnCloseListener);
         return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (mDrawerLayout.isDrawerOpen(mDrawerList)){
+            mDrawerLayout.closeDrawer(GravityCompat.START);
+        } else if (mSearchView != null && !mSearchView.isIconified()) {
+            mSearchView.setIconified(true);
+        } else {
+            super.onBackPressed();
+        }
     }
 
     @Override
@@ -160,7 +179,7 @@ public class MainActivity extends ActionBarActivity {
             return true;
         case R.id.refresh:// reload
             for (AbstractTimelineFragment f : mAdapter.getFragments()) {
-                f.loadNewTweets();
+                f.refresh();
             }
             AppUtil.showToast("Refresh！");
             return true;
@@ -189,6 +208,18 @@ public class MainActivity extends ActionBarActivity {
         args.putLong(C.USER_ID, id);
         f.setArguments(args);
         return f;
+    }
+
+    private void searchStatus(String query) {
+        mSearchFragment = new SearchFragment();
+        Bundle b = new Bundle(1);
+        b.putSerializable("query", query);
+        mSearchFragment.setArguments(b);
+        FragmentManager m = getSupportFragmentManager();
+        FragmentTransaction ft = m.beginTransaction();
+        ft.replace(R.id.main_container, mSearchFragment, "search");
+        ft.addToBackStack("timelines");
+        ft.commit();
     }
 
     private void showRefreshMenu(boolean mode) {
@@ -336,4 +367,34 @@ public class MainActivity extends ActionBarActivity {
             mDrawerLayout.closeDrawer(GravityCompat.START);
         }
     }
+
+    private final SearchView.OnQueryTextListener mOnQueryTextListener = new SearchView.OnQueryTextListener() {
+        @Override
+        public boolean onQueryTextChange(String newText) {
+            return true;
+        }
+
+        @Override
+        public boolean onQueryTextSubmit(String query) {
+            AppUtil.hideView(mTabs, mPager, mTweetBtn);
+            searchStatus(query);
+            mSearchView.clearFocus();// clear focus and hide software keyboard
+            return true;
+        }
+
+    };
+    private final SearchView.OnCloseListener mOnCloseListener = new SearchView.OnCloseListener() {
+        @Override
+        public boolean onClose() {
+            if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
+                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                ft.remove(mSearchFragment);
+                ft.commit();
+                getSupportFragmentManager().popBackStack("timelines",
+                        FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                AppUtil.showView(mTabs, mPager, mTweetBtn);
+            }
+            return false;
+        }
+    };
 }

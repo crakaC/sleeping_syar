@@ -34,6 +34,7 @@ import com.crakac.ofuton.status.action.RetweetAction;
 import com.crakac.ofuton.status.action.TofuBusterAction;
 import com.crakac.ofuton.status.action.UserDetailAction;
 import com.crakac.ofuton.timeline.AbstractStatusFragment;
+import com.crakac.ofuton.util.AppUtil;
 import com.crakac.ofuton.util.TwitterUtils;
 
 import java.util.ArrayList;
@@ -130,7 +131,7 @@ public class StatusDialogFragment extends DialogFragment {
 		DisplayMetrics metrics = getResources().getDisplayMetrics();
 
 		// 縦幅はwrap contentで，横幅は92%で．
-		int dialogWidth = (int) (metrics.widthPixels * 0.92);
+		int dialogWidth = (int) Math.min((metrics.widthPixels * 0.92), AppUtil.dpToPx(320));
 		int dialogHeight = WindowManager.LayoutParams.WRAP_CONTENT;
 
 		lp.width = dialogWidth;

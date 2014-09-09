@@ -116,7 +116,10 @@ public class TweetActivity extends ActionBarActivity implements View.OnClickList
         if(Intent.ACTION_SEND.equals(i.getAction())){
             Bundle b = i.getExtras();
             if(b != null){
-                mInputText.setText(b.getString(Intent.EXTRA_TEXT));
+                String text = b.getString(Intent.EXTRA_TEXT);
+                if(text != null){
+                    mInputText.setText(text);
+                }
             }
         }
 
