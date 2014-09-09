@@ -23,6 +23,8 @@ import twitter4j.conf.ConfigurationBuilder;
 
 public class TwitterUtils {
 	//private static final String TAG = TwitterUtils.class.getSimpleName();
+    public static final int HTTP_CONNECTION_TIMEOUT_MS = 10000;
+    public static final int HTTP_READ_TIMEOUT_MS = 30000;
 	private static final String TOKEN = "token";
 	private static final String TOKEN_SECRET = "tokenSecret";
 	private static final String PREF_NAME = "accessToken";
@@ -35,6 +37,8 @@ public class TwitterUtils {
 		ConfigurationBuilder cb = new ConfigurationBuilder();
 		cb.setOAuthConsumerKey(mConsumerKey);
 		cb.setOAuthConsumerSecret(mConsumerSecret);
+        cb.setHttpConnectionTimeout(HTTP_CONNECTION_TIMEOUT_MS);
+        cb.setHttpReadTimeout(HTTP_READ_TIMEOUT_MS);
 		return cb.build();
 	}
 
@@ -49,7 +53,6 @@ public class TwitterUtils {
 	/**
 	 * Return Twitter instance without request token
 	 *
-	 * @param context
 	 * @return
 	 */
 	public static Twitter getTwitterInstanceWithoutToken() {
@@ -62,7 +65,6 @@ public class TwitterUtils {
 	/**
 	 * Twitter instance
 	 *
-	 * @param context
 	 * @return
 	 */
 	public static Twitter getTwitterInstance() {
@@ -90,7 +92,6 @@ public class TwitterUtils {
 	/**
 	 * Store access_token to preference.
 	 *
-	 * @param context
 	 * @param accessToken
 	 */
 	public static void storeAccessToken(AccessToken accessToken) {
@@ -105,7 +106,6 @@ public class TwitterUtils {
 	/**
 	 * load access token from preference
 	 *
-	 * @param context
 	 * @return
 	 */
 	public static AccessToken loadAccessToken() {
@@ -123,7 +123,6 @@ public class TwitterUtils {
 	/**
 	 * return current user's twitter id
 	 *
-	 * @param context
 	 * @return user id
 	 */
 	public static long getCurrentAccountId() {
