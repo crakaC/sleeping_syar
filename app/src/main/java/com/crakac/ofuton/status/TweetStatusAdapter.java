@@ -150,7 +150,11 @@ public class TweetStatusAdapter extends ArrayAdapter<Status> {
         holder.name.setText(status.getUser().getName());
         holder.screenName.setText("@" + status.getUser().getScreenName());
 
-        holder.text.setText(AppUtil.getColoredText(status.getText(), status));
+        String text = status.getText();
+        if(AppUtil.getBooleanPreference(R.string.show_image_in_timeline)){
+            text = AppUtil.trimUrl(status);
+        }
+        holder.text.setText(AppUtil.getColoredText(text, status));
         // アイコン
         setIcon(holder.icon, status);
         // 鍵アイコン

@@ -173,6 +173,14 @@ public final class AppUtil {
         return Html.fromHtml(text);
     }
 
+    public static String trimUrl(twitter4j.Status status){
+        String text = status.getText();
+        for (MediaEntity entity : status.getMediaEntities()) {
+            text = text.replace(entity.getURL(), "");
+        }
+        return text;
+    }
+
     public static String getString(int resId) {
         return sContext.getResources().getString(resId);
     }

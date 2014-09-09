@@ -219,7 +219,9 @@ public class StatusDialogFragment extends DialogFragment {
 
 		setUserEntities(mSelectedStatus);
 		setUrlEntities(mSelectedStatus);
-		setMediaEntities(mSelectedStatus);
+        if(!AppUtil.getBooleanPreference(R.string.show_image_in_timeline)){
+            setMediaEntities(mSelectedStatus);
+        }
 		setHashtagEntities(mSelectedStatus);
 
 		mActionAdapter.notifyDataSetChanged();
