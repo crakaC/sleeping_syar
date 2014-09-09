@@ -47,6 +47,13 @@ public class MultipleImagePreview extends FrameLayout {
         }
     }
 
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        int width = MeasureSpec.getSize(widthMeasureSpec);
+        int height = (int)(width * 9f / 16f + 0.5f);
+        super.onMeasure(widthMeasureSpec, MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY));
+    }
+
     public void setImageCounts(int counts){
         mImageCounts = counts;
     }

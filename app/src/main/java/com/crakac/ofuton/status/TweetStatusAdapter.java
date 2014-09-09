@@ -175,7 +175,7 @@ public class TweetStatusAdapter extends ArrayAdapter<Status> {
         imagePreview.initLayout();
         List<ImageView> imageViews = imagePreview.getImageViews();
 
-        for(int i = 0; i < medias.length; i++){
+        for (int i = 0; i < medias.length; i++) {
             final ImageView imageView = imageViews.get(i);
             imageView.setVisibility(View.VISIBLE);
             final MediaEntity media = medias[i];
@@ -332,7 +332,7 @@ public class TweetStatusAdapter extends ArrayAdapter<Status> {
         return sContext.getResources().getColor(id);
     }
 
-    public void shouldShowInlinePreview(boolean showPreview){
+    public void shouldShowInlinePreview(boolean showPreview) {
         shouldShowPreview = showPreview;
     }
 }
