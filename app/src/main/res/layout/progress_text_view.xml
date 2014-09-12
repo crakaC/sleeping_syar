@@ -17,6 +17,7 @@
         android:padding="8dp"
         android:textColor="@color/text"
         android:textSize="16sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:visibility="invisible"/>
 
 </RelativeLayout>
