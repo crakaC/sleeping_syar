@@ -35,7 +35,6 @@ import java.io.IOException;
 
 import twitter4j.Status;
 import twitter4j.StatusUpdate;
-import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.User;
 import twitter4j.UserMentionEntity;
@@ -106,28 +105,48 @@ public class TweetActivity extends ActionBarActivity implements View.OnClickList
 
             @Override
             public void afterTextChanged(Editable s) {
-                setRemainLength(s);
+                setRemainLength();
             }
         });
 
         setReplyData();
 
         Intent i = getIntent();
-        if(Intent.ACTION_SEND.equals(i.getAction())){
+        if (Intent.ACTION_SEND.equals(i.getAction())) {
             Bundle b = i.getExtras();
-            if(b != null){
+            if (b != null) {
                 String text = b.getString(Intent.EXTRA_TEXT);
-                if(text != null){
+                if (text != null) {
                     mInputText.setText(text);
                 }
+                Uri imageUri = (Uri) b.get(Intent.EXTRA_STREAM);
+                if (imageUri != null) {
+                    appendPicture(imageUri);
+                }
+            }
+        } else if (Intent.ACTION_VIEW.equals(i.getAction())) {
+            Uri data = i.getData();
+            if (data == null) {
+                AppUtil.showToast(R.string.something_wrong);
+            } else {
+                StringBuilder sb = new StringBuilder();
+                sb.append(data.getQueryParameter("text"));
+                sb.append(' ');
+                sb.append(data.getQueryParameter("original_referer"));
+                String via = data.getQueryParameter("via");
+                if (via != null) {
+                    sb.append(" via @").append(via);
+                }
+                mInputText.setText(sb.toString());
+                mInputText.setSelection(sb.length());
             }
         }
 
         // アクティビティ開始時の残り文字数をセットする．リプライ時やハッシュタグ時のときも140字にならないために．
-        setRemainLength(mInputText.getEditableText());
+        setRemainLength();
     }
 
-    private void setReplyData(){
+    private void setReplyData() {
         final Intent intent = getIntent();// reply時に必要なデータとかハッシュタグとかが入ってる
         final ActionBar actionbar = getSupportActionBar();
 
@@ -177,24 +196,24 @@ public class TweetActivity extends ActionBarActivity implements View.OnClickList
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
         switch (v.getId()) {
-        case R.id.appendedImage:
-            menu.setHeaderTitle("添付画像");
-            menu.add(0, PREVIEW_APPENDED_IMAGE, 0, getString(R.string.preview));
-            menu.add(0, REMOVE_APPENDED_IMAGE, 0, getString(R.string.delete));
+            case R.id.appendedImage:
+                menu.setHeaderTitle("添付画像");
+                menu.add(0, PREVIEW_APPENDED_IMAGE, 0, getString(R.string.preview));
+                menu.add(0, REMOVE_APPENDED_IMAGE, 0, getString(R.string.delete));
         }
     }
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-        case PREVIEW_APPENDED_IMAGE:
-            previewAppendedImage();
-            return true;
-        case REMOVE_APPENDED_IMAGE:
-            removeAppendedImage();
-            return true;
-        default:
-            return super.onContextItemSelected(item);
+            case PREVIEW_APPENDED_IMAGE:
+                previewAppendedImage();
+                return true;
+            case REMOVE_APPENDED_IMAGE:
+                removeAppendedImage();
+                return true;
+            default:
+                return super.onContextItemSelected(item);
         }
     }
 
@@ -207,6 +226,7 @@ public class TweetActivity extends ActionBarActivity implements View.OnClickList
     private void removeAppendedImage() {
         mAppendedImageView.setVisibility(View.GONE);
         clearTemporaryImageFile();
+        setRemainLength();
     }
 
     @Override
@@ -225,20 +245,31 @@ public class TweetActivity extends ActionBarActivity implements View.OnClickList
     @Override
     protected void onDestroy() {
         //ツイートボタン押下時にfinishする仕様だとツイート終了前にonDestroyが走るのでフラグで判定する
-        if(!mIsUpdatingStatus){
+        if (!mIsUpdatingStatus) {
             clearTemporaryImageFile();
         }
         super.onDestroy();
     }
 
+    public static final String MATCH_URL_HTTPS = "(https)(:\\/\\/[-_.!~*\\'()a-zA-Z0-9;\\/?:\\@&=+\\$,%#]+)";
+    public static final String MATCH_URL_HTTP = "(http)(:\\/\\/[-_.!~*\\'()a-zA-Z0-9;\\/?:\\@&=+\\$,%#]+)";
+    public static final String BLANKS_23 = "                       ";
+    public static final String BLANKS_22 = "                      ";
+    public static final int CARACTERS_RESERVED_PER_MEDIA = 23;
+
     /**
      * ツイートの残り文字数を求め，テキストビューに反映する
-     *
-     * @param s
-     *            編集中のEditText
+     * <p/>
+     * 編集中のEditText
      */
-    private void setRemainLength(Editable s) {
-        int remainLength = MAX_TWEET_LENGTH - s.length();
+    private void setRemainLength() {
+        String text = mInputText.getEditableText().toString();
+        text = text.replaceAll(MATCH_URL_HTTPS, BLANKS_23);
+        text = text.replaceAll(MATCH_URL_HTTP, BLANKS_22);
+        int remainLength = MAX_TWEET_LENGTH - text.length();
+        if (mAppendingFile != null) {
+            remainLength -= CARACTERS_RESERVED_PER_MEDIA;
+        }
         if (remainLength < 0 || (remainLength == MAX_TWEET_LENGTH && mAppendingFile == null)) {
             enableTweetButton(false);
         } else {
@@ -252,7 +283,6 @@ public class TweetActivity extends ActionBarActivity implements View.OnClickList
         super.onActivityResult(requestCode, resultCode, data);
         Log.d(TAG, "onActivityResult");
         if (resultCode == RESULT_OK) {
-            clearTemporaryImageFile();
             Uri uri = null;
             if (data != null) {
                 uri = data.getData();
@@ -260,22 +290,7 @@ public class TweetActivity extends ActionBarActivity implements View.OnClickList
             if (uri == null) {
                 uri = mImageUri;
             }
-            ContentResolver cr = getContentResolver();
-            String[] columns = { MediaStore.Images.Media.DATA };
-            Cursor c = cr.query(uri, columns, null, null, null);
-            c.moveToFirst();
-            File imageFile = new File(c.getString(0));
-            try {
-                mAppendingFile = BitmapUtil.resize(imageFile, MAX_APPEND_PICTURE_EDGE_LENGTH);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            if (mAppendingFile == null) {
-                AppUtil.showToast("ファイルの読み込みに失敗しました");
-            } else {
-                setAppendingImagePreview(mAppendingFile);
-                enableTweetButton(true);
-            }
+            appendPicture(uri);
         } else if (requestCode == REQUEST_CAMERA) {
             // ContentResolverでファイルを登録してあるので削除する。しないとゴミが出る。
             getContentResolver().delete(mImageUri, null, null);
@@ -284,6 +299,27 @@ public class TweetActivity extends ActionBarActivity implements View.OnClickList
 
     private void enableTweetButton(boolean enabled) {
         mTweetBtn.setEnabled(enabled);
+    }
+
+    private void appendPicture(Uri uri) {
+        clearTemporaryImageFile();
+        ContentResolver cr = getContentResolver();
+        String[] columns = {MediaStore.Images.Media.DATA};
+        Cursor c = cr.query(uri, columns, null, null, null);
+        c.moveToFirst();
+        File imageFile = new File(c.getString(0));
+        try {
+            mAppendingFile = BitmapUtil.resize(imageFile, MAX_APPEND_PICTURE_EDGE_LENGTH);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if (mAppendingFile == null) {
+            AppUtil.showToast("ファイルの読み込みに失敗しました");
+        } else {
+            setAppendingImagePreview(mAppendingFile);
+            enableTweetButton(true);
+            setRemainLength();
+        }
     }
 
     private void setAppendingImagePreview(File appendingFile) {
@@ -295,7 +331,7 @@ public class TweetActivity extends ActionBarActivity implements View.OnClickList
 
     private void setActionbarIcon(User user) {
         final ImageView icon = new ImageView(this);
-        NetUtil.fetchIconAsync(AppUtil.getIconURL(user), new NetworkImageListener(icon){
+        NetUtil.fetchIconAsync(AppUtil.getIconURL(user), new NetworkImageListener(icon) {
             @Override
             public void onBitmap(Bitmap bm) {
                 AppUtil.setActionBarIcon(getSupportActionBar(), icon);
