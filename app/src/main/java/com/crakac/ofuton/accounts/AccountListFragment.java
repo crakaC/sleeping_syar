@@ -90,7 +90,7 @@ public class AccountListFragment extends Fragment{
 			TextView screenName = (TextView) convertView.findViewById(R.id.accountName);
 
 			final Account user = (Account) getItem(position);
-			NetUtil.fetchIconAsync(icon, user.getIconUrl(), R.drawable.ic_launcher, R.drawable.ic_launcher);
+			NetUtil.fetchIconAsync(icon, user.getIconUrl());
 			icon.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {

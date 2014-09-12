@@ -9,7 +9,7 @@ import com.crakac.ofuton.AbstractPtrFragment;
 import com.crakac.ofuton.R;
 import com.crakac.ofuton.status.StatusClickListener;
 import com.crakac.ofuton.status.TweetStatusAdapter;
-import com.crakac.ofuton.util.AppUtil;
+import com.crakac.ofuton.util.PreferenceUtil;
 import com.crakac.ofuton.util.TwitterUtils;
 
 import twitter4j.Status;
@@ -43,7 +43,7 @@ public abstract class AbstractStatusFragment extends AbstractPtrFragment {
 	@Override
 	public void onStart() {
 	    super.onStart();
-	    mAdapter.shouldShowInlinePreview(AppUtil.getBooleanPreference(R.string.show_image_in_timeline, true));
+	    mAdapter.shouldShowInlinePreview(PreferenceUtil.getBoolean(R.string.show_image_in_timeline, true));
 	}
 
     public TweetStatusAdapter getAdapter() {

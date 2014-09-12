@@ -13,6 +13,7 @@ import com.android.volley.toolbox.ImageLoader.ImageContainer;
 import com.crakac.ofuton.R;
 import com.crakac.ofuton.util.AppUtil;
 import com.crakac.ofuton.util.NetUtil;
+import com.crakac.ofuton.util.PreferenceUtil;
 
 public class UserAdapter extends ArrayAdapter<twitter4j.User> {
     private static LayoutInflater mInflater;
@@ -50,8 +51,8 @@ public class UserAdapter extends ArrayAdapter<twitter4j.User> {
             holder = (ViewHolder) convertView.getTag();
         }
         //フォントサイズの調整
-        int fontSize = AppUtil.getFontSize();
-        float smallFontSize = AppUtil.getSubFontSize();
+        int fontSize = PreferenceUtil.getFontSize();
+        float smallFontSize = PreferenceUtil.getSubFontSize();
         holder.name.setTextSize(fontSize);
         holder.text.setTextSize(fontSize);
         holder.info.setTextSize(smallFontSize);

@@ -41,6 +41,7 @@ import com.crakac.ofuton.timeline.FavoriteTimelineFragment;
 import com.crakac.ofuton.timeline.HomeTimelineFragment;
 import com.crakac.ofuton.timeline.MentionsTimelineFragment;
 import com.crakac.ofuton.util.AppUtil;
+import com.crakac.ofuton.util.PreferenceUtil;
 import com.crakac.ofuton.util.TwitterList;
 import com.crakac.ofuton.util.TwitterUtils;
 import com.crakac.ofuton.widget.ColorOverlayOnTouch;
@@ -119,8 +120,8 @@ public class MainActivity extends ActionBarActivity {
             startActivity(new Intent(getIntent()));
             return;
         }
-        showRefreshMenu(AppUtil.getBooleanPreference(R.string.enable_refresh_btn));
-        if(AppUtil.getBooleanPreference(R.string.always_awake) && AppUtil.getBooleanPreference(R.string.streaming_mode)){
+        showRefreshMenu(PreferenceUtil.getBoolean(R.string.enable_refresh_btn));
+        if(PreferenceUtil.getBoolean(R.string.always_awake) && PreferenceUtil.getBoolean(R.string.streaming_mode)){
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         } else {
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
@@ -153,7 +154,7 @@ public class MainActivity extends ActionBarActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main, menu);
         this.mMenu = menu;
-        showRefreshMenu(AppUtil.getBooleanPreference(R.string.enable_refresh_btn));
+        showRefreshMenu(PreferenceUtil.getBoolean(R.string.enable_refresh_btn));
         mSearchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.search));
         mSearchView.setOnQueryTextListener(mOnQueryTextListener);
         mSearchView.setOnCloseListener(mOnCloseListener);

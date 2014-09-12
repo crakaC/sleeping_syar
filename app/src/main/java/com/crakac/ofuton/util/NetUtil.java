@@ -21,6 +21,7 @@ import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.ImageLoader.ImageContainer;
 import com.android.volley.toolbox.ImageLoader.ImageListener;
+import com.crakac.ofuton.R;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -92,7 +93,7 @@ public class NetUtil {
     }
 
     public static ImageContainer fetchIconAsync(ImageView targetView, String requestUrl) {
-        return fetchIconAsync(targetView, requestUrl, android.R.color.transparent, android.R.color.transparent);
+        return fetchIconAsync(targetView, requestUrl, R.drawable.ic_syar, R.drawable.ic_syar);
     }
 
     public static ImageContainer fetchIconAsync(ImageView targetView, String requestUrl, int defaultImageResId,
@@ -106,7 +107,7 @@ public class NetUtil {
     }
 
     public static ImageContainer fetchNetworkImageAsync(ImageView targetView, String requestUrl) {
-        return fetchNetworkImageAsync(targetView, requestUrl, android.R.color.transparent, android.R.color.transparent);
+        return fetchNetworkImageAsync(targetView, requestUrl, R.drawable.ic_syar, R.drawable.ic_syar);
     }
 
     public static ImageContainer fetchNetworkImageAsync(ImageView targetView, String requestUrl, int defaultImageResId,

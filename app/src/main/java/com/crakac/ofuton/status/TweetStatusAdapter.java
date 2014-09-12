@@ -22,6 +22,7 @@ import com.crakac.ofuton.user.UserDetailActivity;
 import com.crakac.ofuton.util.Account;
 import com.crakac.ofuton.util.AppUtil;
 import com.crakac.ofuton.util.NetUtil;
+import com.crakac.ofuton.util.PreferenceUtil;
 import com.crakac.ofuton.util.TwitterUtils;
 import com.crakac.ofuton.widget.ColorOverlayOnTouch;
 import com.crakac.ofuton.widget.MultipleImagePreview;
@@ -110,9 +111,9 @@ public class TweetStatusAdapter extends ArrayAdapter<Status> {
 
         setBasicInfo(holder, item);
         if (item.isRetweet()) {
-            setRetweetView(holder, convertView, item);
+            setRetweetView(holder, item);
         } else {
-            setNormalTweetView(holder, convertView, item);
+            setNormalTweetView(holder, item);
         }
         optimizeFontSize(holder);
         setColors(holder, item);
@@ -133,8 +134,8 @@ public class TweetStatusAdapter extends ArrayAdapter<Status> {
 
     private static void optimizeFontSize(ViewHolder holder) {
         // フォントサイズの調整
-        int fontSize = AppUtil.getFontSize();
-        float subFontSize = AppUtil.getSubFontSize();
+        int fontSize = PreferenceUtil.getFontSize();
+        float subFontSize = PreferenceUtil.getSubFontSize();
         holder.name.setTextSize(fontSize);
         holder.screenName.setTextSize(subFontSize);
         holder.text.setTextSize(fontSize);
@@ -151,7 +152,7 @@ public class TweetStatusAdapter extends ArrayAdapter<Status> {
         holder.screenName.setText("@" + status.getUser().getScreenName());
 
         String text = status.getText();
-        if(AppUtil.getBooleanPreference(R.string.show_image_in_timeline)){
+        if(PreferenceUtil.getBoolean(R.string.show_image_in_timeline)){
             text = AppUtil.trimUrl(status);
         }
         holder.text.setText(AppUtil.getColoredText(text, status));
@@ -195,9 +196,8 @@ public class TweetStatusAdapter extends ArrayAdapter<Status> {
             ImageContainer container = (ImageContainer) imageView.getTag();
             if (container != null) {
                 container.cancelRequest();
-                //imageView.setImageResource(android.R.color.transparent);
             }
-            container = NetUtil.fetchNetworkImageAsync(imageView, media.getMediaURL());
+            container = NetUtil.fetchNetworkImageAsync(imageView, media.getMediaURL(), R.color.transparent_black, R.color.transparent_black);
             imageView.setTag(container);
         }
     }
@@ -249,7 +249,7 @@ public class TweetStatusAdapter extends ArrayAdapter<Status> {
         holder.lockedIcon = (ImageView) convertView.findViewById(R.id.lockedIcon);
     }
 
-    private static void setRetweetView(ViewHolder holder, View convertView, Status origStatus) {
+    private static void setRetweetView(ViewHolder holder, Status origStatus) {
         Status status = origStatus.getRetweetedStatus();
 
         // 不要な部分を非表示に
@@ -265,19 +265,18 @@ public class TweetStatusAdapter extends ArrayAdapter<Status> {
 
     }
 
-    private static void setNormalTweetView(ViewHolder holder, View convertView, Status status) {
+    private static void setNormalTweetView(ViewHolder holder, Status status) {
         // 不要な部分を非表示に
         holder.smallIcon.setVisibility(View.GONE);
         holder.retweetedBy.setVisibility(View.GONE);
 
         // via表示
         String source = status.getSource();
-        if (source.indexOf(">") != -1) {
+        if (source.contains(">")) {
             source = source.substring(source.indexOf(">") + 1, source.indexOf("</"));
         }
         holder.via.setText("via " + source);
         holder.via.setVisibility(View.VISIBLE);
-
     }
 
     private static void setPostedAtTime(ViewHolder holder, Status status) {

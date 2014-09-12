@@ -5,6 +5,7 @@ import android.app.Application;
 
 import com.crakac.ofuton.util.AppUtil;
 import com.crakac.ofuton.util.NetUtil;
+import com.crakac.ofuton.util.PreferenceUtil;
 import com.crakac.ofuton.util.TwitterUtils;
 
 
@@ -16,5 +17,6 @@ public class OfutonApp extends Application {
 		TwitterUtils.init(this);
 		AppUtil.init(this);
 		NetUtil.init(this);
+        PreferenceUtil.init(this);
 	}
 }
