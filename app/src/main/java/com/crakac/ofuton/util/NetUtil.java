@@ -93,7 +93,7 @@ public class NetUtil {
     }
 
     public static ImageContainer fetchIconAsync(ImageView targetView, String requestUrl) {
-        return fetchIconAsync(targetView, requestUrl, R.drawable.ic_syar, R.drawable.ic_syar);
+        return fetchIconAsync(targetView, requestUrl, android.R.color.transparent, R.drawable.ic_syar);
     }
 
     public static ImageContainer fetchIconAsync(ImageView targetView, String requestUrl, int defaultImageResId,
@@ -107,7 +107,7 @@ public class NetUtil {
     }
 
     public static ImageContainer fetchNetworkImageAsync(ImageView targetView, String requestUrl) {
-        return fetchNetworkImageAsync(targetView, requestUrl, R.drawable.ic_syar, R.drawable.ic_syar);
+        return fetchNetworkImageAsync(targetView, requestUrl, android.R.color.transparent, android.R.color.transparent);
     }
 
     public static ImageContainer fetchNetworkImageAsync(ImageView targetView, String requestUrl, int defaultImageResId,
