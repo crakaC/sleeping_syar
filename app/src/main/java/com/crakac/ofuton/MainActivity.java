@@ -70,6 +70,8 @@ public class MainActivity extends ActionBarActivity {
             startActivity(intent);
             finish();
             return;
+        } else {
+            TwitterUtils.fetchApiConfigurationAsync(this);
         }
         setContentView(R.layout.activity_main);
         mTweetBtn = (ImageView) findViewById(R.id.tweetEveryWhere);// 右下のツイートボタン

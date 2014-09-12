@@ -28,6 +28,7 @@ import com.crakac.ofuton.util.NetUtil;
 import com.crakac.ofuton.util.NetworkImageListener;
 import com.crakac.ofuton.util.ParallelTask;
 import com.crakac.ofuton.util.TwitterUtils;
+import com.crakac.ofuton.util.Util;
 import com.crakac.ofuton.widget.ColorOverlayOnTouch;
 
 import java.io.File;
@@ -35,6 +36,7 @@ import java.io.IOException;
 
 import twitter4j.Status;
 import twitter4j.StatusUpdate;
+import twitter4j.TwitterAPIConfiguration;
 import twitter4j.TwitterException;
 import twitter4j.User;
 import twitter4j.UserMentionEntity;
@@ -66,10 +68,13 @@ public class TweetActivity extends ActionBarActivity implements View.OnClickList
     private String mHashTag;// ハッシュタグ
     private User mMentionUser;
     private boolean mIsUpdatingStatus = false;//ツイート中かどうか。onDestroyで添付ファイルを削除する際の判定に使う。
+    private TwitterAPIConfiguration mApiConfiguration;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        mApiConfiguration = TwitterUtils.getApiConfiguration();
 
         // レイアウトを読み込み
         setContentView(R.layout.activity_tweet);
@@ -141,7 +146,6 @@ public class TweetActivity extends ActionBarActivity implements View.OnClickList
                 mInputText.setSelection(sb.length());
             }
         }
-
         // アクティビティ開始時の残り文字数をセットする．リプライ時やハッシュタグ時のときも140字にならないために．
         setRemainLength();
     }
@@ -253,9 +257,6 @@ public class TweetActivity extends ActionBarActivity implements View.OnClickList
 
     public static final String MATCH_URL_HTTPS = "(https)(:\\/\\/[-_.!~*\\'()a-zA-Z0-9;\\/?:\\@&=+\\$,%#]+)";
     public static final String MATCH_URL_HTTP = "(http)(:\\/\\/[-_.!~*\\'()a-zA-Z0-9;\\/?:\\@&=+\\$,%#]+)";
-    public static final String BLANKS_23 = "                       ";
-    public static final String BLANKS_22 = "                      ";
-    public static final int CARACTERS_RESERVED_PER_MEDIA = 23;
 
     /**
      * ツイートの残り文字数を求め，テキストビューに反映する
@@ -264,11 +265,11 @@ public class TweetActivity extends ActionBarActivity implements View.OnClickList
      */
     private void setRemainLength() {
         String text = mInputText.getEditableText().toString();
-        text = text.replaceAll(MATCH_URL_HTTPS, BLANKS_23);
-        text = text.replaceAll(MATCH_URL_HTTP, BLANKS_22);
+        text = text.replaceAll(MATCH_URL_HTTPS, Util.blanks(mApiConfiguration.getShortURLLengthHttps()));
+        text = text.replaceAll(MATCH_URL_HTTP, Util.blanks(mApiConfiguration.getShortURLLength()));
         int remainLength = MAX_TWEET_LENGTH - text.length();
         if (mAppendingFile != null) {
-            remainLength -= CARACTERS_RESERVED_PER_MEDIA;
+            remainLength -= mApiConfiguration.getCharactersReservedPerMedia();
         }
         if (remainLength < 0 || (remainLength == MAX_TWEET_LENGTH && mAppendingFile == null)) {
             enableTweetButton(false);
