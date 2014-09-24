@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <CheckBoxPreference
         android:defaultValue="false"
@@ -8,11 +8,11 @@
         android:title="@string/streaming_mode" />
     <CheckBoxPreference
         android:defaultValue="false"
-        android:key="@string/always_awake"
         android:dependency="@string/streaming_mode"
-        android:summary="いつまでもTLを見続けたい人向け"
+        android:key="@string/always_awake"
         android:layout="?android:attr/preferenceLayoutChild"
-        android:title="@string/always_awake"/>
+        android:summary="いつまでもTLを見続けたい人向け"
+        android:title="@string/always_awake" />
     <CheckBoxPreference
         android:defaultValue="false"
         android:dependency="@string/streaming_mode"
@@ -83,11 +83,13 @@
 
     <PreferenceScreen
         android:key="@string/version_info"
-        android:title="@string/version_info" >
-    </PreferenceScreen>
+        android:title="@string/version_info" />
     <PreferenceScreen
         android:key="@string/goto_webpage"
-        android:title="@string/goto_webpage" >
-    </PreferenceScreen>
+        android:title="@string/goto_webpage" />
+
+    <PreferenceScreen
+        android:key="@string/license_info"
+        android:title="@string/license_info" />
 
 </PreferenceScreen>

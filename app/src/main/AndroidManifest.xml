@@ -167,6 +167,14 @@
                     android:scheme="crakac" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".LicenseActivity"
+            android:label="License"
+            android:parentActivityName=".SettingActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".SettingActivity" />
+        </activity>
     </application>
 
 </manifest>
