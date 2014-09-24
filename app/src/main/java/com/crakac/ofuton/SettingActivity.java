@@ -23,6 +23,7 @@ public class SettingActivity extends PreferenceActivity {
         setFontSize();
         setDateDisplayMode();
         setInlinePreview();
+        displayLicenseInfo();
         displayVersionInfo();
         authorsWebsite();
     }
@@ -98,6 +99,17 @@ public class SettingActivity extends PreferenceActivity {
             @Override
             public boolean onPreferenceClick(Preference preference) {
                 startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.homepage))));
+                return true;
+            }
+        });
+    }
+
+    private void displayLicenseInfo(){
+        PreferenceScreen license = (PreferenceScreen) findPreference(getString(R.string.license_info));
+        license.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                startActivity(new Intent(SettingActivity.this, LicenseActivity.class));
                 return true;
             }
         });
