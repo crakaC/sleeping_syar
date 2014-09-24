@@ -229,10 +229,12 @@ public class StatusDialogFragment extends DialogFragment {
 	}
 
 	private void setUserEntities(Status status){
-        List<String> users = new ArrayList<String>();// statusに関係あるscreenNameをかたっぱしから突っ込む(@抜き)
+        List<String> users = new ArrayList<>();// statusに関係あるscreenNameをかたっぱしから突っ込む(@抜き)
         UserMentionEntity[] userMentionEntities = status.getUserMentionEntities();
         for (UserMentionEntity user : userMentionEntities) {
-            users.add(user.getScreenName());
+            if(!users.contains(user.getScreenName())) {
+                users.add(user.getScreenName());
+            }
         }
 
         // リツイートの場合，オリジナルの方でないと省略される可能性があるのでretweetedStatusからも引っ張ってくる
