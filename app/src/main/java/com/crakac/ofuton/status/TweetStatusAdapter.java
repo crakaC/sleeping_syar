@@ -172,7 +172,7 @@ public class TweetStatusAdapter extends ArrayAdapter<Status> {
         setImagePreview(holder.imagePreview, status);
     }
 
-    private static void setImagePreview(final MultipleImagePreview imagePreview, Status status) {
+    private static void setImagePreview(final MultipleImagePreview imagePreview, final Status status) {
         imagePreview.setVisibility(View.GONE);
         if (!shouldShowPreview) return;
         if (status.getMediaEntities().length == 0)
@@ -194,7 +194,7 @@ public class TweetStatusAdapter extends ArrayAdapter<Status> {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(sContext, WebImagePreviewActivity.class);
-                    intent.setData(Uri.parse(media.getMediaURL()));
+                    intent.putExtra(C.STATUS, status);
                     sContext.startActivity(intent);
                     ((Activity) sContext).overridePendingTransition(android.R.anim.fade_in, 0);
                 }
