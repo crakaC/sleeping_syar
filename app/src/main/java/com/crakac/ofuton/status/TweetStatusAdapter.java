@@ -163,6 +163,12 @@ public class TweetStatusAdapter extends ArrayAdapter<Status> {
         // ☆
         setFavIcon(holder.favicon, status);
 
+        // inline preview
+        if (text.length() == 0) {
+            holder.text.setVisibility(View.GONE);
+        } else {
+            holder.text.setVisibility(View.VISIBLE);
+        }
         setImagePreview(holder.imagePreview, status);
     }
 

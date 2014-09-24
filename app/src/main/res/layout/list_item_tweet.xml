@@ -54,8 +54,6 @@
         android:layout_alignLeft="@+id/screenName"
         android:layout_alignParentRight="true"
         android:layout_below="@+id/screenName"
-        android:layout_marginBottom="4dp"
-        android:layout_marginTop="4dp"
         android:gravity="center_vertical"
         android:orientation="horizontal" >
 
@@ -67,6 +65,8 @@
             android:layout_centerVertical="true"
             android:layout_toLeftOf="@+id/favedStar"
             android:gravity="left|top"
+            android:layout_marginBottom="4dp"
+            android:layout_marginTop="4dp"
             android:text="@string/dummy"
             android:textColor="@color/text" />
 
