@@ -12,7 +12,7 @@ public class SimpleFragmentPagerAdapter extends FragmentPagerAdapter{
 
 	public SimpleFragmentPagerAdapter(FragmentManager fm) {
 		super(fm);
-		mFragments = new ArrayList<Fragment>();
+		mFragments = new ArrayList<>();
 	}
 	public Fragment getItem(int cnt) {
 		return mFragments.get(cnt);
