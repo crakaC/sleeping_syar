@@ -62,12 +62,6 @@ public class ImagePreviewFragment extends Fragment implements LoaderManager.Load
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setRetainInstance(true);
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_preview_image, null);
         mImageView = (ImageView) root.findViewById(R.id.iv_photo);
