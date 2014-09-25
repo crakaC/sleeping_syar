@@ -65,5 +65,8 @@ public class WebImagePreviewActivity extends AbstractPreviewActivity {
             }
         }
         pager.setAdapter(adapter);
+
+        int pagerMargin = getResources().getDimensionPixelSize(R.dimen.preview_pager_margin);
+        pager.setPageMargin(pagerMargin);
     }
 }
