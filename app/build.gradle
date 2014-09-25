@@ -37,5 +37,7 @@ dependencies {
     compile 'com.astuetz:pagerslidingtabstrip:1.0.1'
     compile 'com.github.chrisbanes.photoview:library:1.2.2'
     compile 'asia.ivity.android:drag-sort-listview:1.0'
+    compile 'org.twitter4j:twitter4j-core:4.0.2'
+    compile 'org.twitter4j:twitter4j-stream:4.0.2'
     compile project(':volley')
 }
