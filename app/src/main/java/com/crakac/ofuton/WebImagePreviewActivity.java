@@ -44,6 +44,7 @@ import twitter4j.MediaEntity;
 import twitter4j.Status;
 
 public class WebImagePreviewActivity extends AbstractPreviewActivity {
+    private ViewPager mPager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,7 +52,8 @@ public class WebImagePreviewActivity extends AbstractPreviewActivity {
         setContentView(R.layout.actvity_image_preview);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND, WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
 
-        ViewPager pager = (ViewPager) findViewById(R.id.pager);
+        mPager = (ViewPager) findViewById(R.id.pager);
+        mPager.setOffscreenPageLimit(1);
         SimpleFragmentPagerAdapter adapter = new SimpleFragmentPagerAdapter(getSupportFragmentManager());
 
         Status status = (Status) getIntent().getSerializableExtra(C.STATUS);
@@ -64,9 +66,21 @@ public class WebImagePreviewActivity extends AbstractPreviewActivity {
                 adapter.add(ImagePreviewFragment.createInstance(uri));
             }
         }
-        pager.setAdapter(adapter);
+        mPager.setAdapter(adapter);
 
         int pagerMargin = getResources().getDimensionPixelSize(R.dimen.preview_pager_margin);
-        pager.setPageMargin(pagerMargin);
+        mPager.setPageMargin(pagerMargin);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt("pos", mPager.getCurrentItem());
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        mPager.setCurrentItem(savedInstanceState.getInt("pos"));
     }
 }
