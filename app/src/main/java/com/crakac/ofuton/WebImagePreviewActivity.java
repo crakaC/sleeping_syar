@@ -2,21 +2,22 @@ package com.crakac.ofuton;
 
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.WindowManager;
 
 import com.crakac.ofuton.util.AppUtil;
+import com.crakac.ofuton.widget.HackyViewPager;
 import com.crakac.ofuton.widget.ImagePreviewFragment;
 import com.crakac.ofuton.widget.PreviewNavigation;
 
 import twitter4j.MediaEntity;
 import twitter4j.Status;
 
-public class WebImagePreviewActivity extends AbstractPreviewActivity implements PreviewNavigation.NavigationListener{
-    private ViewPager mPager;
+public class WebImagePreviewActivity extends AbstractPreviewActivity implements PreviewNavigation.NavigationListener {
+    private HackyViewPager mPager;
     private SimpleFragmentPagerAdapter<ImagePreviewFragment> mAdapter;
     private PreviewNavigation mNav;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -24,7 +25,7 @@ public class WebImagePreviewActivity extends AbstractPreviewActivity implements 
         setContentView(R.layout.actvity_image_preview);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND, WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
 
-        mPager = (ViewPager) findViewById(R.id.pager);
+        mPager = (HackyViewPager) findViewById(R.id.pager);
         mNav = (PreviewNavigation) findViewById(R.id.preview_nav);
         mNav.setNavigationListener(this);
 
@@ -34,7 +35,7 @@ public class WebImagePreviewActivity extends AbstractPreviewActivity implements 
         Uri imageUri = getIntent().getData();
         if (imageUri != null) {
             mAdapter.add(ImagePreviewFragment.createInstance(imageUri));
-        } else if (status != null){
+        } else if (status != null) {
             for (MediaEntity entity : status.getExtendedMediaEntities()) {
                 Uri uri = Uri.parse(entity.getMediaURL());
                 mAdapter.add(ImagePreviewFragment.createInstance(uri));
@@ -73,8 +74,8 @@ public class WebImagePreviewActivity extends AbstractPreviewActivity implements 
         getCurrentFragment().rotatePreview(90f);
     }
 
-    public void toggleNavigation(){
-        if(mNav.isShown()){
+    public void toggleNavigation() {
+        if (mNav.isShown()) {
             AppUtil.slideOut(mNav, 200);
             Log.d("nav", "slide out");
         } else {
@@ -82,8 +83,8 @@ public class WebImagePreviewActivity extends AbstractPreviewActivity implements 
             Log.d("nav", "slide in");
         }
     }
-    private ImagePreviewFragment getCurrentFragment(){
+
+    private ImagePreviewFragment getCurrentFragment() {
         return mAdapter.getItem(mPager.getCurrentItem());
     }
-
 }
