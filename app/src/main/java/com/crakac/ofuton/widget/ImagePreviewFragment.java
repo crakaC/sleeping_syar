@@ -46,7 +46,7 @@ import uk.co.senab.photoview.PhotoViewAttacher;
 /**
  * Created by kosukeshirakashi on 2014/09/24.
  */
-public class ImagePreviewFragment extends Fragment implements LoaderManager.LoaderCallbacks<String> {
+public class ImagePreviewFragment extends Fragment implements LoaderManager.LoaderCallbacks<String>, PreviewNavigation.NavigationListener{
 
     protected ImageView mImageView;
     private PhotoViewAttacher mAttacher;
@@ -64,6 +64,9 @@ public class ImagePreviewFragment extends Fragment implements LoaderManager.Load
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_preview_image, null);
+        PreviewNavigation nav = (PreviewNavigation)root.findViewById(R.id.preview_nav);
+        nav.setNavigationListener(this);
+
         mImageView = (ImageView) root.findViewById(R.id.iv_photo);
         mProgressBar = (ProgressBar) root.findViewById(R.id.progress);
         mAttacher = new PhotoViewAttacher(mImageView);
@@ -187,7 +190,22 @@ public class ImagePreviewFragment extends Fragment implements LoaderManager.Load
         }.execute();
     }
 
-    protected void updatePhotoViewAttacher() {
+    @Override
+    public void onDownloadClick() {
+        saveFile();
+    }
+
+    @Override
+    public void onRotateLeftClick() {
+        mAttacher.setRotationBy(-90f);
+    }
+
+    @Override
+    public void onRotateRightClick() {
+        mAttacher.setRotationBy(90f);
+    }
+
+    private void updatePhotoViewAttacher() {
         mAttacher.update();
     }
 

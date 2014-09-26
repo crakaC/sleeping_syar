@@ -6,5 +6,7 @@
     <dimen name="button_radius">3dp</dimen>
     <dimen name="item_margin">8dp</dimen>
     <dimen name="preview_pager_margin">12dp</dimen>
+    <dimen name="nav_button">48dp</dimen>
+    <dimen name="nav_button_margin">8dp</dimen>
 
 </resources>
