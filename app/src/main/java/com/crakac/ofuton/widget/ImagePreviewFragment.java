@@ -29,6 +29,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader.ImageContainer;
 import com.crakac.ofuton.C;
 import com.crakac.ofuton.R;
+import com.crakac.ofuton.WebImagePreviewActivity;
 import com.crakac.ofuton.util.AppUtil;
 import com.crakac.ofuton.util.NetUtil;
 import com.crakac.ofuton.util.NetworkImageListener;
@@ -46,7 +47,7 @@ import uk.co.senab.photoview.PhotoViewAttacher;
 /**
  * Created by kosukeshirakashi on 2014/09/24.
  */
-public class ImagePreviewFragment extends Fragment implements LoaderManager.LoaderCallbacks<String>, PreviewNavigation.NavigationListener{
+public class ImagePreviewFragment extends Fragment implements LoaderManager.LoaderCallbacks<String>{
 
     protected ImageView mImageView;
     private PhotoViewAttacher mAttacher;
@@ -64,9 +65,6 @@ public class ImagePreviewFragment extends Fragment implements LoaderManager.Load
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_preview_image, null);
-        PreviewNavigation nav = (PreviewNavigation)root.findViewById(R.id.preview_nav);
-        nav.setNavigationListener(this);
-
         mImageView = (ImageView) root.findViewById(R.id.iv_photo);
         mProgressBar = (ProgressBar) root.findViewById(R.id.progress);
         mAttacher = new PhotoViewAttacher(mImageView);
@@ -74,6 +72,12 @@ public class ImagePreviewFragment extends Fragment implements LoaderManager.Load
             @Override
             public void onViewTap(View view, float x, float y) {
                 finishActivity();
+            }
+        });
+        mAttacher.setOnPhotoTapListener(new PhotoViewAttacher.OnPhotoTapListener() {
+            @Override
+            public void onPhotoTap(View view, float v, float v2) {
+                ((WebImagePreviewActivity)getActivity()).toggleNavigation();
             }
         });
 
@@ -128,7 +132,7 @@ public class ImagePreviewFragment extends Fragment implements LoaderManager.Load
         mProgressBar.setVisibility(b ? View.VISIBLE : View.GONE);
     }
 
-    private void saveFile() {
+    public void saveImage() {
         new AsyncTask<Void, Void, Boolean>() {
             File distFile;
 
@@ -190,23 +194,12 @@ public class ImagePreviewFragment extends Fragment implements LoaderManager.Load
         }.execute();
     }
 
-    @Override
-    public void onDownloadClick() {
-        saveFile();
-    }
-
-    @Override
-    public void onRotateLeftClick() {
-        mAttacher.setRotationBy(-90f);
-    }
-
-    @Override
-    public void onRotateRightClick() {
-        mAttacher.setRotationBy(90f);
-    }
-
-    private void updatePhotoViewAttacher() {
+    public void updatePhotoViewAttacher() {
         mAttacher.update();
+    }
+
+    public void rotatePreview(float degrees){
+        mAttacher.setRotationBy(degrees);
     }
 
     public void finishActivity() {

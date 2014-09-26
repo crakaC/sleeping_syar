@@ -1,50 +1,22 @@
 package com.crakac.ofuton;
 
-import android.annotation.SuppressLint;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.Context;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.LoaderManager.LoaderCallbacks;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.content.AsyncTaskLoader;
-import android.support.v4.content.Loader;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
-import android.view.ContextMenu;
-import android.view.ContextMenu.ContextMenuInfo;
-import android.view.MenuItem;
-import android.view.View;
 import android.view.WindowManager;
-import android.webkit.MimeTypeMap;
 
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.ImageLoader.ImageContainer;
 import com.crakac.ofuton.util.AppUtil;
-import com.crakac.ofuton.util.NetUtil;
-import com.crakac.ofuton.util.NetworkImageListener;
-import com.crakac.ofuton.util.Util;
 import com.crakac.ofuton.widget.ImagePreviewFragment;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import com.crakac.ofuton.widget.PreviewNavigation;
 
 import twitter4j.MediaEntity;
 import twitter4j.Status;
 
-public class WebImagePreviewActivity extends AbstractPreviewActivity {
+public class WebImagePreviewActivity extends AbstractPreviewActivity implements PreviewNavigation.NavigationListener{
     private ViewPager mPager;
+    private SimpleFragmentPagerAdapter<ImagePreviewFragment> mAdapter;
+    private PreviewNavigation mNav;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,20 +25,22 @@ public class WebImagePreviewActivity extends AbstractPreviewActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND, WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
 
         mPager = (ViewPager) findViewById(R.id.pager);
-        mPager.setOffscreenPageLimit(1);
-        SimpleFragmentPagerAdapter adapter = new SimpleFragmentPagerAdapter(getSupportFragmentManager());
+        mNav = (PreviewNavigation) findViewById(R.id.preview_nav);
+        mNav.setNavigationListener(this);
+
+        mAdapter = new SimpleFragmentPagerAdapter<>(getSupportFragmentManager());
 
         Status status = (Status) getIntent().getSerializableExtra(C.STATUS);
         Uri imageUri = getIntent().getData();
         if (imageUri != null) {
-            adapter.add(ImagePreviewFragment.createInstance(imageUri));
+            mAdapter.add(ImagePreviewFragment.createInstance(imageUri));
         } else if (status != null){
             for (MediaEntity entity : status.getExtendedMediaEntities()) {
                 Uri uri = Uri.parse(entity.getMediaURL());
-                adapter.add(ImagePreviewFragment.createInstance(uri));
+                mAdapter.add(ImagePreviewFragment.createInstance(uri));
             }
         }
-        mPager.setAdapter(adapter);
+        mPager.setAdapter(mAdapter);
 
         int pagerMargin = getResources().getDimensionPixelSize(R.dimen.preview_pager_margin);
         mPager.setPageMargin(pagerMargin);
@@ -83,4 +57,33 @@ public class WebImagePreviewActivity extends AbstractPreviewActivity {
         super.onRestoreInstanceState(savedInstanceState);
         mPager.setCurrentItem(savedInstanceState.getInt("pos"));
     }
+
+    @Override
+    public void onDownloadClick() {
+        getCurrentFragment().saveImage();
+    }
+
+    @Override
+    public void onRotateLeftClick() {
+        getCurrentFragment().rotatePreview(-90f);
+    }
+
+    @Override
+    public void onRotateRightClick() {
+        getCurrentFragment().rotatePreview(90f);
+    }
+
+    public void toggleNavigation(){
+        if(mNav.isShown()){
+            AppUtil.slideOut(mNav, 200);
+            Log.d("nav", "slide out");
+        } else {
+            AppUtil.slideIn(mNav, 200);
+            Log.d("nav", "slide in");
+        }
+    }
+    private ImagePreviewFragment getCurrentFragment(){
+        return mAdapter.getItem(mPager.getCurrentItem());
+    }
+
 }
