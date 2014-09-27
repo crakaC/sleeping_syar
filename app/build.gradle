@@ -26,6 +26,7 @@ android {
     }
     packagingOptions {
         exclude 'META-INF/LICENSE.txt'
+        exclude 'AndroidManifest.xml'
     }
     productFlavors {
     }
@@ -45,5 +46,6 @@ dependencies {
     compile 'asia.ivity.android:drag-sort-listview:1.0'
     compile 'org.twitter4j:twitter4j-core:4.0.2'
     compile 'org.twitter4j:twitter4j-stream:4.0.2'
+    compile 'com.github.kedzie.supportanimator:support-v4-animator:19.0.0'
     compile project(':volley')
 }
