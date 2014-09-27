@@ -74,12 +74,6 @@ public class ImagePreviewFragment extends Fragment implements LoaderManager.Load
                 finishActivity();
             }
         });
-        mAttacher.setOnPhotoTapListener(new PhotoViewAttacher.OnPhotoTapListener() {
-            @Override
-            public void onPhotoTap(View view, float v, float v2) {
-                ((WebImagePreviewActivity)getActivity()).toggleNavigation();
-            }
-        });
 
         showProgress(true);
 
