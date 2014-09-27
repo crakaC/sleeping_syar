@@ -97,7 +97,9 @@ public class MainActivity extends ActionBarActivity {
         setPages(mAdapter);
         mPager.setAdapter(mAdapter);// ViewPagerにアダプタ(fragment)をセット．
         mPager.setCurrentItem(getFragmentPosition(HomeTimelineFragment.class));// HomeTimelineの位置に合わせる
-        mPager.setOffscreenPageLimit(mAdapter.getCount());// 保持するFragmentの数を指定．全フラグメントを保持するのでぬるぬる動くがメモリを食う
+        if(AppUtil.getMemoryMB() > 30){
+            mPager.setOffscreenPageLimit(mAdapter.getCount());// 保持するFragmentの数を指定．全フラグメントを保持するのでぬるぬる動くがメモリを食う
+        }
         mTabs.setViewPager(mPager);// PagerSlidingTabStripにViewPagerをセット．
     }
 

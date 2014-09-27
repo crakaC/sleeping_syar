@@ -8,11 +8,11 @@ import android.support.v7.app.ActionBar;
 import android.text.Html;
 import android.text.Spanned;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -206,6 +206,12 @@ public final class AppUtil {
         };
         task.executeParallel();
 
+    }
+
+    public static int getMemoryMB() {
+        int memory = (int) (Runtime.getRuntime().maxMemory() / (1024 * 1024));
+        Log.w("memory MB", memory + "");
+        return memory;
     }
 
     public static interface SyarListener {
