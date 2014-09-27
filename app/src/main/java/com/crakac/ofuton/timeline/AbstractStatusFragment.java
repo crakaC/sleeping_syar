@@ -54,7 +54,7 @@ public abstract class AbstractStatusFragment extends AbstractPtrFragment {
     private int mFirstVisibleOffset = -1;
 
     protected void savePosition() {
-        if (mAdapter.isEmpty()) return;
+        if (mAdapter.isEmpty() || mListView.getChildAt(0) == null) return;
         mFirstVisibleStatus = mAdapter.getItem(mListView.getFirstVisiblePosition());
         mFirstVisibleOffset = mListView.getChildAt(0).getTop();
     }
