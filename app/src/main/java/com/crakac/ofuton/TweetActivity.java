@@ -135,12 +135,29 @@ public class TweetActivity extends ActionBarActivity implements View.OnClickList
                 AppUtil.showToast(R.string.something_wrong);
             } else {
                 StringBuilder sb = new StringBuilder();
-                sb.append(data.getQueryParameter("text"));
-                sb.append(' ');
-                sb.append(data.getQueryParameter("original_referer"));
-                String via = data.getQueryParameter("via");
-                if (via != null) {
-                    sb.append(" via @").append(via);
+                boolean isFirstItem = true;
+                boolean setLink = false;
+                for (String q : new String[]{"text", "url", "original_referer", "via"}) {
+                    if (hasQuery(data, q)) {
+                        if (isFirstItem) {
+                            isFirstItem = false;
+                        } else {
+                            sb.append(' ');
+                        }
+
+                        if (q.equals("via")) {
+                            sb.append("via @");
+                        }
+
+                        if (q.equals("url")) {
+                            setLink = true;
+                        }
+
+                        if (q.equals("original_referer") && setLink) {
+                            continue;
+                        }
+                        sb.append(data.getQueryParameter(q));
+                    }
                 }
                 mInputText.setText(sb.toString());
                 mInputText.setSelection(sb.length());
@@ -148,6 +165,11 @@ public class TweetActivity extends ActionBarActivity implements View.OnClickList
         }
         // アクティビティ開始時の残り文字数をセットする．リプライ時やハッシュタグ時のときも140字にならないために．
         setRemainLength();
+    }
+
+    private boolean hasQuery(Uri data, String query) {
+        String text = data.getQueryParameter(query);
+        return text != null;
     }
 
     private void setReplyData() {
@@ -377,46 +399,46 @@ public class TweetActivity extends ActionBarActivity implements View.OnClickList
     public void onClick(View v) {
         Intent intent = null;
         switch (v.getId()) {
-        case R.id.appendPic:
-            // 画像添付ボタン押下時の動作
-            // 画像を選びに行く．画像を選んだらonActivityResultが呼ばれる
-            intent = new Intent(Intent.ACTION_PICK);
-            intent.setType("image/*");
-            startActivityForResult(intent, REQUEST_SELECT_PICTURE);
-            break;
-        case R.id.picFromCamera:
-            String filename = System.currentTimeMillis() + ".jpg";
-            // コンテントプロバイダを使用し,ギャラリーに画像を保存. 保存したUriを取得.
-            ContentValues values = new ContentValues();
-            values.put(MediaStore.Images.Media.TITLE, filename);
-            values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
-            mImageUri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+            case R.id.appendPic:
+                // 画像添付ボタン押下時の動作
+                // 画像を選びに行く．画像を選んだらonActivityResultが呼ばれる
+                intent = new Intent(Intent.ACTION_PICK);
+                intent.setType("image/*");
+                startActivityForResult(intent, REQUEST_SELECT_PICTURE);
+                break;
+            case R.id.picFromCamera:
+                String filename = System.currentTimeMillis() + ".jpg";
+                // コンテントプロバイダを使用し,ギャラリーに画像を保存. 保存したUriを取得.
+                ContentValues values = new ContentValues();
+                values.put(MediaStore.Images.Media.TITLE, filename);
+                values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
+                mImageUri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
 
-            intent = new Intent();
-            intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, mImageUri);
-            startActivityForResult(intent, REQUEST_CAMERA);
-            break;
+                intent = new Intent();
+                intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, mImageUri);
+                startActivityForResult(intent, REQUEST_CAMERA);
+                break;
 
-        case R.id.tweetInfoBtn:
-            TweetInfoDialogFragment dialog = new TweetInfoDialogFragment();
-            Bundle b = new Bundle();
-            Status targetStatus = (Status) getIntent().getSerializableExtra(C.STATUS);
-            b.putSerializable(C.STATUS, targetStatus);
-            dialog.setArguments(b);
-            dialog.show(getSupportFragmentManager(), "StatusInfo");
-            break;
+            case R.id.tweetInfoBtn:
+                TweetInfoDialogFragment dialog = new TweetInfoDialogFragment();
+                Bundle b = new Bundle();
+                Status targetStatus = (Status) getIntent().getSerializableExtra(C.STATUS);
+                b.putSerializable(C.STATUS, targetStatus);
+                dialog.setArguments(b);
+                dialog.show(getSupportFragmentManager(), "StatusInfo");
+                break;
 
-        case R.id.action_tweet:
-            updateStatus();
-            finish();
-            break;
+            case R.id.action_tweet:
+                updateStatus();
+                finish();
+                break;
 
-        case R.id.appendedImage:
-            registerForContextMenu(mAppendedImageView);
-            openContextMenu(v);
-            unregisterForContextMenu(mAppendedImageView);
-            break;
+            case R.id.appendedImage:
+                registerForContextMenu(mAppendedImageView);
+                openContextMenu(v);
+                unregisterForContextMenu(mAppendedImageView);
+                break;
         }
     }
 
