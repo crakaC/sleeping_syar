@@ -102,6 +102,15 @@
                     android:pathPrefix="/intent/tweet"
                     android:scheme="https" />
 
+                <data
+                    android:host="twitter.com"
+                    android:pathPrefix="/share"
+                    android:scheme="https" />
+                <data
+                    android:host="twitter.com"
+                    android:pathPrefix="/share"
+                    android:scheme="http" />
+
             </intent-filter>
         </activity>
         <activity
