@@ -6,6 +6,7 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.Uri;
 import android.net.http.AndroidHttpClient;
 import android.os.Build;
+import android.util.Log;
 import android.webkit.MimeTypeMap;
 import android.webkit.URLUtil;
 import android.widget.ImageView;
@@ -116,8 +117,29 @@ public class NetUtil {
         return fetchNetworkImageAsync(requestUrl, listener);
     }
 
-    public static ImageContainer fetchNetworkImageAsync(String requestUrl, ImageListener listener) {
+    public static ImageContainer fetchNetworkImageAsync(String requestUrl, ImageListener listener){
         return sImageLoader.get(requestUrl, listener);
+    }
+
+    /**
+     * you should call ImageContainer#cancelRequest before call this method.
+     * @param container
+     * @return
+     */
+    public static boolean releaseBitmap(ImageContainer container){
+        if(container.getBitmap() == null || container.getBitmap().isRecycled()) return false;
+        if(isCached(container.getRequestUrl())){
+            Log.d("BitmapCache", "Keep");
+            return false;
+        } else {
+            Log.d("BitmapCache", "Recycle");
+            container.getBitmap().recycle();
+            return true;
+        }
+    }
+
+    private static boolean isCached(String requestUrl) {
+        return sImageLoader.isCached(requestUrl, 0, 0) || sImageLoader.isCached(requestUrl, 0, 0);
     }
 
 

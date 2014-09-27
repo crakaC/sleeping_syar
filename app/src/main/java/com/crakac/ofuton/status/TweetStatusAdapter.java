@@ -3,7 +3,6 @@ package com.crakac.ofuton.status;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -175,8 +174,10 @@ public class TweetStatusAdapter extends ArrayAdapter<Status> {
     private static void setImagePreview(final MultipleImagePreview imagePreview, final Status status) {
         imagePreview.setVisibility(View.GONE);
         if (!shouldShowPreview) return;
-        if (status.getMediaEntities().length == 0)
+        if (status.getMediaEntities().length == 0){
+            imagePreview.release();
             return;
+        }
 
         imagePreview.setVisibility(View.VISIBLE);
 
@@ -250,7 +251,7 @@ public class TweetStatusAdapter extends ArrayAdapter<Status> {
         holder.icon.setOnTouchListener(new ColorOverlayOnTouch());
         holder.smallIcon = (ImageView) convertView.findViewById(R.id.smallIcon);
         holder.retweetedBy = (TextView) convertView.findViewById(R.id.retweeted_by);
-        holder.imagePreview = (MultipleImagePreview) convertView.findViewById(R.id.image);
+        holder.imagePreview = (MultipleImagePreview) convertView.findViewById(R.id.inline_preview);
         holder.favicon = (ImageView) convertView.findViewById(R.id.favedStar);
         holder.lockedIcon = (ImageView) convertView.findViewById(R.id.lockedIcon);
     }

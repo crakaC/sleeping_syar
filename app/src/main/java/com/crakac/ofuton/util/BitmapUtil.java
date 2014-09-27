@@ -69,6 +69,7 @@ public class BitmapUtil {
 
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         bm.compress(Bitmap.CompressFormat.JPEG, 80, bytes);
+        bm.recycle();
 
         File tempFile = File.createTempFile("DCIM", ".jpg");
 

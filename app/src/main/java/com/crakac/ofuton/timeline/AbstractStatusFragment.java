@@ -4,13 +4,20 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
+import com.android.volley.toolbox.ImageLoader;
 import com.crakac.ofuton.AbstractPtrFragment;
 import com.crakac.ofuton.R;
 import com.crakac.ofuton.status.StatusClickListener;
 import com.crakac.ofuton.status.TweetStatusAdapter;
+import com.crakac.ofuton.util.NetUtil;
 import com.crakac.ofuton.util.PreferenceUtil;
 import com.crakac.ofuton.util.TwitterUtils;
+import com.crakac.ofuton.widget.MultipleImagePreview;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import twitter4j.Status;
 import twitter4j.Twitter;
@@ -45,6 +52,24 @@ public abstract class AbstractStatusFragment extends AbstractPtrFragment {
 	    super.onStart();
 	    mAdapter.shouldShowInlinePreview(PreferenceUtil.getBoolean(R.string.show_image_in_timeline, true));
 	}
+
+    @Override
+    public void onDestroyView() {
+        releaseBitmap();
+        super.onDestroyView();
+    }
+
+    void releaseBitmap(){
+        for(int i = 0; i < mListView.getChildCount(); i++){
+            View child = mListView.getChildAt(i);
+            MultipleImagePreview inlinePreview = (MultipleImagePreview)child.findViewById(R.id.inline_preview);
+            if(inlinePreview != null) inlinePreview.release();
+            ImageView icon = (ImageView)child.findViewById(R.id.icon);
+            if(icon != null && icon.getTag() != null){
+                NetUtil.releaseBitmap((ImageLoader.ImageContainer)icon.getTag());
+            }
+        }
+    }
 
     public TweetStatusAdapter getAdapter() {
 		return mAdapter;

@@ -29,7 +29,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader.ImageContainer;
 import com.crakac.ofuton.C;
 import com.crakac.ofuton.R;
-import com.crakac.ofuton.WebImagePreviewActivity;
 import com.crakac.ofuton.util.AppUtil;
 import com.crakac.ofuton.util.NetUtil;
 import com.crakac.ofuton.util.NetworkImageListener;
@@ -88,8 +87,12 @@ public class ImagePreviewFragment extends Fragment implements LoaderManager.Load
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (mImageContainer != null)
+        mImageView.setImageBitmap(null);
+        if (mImageContainer != null) {
             mImageContainer.cancelRequest();
+            NetUtil.releaseBitmap(mImageContainer);
+            mImageContainer = null;
+        }
     }
 
     @Override
