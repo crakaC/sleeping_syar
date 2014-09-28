@@ -25,7 +25,6 @@ public class WebImagePreviewActivity extends AbstractPreviewActivity implements 
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.actvity_image_preview);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND, WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
 
         mPager = (HackyViewPager) findViewById(R.id.pager);
         mNav = (PreviewNavigation) findViewById(R.id.preview_nav);

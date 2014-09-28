@@ -16,12 +16,11 @@ abstract public class AbstractPreviewActivity extends FragmentActivity {
 
     protected ImageView mImageView;
     private PhotoViewAttacher mAttacher;
-    @SuppressWarnings("deprecation")
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_photo_preview);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND, WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
         mImageView = (ImageView) findViewById(R.id.iv_photo);
         mAttacher = new PhotoViewAttacher(mImageView);
         mAttacher.setOnViewTapListener(new OnViewTapListener() {
