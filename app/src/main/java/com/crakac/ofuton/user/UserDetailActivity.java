@@ -229,7 +229,7 @@ public class UserDetailActivity extends FinishableActionbarActivity {
                 Intent i = new Intent(UserDetailActivity.this, WebImagePreviewActivity.class);
                 i.setData(Uri.parse(user.getOriginalProfileImageURL()));
                 startActivity(i);
-                overridePendingTransition(android.R.anim.fade_in, 0);
+                overridePendingTransition(R.anim.fade_in, 0);
             }
         });
         if (user.isProtected()) {

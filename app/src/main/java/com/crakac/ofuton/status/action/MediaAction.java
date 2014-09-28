@@ -26,6 +26,6 @@ public class MediaAction extends ClickAction {
 		Intent intent = new Intent(mContext, WebImagePreviewActivity.class);
 		intent.setData(Uri.parse(mMediaUrl));
 		mContext.startActivity(intent);
-		((Activity)mContext).overridePendingTransition(android.R.anim.fade_in, 0);
+		((Activity)mContext).overridePendingTransition(R.anim.fade_in, 0);
 	}
 }
