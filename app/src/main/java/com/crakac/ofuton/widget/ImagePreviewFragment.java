@@ -203,7 +203,7 @@ public class ImagePreviewFragment extends Fragment implements LoaderManager.Load
     public void finishActivity() {
         Activity activity = getActivity();
         activity.finish();
-        activity.overridePendingTransition(0, android.R.anim.fade_out);
+        activity.overridePendingTransition(0, R.anim.fade_out);
     }
 
     private static class UrlExpander extends AsyncTaskLoader<String> {
