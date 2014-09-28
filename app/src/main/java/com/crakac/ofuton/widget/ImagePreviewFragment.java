@@ -88,7 +88,9 @@ public class ImagePreviewFragment extends Fragment implements LoaderManager.Load
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mImageView.setImageBitmap(null);
+        if(mImageView != null){
+            mImageView.setImageBitmap(null);
+        }
         if (mImageContainer != null) {
             mImageContainer.cancelRequest();
             mImageContainer = null;

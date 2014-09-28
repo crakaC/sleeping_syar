@@ -18,6 +18,7 @@ import twitter4j.Status;
 public class WebImagePreviewActivity extends AbstractPreviewActivity implements PreviewNavigation.NavigationListener {
     private HackyViewPager mPager;
     private SimpleFragmentPagerAdapter<ImagePreviewFragment> mAdapter;
+    private int mFirstPosition = 0;
     private PreviewNavigation mNav;
 
     @Override
@@ -48,6 +49,10 @@ public class WebImagePreviewActivity extends AbstractPreviewActivity implements 
 
         int pagerMargin = getResources().getDimensionPixelSize(R.dimen.preview_pager_margin);
         mPager.setPageMargin(pagerMargin);
+        if(savedInstanceState == null) {
+            mFirstPosition = getIntent().getIntExtra(C.POSITION, 0);
+            mPager.setCurrentItem(mFirstPosition);
+        }
     }
 
     @Override

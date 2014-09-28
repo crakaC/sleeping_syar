@@ -131,6 +131,7 @@ public class MultipleImagePreview extends FrameLayout {
 
         for (int i = 0; i < medias.length; i++) {
             final BitmapImageView imageView = imageViews.get(i);
+            final int position = i;
             imageView.setVisibility(View.VISIBLE);
             final MediaEntity media = medias[i];
             imageView.setOnClickListener(new OnClickListener() {
@@ -139,6 +140,7 @@ public class MultipleImagePreview extends FrameLayout {
                     Context context = getContext();
                     Intent intent = new Intent(context, WebImagePreviewActivity.class);
                     intent.putExtra(C.STATUS, status);
+                    intent.putExtra(C.POSITION, position);
                     context.startActivity(intent);
                     ((Activity)context).overridePendingTransition(R.anim.fade_in, 0);
                 }
