@@ -10,6 +10,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.text.Html;
@@ -24,6 +25,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.android.volley.toolbox.NetworkImageView;
 import com.astuetz.PagerSlidingTabStrip;
 import com.crakac.ofuton.C;
 import com.crakac.ofuton.FinishableActionbarActivity;
@@ -66,7 +68,6 @@ public class UserDetailActivity extends FinishableActionbarActivity {
     private ParallelTask<Long, Void, Relationship> mloadRelationTask;
     private ParallelTask<String, Void, User> mLoadUserTask;
     private static ProgressDialogFragment mDialog;
-    private FragmentManager mFragmentManager;
     private Twitter mTwitter;
     private User mTargetUser;
     private Relation mRelation;
@@ -76,7 +77,7 @@ public class UserDetailActivity extends FinishableActionbarActivity {
     private TwitterListAdapter mTwitterListAdapter;
     private ParallelTask<Void, Void, List<UserList>> mLoadListTask;
     private TextView mBioText, mLocationText, mUrlText, mRelationText;
-    private ImageView mIconImage;
+    private NetworkImageView mIconImage;
     private ImageView mlockMark;
     private ProgressBar mloadingSpinner;
     private int mShortAnimeDuration;
@@ -115,9 +116,9 @@ public class UserDetailActivity extends FinishableActionbarActivity {
         }
         mTwitter = TwitterUtils.getTwitterInstance();
 
-        mFragmentManager = getSupportFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();
 
-        mPagerAdapter = new UserFragmentPagerAdapter(mFragmentManager);
+        mPagerAdapter = new UserFragmentPagerAdapter(fm);
         mPager = (ViewPager) findViewById(R.id.pager);
         mTab = (PagerSlidingTabStrip) findViewById(R.id.tab);
 
@@ -179,7 +180,7 @@ public class UserDetailActivity extends FinishableActionbarActivity {
         mProfileContentView = (View) findViewById(R.id.profile_contents);
         mProfileContentView.setVisibility(View.INVISIBLE);
         mRelationText = (TextView) findViewById(R.id.relationText);
-        mIconImage = (ImageView) findViewById(R.id.icon);
+        mIconImage = (NetworkImageView) findViewById(R.id.icon);
         mIconImage.setOnTouchListener(new ColorOverlayOnTouch());
         mlockMark = (ImageView) findViewById(R.id.lockedIcon);
         mBioText = (TextView) findViewById(R.id.bioText);
@@ -222,14 +223,14 @@ public class UserDetailActivity extends FinishableActionbarActivity {
         // ユーザーの情報
         mActionbar.setTitle(user.getName());
         mActionbar.setSubtitle("@" + user.getScreenName());
-        NetUtil.fetchNetworkImageAsync(mIconImage, user.getOriginalProfileImageURLHttps());
+        mIconImage.setImageUrl(user.getOriginalProfileImageURLHttps(), NetUtil.PREVIEW_LOADER);
         mIconImage.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(UserDetailActivity.this, WebImagePreviewActivity.class);
                 i.setData(Uri.parse(user.getOriginalProfileImageURL()));
                 startActivity(i);
-                overridePendingTransition(android.R.anim.fade_in, 0);
+                overridePendingTransition(R.anim.fade_in, 0);
             }
         });
         if (user.isProtected()) {
@@ -260,24 +261,25 @@ public class UserDetailActivity extends FinishableActionbarActivity {
         int followers = user.getFollowersCount();
         int favs = user.getFavouritesCount();
         mPagerAdapter.setCounts(statusCounts, friends, followers, favs);
+        if(mPagerAdapter.getCount() == 0) {
+            // ユーザーのツイート
+            UserTimelineFragment utlFragment = new UserTimelineFragment();
+            mPagerAdapter.add(utlFragment);
 
-        // ユーザーのツイート
-        UserTimelineFragment utlFragment = new UserTimelineFragment();
-        mPagerAdapter.add(utlFragment);
+            // ユーザーがフォローしてる人たち
+            FriendsOfUserFragment friendsFragment = new FriendsOfUserFragment();
+            mPagerAdapter.add(friendsFragment);
 
-        // ユーザーがフォローしてる人たち
-        FriendsOfUserFragment friendsFragment = new FriendsOfUserFragment();
-        mPagerAdapter.add(friendsFragment);
+            // ユーザーのフォロワーたち
+            FollowersOfUserFragment followersFragment = new FollowersOfUserFragment();
+            mPagerAdapter.add(followersFragment);
 
-        // ユーザーのフォロワーたち
-        FollowersOfUserFragment followersFragment = new FollowersOfUserFragment();
-        mPagerAdapter.add(followersFragment);
+            // ユーザーのお気に入り
+            FavoriteTimelineFragment favFragment = new FavoriteTimelineFragment();
+            mPagerAdapter.add(favFragment);
 
-        // ユーザーのお気に入り
-        FavoriteTimelineFragment favFragment = new FavoriteTimelineFragment();
-        mPagerAdapter.add(favFragment);
-
-        setArguments(utlFragment, friendsFragment, followersFragment, favFragment);
+            setArguments(utlFragment, friendsFragment, followersFragment, favFragment);
+        }
 
         mPager.setAdapter(mPagerAdapter);
         mPager.setOffscreenPageLimit(mPagerAdapter.getCount());// 全Fragmentを保持（onCreateViewが複数呼ばれるのを抑止）

@@ -37,9 +37,9 @@ public class NetUtil {
 
     private static final String ICON_CACHE_DIR = "icon";
     private static final String IMAGE_CACHE_DIR = "image";
-    private static final int THREAD_POOL_SIZE_FOR_FETCHING_ICONS = 4;
-    private static final int THREAD_POOL_SIZE_FOR_FETCHING_IMAGE = 3;
-    private static ImageLoader sImageLoader, sIconLoader;
+    private static final int THREAD_POOL_SIZE_FOR_FETCHING_ICONS = 2;
+    private static final int THREAD_POOL_SIZE_FOR_FETCHING_IMAGE = 2;
+    public static ImageLoader PREVIEW_LOADER, ICON_LOADER;
     private static Cache sImageDiskCache;
 
     private static Cache createDiskCache(Context context, String cacheRoot, int cacheSize){
@@ -85,11 +85,11 @@ public class NetUtil {
     }
 
     public static void init(Context context) {
-        RequestQueue iconQueue = newRequestQueue(context, ICON_CACHE_DIR, 30*1024*1024, THREAD_POOL_SIZE_FOR_FETCHING_ICONS);
-        sIconLoader = new ImageLoader(iconQueue, new ImageLruCache());
-        sImageDiskCache = createDiskCache(context, IMAGE_CACHE_DIR, 20*1024*1024);
+        RequestQueue iconQueue = newRequestQueue(context, ICON_CACHE_DIR, 50*1024*1024, THREAD_POOL_SIZE_FOR_FETCHING_ICONS);
+        ICON_LOADER = new ImageLoader(iconQueue, new ImageLruCache());
+        sImageDiskCache = createDiskCache(context, IMAGE_CACHE_DIR, 50*1024*1024);
         RequestQueue imageQueue = newRequestQueue(context, sImageDiskCache, THREAD_POOL_SIZE_FOR_FETCHING_IMAGE);
-        sImageLoader = new ImageLoader(imageQueue, new ImageLruCache());
+        PREVIEW_LOADER = new ImageLoader(imageQueue, new ImageLruCache());
     }
 
     public static ImageContainer fetchIconAsync(ImageView targetView, String requestUrl) {
@@ -103,7 +103,7 @@ public class NetUtil {
     }
 
     public static ImageContainer fetchIconAsync(String requestUrl, ImageListener listener) {
-        return sIconLoader.get(requestUrl, listener);
+        return ICON_LOADER.get(requestUrl, listener);
     }
 
     public static ImageContainer fetchNetworkImageAsync(ImageView targetView, String requestUrl) {
@@ -116,8 +116,16 @@ public class NetUtil {
         return fetchNetworkImageAsync(requestUrl, listener);
     }
 
-    public static ImageContainer fetchNetworkImageAsync(String requestUrl, ImageListener listener) {
-        return sImageLoader.get(requestUrl, listener);
+    public static ImageContainer fetchNetworkImageAsync(String requestUrl, ImageListener listener){
+        return PREVIEW_LOADER.get(requestUrl, listener);
+    }
+
+    private static boolean isCached(String requestUrl) {
+        return PREVIEW_LOADER.isCached(requestUrl, 0, 0) || PREVIEW_LOADER.isCached(requestUrl, 0, 0);
+    }
+
+    public static boolean shouldRecycle(ImageContainer container){
+        return isCached(container.getRequestUrl()) && container.getBitmap() != null && !container.getBitmap().isRecycled();
     }
 
 

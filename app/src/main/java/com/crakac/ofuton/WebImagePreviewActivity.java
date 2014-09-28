@@ -1,207 +1,122 @@
 package com.crakac.ofuton;
 
-import android.annotation.SuppressLint;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.Context;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
-import android.support.v4.app.LoaderManager.LoaderCallbacks;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.content.AsyncTaskLoader;
-import android.support.v4.content.Loader;
-import android.util.Log;
-import android.view.ContextMenu;
-import android.view.ContextMenu.ContextMenuInfo;
-import android.view.MenuItem;
+import android.support.v4.view.ViewPager;
 import android.view.View;
-import android.webkit.MimeTypeMap;
+import android.view.WindowManager;
 
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.ImageLoader.ImageContainer;
 import com.crakac.ofuton.util.AppUtil;
-import com.crakac.ofuton.util.NetUtil;
-import com.crakac.ofuton.util.NetworkImageListener;
-import com.crakac.ofuton.util.Util;
+import com.crakac.ofuton.widget.HackyViewPager;
+import com.crakac.ofuton.widget.ImagePreviewFragment;
+import com.crakac.ofuton.widget.PreviewNavigation;
+import com.nineoldandroids.view.ViewHelper;
+import com.nineoldandroids.view.animation.AnimatorProxy;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import twitter4j.MediaEntity;
+import twitter4j.Status;
 
-public class WebImagePreviewActivity extends AbstractPreviewActivity implements LoaderCallbacks<String>{
-    private static final String TAG = WebImagePreviewActivity.class.getSimpleName();
-    private ImageContainer mImageContainer;
-
-    private static final int ACTION_SAVE = 0;
-    private static final int ACTION_CANCEL = 1;
+public class WebImagePreviewActivity extends AbstractPreviewActivity implements PreviewNavigation.NavigationListener {
+    private HackyViewPager mPager;
+    private SimpleFragmentPagerAdapter<ImagePreviewFragment> mAdapter;
+    private PreviewNavigation mNav;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        setContentView(R.layout.actvity_image_preview);
+
+        mPager = (HackyViewPager) findViewById(R.id.pager);
+        mNav = (PreviewNavigation) findViewById(R.id.preview_nav);
+        mNav.setNavigationListener(this);
+        mNav.setVisibility(View.VISIBLE);
+
+        mAdapter = new SimpleFragmentPagerAdapter<>(getSupportFragmentManager());
+
+        Status status = (Status) getIntent().getSerializableExtra(C.STATUS);
         Uri imageUri = getIntent().getData();
-        if(imageUri == null){
-            AppUtil.showToast(R.string.something_wrong);
-            Log.d(TAG, "imageUri is null");
-            finish();
-            return;
+        if (imageUri != null) {
+            mAdapter.add(ImagePreviewFragment.createInstance(imageUri));
+        } else if (status != null) {
+            for (MediaEntity entity : status.getExtendedMediaEntities()) {
+                Uri uri = Uri.parse(entity.getMediaURL());
+                mAdapter.add(ImagePreviewFragment.createInstance(uri));
+            }
         }
-        showProgress(true);
-        Bundle b = new Bundle(1);
-        b.putParcelable(C.URI, imageUri);
-        getSupportLoaderManager().initLoader(0, b, this).forceLoad();
-    }
+        mPager.setAdapter(mAdapter);
+        mPager.setPageTransformer(true, new DepthPageTransformer());
 
-    @Override
-    public Loader<String> onCreateLoader(int arg0, Bundle bundle) {
-        return new UrlExpander(this, (Uri)bundle.getParcelable(C.URI));
-    }
-
-    @Override
-    public void onLoadFinished(Loader<String> loader, String url) {
-        retrieveImage(url);
-    }
-
-    @Override
-    public void onLoaderReset(Loader<String> loader) {
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if(mImageContainer != null)
-            mImageContainer.cancelRequest();
-    }
-
-    @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
-        menu.add(0, ACTION_SAVE, 0, getString(R.string.save));
-        menu.add(0, ACTION_CANCEL, 0, getString(R.string.cancel));
-    }
-
-    @Override
-    public boolean onContextItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-        case ACTION_SAVE:
-            saveFile();
-            break;
+        int pagerMargin = getResources().getDimensionPixelSize(R.dimen.preview_pager_margin);
+        mPager.setPageMargin(pagerMargin);
+        if(savedInstanceState == null) {
+            int position = getIntent().getIntExtra(C.POSITION, 0);
+            mPager.setCurrentItem(position);
         }
-        return true;
+    }
+
+    public void toggleNavigation(){
+        if(mNav.isShown()){
+            AppUtil.slideOut(mNav, 200);
+        } else {
+            AppUtil.slideIn(mNav, 200);
+        }
     }
 
     @Override
-    protected boolean onLongClickPreview(View v) {
-        registerForContextMenu(v);
-        openContextMenu(v);
-        unregisterForContextMenu(v);
-        return super.onLongClickPreview(v);
+    public void onDownloadClick() {
+        getCurrentFragment().saveImage();
     }
 
-    private void showProgress(boolean b) {
-        findViewById(R.id.progressBar).setVisibility( b ? View.VISIBLE : View.GONE);
+    @Override
+    public void onRotateLeftClick() {
+        getCurrentFragment().rotatePreview(-90f);
     }
 
-    private void retrieveImage(String url){
-        mImageContainer = NetUtil.fetchNetworkImageAsync(url, new NetworkImageListener(mImageView){
-            @Override
-            protected void onBitmap(Bitmap bitmap) {
-                showProgress(false);
-                updatePhotoViewAttacher();
-            }
-            @Override
-            protected void onError(VolleyError error) {
-                showProgress(false);
-                AppUtil.showToast(R.string.impossible);
-                finish();
-            }
-        });
+    @Override
+    public void onRotateRightClick() {
+        getCurrentFragment().rotatePreview(90f);
     }
 
-    private void saveFile() {
-        new AsyncTask<Void, Void, Boolean>() {
-            File distFile;
-            @SuppressLint("SimpleDateFormat")
-            @Override
-            protected Boolean doInBackground(Void... params) {
-                File cacheFile = null;
-                String url = mImageContainer.getRequestUrl();
-                FileOutputStream os = null;
-                FileInputStream is = null;
-                try {
-                    String extension = MimeTypeMap.getFileExtensionFromUrl(url);
-                    String now = new SimpleDateFormat("yyyyMMddhhmmss.").format(new Date());
-                    distFile = new File(
-                            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), now
-                                    + extension);
-                    distFile.getParentFile().mkdirs();
-                    distFile.createNewFile();
-                    byte[] data = NetUtil.getCache(url);
-                    if(data == null){
-                        cacheFile = NetUtil.download(WebImagePreviewActivity.this, url);
-                        if(cacheFile == null) return false;
-                        is = new FileInputStream(cacheFile);
-                        data = new byte[(int) cacheFile.length()];
-                        is.read(data);
-                    }
-                    os = new FileOutputStream(distFile);
-                    os.write(data);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    return false;
-                } finally {
-                    Util.closeQuietly(os);
-                    Util.closeQuietly(is);
-                    if(cacheFile != null)
-                        cacheFile.delete();
-                }
-                return true;
-            }
-
-            @Override
-            protected void onPostExecute(Boolean result) {
-                if (result) {
-                    Intent i = new Intent(Intent.ACTION_VIEW);
-                    String mimetype = MimeTypeMap.getSingleton().getMimeTypeFromExtension(MimeTypeMap.getFileExtensionFromUrl(distFile.getAbsolutePath()));
-                    i.setDataAndType(Uri.fromFile(distFile), mimetype);
-                    PendingIntent pi = PendingIntent.getActivity(getApplicationContext(), 0, i, 0);
-                    NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext());
-                    builder.setLargeIcon(BitmapFactory.decodeResource(getResources(),R.drawable.ic_launcher)).setSmallIcon(R.drawable.ic_menu_media).setTicker(getString(R.string.save_complete))
-                            .setAutoCancel(true).setContentTitle(getString(R.string.save_complete))
-                            .setContentText(getString(R.string.app_name)).setContentIntent(pi);
-                    NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-                    nm.cancel(0);
-                    nm.notify(0, builder.build());
-                } else {
-                    AppUtil.showToast(R.string.impossible);
-                }
-            }
-        }.execute();
+    private ImagePreviewFragment getCurrentFragment() {
+        return mAdapter.getItem(mPager.getCurrentItem());
     }
 
-    private static class UrlExpander extends AsyncTaskLoader<String>{
-        Uri mUri;
-        public UrlExpander(Context context, Uri uri) {
-            super(context);
-            mUri = uri;
-        }
+    private static class DepthPageTransformer implements ViewPager.PageTransformer {
+        private static final float MIN_SCALE = 0.75f;
 
         @Override
-        public String loadInBackground() {
-            String expandUrl = "";
-            try {
-                expandUrl = NetUtil.expandUrlIfNecessary(mUri);
-            } catch (IOException e) {
-                e.printStackTrace();
+        public void transformPage(View view, float position) {
+            int pageWidth = view.getWidth();
+
+            if (position < -1) { // [-Infinity,-1)
+                // This page is way off-screen to the left.
+                ViewHelper.setAlpha(view, 0);
+
+            } else if (position <= 0) { // [-1,0]
+                // Use the default slide transition when moving to the left page
+                ViewHelper.setAlpha(view, 1);
+                ViewHelper.setTranslationX(view, 0);
+                ViewHelper.setScaleX(view, 1);
+                ViewHelper.setScaleY(view, 1);
+
+            } else if (position <= 1) { // (0,1]
+                // Fade the page out.
+                ViewHelper.setAlpha(view, 1 - position);
+
+                // Counteract the default slide transition
+                ViewHelper.setTranslationX(view, pageWidth * -position);
+
+                // Scale the page down (between MIN_SCALE and 1)
+                float scaleFactor = MIN_SCALE
+                        + (1 - MIN_SCALE) * (1 - Math.abs(position));
+                ViewHelper.setScaleX(view, scaleFactor);
+                ViewHelper.setScaleY(view, scaleFactor);
+
+            } else { // (1,+Infinity]
+                // This page is way off-screen to the right.
+                ViewHelper.setAlpha(view, 0);
             }
-            return expandUrl;
         }
     }
 }

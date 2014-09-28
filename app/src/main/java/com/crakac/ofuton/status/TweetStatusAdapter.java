@@ -3,7 +3,6 @@ package com.crakac.ofuton.status;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,10 +13,9 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.android.volley.toolbox.ImageLoader.ImageContainer;
+import com.android.volley.toolbox.NetworkImageView;
 import com.crakac.ofuton.C;
 import com.crakac.ofuton.R;
-import com.crakac.ofuton.WebImagePreviewActivity;
 import com.crakac.ofuton.user.UserDetailActivity;
 import com.crakac.ofuton.util.Account;
 import com.crakac.ofuton.util.AppUtil;
@@ -27,9 +25,6 @@ import com.crakac.ofuton.util.TwitterUtils;
 import com.crakac.ofuton.widget.ColorOverlayOnTouch;
 import com.crakac.ofuton.widget.MultipleImagePreview;
 
-import java.util.List;
-
-import twitter4j.MediaEntity;
 import twitter4j.Status;
 import twitter4j.UserMentionEntity;
 
@@ -48,8 +43,8 @@ public class TweetStatusAdapter extends ArrayAdapter<Status> {
         TextView postedAt;
         TextView via;
         TextView retweetedBy;
-        ImageView icon;
-        ImageView smallIcon;
+        NetworkImageView icon;
+        NetworkImageView smallIcon;
         ImageView favicon;
         MultipleImagePreview imagePreview;
         ImageView lockedIcon;
@@ -152,7 +147,7 @@ public class TweetStatusAdapter extends ArrayAdapter<Status> {
         holder.screenName.setText("@" + status.getUser().getScreenName());
 
         String text = status.getText();
-        if(PreferenceUtil.getBoolean(R.string.show_image_in_timeline)){
+        if(shouldShowPreview){
             text = AppUtil.trimUrl(status);
         }
         holder.text.setText(AppUtil.getColoredText(text, status));
@@ -172,40 +167,14 @@ public class TweetStatusAdapter extends ArrayAdapter<Status> {
         setImagePreview(holder.imagePreview, status);
     }
 
-    private static void setImagePreview(final MultipleImagePreview imagePreview, Status status) {
+    private static void setImagePreview(final MultipleImagePreview imagePreview, final Status status) {
         imagePreview.setVisibility(View.GONE);
-        if (!shouldShowPreview) return;
-        if (status.getMediaEntities().length == 0)
+        if (!shouldShowPreview || status.getExtendedMediaEntities().length == 0){
+            imagePreview.cleanUp();
             return;
-
-        imagePreview.setVisibility(View.VISIBLE);
-
-        final MediaEntity[] medias = status.getExtendedMediaEntities();
-
-        imagePreview.setImageCounts(medias.length);
-        imagePreview.initLayout();
-        List<ImageView> imageViews = imagePreview.getImageViews();
-
-        for (int i = 0; i < medias.length; i++) {
-            final ImageView imageView = imageViews.get(i);
-            imageView.setVisibility(View.VISIBLE);
-            final MediaEntity media = medias[i];
-            imageView.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(sContext, WebImagePreviewActivity.class);
-                    intent.setData(Uri.parse(media.getMediaURL()));
-                    sContext.startActivity(intent);
-                    ((Activity) sContext).overridePendingTransition(android.R.anim.fade_in, 0);
-                }
-            });
-            ImageContainer container = (ImageContainer) imageView.getTag();
-            if (container != null) {
-                container.cancelRequest();
-            }
-            container = NetUtil.fetchNetworkImageAsync(imageView, media.getMediaURL(), R.color.transparent_black, R.color.transparent_black);
-            imageView.setTag(container);
         }
+        imagePreview.setVisibility(View.VISIBLE);
+        imagePreview.setPreview(status);
     }
 
     /**
@@ -246,11 +215,11 @@ public class TweetStatusAdapter extends ArrayAdapter<Status> {
         holder.text = (TextView) convertView.findViewById(R.id.text);
         holder.postedAt = (TextView) convertView.findViewById(R.id.postedAt);
         holder.via = (TextView) convertView.findViewById(R.id.via);
-        holder.icon = (ImageView) convertView.findViewById(R.id.icon);
+        holder.icon = (NetworkImageView) convertView.findViewById(R.id.icon);
         holder.icon.setOnTouchListener(new ColorOverlayOnTouch());
-        holder.smallIcon = (ImageView) convertView.findViewById(R.id.smallIcon);
+        holder.smallIcon = (NetworkImageView) convertView.findViewById(R.id.smallIcon);
         holder.retweetedBy = (TextView) convertView.findViewById(R.id.retweeted_by);
-        holder.imagePreview = (MultipleImagePreview) convertView.findViewById(R.id.image);
+        holder.imagePreview = (MultipleImagePreview) convertView.findViewById(R.id.inline_preview);
         holder.favicon = (ImageView) convertView.findViewById(R.id.favedStar);
         holder.lockedIcon = (ImageView) convertView.findViewById(R.id.lockedIcon);
     }
@@ -310,14 +279,9 @@ public class TweetStatusAdapter extends ArrayAdapter<Status> {
         return isMention;
     }
 
-    private static void setIcon(ImageView icon, Status item) {
+    private static void setIcon(NetworkImageView icon, Status item) {
         String url = AppUtil.getIconURL(item.getUser());
-        ImageContainer container = (ImageContainer) icon.getTag();
-        if (container != null) {
-            container.cancelRequest();
-        }
-        container = NetUtil.fetchIconAsync(icon, url);
-        icon.setTag(container);
+        icon.setImageUrl(url, NetUtil.ICON_LOADER);
     }
 
     private static void setLockIcon(ImageView lockedIcon, Status item) {

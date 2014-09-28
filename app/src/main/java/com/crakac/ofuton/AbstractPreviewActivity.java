@@ -16,12 +16,11 @@ abstract public class AbstractPreviewActivity extends FragmentActivity {
 
     protected ImageView mImageView;
     private PhotoViewAttacher mAttacher;
-    @SuppressWarnings("deprecation")
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_photo_preview);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND, WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
         mImageView = (ImageView) findViewById(R.id.iv_photo);
         mAttacher = new PhotoViewAttacher(mImageView);
         mAttacher.setOnViewTapListener(new OnViewTapListener() {
@@ -57,6 +56,6 @@ abstract public class AbstractPreviewActivity extends FragmentActivity {
     @Override
     public void finish() {
         super.finish();
-        overridePendingTransition(0, android.R.anim.fade_out);
+        overridePendingTransition(0, R.anim.fade_out);
     }
 }

@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.android.volley.toolbox.NetworkImageView;
 import com.crakac.ofuton.C;
 import com.crakac.ofuton.MainActivity;
 import com.crakac.ofuton.R;
@@ -34,7 +35,7 @@ import java.util.List;
 public class AccountListFragment extends Fragment{
 
 	private static final String TAG = AccountListFragment.class.getSimpleName();
-	private AcountAdapter mAdapter;
+	private AccountAdapter mAdapter;
 	private DialogManager mDialogManager;
 
 	@Override
@@ -43,7 +44,7 @@ public class AccountListFragment extends Fragment{
 		Log.d(TAG, "onCreateView");
 		mDialogManager = new DialogManager(getActivity().getSupportFragmentManager());
 		View view = inflater.inflate(R.layout.base_listfragment, container, false);
-		mAdapter = new AcountAdapter(getActivity());
+		mAdapter = new AccountAdapter(getActivity());
 		ListView lv = (ListView)view.findViewById(R.id.listView);
 		View footerView = inflater.inflate(R.layout.account_footer, null);
 		footerView.setOnClickListener(new OnClickListener() {
@@ -70,13 +71,13 @@ public class AccountListFragment extends Fragment{
 		return view;
 	}
 
-	private class AcountAdapter extends BaseAdapter{
+	private class AccountAdapter extends BaseAdapter{
 		LayoutInflater mInflater;
 		ArrayList<Account> mAccountList;
-		public AcountAdapter(Context context) {
+		public AccountAdapter(Context context) {
 			mInflater = (LayoutInflater) context
 			.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
-			mAccountList = new ArrayList<Account>();
+			mAccountList = new ArrayList<>();
 		}
 
 		@Override
@@ -84,13 +85,13 @@ public class AccountListFragment extends Fragment{
 		    if(convertView == null){
 		        convertView = mInflater.inflate(R.layout.account_listitem, parent, false);
 		    }
-			ImageView icon = (ImageView) convertView.findViewById(R.id.accountIcon);
+			NetworkImageView icon = (NetworkImageView) convertView.findViewById(R.id.accountIcon);
 			ImageView check = (ImageView) convertView.findViewById(R.id.checkMark);
 			ImageView remove = (ImageView) convertView.findViewById(R.id.remove);
 			TextView screenName = (TextView) convertView.findViewById(R.id.accountName);
 
 			final Account user = (Account) getItem(position);
-			NetUtil.fetchIconAsync(icon, user.getIconUrl());
+			icon.setImageUrl(user.getIconUrl(), NetUtil.ICON_LOADER);
 			icon.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {

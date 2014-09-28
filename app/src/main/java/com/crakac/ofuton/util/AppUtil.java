@@ -8,7 +8,11 @@ import android.support.v7.app.ActionBar;
 import android.text.Html;
 import android.text.Spanned;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -204,6 +208,12 @@ public final class AppUtil {
 
     }
 
+    public static int getMemoryMB() {
+        int memory = (int) (Runtime.getRuntime().maxMemory() / (1024 * 1024));
+        Log.w("memory MB", memory + "");
+        return memory;
+    }
+
     public static interface SyarListener {
 
         void preSyar();
@@ -221,6 +231,60 @@ public final class AppUtil {
         for (View v : views) {
             v.setVisibility(View.INVISIBLE);
         }
+    }
+
+    public static void fadeout(final View v, long duration) {
+        AlphaAnimation a = new AlphaAnimation(1f, 0f);
+        a.setDuration(duration);
+        a.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                if (v.isShown()) v.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+            }
+        });
+        v.startAnimation(a);
+    }
+
+    public static void fadein(final View v, long duration) {
+        AlphaAnimation a = new AlphaAnimation(0f, 1f);
+        a.setDuration(duration);
+        v.setVisibility(View.VISIBLE);
+        v.startAnimation(a);
+    }
+
+    public static void slideOut(final View v, long duration) {
+        Animation a = AnimationUtils.loadAnimation(sContext, R.anim.slide_out);
+        a.setDuration(duration);
+        a.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                if (v.isShown()) v.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+            }
+        });
+        v.startAnimation(a);
+    }
+
+    public static void slideIn(final View v, long duration) {
+        Animation a = AnimationUtils.loadAnimation(sContext, R.anim.slide_in);
+        a.setDuration(duration);
+        v.setVisibility(View.VISIBLE);
+        v.startAnimation(a);
     }
 
     public static int dpToPx(int dp) {

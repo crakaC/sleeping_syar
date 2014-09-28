@@ -1,13 +1,12 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     style="@style/account">
 
-    <ImageView
+    <com.crakac.ofuton.widget.BitmapImageView
         android:id="@+id/accountIcon"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_alignParentLeft="true"
-        android:layout_centerVertical="true"
-        android:src="@drawable/ic_launcher" />
+        android:layout_centerVertical="true" />
 
     <TextView
         android:id="@+id/accountName"

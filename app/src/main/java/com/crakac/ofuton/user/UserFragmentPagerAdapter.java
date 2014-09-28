@@ -1,16 +1,25 @@
 package com.crakac.ofuton.user;
 
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 
 import com.crakac.ofuton.SimpleFragmentPagerAdapter;
+import com.crakac.ofuton.timeline.AbstractStatusFragment;
 import com.crakac.ofuton.util.AppUtil;
 
-public class UserFragmentPagerAdapter extends SimpleFragmentPagerAdapter {
+public class UserFragmentPagerAdapter extends SimpleFragmentPagerAdapter<Fragment> {
 
 	int tweets, friends, followers, favs;
 
 	public UserFragmentPagerAdapter(FragmentManager fm) {
 		super(fm);
+        if(fm.getFragments() != null){
+            for(Fragment f : fm.getFragments()){
+                if(f instanceof AbstractStatusFragment || f instanceof  AbstractUserFragment){
+                    add(f);
+                }
+            }
+        }
 	}
 
 	@Override
