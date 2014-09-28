@@ -30,6 +30,7 @@ import com.android.volley.toolbox.ImageLoader.ImageContainer;
 import com.crakac.ofuton.C;
 import com.crakac.ofuton.OfutonApp;
 import com.crakac.ofuton.R;
+import com.crakac.ofuton.WebImagePreviewActivity;
 import com.crakac.ofuton.util.AppUtil;
 import com.crakac.ofuton.util.NetUtil;
 import com.crakac.ofuton.util.NetworkImageListener;
@@ -68,6 +69,13 @@ public class ImagePreviewFragment extends Fragment implements LoaderManager.Load
         mImageView = (ImageView) root.findViewById(R.id.iv_photo);
         mProgressBar = (ProgressBar) root.findViewById(R.id.progress);
         mAttacher = new PhotoViewAttacher(mImageView);
+        mAttacher.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                ((WebImagePreviewActivity)getActivity()).toggleNavigation();
+                return true;
+            }
+        });
         mAttacher.setOnViewTapListener(new PhotoViewAttacher.OnViewTapListener() {
             @Override
             public void onViewTap(View view, float x, float y) {
