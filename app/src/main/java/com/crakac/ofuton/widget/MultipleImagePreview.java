@@ -1,9 +1,11 @@
 package com.crakac.ofuton.widget;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -56,18 +58,6 @@ public class MultipleImagePreview extends FrameLayout {
         super.onMeasure(widthMeasureSpec, MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY));
     }
 
-    public void release() {
-        for (ImageView view : mImageViews) {
-            ImageLoader.ImageContainer container = (ImageLoader.ImageContainer) view.getTag();
-            if (container != null){
-                container.cancelRequest();
-                NetUtil.releaseBitmap(container);
-            }
-            view.setImageBitmap(null);
-            view.setTag(null);
-        }
-    }
-
     public void setImageCounts(int counts) {
         mImageCounts = counts;
     }
@@ -91,6 +81,17 @@ public class MultipleImagePreview extends FrameLayout {
                 break;
         }
         return imageViews;
+    }
+
+    public void cleanUp(){
+        for(ImageView v : getImageViews()){
+            v.setImageBitmap(null);
+            ImageLoader.ImageContainer container = (ImageLoader.ImageContainer)v.getTag();
+            if(container != null) {
+                container.cancelRequest();
+                v.setTag(null);
+            }
+        }
     }
 
     public void initLayout() {

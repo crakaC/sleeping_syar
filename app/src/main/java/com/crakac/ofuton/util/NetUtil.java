@@ -3,6 +3,7 @@ package com.crakac.ofuton.util;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.net.http.AndroidHttpClient;
 import android.os.Build;
@@ -121,25 +122,12 @@ public class NetUtil {
         return sImageLoader.get(requestUrl, listener);
     }
 
-    /**
-     * you should call ImageContainer#cancelRequest before call this method.
-     * @param container
-     * @return
-     */
-    public static boolean releaseBitmap(ImageContainer container){
-        if(container.getBitmap() == null || container.getBitmap().isRecycled()) return false;
-        if(isCached(container.getRequestUrl())){
-            Log.d("BitmapCache", "Keep");
-            return false;
-        } else {
-            Log.d("BitmapCache", "Recycle");
-            container.getBitmap().recycle();
-            return true;
-        }
-    }
-
     private static boolean isCached(String requestUrl) {
         return sImageLoader.isCached(requestUrl, 0, 0) || sImageLoader.isCached(requestUrl, 0, 0);
+    }
+
+    public static boolean shouldRecycle(ImageContainer container){
+        return isCached(container.getRequestUrl()) && container.getBitmap() != null && !container.getBitmap().isRecycled();
     }
 
 

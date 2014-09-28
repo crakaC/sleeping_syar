@@ -28,6 +28,7 @@ import android.widget.ProgressBar;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader.ImageContainer;
 import com.crakac.ofuton.C;
+import com.crakac.ofuton.OfutonApp;
 import com.crakac.ofuton.R;
 import com.crakac.ofuton.util.AppUtil;
 import com.crakac.ofuton.util.NetUtil;
@@ -88,9 +89,9 @@ public class ImagePreviewFragment extends Fragment implements LoaderManager.Load
     public void onDestroy() {
         super.onDestroy();
         mImageView.setImageBitmap(null);
+        ((OfutonApp)getActivity().getApplication()).decrementCount(mImageView);
         if (mImageContainer != null) {
             mImageContainer.cancelRequest();
-            NetUtil.releaseBitmap(mImageContainer);
             mImageContainer = null;
         }
     }
@@ -115,6 +116,7 @@ public class ImagePreviewFragment extends Fragment implements LoaderManager.Load
             protected void onBitmap(Bitmap bitmap) {
                 showProgress(false);
                 updatePhotoViewAttacher();
+                ((OfutonApp) getActivity().getApplication()).incrementCount(mImageView);
             }
 
             @Override
@@ -123,6 +125,7 @@ public class ImagePreviewFragment extends Fragment implements LoaderManager.Load
                 AppUtil.showToast(R.string.impossible);
             }
         });
+        mImageView.setTag(mImageContainer);
     }
 
     private void showProgress(boolean b) {

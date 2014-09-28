@@ -174,8 +174,8 @@ public class TweetStatusAdapter extends ArrayAdapter<Status> {
     private static void setImagePreview(final MultipleImagePreview imagePreview, final Status status) {
         imagePreview.setVisibility(View.GONE);
         if (!shouldShowPreview) return;
+
         if (status.getMediaEntities().length == 0){
-            imagePreview.release();
             return;
         }
 
@@ -200,8 +200,8 @@ public class TweetStatusAdapter extends ArrayAdapter<Status> {
                     ((Activity) sContext).overridePendingTransition(android.R.anim.fade_in, 0);
                 }
             });
-            ImageContainer container = (ImageContainer) imageView.getTag();
-            if (container != null) {
+            ImageContainer container = (ImageContainer)imageView.getTag();
+            if(container != null){
                 container.cancelRequest();
             }
             container = NetUtil.fetchNetworkImageAsync(imageView, media.getMediaURL(), R.color.transparent_black, R.color.transparent_black);
