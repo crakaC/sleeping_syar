@@ -16,13 +16,8 @@
 #   public *;
 #}
 
-
--libraryjars libs/twitter4j-core-4.0.2.jar
--libraryjars libs/twitter4j-stream-4.0.2.jar
-
 -dontwarn twitter4j.**
 -keep class twitter4j.** { *; }
-
 
 -keepattributes SourceFile,LineNumberTable
 
