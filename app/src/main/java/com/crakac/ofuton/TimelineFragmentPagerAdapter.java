@@ -23,6 +23,19 @@ public class TimelineFragmentPagerAdapter extends FragmentPagerAdapter {
 	public TimelineFragmentPagerAdapter(FragmentManager fm) {
 		super(fm);
 		mFragments = new ArrayList<AbstractTimelineFragment>();
+		if(fm.getFragments() != null){
+			Stack<AbstractTimelineFragment> stack = new Stack<AbstractTimelineFragment>();
+			for( Fragment f : fm.getFragments() ){
+				if( f instanceof FavoriteTimelineFragment || f instanceof MentionsTimelineFragment || f instanceof HomeTimelineFragment){
+					stack.push((AbstractTimelineFragment) f);
+				} else if ( f instanceof AbstractTimelineFragment){
+					if(stack.size() == 3){
+						for(int i = 0; i < 3; i++) add(stack.pop());
+					}
+					add((AbstractTimelineFragment)f);
+				}
+			}
+		}
 	}
 
 	@Override
