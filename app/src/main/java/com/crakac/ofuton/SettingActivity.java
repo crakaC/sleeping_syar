@@ -104,6 +104,7 @@ public class SettingActivity extends PreferenceActivity {
         });
     }
 
+    @SuppressWarnings("deprecation")
     private void displayLicenseInfo(){
         PreferenceScreen license = (PreferenceScreen) findPreference(getString(R.string.license_info));
         license.setOnPreferenceClickListener(new OnPreferenceClickListener() {
