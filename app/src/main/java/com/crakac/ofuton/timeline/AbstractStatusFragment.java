@@ -41,14 +41,6 @@ public abstract class AbstractStatusFragment extends AbstractPtrFragment {
 		View v = super.onCreateView(inflater, container, savedInstanceState);
 		mListView.setAdapter(mAdapter);
         mListView.setOnItemClickListener(new StatusClickListener(this));
-        mListView.setRecyclerListener(new AbsListView.RecyclerListener() {
-            @Override
-            public void onMovedToScrapHeap(View view) {
-                ((ImageView) view.findViewById(R.id.icon)).setImageBitmap(null);
-                ((ImageView) view.findViewById(R.id.smallIcon)).setImageBitmap(null);
-                ((MultipleImagePreview)view.findViewById(R.id.inline_preview)).cleanUp();
-            }
-        });
 		return v;
 	}
 

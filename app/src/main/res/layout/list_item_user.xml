@@ -4,7 +4,7 @@
     android:background="@color/timeline_background"
     android:padding="6dp" >
 
-    <ImageView
+    <com.crakac.ofuton.widget.BitmapImageView
         android:id="@+id/icon"
         android:layout_width="48dp"
         android:layout_height="48dp"

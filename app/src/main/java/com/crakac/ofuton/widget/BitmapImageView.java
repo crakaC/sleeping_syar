@@ -1,17 +1,15 @@
 package com.crakac.ofuton.widget;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.util.AttributeSet;
-import android.widget.ImageView;
+import android.util.Log;
 
-import com.crakac.ofuton.OfutonApp;
+import com.android.volley.toolbox.NetworkImageView;
 
 /**
  * Created by kosukeshirakashi on 2014/09/28.
  */
-public class BitmapImageView extends ImageView {
+public class BitmapImageView extends NetworkImageView {
     public BitmapImageView(Context context) {
         super(context);
     }
@@ -20,14 +18,15 @@ public class BitmapImageView extends ImageView {
         super(context, attrs);
     }
 
-    @Override
-    public void setImageBitmap(Bitmap bm) {
-        super.setImageBitmap(bm);
-        OfutonApp app = (OfutonApp) getContext().getApplicationContext();
-        if (bm != null) {
-            app.incrementCount(this);
-        } else {
-            app.decrementCount(this);
+    public BitmapImageView(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
+    }
+
+    public void cleanUp(){
+        if(mImageContainer != null){
+            mImageContainer.cancelRequest();
+            mImageContainer = null;
         }
+        setImageBitmap(null);
     }
 }

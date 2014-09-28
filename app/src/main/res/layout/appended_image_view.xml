@@ -16,7 +16,6 @@
             android:layout_height="match_parent"
             android:layout_weight="0.5"
             android:scaleType="centerCrop"
-            android:src="@drawable/ic_syar"
             android:visibility="visible" />
 
         <View
@@ -31,7 +30,6 @@
             android:layout_height="match_parent"
             android:layout_weight="0.5"
             android:scaleType="centerCrop"
-            android:src="@drawable/ic_syar"
             android:visibility="visible" />
 
     </LinearLayout>
@@ -55,7 +53,6 @@
             android:layout_height="match_parent"
             android:layout_weight="0.5"
             android:scaleType="centerCrop"
-            android:src="@drawable/ic_syar"
             android:visibility="visible" />
 
         <View
@@ -70,7 +67,6 @@
             android:layout_height="match_parent"
             android:layout_weight="0.5"
             android:scaleType="centerCrop"
-            android:src="@drawable/ic_syar"
             android:visibility="visible" />
 
     </LinearLayout>

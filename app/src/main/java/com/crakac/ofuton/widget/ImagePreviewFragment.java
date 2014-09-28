@@ -89,7 +89,6 @@ public class ImagePreviewFragment extends Fragment implements LoaderManager.Load
     public void onDestroy() {
         super.onDestroy();
         mImageView.setImageBitmap(null);
-        ((OfutonApp)getActivity().getApplication()).decrementCount(mImageView);
         if (mImageContainer != null) {
             mImageContainer.cancelRequest();
             mImageContainer = null;
@@ -116,7 +115,6 @@ public class ImagePreviewFragment extends Fragment implements LoaderManager.Load
             protected void onBitmap(Bitmap bitmap) {
                 showProgress(false);
                 updatePhotoViewAttacher();
-                ((OfutonApp) getActivity().getApplication()).incrementCount(mImageView);
             }
 
             @Override

@@ -24,6 +24,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.android.volley.toolbox.NetworkImageView;
 import com.astuetz.PagerSlidingTabStrip;
 import com.crakac.ofuton.C;
 import com.crakac.ofuton.FinishableActionbarActivity;
@@ -76,7 +77,7 @@ public class UserDetailActivity extends FinishableActionbarActivity {
     private TwitterListAdapter mTwitterListAdapter;
     private ParallelTask<Void, Void, List<UserList>> mLoadListTask;
     private TextView mBioText, mLocationText, mUrlText, mRelationText;
-    private ImageView mIconImage;
+    private NetworkImageView mIconImage;
     private ImageView mlockMark;
     private ProgressBar mloadingSpinner;
     private int mShortAnimeDuration;
@@ -179,7 +180,7 @@ public class UserDetailActivity extends FinishableActionbarActivity {
         mProfileContentView = (View) findViewById(R.id.profile_contents);
         mProfileContentView.setVisibility(View.INVISIBLE);
         mRelationText = (TextView) findViewById(R.id.relationText);
-        mIconImage = (ImageView) findViewById(R.id.icon);
+        mIconImage = (NetworkImageView) findViewById(R.id.icon);
         mIconImage.setOnTouchListener(new ColorOverlayOnTouch());
         mlockMark = (ImageView) findViewById(R.id.lockedIcon);
         mBioText = (TextView) findViewById(R.id.bioText);
@@ -222,7 +223,7 @@ public class UserDetailActivity extends FinishableActionbarActivity {
         // ユーザーの情報
         mActionbar.setTitle(user.getName());
         mActionbar.setSubtitle("@" + user.getScreenName());
-        NetUtil.fetchNetworkImageAsync(mIconImage, user.getOriginalProfileImageURLHttps());
+        mIconImage.setImageUrl(user.getOriginalProfileImageURLHttps(), NetUtil.PREVIEW_LOADER);
         mIconImage.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {

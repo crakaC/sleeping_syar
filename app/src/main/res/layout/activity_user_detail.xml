@@ -29,7 +29,7 @@
                     android:layout_centerHorizontal="true"
                     android:padding="4dp" >
 
-                    <ImageView
+                    <com.crakac.ofuton.widget.BitmapImageView
                         android:id="@+id/icon"
                         android:layout_width="108dp"
                         android:layout_height="108dp"

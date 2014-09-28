@@ -1,34 +1,37 @@
 package com.crakac.ofuton.widget;
 
+import android.app.Activity;
 import android.content.Context;
-import android.graphics.Bitmap;
+import android.content.Intent;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.AbsListView;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-import com.android.volley.toolbox.ImageLoader;
+import com.android.volley.toolbox.NetworkImageView;
+import com.crakac.ofuton.C;
 import com.crakac.ofuton.R;
+import com.crakac.ofuton.WebImagePreviewActivity;
 import com.crakac.ofuton.util.NetUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import twitter4j.MediaEntity;
+import twitter4j.Status;
+
 /**
  * Created by kosukeshirakashi on 2014/09/09.
  */
 public class MultipleImagePreview extends FrameLayout {
 
-    private ImageView mTL, mTR, mBL, mBR;
+    private BitmapImageView mTL, mTR, mBL, mBR;
     private LinearLayout mLeft, mRight;
     private View separatorLeft, separatorRight, separatorCenter;
-    private List<ImageView> mImageViews;
+    private List<BitmapImageView> mImageViews;
     private List<View> mSeparators;
-    private int mImageCounts;
 
     public MultipleImagePreview(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -41,10 +44,10 @@ public class MultipleImagePreview extends FrameLayout {
         separatorRight = v.findViewById(R.id.separatorRight);
         separatorCenter = v.findViewById(R.id.separatorCenter);
         mSeparators = Arrays.asList(separatorLeft, separatorRight, separatorCenter);
-        mTL = (ImageView) v.findViewById(R.id.imageTL);
-        mTR = (ImageView) v.findViewById(R.id.imageTR);
-        mBL = (ImageView) v.findViewById(R.id.imageBL);
-        mBR = (ImageView) v.findViewById(R.id.imageBR);
+        mTL = (BitmapImageView) v.findViewById(R.id.imageTL);
+        mTR = (BitmapImageView) v.findViewById(R.id.imageTR);
+        mBL = (BitmapImageView) v.findViewById(R.id.imageBL);
+        mBR = (BitmapImageView) v.findViewById(R.id.imageBR);
         mImageViews = Arrays.asList(mTL, mTR, mBL, mBR);
         for (View iv : mImageViews) {
             iv.setOnTouchListener(new ColorOverlayOnTouch());
@@ -58,13 +61,9 @@ public class MultipleImagePreview extends FrameLayout {
         super.onMeasure(widthMeasureSpec, MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY));
     }
 
-    public void setImageCounts(int counts) {
-        mImageCounts = counts;
-    }
-
-    public List<ImageView> getImageViews() {
-        List<ImageView> imageViews = new ArrayList<>();
-        switch (mImageCounts) {
+    public List<BitmapImageView> getRequiredImageViews(int mediaNum) {
+        List<BitmapImageView> imageViews = new ArrayList<>();
+        switch (mediaNum) {
             case 0:
                 break;
             case 1:
@@ -83,20 +82,9 @@ public class MultipleImagePreview extends FrameLayout {
         return imageViews;
     }
 
-    public void cleanUp(){
-        for(ImageView v : getImageViews()){
-            v.setImageBitmap(null);
-            ImageLoader.ImageContainer container = (ImageLoader.ImageContainer)v.getTag();
-            if(container != null) {
-                container.cancelRequest();
-                v.setTag(null);
-            }
-        }
-    }
-
-    public void initLayout() {
+    public void initLayout(int mediaNum) {
         hideAll();
-        switch (mImageCounts) {
+        switch (mediaNum) {
             case 0:
                 break;
             case 1:
@@ -131,10 +119,39 @@ public class MultipleImagePreview extends FrameLayout {
         }
     }
 
-    private void show(List<? extends View> views) {
-        for (View v : views) {
-            v.setVisibility(View.VISIBLE);
+    public void setPreview(final Status status){
+        if (status.getMediaEntities().length == 0) {
+            return;
+        }
+
+        final MediaEntity[] medias = status.getExtendedMediaEntities();
+
+        initLayout(medias.length);
+        List<BitmapImageView> imageViews = getRequiredImageViews(medias.length);
+
+        for (int i = 0; i < medias.length; i++) {
+            final BitmapImageView imageView = imageViews.get(i);
+            imageView.setVisibility(View.VISIBLE);
+            final MediaEntity media = medias[i];
+            imageView.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Context context = getContext();
+                    Intent intent = new Intent(context, WebImagePreviewActivity.class);
+                    intent.putExtra(C.STATUS, status);
+                    context.startActivity(intent);
+                    ((Activity)context).overridePendingTransition(R.anim.fade_in, 0);
+                }
+            });
+            imageView.setDefaultImageResId(R.color.transparent_black);
+            imageView.setErrorImageResId(R.color.transparent_black);
+            imageView.setImageUrl(media.getMediaURL(), NetUtil.PREVIEW_LOADER);
         }
     }
 
+    public void cleanUp(){
+        for(BitmapImageView view : mImageViews){
+            view.cleanUp();
+        }
+    }
 }
