@@ -1,5 +1,6 @@
 package com.crakac.ofuton.user;
 
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 
 import com.crakac.ofuton.SimpleFragmentPagerAdapter;
@@ -11,6 +12,11 @@ public class UserFragmentPagerAdapter extends SimpleFragmentPagerAdapter {
 
 	public UserFragmentPagerAdapter(FragmentManager fm) {
 		super(fm);
+        if(fm.getFragments() != null){
+            for(Fragment f : fm.getFragments()){
+                add(f);
+            }
+        }
 	}
 
 	@Override

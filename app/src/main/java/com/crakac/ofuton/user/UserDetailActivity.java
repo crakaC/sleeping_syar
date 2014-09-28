@@ -10,6 +10,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.text.Html;
@@ -67,7 +68,6 @@ public class UserDetailActivity extends FinishableActionbarActivity {
     private ParallelTask<Long, Void, Relationship> mloadRelationTask;
     private ParallelTask<String, Void, User> mLoadUserTask;
     private static ProgressDialogFragment mDialog;
-    private FragmentManager mFragmentManager;
     private Twitter mTwitter;
     private User mTargetUser;
     private Relation mRelation;
@@ -116,9 +116,9 @@ public class UserDetailActivity extends FinishableActionbarActivity {
         }
         mTwitter = TwitterUtils.getTwitterInstance();
 
-        mFragmentManager = getSupportFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();
 
-        mPagerAdapter = new UserFragmentPagerAdapter(mFragmentManager);
+        mPagerAdapter = new UserFragmentPagerAdapter(fm);
         mPager = (ViewPager) findViewById(R.id.pager);
         mTab = (PagerSlidingTabStrip) findViewById(R.id.tab);
 
@@ -261,24 +261,25 @@ public class UserDetailActivity extends FinishableActionbarActivity {
         int followers = user.getFollowersCount();
         int favs = user.getFavouritesCount();
         mPagerAdapter.setCounts(statusCounts, friends, followers, favs);
+        if(mPagerAdapter.getCount() == 0) {
+            // ユーザーのツイート
+            UserTimelineFragment utlFragment = new UserTimelineFragment();
+            mPagerAdapter.add(utlFragment);
 
-        // ユーザーのツイート
-        UserTimelineFragment utlFragment = new UserTimelineFragment();
-        mPagerAdapter.add(utlFragment);
+            // ユーザーがフォローしてる人たち
+            FriendsOfUserFragment friendsFragment = new FriendsOfUserFragment();
+            mPagerAdapter.add(friendsFragment);
 
-        // ユーザーがフォローしてる人たち
-        FriendsOfUserFragment friendsFragment = new FriendsOfUserFragment();
-        mPagerAdapter.add(friendsFragment);
+            // ユーザーのフォロワーたち
+            FollowersOfUserFragment followersFragment = new FollowersOfUserFragment();
+            mPagerAdapter.add(followersFragment);
 
-        // ユーザーのフォロワーたち
-        FollowersOfUserFragment followersFragment = new FollowersOfUserFragment();
-        mPagerAdapter.add(followersFragment);
+            // ユーザーのお気に入り
+            FavoriteTimelineFragment favFragment = new FavoriteTimelineFragment();
+            mPagerAdapter.add(favFragment);
 
-        // ユーザーのお気に入り
-        FavoriteTimelineFragment favFragment = new FavoriteTimelineFragment();
-        mPagerAdapter.add(favFragment);
-
-        setArguments(utlFragment, friendsFragment, followersFragment, favFragment);
+            setArguments(utlFragment, friendsFragment, followersFragment, favFragment);
+        }
 
         mPager.setAdapter(mPagerAdapter);
         mPager.setOffscreenPageLimit(mPagerAdapter.getCount());// 全Fragmentを保持（onCreateViewが複数呼ばれるのを抑止）
