@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -28,7 +29,6 @@ import android.widget.ProgressBar;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader.ImageContainer;
 import com.crakac.ofuton.C;
-import com.crakac.ofuton.OfutonApp;
 import com.crakac.ofuton.R;
 import com.crakac.ofuton.WebImagePreviewActivity;
 import com.crakac.ofuton.util.AppUtil;
@@ -41,6 +41,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 
 import uk.co.senab.photoview.PhotoViewAttacher;
@@ -153,6 +154,7 @@ public class ImagePreviewFragment extends Fragment implements LoaderManager.Load
                 FileInputStream is = null;
                 try {
                     String extension = MimeTypeMap.getFileExtensionFromUrl(url);
+                    String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
                     String now = new SimpleDateFormat("yyyyMMddhhmmss.").format(new Date());
                     distFile = new File(
                             Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), now
@@ -169,6 +171,8 @@ public class ImagePreviewFragment extends Fragment implements LoaderManager.Load
                     }
                     os = new FileOutputStream(distFile);
                     os.write(data);
+                    String[] path = {distFile.getPath()};
+                    MediaScannerConnection.scanFile(getActivity().getApplicationContext(), path, null, null);
                 } catch (IOException e) {
                     e.printStackTrace();
                     return false;
