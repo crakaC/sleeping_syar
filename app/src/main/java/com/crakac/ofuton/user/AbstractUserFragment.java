@@ -43,18 +43,7 @@ public abstract class AbstractUserFragment extends AbstractPtrFragment {
 			mAdapter = new UserAdapter(getActivity());
 		}
 		mListView.setAdapter(mAdapter);
-		mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-			@Override
-			public void onItemClick(AdapterView<?> parent, View view,
-					int position, long id) {
-				ListView lv = (ListView) parent;
-				User user = (User) lv.getItemAtPosition(position);
-				Intent intent = new Intent(getActivity(),
-						UserDetailActivity.class);
-				intent.putExtra(C.USER, user);
-				startActivity(intent);
-			}
-		});
+		mListView.setOnItemClickListener(new UserListClickListener(getActivity()));
 		initialize();
 		return view;
 	}
