@@ -4,8 +4,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 
 import com.crakac.ofuton.SimpleFragmentPagerAdapter;
-import com.crakac.ofuton.timeline.AbstractStatusFragment;
-import com.crakac.ofuton.user.AbstractUserFragment;
+
+import java.util.List;
 
 /**
  * Created by kosukeshirakashi on 2014/10/03.
@@ -33,5 +33,9 @@ public class SearchFragmentPagerAdapter extends SimpleFragmentPagerAdapter<Fragm
                 return "画像";
         }
         return "";
+    }
+
+    List<Fragment> getFragments(){
+        return mFragments;
     }
 }

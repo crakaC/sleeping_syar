@@ -17,12 +17,15 @@ import twitter4j.TwitterException;
 /**
  * Created by kosukeshirakashi on 2014/10/03.
  */
-public class TweetSearchFragment extends AbstractTimelineFragment {
+public class TweetSearchFragment extends AbstractTimelineFragment implements SearchActivity.Searchable{
     private String mQuery;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mQuery = getArguments().getString(C.QUERY);
+        if(savedInstanceState != null){
+            mQuery = savedInstanceState.getString(C.QUERY);
+        }
     }
 
     @Override
@@ -52,7 +55,17 @@ public class TweetSearchFragment extends AbstractTimelineFragment {
         return "ツイート";
     }
 
-    public void clear(){
+    @Override
+    public void search(String query) {
+        mQuery = query;
+        stopTask();
         mAdapter.clear();
+        initTimeline();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putString(C.QUERY, mQuery);
+        super.onSaveInstanceState(outState);
     }
 }

@@ -72,8 +72,8 @@ public class SearchActivity extends ActionBarActivity {
         mSearchView = (SearchView) MenuItemCompat.getActionView(search);
         mSearchView.setOnQueryTextListener(mOnQueryTextListener);
         mSearchView.setIconified(false);
-        mSearchView.requestFocus();
-        mSearchView.setQuery(mQuery, true);
+        mSearchView.clearFocus();
+        mSearchView.setQuery(mQuery, false);
         return true;
     }
 
@@ -94,13 +94,21 @@ public class SearchActivity extends ActionBarActivity {
 
         @Override
         public boolean onQueryTextSubmit(String query) {
-            searchStatus(query);
+            search(query);
             mSearchView.clearFocus();// clear focus and hide software keyboard
             return true;
         }
 
     };
 
-    private void searchStatus(String query) {
+    private void search(String query) {
+        for(Fragment f : mAdapter.getFragments()){
+            if(f instanceof Searchable){
+                ((Searchable) f).search(query);
+            }
+        }
+    }
+    static interface Searchable{
+        void search(String query);
     }
 }

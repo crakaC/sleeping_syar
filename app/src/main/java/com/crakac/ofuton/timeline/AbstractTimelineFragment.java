@@ -62,7 +62,7 @@ public abstract class AbstractTimelineFragment extends AbstractStatusFragment {
         super.onResume();
     }
 
-    private void initTimeline() {
+    protected void initTimeline() {
         if (mFetchStatusTask != null && mFetchStatusTask.getStatus() == AsyncTask.Status.RUNNING) {
             Log.d(TAG + getTimelineName(), ":initTask is already running.");
             setEmptyViewLoading();
@@ -197,6 +197,10 @@ public abstract class AbstractTimelineFragment extends AbstractStatusFragment {
                 task.cancel(true);
             }
         }
+    }
+
+    protected void stopTask(){
+        terminateTask(mFetchStatusTask);
     }
 
     /**
