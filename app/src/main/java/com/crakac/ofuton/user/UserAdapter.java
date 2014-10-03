@@ -21,6 +21,7 @@ public class UserAdapter extends ArrayAdapter<twitter4j.User> {
 
     private static class ViewHolder {
         TextView name;
+        TextView screenName;
         TextView text;
         TextView info;
         NetworkImageView icon;
@@ -43,6 +44,7 @@ public class UserAdapter extends ArrayAdapter<twitter4j.User> {
             convertView = mInflater.inflate(R.layout.list_item_user, null);
             holder = new ViewHolder();
             holder.name = (TextView) convertView.findViewById(R.id.name);
+            holder.screenName = (TextView) convertView.findViewById(R.id.screenName);
             holder.text = (TextView) convertView.findViewById(R.id.text);
             holder.info = (TextView) convertView.findViewById(R.id.info);
             holder.icon = (NetworkImageView) convertView.findViewById(R.id.icon);
@@ -57,11 +59,13 @@ public class UserAdapter extends ArrayAdapter<twitter4j.User> {
         holder.name.setTextSize(fontSize);
         holder.text.setTextSize(fontSize);
         holder.info.setTextSize(smallFontSize);
+        holder.screenName.setTextSize(smallFontSize);
 
         String url = AppUtil.getIconURL(item);
         holder.icon.setImageUrl(url, NetUtil.ICON_LOADER);
 
-        holder.name.setText(item.getName() + " @" + item.getScreenName());
+        holder.name.setText(item.getName());
+        holder.screenName.setText(" @" + item.getScreenName());
         holder.text.setText(item.getDescription());
         String counts = AppUtil.shapingNums(item.getStatusesCount());
         String friends = AppUtil.shapingNums(item.getFriendsCount());

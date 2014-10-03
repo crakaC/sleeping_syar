@@ -1,5 +1,6 @@
 package com.crakac.ofuton.user;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.view.View;
@@ -8,25 +9,30 @@ import android.widget.ListView;
 
 import com.crakac.ofuton.C;
 
+import java.lang.ref.WeakReference;
+
 import twitter4j.User;
 
 /**
  * Created by kosukeshirakashi on 2014/10/03.
  */
 public class UserListClickListener implements AdapterView.OnItemClickListener {
-    private Context mContext;
-    public UserListClickListener(Context context) {
-        mContext = context.getApplicationContext();
+    private WeakReference<Activity> mContext;
+    public UserListClickListener(Activity context) {
+        mContext = new WeakReference<>(context);
     }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view,
                             int position, long id) {
+        Activity context = mContext.get();
+        if(context == null) return;
         ListView lv = (ListView) parent;
         User user = (User) lv.getItemAtPosition(position);
-        Intent intent = new Intent(mContext,
+        Intent intent = new Intent(context,
                 UserDetailActivity.class);
         intent.putExtra(C.USER, user);
-        mContext.startActivity(intent);
+
+        context.startActivity(intent);
     }
 }
