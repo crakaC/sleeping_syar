@@ -14,6 +14,7 @@ import com.crakac.ofuton.C;
 import com.crakac.ofuton.R;
 import com.crakac.ofuton.WebImagePreviewActivity;
 import com.crakac.ofuton.util.NetUtil;
+import com.crakac.ofuton.util.TwitterUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -124,7 +125,7 @@ public class MultipleImagePreview extends FrameLayout {
             return;
         }
 
-        final MediaEntity[] medias = status.getExtendedMediaEntities();
+        final MediaEntity[] medias = TwitterUtils.getMediaEntities(status);
 
         initLayout(medias.length);
         List<BitmapImageView> imageViews = getRequiredImageViews(medias.length);

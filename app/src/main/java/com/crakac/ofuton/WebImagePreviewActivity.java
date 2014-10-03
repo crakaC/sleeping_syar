@@ -8,6 +8,7 @@ import android.support.v4.view.ViewPager;
 import android.view.View;
 
 import com.crakac.ofuton.util.AppUtil;
+import com.crakac.ofuton.util.TwitterUtils;
 import com.crakac.ofuton.widget.HackyViewPager;
 import com.crakac.ofuton.widget.ImagePreviewFragment;
 import com.crakac.ofuton.widget.PreviewNavigation;
@@ -38,7 +39,7 @@ public class WebImagePreviewActivity extends AbstractPreviewActivity implements 
         if (imageUri != null) {
             mAdapter.add(ImagePreviewFragment.createInstance(imageUri));
         } else if (status != null) {
-            for (MediaEntity entity : status.getExtendedMediaEntities()) {
+            for (MediaEntity entity : TwitterUtils.getMediaEntities(status)) {
                 Uri uri = Uri.parse(entity.getMediaURL());
                 mAdapter.add(ImagePreviewFragment.createInstance(uri));
             }

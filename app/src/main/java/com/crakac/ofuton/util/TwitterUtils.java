@@ -16,6 +16,7 @@ import java.util.Map;
 
 import twitter4j.MediaEntity;
 import twitter4j.RateLimitStatus;
+import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterAPIConfiguration;
 import twitter4j.TwitterException;
@@ -47,13 +48,13 @@ public class TwitterUtils {
 		sAccount = getCurrentAccount();
 	}
 
-    private static Configuration createConfiguration() {
+    private static ConfigurationBuilder baseConfiguratoinBuilder() {
         ConfigurationBuilder cb = new ConfigurationBuilder();
         cb.setOAuthConsumerKey(mConsumerKey);
         cb.setOAuthConsumerSecret(mConsumerSecret);
         cb.setHttpConnectionTimeout(HTTP_CONNECTION_TIMEOUT_MS);
         cb.setHttpReadTimeout(HTTP_READ_TIMEOUT_MS);
-        return cb.build();
+        return cb;
     }
 
     /**
@@ -62,7 +63,7 @@ public class TwitterUtils {
 	 * @return
 	 */
 	public static Twitter getTwitterInstanceWithoutToken() {
-		Configuration conf = createConfiguration();
+		Configuration conf = baseConfiguratoinBuilder().build();
 		TwitterFactory factory = new TwitterFactory(conf);
 		Twitter twitter = factory.getInstance();
 		return twitter;
@@ -84,7 +85,7 @@ public class TwitterUtils {
 	}
 
 	public static TwitterStream getTwitterStreamInstance() {
-		TwitterStreamFactory factory = new TwitterStreamFactory(createConfiguration());
+		TwitterStreamFactory factory = new TwitterStreamFactory(baseConfiguratoinBuilder().build());
 		TwitterStream twitter = factory.getInstance();
 
 		if (existsCurrentAccount()) {
@@ -343,5 +344,9 @@ public class TwitterUtils {
                 return 0;
             }
         };
+    }
+
+    public static MediaEntity[] getMediaEntities(Status status) {
+        return status.getExtendedMediaEntities().length > 0 ? status.getExtendedMediaEntities() : status.getMediaEntities();
     }
 }

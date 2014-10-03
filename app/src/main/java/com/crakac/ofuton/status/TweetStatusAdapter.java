@@ -169,7 +169,7 @@ public class TweetStatusAdapter extends ArrayAdapter<Status> {
 
     private static void setImagePreview(final MultipleImagePreview imagePreview, final Status status) {
         imagePreview.setVisibility(View.GONE);
-        if (!shouldShowPreview || status.getExtendedMediaEntities().length == 0){
+        if (!shouldShowPreview || status.getMediaEntities().length == 0){
             imagePreview.cleanUp();
             return;
         }
