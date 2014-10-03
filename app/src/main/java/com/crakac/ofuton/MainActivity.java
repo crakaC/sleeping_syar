@@ -126,6 +126,7 @@ public class MainActivity extends ActionBarActivity {
         } else {
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         }
+        AppUtil.closeSearchView(mSearchView);
     }
 
     @Override
@@ -373,7 +374,6 @@ public class MainActivity extends ActionBarActivity {
             Intent i = new Intent(getApplicationContext(), SearchActivity.class);
             i.putExtra(C.QUERY, query);
             startActivity(i);
-            AppUtil.closeSearchView(mSearchView);
             mDrawerLayout.closeDrawer(GravityCompat.START);
             return true;
         }
