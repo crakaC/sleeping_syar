@@ -40,9 +40,15 @@ public class BitmapUtil {
             int scaleH = opt.outHeight / targetHeight;
             int scaleW = opt.outWidth / targetWidth;
             int scale = Math.min(scaleH, scaleW);
-            opt.inSampleSize = scale;
+            float n = 1.0f;
+            while(n <= scale){
+                n*=2;
+            }
+            opt.inSampleSize = (int)n;
+            Log.d("ResizeBitmap", "inSampleSize=" + n);
         }
         opt.inJustDecodeBounds = false;
+        opt.inPreferredConfig = Bitmap.Config.RGB_565;
         return BitmapFactory.decodeFile(file.toString(), opt);
     }
 
@@ -59,16 +65,23 @@ public class BitmapUtil {
         float scaleW = (float) longEdge / bm.getWidth();
         float scaleH = (float) longEdge / bm.getHeight();
         float scale = Math.min(scaleH, scaleW);
-        int w = (int) (bm.getWidth() * scale + 0.5);
-        int h = (int) (bm.getHeight() * scale + 0.5);
 
         //縮小する必要があった場合は縮小する
         if(scale < 1.0){
-            bm = Bitmap.createScaledBitmap(bm, w, h, true);
+            int w = (int) (bm.getWidth() * scale + 0.5);
+            int h = (int) (bm.getHeight() * scale + 0.5);
+            Bitmap old = bm;
+            try {
+                bm = Bitmap.createScaledBitmap(old, w, h, true);
+                old.recycle();
+            }catch(OutOfMemoryError oome){
+                oome.printStackTrace();
+            }
         }
 
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        bm.compress(Bitmap.CompressFormat.JPEG, 80, bytes);
+        bm.compress(Bitmap.CompressFormat.JPEG, 90, bytes);
+        bm.recycle();
 
         File tempFile = File.createTempFile("DCIM", ".jpg");
 

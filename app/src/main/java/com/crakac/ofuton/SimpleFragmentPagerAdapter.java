@@ -7,14 +7,14 @@ import android.support.v4.app.FragmentPagerAdapter;
 
 import java.util.ArrayList;
 
-public class SimpleFragmentPagerAdapter extends FragmentPagerAdapter{
-	protected ArrayList<Fragment> mFragments;
+public class SimpleFragmentPagerAdapter<T extends Fragment> extends FragmentPagerAdapter{
+	protected ArrayList<T> mFragments;
 
 	public SimpleFragmentPagerAdapter(FragmentManager fm) {
 		super(fm);
-		mFragments = new ArrayList<Fragment>();
+		mFragments = new ArrayList<>();
 	}
-	public Fragment getItem(int cnt) {
+	public T getItem(int cnt) {
 		return mFragments.get(cnt);
 	}
 	@Override
@@ -22,7 +22,7 @@ public class SimpleFragmentPagerAdapter extends FragmentPagerAdapter{
 		return mFragments.size();
 	}
 
-	public void add(Fragment fragment){
+	public void add(T fragment){
 		mFragments.add(fragment);
 	}
 }

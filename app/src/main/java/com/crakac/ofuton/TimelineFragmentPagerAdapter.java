@@ -22,9 +22,9 @@ public class TimelineFragmentPagerAdapter extends FragmentPagerAdapter {
 
 	public TimelineFragmentPagerAdapter(FragmentManager fm) {
 		super(fm);
-		mFragments = new ArrayList<AbstractTimelineFragment>();
+		mFragments = new ArrayList<>();
 		if(fm.getFragments() != null){
-			Stack<AbstractTimelineFragment> stack = new Stack<AbstractTimelineFragment>();
+			Stack<AbstractTimelineFragment> stack = new Stack<>();
 			for( Fragment f : fm.getFragments() ){
 				if( f instanceof FavoriteTimelineFragment || f instanceof MentionsTimelineFragment || f instanceof HomeTimelineFragment){
 					stack.push((AbstractTimelineFragment) f);
@@ -45,14 +45,6 @@ public class TimelineFragmentPagerAdapter extends FragmentPagerAdapter {
 
 	@Override
 	public int getCount() {
-		/* なぜかfragments.size()と実際の要素の数がずれる問題があったけどコンストラクタでinstanceofを使うことで解決できた
-		// for(int i = 0; i < fragments.size(); i++){
-		// if(fragments.get(i) == null){
-		// Log.d(TAG, "fragments[" + i + "] is null");
-		// fragments.remove(i);
-		// }
-		// }
-		 */
 		return mFragments.size();
 	}
 

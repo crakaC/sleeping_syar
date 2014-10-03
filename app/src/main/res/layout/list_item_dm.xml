@@ -2,13 +2,12 @@
     android:id="@+id/tweet_status"
     style="@style/timeline">
 
-    <ImageView
+    <com.crakac.ofuton.widget.BitmapImageView
         android:id="@+id/icon"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:src="@drawable/ic_launcher" />
+        android:layout_alignParentTop="true" />
 
     <TextView
         android:id="@+id/name"
@@ -63,13 +62,12 @@
         android:textColor="@color/sub_text"
         android:textStyle="bold" />
 
-    <ImageView
+    <com.crakac.ofuton.widget.BitmapImageView
         android:id="@+id/smallIcon"
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:layout_below="@+id/text"
         android:layout_margin="3dp"
-        android:layout_toLeftOf="@+id/sentTo"
-        android:src="@drawable/ic_launcher" />
+        android:layout_toLeftOf="@+id/sentTo" />
 
 </RelativeLayout>

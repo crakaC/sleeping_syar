@@ -10,13 +10,12 @@
         android:layout_weight="0.5"
         android:orientation="vertical">
 
-        <ImageView
+        <com.crakac.ofuton.widget.BitmapImageView
             android:id="@+id/imageTL"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="0.5"
             android:scaleType="centerCrop"
-            android:src="@drawable/ic_syar"
             android:visibility="visible" />
 
         <View
@@ -25,13 +24,12 @@
             android:layout_height="3dp"
             android:visibility="visible" />
 
-        <ImageView
+        <com.crakac.ofuton.widget.BitmapImageView
             android:id="@+id/imageBL"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="0.5"
             android:scaleType="centerCrop"
-            android:src="@drawable/ic_syar"
             android:visibility="visible" />
 
     </LinearLayout>
@@ -49,13 +47,12 @@
         android:layout_weight="0.5"
         android:orientation="vertical">
 
-        <ImageView
+        <com.crakac.ofuton.widget.BitmapImageView
             android:id="@+id/imageTR"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="0.5"
             android:scaleType="centerCrop"
-            android:src="@drawable/ic_syar"
             android:visibility="visible" />
 
         <View
@@ -64,13 +61,12 @@
             android:layout_height="3dp"
             android:visibility="visible" />
 
-        <ImageView
+        <com.crakac.ofuton.widget.BitmapImageView
             android:id="@+id/imageBR"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="0.5"
             android:scaleType="centerCrop"
-            android:src="@drawable/ic_syar"
             android:visibility="visible" />
 
     </LinearLayout>

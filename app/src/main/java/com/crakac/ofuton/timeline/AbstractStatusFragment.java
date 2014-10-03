@@ -1,16 +1,20 @@
 package com.crakac.ofuton.timeline;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
+import android.widget.ImageView;
 
 import com.crakac.ofuton.AbstractPtrFragment;
 import com.crakac.ofuton.R;
 import com.crakac.ofuton.status.StatusClickListener;
 import com.crakac.ofuton.status.TweetStatusAdapter;
-import com.crakac.ofuton.util.AppUtil;
+import com.crakac.ofuton.util.PreferenceUtil;
 import com.crakac.ofuton.util.TwitterUtils;
+import com.crakac.ofuton.widget.MultipleImagePreview;
 
 import twitter4j.Status;
 import twitter4j.Twitter;
@@ -43,7 +47,7 @@ public abstract class AbstractStatusFragment extends AbstractPtrFragment {
 	@Override
 	public void onStart() {
 	    super.onStart();
-	    mAdapter.shouldShowInlinePreview(AppUtil.getBooleanPreference(R.string.show_image_in_timeline, true));
+	    mAdapter.shouldShowInlinePreview(PreferenceUtil.getBoolean(R.string.show_image_in_timeline, true));
 	}
 
     public TweetStatusAdapter getAdapter() {
@@ -54,7 +58,7 @@ public abstract class AbstractStatusFragment extends AbstractPtrFragment {
     private int mFirstVisibleOffset = -1;
 
     protected void savePosition() {
-        if (mAdapter.isEmpty()) return;
+        if (mAdapter.isEmpty() || mListView.getChildAt(0) == null) return;
         mFirstVisibleStatus = mAdapter.getItem(mListView.getFirstVisiblePosition());
         mFirstVisibleOffset = mListView.getChildAt(0).getTop();
     }

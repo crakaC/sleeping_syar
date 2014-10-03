@@ -2,15 +2,17 @@ package com.crakac.ofuton.util;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
-import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar;
 import android.text.Html;
 import android.text.Spanned;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -33,11 +35,9 @@ import twitter4j.URLEntity;
 
 public final class AppUtil {
     private static Context sContext;
-    private static String FONT_SIZE_KEY;
 
     public static void init(Context context) {
         sContext = context.getApplicationContext();
-        FONT_SIZE_KEY = sContext.getString(R.string.font_size);
     }
 
     public static void showToast(String msg) {
@@ -54,31 +54,6 @@ public final class AppUtil {
     }
 
     /**
-     * SharedPreferenceからフォントサイズを読み込む
-     *
-     * @return
-     */
-    public static int getFontSize() {
-        return Integer.valueOf(getSharedPreference().getString(FONT_SIZE_KEY, "12"));// ListPreferenceは値をStringで保存すると思われるのでこうする
-    }
-
-    public static boolean getBooleanPreference(int resId) {
-        return getBooleanPreference(resId, false);
-    }
-
-    public static boolean getBooleanPreference(int resId, boolean defaultValue) {
-        return getSharedPreference().getBoolean(sContext.getString(resId), defaultValue);
-    }
-
-    private static SharedPreferences getSharedPreference() {
-        return PreferenceManager.getDefaultSharedPreferences(sContext);
-    }
-
-    public static int getIntPreference(int resId) {
-        return getSharedPreference().getInt(getString(resId), 0);
-    }
-
-    /**
      * Get icon url from user object.
      * 設定によって大きいアイコンを使うときはちゃんと大きいアイコンの方のURLを引っ張ってくる．
      *
@@ -87,21 +62,12 @@ public final class AppUtil {
      */
     public static String getIconURL(twitter4j.User user) {
         String url = null;
-        if (getBooleanPreference(R.string.use_bigger_icon)) {
+        if (PreferenceUtil.getBoolean(R.string.use_bigger_icon)) {
             url = user.getBiggerProfileImageURLHttps();
         } else {
             url = user.getProfileImageURLHttps();
         }
         return url;
-    }
-
-    /**
-     * 日付表示とかの小さい文字のフォントサイズを読み込む
-     *
-     * @return
-     */
-    public static float getSubFontSize() {
-        return (float) Math.ceil(getFontSize() * 0.8);
     }
 
     public static void showStatus(Status status) {
@@ -173,6 +139,14 @@ public final class AppUtil {
         return Html.fromHtml(text);
     }
 
+    public static String trimUrl(twitter4j.Status status){
+        String text = status.getText();
+        for (MediaEntity entity : status.getMediaEntities()) {
+            text = text.replace(entity.getURL(), "");
+        }
+        return text;
+    }
+
     public static String getString(int resId) {
         return sContext.getResources().getString(resId);
     }
@@ -189,7 +163,7 @@ public final class AppUtil {
             String syar;
 
             private int getSyarCount() {
-                return AppUtil.getIntPreference(R.string.syar);
+                return PreferenceUtil.getInt(R.string.syar);
             }
 
             @Override
@@ -226,12 +200,18 @@ public final class AppUtil {
                     AppUtil.showToast(R.string.something_wrong);
                 } else {
                     AppUtil.showToast(syar);
-                    getSharedPreference().edit().putInt(getString(R.string.syar), getSyarCount() + 1).commit();
+                    PreferenceUtil.getSharedPreference().edit().putInt(getString(R.string.syar), getSyarCount() + 1).commit();
                 }
             }
         };
         task.executeParallel();
 
+    }
+
+    public static int getMemoryMB() {
+        int memory = (int) (Runtime.getRuntime().maxMemory() / (1024 * 1024));
+        Log.w("memory MB", memory + "");
+        return memory;
     }
 
     public static interface SyarListener {
@@ -251,6 +231,60 @@ public final class AppUtil {
         for (View v : views) {
             v.setVisibility(View.INVISIBLE);
         }
+    }
+
+    public static void fadeout(final View v, long duration) {
+        AlphaAnimation a = new AlphaAnimation(1f, 0f);
+        a.setDuration(duration);
+        a.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                if (v.isShown()) v.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+            }
+        });
+        v.startAnimation(a);
+    }
+
+    public static void fadein(final View v, long duration) {
+        AlphaAnimation a = new AlphaAnimation(0f, 1f);
+        a.setDuration(duration);
+        v.setVisibility(View.VISIBLE);
+        v.startAnimation(a);
+    }
+
+    public static void slideOut(final View v, long duration) {
+        Animation a = AnimationUtils.loadAnimation(sContext, R.anim.slide_out);
+        a.setDuration(duration);
+        a.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                if (v.isShown()) v.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+            }
+        });
+        v.startAnimation(a);
+    }
+
+    public static void slideIn(final View v, long duration) {
+        Animation a = AnimationUtils.loadAnimation(sContext, R.anim.slide_in);
+        a.setDuration(duration);
+        v.setVisibility(View.VISIBLE);
+        v.startAnimation(a);
     }
 
     public static int dpToPx(int dp) {

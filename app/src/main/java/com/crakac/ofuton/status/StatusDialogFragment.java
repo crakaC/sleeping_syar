@@ -35,6 +35,7 @@ import com.crakac.ofuton.status.action.TofuBusterAction;
 import com.crakac.ofuton.status.action.UserDetailAction;
 import com.crakac.ofuton.timeline.AbstractStatusFragment;
 import com.crakac.ofuton.util.AppUtil;
+import com.crakac.ofuton.util.PreferenceUtil;
 import com.crakac.ofuton.util.TwitterUtils;
 
 import java.util.ArrayList;
@@ -219,17 +220,21 @@ public class StatusDialogFragment extends DialogFragment {
 
 		setUserEntities(mSelectedStatus);
 		setUrlEntities(mSelectedStatus);
-		setMediaEntities(mSelectedStatus);
+        if(!PreferenceUtil.getBoolean(R.string.show_image_in_timeline)){
+            setMediaEntities(mSelectedStatus);
+        }
 		setHashtagEntities(mSelectedStatus);
 
 		mActionAdapter.notifyDataSetChanged();
 	}
 
 	private void setUserEntities(Status status){
-        List<String> users = new ArrayList<String>();// statusに関係あるscreenNameをかたっぱしから突っ込む(@抜き)
+        List<String> users = new ArrayList<>();// statusに関係あるscreenNameをかたっぱしから突っ込む(@抜き)
         UserMentionEntity[] userMentionEntities = status.getUserMentionEntities();
         for (UserMentionEntity user : userMentionEntities) {
-            users.add(user.getScreenName());
+            if(!users.contains(user.getScreenName())) {
+                users.add(user.getScreenName());
+            }
         }
 
         // リツイートの場合，オリジナルの方でないと省略される可能性があるのでretweetedStatusからも引っ張ってくる

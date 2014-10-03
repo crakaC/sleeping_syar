@@ -8,11 +8,16 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
+import twitter4j.MediaEntity;
+import twitter4j.RateLimitStatus;
 import twitter4j.Twitter;
+import twitter4j.TwitterAPIConfiguration;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 import twitter4j.TwitterStream;
@@ -23,33 +28,37 @@ import twitter4j.conf.ConfigurationBuilder;
 
 public class TwitterUtils {
 	//private static final String TAG = TwitterUtils.class.getSimpleName();
+    public static final int HTTP_CONNECTION_TIMEOUT_MS = 10000;
+    public static final int HTTP_READ_TIMEOUT_MS = 30000;
 	private static final String TOKEN = "token";
 	private static final String TOKEN_SECRET = "tokenSecret";
 	private static final String PREF_NAME = "accessToken";
-	private static Context mContext;
-	private static Account currentAccount;
+    public static final String API_CONFIG_PREF = "api_config";
+	private static Context sContext;
+	private static Account sAccount;
 	private static String mConsumerKey;
 	private static String mConsumerSecret;
 
-	private static Configuration createConfiguration(){
-		ConfigurationBuilder cb = new ConfigurationBuilder();
-		cb.setOAuthConsumerKey(mConsumerKey);
-		cb.setOAuthConsumerSecret(mConsumerSecret);
-		return cb.build();
-	}
-
 	public static void init(Context context) {
-		mContext = context;
+		sContext = context;
 		AuthKey authKey = new AuthKey(context);
 		mConsumerKey = authKey.getConsumerKey();
 		mConsumerSecret = authKey.getConsumerSecret();
-		currentAccount = getCurrentAccount();
+		sAccount = getCurrentAccount();
 	}
 
-	/**
+    private static Configuration createConfiguration() {
+        ConfigurationBuilder cb = new ConfigurationBuilder();
+        cb.setOAuthConsumerKey(mConsumerKey);
+        cb.setOAuthConsumerSecret(mConsumerSecret);
+        cb.setHttpConnectionTimeout(HTTP_CONNECTION_TIMEOUT_MS);
+        cb.setHttpReadTimeout(HTTP_READ_TIMEOUT_MS);
+        return cb.build();
+    }
+
+    /**
 	 * Return Twitter instance without request token
 	 *
-	 * @param context
 	 * @return
 	 */
 	public static Twitter getTwitterInstanceWithoutToken() {
@@ -62,7 +71,6 @@ public class TwitterUtils {
 	/**
 	 * Twitter instance
 	 *
-	 * @param context
 	 * @return
 	 */
 	public static Twitter getTwitterInstance() {
@@ -90,11 +98,10 @@ public class TwitterUtils {
 	/**
 	 * Store access_token to preference.
 	 *
-	 * @param context
 	 * @param accessToken
 	 */
 	public static void storeAccessToken(AccessToken accessToken) {
-		SharedPreferences preferences = mContext.getSharedPreferences(
+		SharedPreferences preferences = sContext.getSharedPreferences(
 				PREF_NAME, Context.MODE_PRIVATE);
 		Editor editor = preferences.edit();
 		editor.putString(TOKEN, accessToken.getToken());
@@ -105,11 +112,10 @@ public class TwitterUtils {
 	/**
 	 * load access token from preference
 	 *
-	 * @param context
 	 * @return
 	 */
 	public static AccessToken loadAccessToken() {
-		SharedPreferences preferences = mContext.getSharedPreferences(
+		SharedPreferences preferences = sContext.getSharedPreferences(
 				PREF_NAME, Context.MODE_PRIVATE);
 		String token = preferences.getString(TOKEN, null);
 		String tokenSecret = preferences.getString(TOKEN_SECRET, null);
@@ -123,19 +129,18 @@ public class TwitterUtils {
 	/**
 	 * return current user's twitter id
 	 *
-	 * @param context
 	 * @return user id
 	 */
 	public static long getCurrentAccountId() {
-		if (currentAccount != null) {
-			return currentAccount.getUserId();
+		if (sAccount != null) {
+			return sAccount.getUserId();
 		} else {
 			return -1;
 		}
 	}
 
 	public static void removeAccount(Account account) {
-		AccountDBAdapter dbAdapter = new AccountDBAdapter(mContext);
+		AccountDBAdapter dbAdapter = new AccountDBAdapter(sContext);
 		dbAdapter.open();
 		dbAdapter.deleteAccount(account.getUserId());
 		dbAdapter.close();
@@ -145,7 +150,7 @@ public class TwitterUtils {
 		boolean result = false;
 		Twitter tw = getTwitterInstanceWithoutToken();
 		tw.setOAuthAccessToken(loadAccessToken());
-		AccountDBAdapter dbAdapter = new AccountDBAdapter(mContext);
+		AccountDBAdapter dbAdapter = new AccountDBAdapter(sContext);
 		dbAdapter.open();
 		twitter4j.User user;
 		try {
@@ -168,23 +173,23 @@ public class TwitterUtils {
 
 	public static void setCurrentAccount(Account account) {
 		// DB上に情報を保存
-		AccountDBAdapter dbAdapter = new AccountDBAdapter(mContext);
+		AccountDBAdapter dbAdapter = new AccountDBAdapter(sContext);
 		dbAdapter.open();
 		dbAdapter.setCurrentAccount(account);
 		dbAdapter.close();
-		currentAccount = account;
+		sAccount = account;
 	}
 
 	public static Account getCurrentAccount() {
 		// すでにcurrentUserが存在する場合
-		if (currentAccount != null) {
-			return currentAccount;
+		if (sAccount != null) {
+			return sAccount;
 		}
-		AccountDBAdapter dbAdapter = new AccountDBAdapter(mContext);
+		AccountDBAdapter dbAdapter = new AccountDBAdapter(sContext);
 		dbAdapter.open();
 		Cursor c = dbAdapter.getCurrentAccount();
 		if (c.moveToFirst()) {
-			currentAccount = new Account(
+			sAccount = new Account(
 					c.getLong(c.getColumnIndex(AccountDBAdapter.COL_USERID)),
 					c.getString(c.getColumnIndex(AccountDBAdapter.COL_SCREEN_NAME)),
 					c.getString(c.getColumnIndex(AccountDBAdapter.COL_ICON_URL)),
@@ -194,16 +199,16 @@ public class TwitterUtils {
 					c.getInt(c.getColumnIndex(AccountDBAdapter.COL_IS_CURRENT)) > 0);
 		}
 		dbAdapter.close();
-		return currentAccount;
+		return sAccount;
 	}
 
 	public static boolean existsCurrentAccount() {
-		return currentAccount != null;
+		return sAccount != null;
 	}
 
 	public static List<Account> getAccounts() {
 		List<Account> users = new ArrayList<Account>();
-		AccountDBAdapter dbAdapter = new AccountDBAdapter(mContext);
+		AccountDBAdapter dbAdapter = new AccountDBAdapter(sContext);
 		dbAdapter.open();
 		Cursor c = dbAdapter.getAllAccounts();
 		while (c.moveToNext()) {
@@ -222,7 +227,7 @@ public class TwitterUtils {
 
 	public static boolean addList(TwitterList list) {
 		boolean result;
-		AccountDBAdapter dbAdapter = new AccountDBAdapter(mContext);
+		AccountDBAdapter dbAdapter = new AccountDBAdapter(sContext);
 		dbAdapter.open();
 		result = dbAdapter.saveList(list);
 		dbAdapter.close();
@@ -231,7 +236,7 @@ public class TwitterUtils {
 
 	public static boolean removeList(TwitterList list) {
 		boolean result;
-		AccountDBAdapter dbAdapter = new AccountDBAdapter(mContext);
+		AccountDBAdapter dbAdapter = new AccountDBAdapter(sContext);
 		dbAdapter.open();
 		result = dbAdapter.deleteList(list);
 		dbAdapter.close();
@@ -240,7 +245,7 @@ public class TwitterUtils {
 
 	public static List<TwitterList> getListsOfCurrentAccount() {
 		List<TwitterList> list = new ArrayList<TwitterList>();
-		AccountDBAdapter dbAdapter = new AccountDBAdapter(mContext);
+		AccountDBAdapter dbAdapter = new AccountDBAdapter(sContext);
 		dbAdapter.open();
 		Cursor c = dbAdapter.getLists(getCurrentAccount().getUserId());
 		while (c.moveToNext()) {
@@ -255,4 +260,88 @@ public class TwitterUtils {
 							// fillWindow()とかいうエラーが出る
 		return list;
 	}
+
+    public static void fetchApiConfigurationAsync(final Context context){
+        SharedPreferences pref = PreferenceUtil.getSharedPreference(API_CONFIG_PREF);
+        long fechedOn = pref.getLong("fetched_on", 0);
+        if(Util.daysPast(fechedOn) == 0){
+            return;
+        }
+        new ParallelTask<Void, Void, TwitterAPIConfiguration>() {
+
+            @Override
+            protected TwitterAPIConfiguration doInBackground(Void... params) {
+                try {
+                    return TwitterUtils.getTwitterInstance().getAPIConfiguration();
+                } catch (TwitterException e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(TwitterAPIConfiguration configuration) {
+                if (configuration == null) {
+                    Log.d("APIConfiguration", "fail to fetch configuration.");
+                    return;
+                }
+                Editor editor = context.getSharedPreferences(API_CONFIG_PREF, Context.MODE_PRIVATE).edit();
+                editor.putLong("fetched_on", System.currentTimeMillis()).commit();
+                Log.d("APIConfiguration", configuration.toString());
+                Util.saveFile(context, configuration, API_CONFIG_PREF);
+            }
+        }.executeParallel();
+    }
+    public static TwitterAPIConfiguration getApiConfiguration(){
+        TwitterAPIConfiguration configuration = Util.restoreFile(sContext, API_CONFIG_PREF);
+        if(configuration != null){
+            return configuration;
+        }
+        return new TwitterAPIConfiguration() {
+            @Override
+            public int getPhotoSizeLimit() {
+                return 0;
+            }
+
+            @Override
+            public int getShortURLLength() {
+                return 22;
+            }
+
+            @Override
+            public int getShortURLLengthHttps() {
+                return 23;
+            }
+
+            @Override
+            public int getCharactersReservedPerMedia() {
+                return 23;
+            }
+
+            @Override
+            public Map<Integer, MediaEntity.Size> getPhotoSizes() {
+                return null;
+            }
+
+            @Override
+            public String[] getNonUsernamePaths() {
+                return new String[0];
+            }
+
+            @Override
+            public int getMaxMediaPerUpload() {
+                return 4;
+            }
+
+            @Override
+            public RateLimitStatus getRateLimitStatus() {
+                return null;
+            }
+
+            @Override
+            public int getAccessLevel() {
+                return 0;
+            }
+        };
+    }
 }

@@ -8,9 +8,11 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.android.volley.toolbox.NetworkImageView;
 import com.crakac.ofuton.R;
 import com.crakac.ofuton.util.AppUtil;
 import com.crakac.ofuton.util.NetUtil;
+import com.crakac.ofuton.util.PreferenceUtil;
 
 import twitter4j.DirectMessage;
 
@@ -45,8 +47,8 @@ public class DmAdapter extends ArrayAdapter<DirectMessage> {
                 holder.text = (TextView) convertView.findViewById(R.id.text);
                 holder.sentTo = (TextView) convertView.findViewById(R.id.sentTo);
                 holder.postedAt = (TextView) convertView.findViewById(R.id.postedAt);
-                holder.icon = (ImageView) convertView.findViewById(R.id.icon);
-                holder.smallIcon = (ImageView) convertView.findViewById(R.id.smallIcon);
+                holder.icon = (NetworkImageView) convertView.findViewById(R.id.icon);
+                holder.smallIcon = (NetworkImageView) convertView.findViewById(R.id.smallIcon);
                 holder.lockedIcon = (ImageView) convertView.findViewById(R.id.lockedIcon);
                 convertView.setTag(holder);
             } else {
@@ -54,19 +56,18 @@ public class DmAdapter extends ArrayAdapter<DirectMessage> {
             }
 
             // フォントサイズの調整
-            int fontSize = AppUtil.getFontSize();
-            float subFontSize = AppUtil.getSubFontSize();
+            int fontSize = PreferenceUtil.getFontSize();
+            float subFontSize = PreferenceUtil.getSubFontSize();
             holder.name.setTextSize(fontSize);
             holder.text.setTextSize(fontSize);
             holder.postedAt.setTextSize(subFontSize);
             holder.sentTo.setTextSize(fontSize);
 
             final String senderIconUrl = AppUtil.getIconURL(item.getSender());
-            NetUtil.fetchIconAsync(holder.icon, senderIconUrl, android.R.color.transparent, android.R.color.transparent);
+            holder.icon.setImageUrl(senderIconUrl, NetUtil.ICON_LOADER);
 
             String recipientIconUrl = AppUtil.getIconURL(item.getRecipient());
-            NetUtil.fetchIconAsync(holder.smallIcon, recipientIconUrl, android.R.color.transparent,
-                    android.R.color.transparent);
+            holder.smallIcon.setImageUrl(recipientIconUrl, NetUtil.ICON_LOADER);
 
             // ユーザー名＋スクリーンネーム
             holder.name.setText(item.getSender().getName() + " @" + item.getSenderScreenName());
@@ -95,8 +96,8 @@ public class DmAdapter extends ArrayAdapter<DirectMessage> {
             TextView text;
             TextView postedAt;
             TextView sentTo;
-            ImageView icon;
-            ImageView smallIcon;
+            NetworkImageView icon;
+            NetworkImageView smallIcon;
             ImageView lockedIcon;
         }
     }

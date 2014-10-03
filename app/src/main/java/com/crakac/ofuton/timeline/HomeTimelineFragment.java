@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import com.crakac.ofuton.MainActivity;
 import com.crakac.ofuton.R;
 import com.crakac.ofuton.util.AppUtil;
+import com.crakac.ofuton.util.PreferenceUtil;
 import com.crakac.ofuton.util.TwitterUtils;
 
 import java.util.List;
@@ -55,7 +56,7 @@ public class HomeTimelineFragment extends AbstractTimelineFragment {
     @Override
     public void onStart() {
         super.onStart();
-        if (AppUtil.getBooleanPreference(R.string.streaming_mode)) {
+        if (PreferenceUtil.getBoolean(R.string.streaming_mode)) {
             mSwipeWidget.setOnRefreshListener(null);
             mSwipeWidget.setEnabled(false);
             if (!mIsStreaming) {
@@ -144,8 +145,8 @@ public class HomeTimelineFragment extends AbstractTimelineFragment {
                     } else if(mIsOverflowing){
                         mListView.smoothScrollToPosition(0);
                     }
-                    if (AppUtil.getBooleanPreference(R.string.notification)) {
-                        if (AppUtil.getBooleanPreference(R.string.reply_notification)) {
+                    if (PreferenceUtil.getBoolean(R.string.notification)) {
+                        if (PreferenceUtil.getBoolean(R.string.reply_notification)) {
                             Status st = (status.isRetweet()) ? status.getRetweetedStatus() : status;
                             for (UserMentionEntity ue : st.getUserMentionEntities()) {
                                 if (ue.getId() == TwitterUtils.getCurrentAccountId()) {
@@ -154,7 +155,7 @@ public class HomeTimelineFragment extends AbstractTimelineFragment {
                                 }
                             }
                         }
-                        if (AppUtil.getBooleanPreference(R.string.rt_notification)) {
+                        if (PreferenceUtil.getBoolean(R.string.rt_notification)) {
                             if (status.isRetweet()
                                     && status.getRetweetedStatus().getUser().getId() == TwitterUtils
                                     .getCurrentAccountId()) {
@@ -168,8 +169,8 @@ public class HomeTimelineFragment extends AbstractTimelineFragment {
 
         @Override
         public void onFollow(final User source, User followedUser) {
-            if (AppUtil.getBooleanPreference(R.string.notification)
-                    && AppUtil.getBooleanPreference(R.string.new_follower_notification)) {
+            if (PreferenceUtil.getBoolean(R.string.notification)
+                    && PreferenceUtil.getBoolean(R.string.new_follower_notification)) {
                 if (followedUser.getId() == TwitterUtils.getCurrentAccountId()) {
                     mHandler.post(new Runnable() {
                         @Override
@@ -183,8 +184,8 @@ public class HomeTimelineFragment extends AbstractTimelineFragment {
 
         @Override
         public void onFavorite(final User source, User target, final Status favoritedStatus) {
-            if (AppUtil.getBooleanPreference(R.string.notification)
-                    && AppUtil.getBooleanPreference(R.string.fav_notification)) {
+            if (PreferenceUtil.getBoolean(R.string.notification)
+                    && PreferenceUtil.getBoolean(R.string.fav_notification)) {
                 if (target.getId() == TwitterUtils.getCurrentAccountId()
                         && source.getId() != TwitterUtils.getCurrentAccountId()) {
                     mHandler.post(new Runnable() {
@@ -199,8 +200,8 @@ public class HomeTimelineFragment extends AbstractTimelineFragment {
 
         @Override
         public void onUnfavorite(final User source, User target, final Status unfavoritedStatus) {
-            if (AppUtil.getBooleanPreference(R.string.notification)
-                    && AppUtil.getBooleanPreference(R.string.fav_notification)) {
+            if (PreferenceUtil.getBoolean(R.string.notification)
+                    && PreferenceUtil.getBoolean(R.string.fav_notification)) {
                 if (target.getId() == TwitterUtils.getCurrentAccountId()
                         && source.getId() != TwitterUtils.getCurrentAccountId()) {
                     mHandler.post(new Runnable() {
@@ -215,8 +216,8 @@ public class HomeTimelineFragment extends AbstractTimelineFragment {
 
         @Override
         public void onDirectMessage(final DirectMessage directMessage) {
-            if (AppUtil.getBooleanPreference(R.string.notification)
-                    && AppUtil.getBooleanPreference(R.string.dm_notification)) {
+            if (PreferenceUtil.getBoolean(R.string.notification)
+                    && PreferenceUtil.getBoolean(R.string.dm_notification)) {
                 mHandler.post(new Runnable() {
                     public void run() {
                         AppUtil.showToast("@" + directMessage.getSenderScreenName() + "からダイレクトメッセージが届きました");

@@ -80,5 +80,6 @@
     <string name="cancel">キャンセル</string>
     <string name="preview">プレビュー</string>
     <string name="delete">削除</string>
+    <string name="license_info">オープンソースライセンス</string>
 
 </resources>
