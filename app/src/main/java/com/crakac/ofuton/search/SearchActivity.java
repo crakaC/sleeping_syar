@@ -16,6 +16,8 @@ import com.crakac.ofuton.R;
 import com.crakac.ofuton.RelativeTimeUpdater;
 import com.crakac.ofuton.util.AppUtil;
 
+import twitter4j.Query;
+
 /**
  * Created by kosukeshirakashi on 2014/09/05.
  */
@@ -32,29 +34,43 @@ public class SearchActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_simple_tab);
         mQuery = getIntent().getStringExtra(C.QUERY);
-
         mTab = (PagerSlidingTabStrip) findViewById(R.id.tab);
         mPager = (ViewPager) findViewById(R.id.pager);
-        mAdapter = new SearchFragmentPagerAdapter(getSupportFragmentManager());
-        setFragments();
+        if(mAdapter == null){
+            mAdapter = new SearchFragmentPagerAdapter(getSupportFragmentManager());
+        }
+        if(mAdapter.isEmpty()){
+            setFragments();
+        }
         mPager.setAdapter(mAdapter);
+        mPager.setOffscreenPageLimit(mAdapter.getCount());
         mTab.setViewPager(mPager);
         mTab.setOnPageChangeListener(new RelativeTimeUpdater(mAdapter));
     }
 
-    private void setArgs(Fragment f, String query){
+    private void setArgs(Fragment f, String query) {
         Bundle b = new Bundle(1);
         b.putString(C.QUERY, query);
         f.setArguments(b);
     }
 
+    private void setArgs(Fragment f, String query, Query.ResultType resultType) {
+        Bundle b = new Bundle(2);
+        b.putString(C.QUERY, query);
+        b.putSerializable(C.TYPE, resultType);
+        f.setArguments(b);
+    }
+
     private void setFragments(){
+        TweetSearchFragment top = new TweetSearchFragment();
         TweetSearchFragment tweet = new TweetSearchFragment();
         TweetSearchFragment pics = new TweetSearchFragment();
         UserSearchFragment user = new UserSearchFragment();
+        setArgs(top, buildQuery(mQuery), Query.MIXED);
         setArgs(tweet, buildQuery(mQuery));
         setArgs(pics, buildQuery(mQuery + " pic.twitter.com"));
         setArgs(user, buildQuery(mQuery));
+        mAdapter.add(top);
         mAdapter.add(tweet);
         mAdapter.add(user);
         mAdapter.add(pics);
@@ -108,6 +124,7 @@ public class SearchActivity extends ActionBarActivity {
             }
         }
     }
+
     static interface Searchable{
         void search(String query);
     }

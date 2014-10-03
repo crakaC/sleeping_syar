@@ -2,6 +2,7 @@ package com.crakac.ofuton;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 
 import com.crakac.ofuton.timeline.AbstractTimelineFragment;
@@ -14,8 +15,8 @@ import com.crakac.ofuton.timeline.AbstractTimelineFragment;
 public class RelativeTimeUpdater extends ViewPager.SimpleOnPageChangeListener {
     private boolean mIsPageChanged = false;
     private int mPositioin;
-    private FragmentPagerAdapter mAdapter;
-    public RelativeTimeUpdater(FragmentPagerAdapter adapter){
+    private FragmentStatePagerAdapter mAdapter;
+    public RelativeTimeUpdater(FragmentStatePagerAdapter adapter){
         mAdapter = adapter;
     }
     @Override

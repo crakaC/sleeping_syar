@@ -1,9 +1,10 @@
 package com.crakac.ofuton.search;
 
 import android.os.Bundle;
-import android.util.Log;
+import android.support.annotation.Nullable;
 
 import com.crakac.ofuton.C;
+import com.crakac.ofuton.R;
 import com.crakac.ofuton.timeline.AbstractTimelineFragment;
 import com.crakac.ofuton.util.TwitterUtils;
 
@@ -18,20 +19,31 @@ import twitter4j.TwitterException;
  * Created by kosukeshirakashi on 2014/10/03.
  */
 public class TweetSearchFragment extends AbstractTimelineFragment implements SearchActivity.Searchable{
-    private String mQuery;
+    protected String mQuery;
+    private Query.ResultType mResultType;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mQuery = getArguments().getString(C.QUERY);
+        mResultType = (Query.ResultType) getArguments().getSerializable(C.TYPE);
+        if(mResultType == null){
+            mResultType = Query.RECENT;
+        }
         if(savedInstanceState != null){
             mQuery = savedInstanceState.getString(C.QUERY);
         }
     }
 
     @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        setEmptyText(R.string.no_tweet);
+    }
+
+    @Override
     protected List<Status> newStatuses(long sinceId, int count) {
         try{
-            QueryResult result = TwitterUtils.getTwitterInstance().search(new Query(mQuery).count(count).sinceId(sinceId).resultType(Query.ResultType.recent));
+            QueryResult result = TwitterUtils.getTwitterInstance().search(new Query(mQuery).count(count).sinceId(sinceId).resultType(mResultType));
             return result.getTweets();
         }catch (TwitterException e){
             e.printStackTrace();
@@ -42,7 +54,7 @@ public class TweetSearchFragment extends AbstractTimelineFragment implements Sea
     @Override
     protected List<Status> previousStatuses(long maxId, int count) {
         try {
-            QueryResult result = TwitterUtils.getTwitterInstance().search(new Query(mQuery).count(count).maxId(maxId - 1L).resultType(Query.ResultType.recent));
+            QueryResult result = TwitterUtils.getTwitterInstance().search(new Query(mQuery).count(count).maxId(maxId - 1L).resultType(mResultType));
             return result.getTweets();
         } catch (TwitterException e) {
             e.printStackTrace();

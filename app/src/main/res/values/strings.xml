@@ -21,7 +21,8 @@
     <string name="dummy">xxxxxxxxxxxxxxxx</string>
     <string name="refresh">Reload</string>
     <string name="action_bar_search">ツイートを検索</string>
-    <string name="not_found">ツイートはありません</string>
+    <string name="no_tweet">ツイートはありません</string>
+    <string name="no_user">ユーザーはいません</string>
     <string name="show_conversation">会話を表示</string>
     <string name="reply">返信する</string>
     <string name="reply_all">全員に返信する</string>

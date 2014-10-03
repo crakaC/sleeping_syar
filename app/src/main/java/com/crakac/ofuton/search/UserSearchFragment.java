@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 
 import com.crakac.ofuton.AbstractPtrFragment;
 import com.crakac.ofuton.C;
+import com.crakac.ofuton.R;
 import com.crakac.ofuton.user.UserAdapter;
 import com.crakac.ofuton.user.UserListClickListener;
 import com.crakac.ofuton.util.ParallelTask;
@@ -23,6 +24,8 @@ import twitter4j.User;
 public class UserSearchFragment extends AbstractPtrFragment implements SearchActivity.Searchable {
     private String mQuery;
     private UserAdapter mAdapter;
+    private boolean mExistsNewUser = true;
+    private boolean mErrorOccurred = false;
 
     private UserSearchTask mSearchTask;
     private int mPage = 1;
@@ -31,7 +34,9 @@ public class UserSearchFragment extends AbstractPtrFragment implements SearchAct
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mQuery = getArguments().getString(C.QUERY);
-        mAdapter = new UserAdapter(getActivity());
+        if(mAdapter == null){
+            mAdapter = new UserAdapter(getActivity());
+        }
         if (savedInstanceState != null) {
             mPage = savedInstanceState.getInt("page");
             mQuery = savedInstanceState.getString(C.QUERY);
@@ -50,6 +55,7 @@ public class UserSearchFragment extends AbstractPtrFragment implements SearchAct
 
     private void searchUser() {
         if (mSearchTask != null && mSearchTask.getStatus().equals(AsyncTask.Status.RUNNING)) return;
+        if (!mExistsNewUser) return;
         mSearchTask = new UserSearchTask();
         mSearchTask.executeParallel();
     }
@@ -71,6 +77,7 @@ public class UserSearchFragment extends AbstractPtrFragment implements SearchAct
                 return TwitterUtils.getTwitterInstance().searchUsers(mQuery, mPage);
             } catch (TwitterException e) {
                 e.printStackTrace();
+                mErrorOccurred = true;
             }
             return null;
         }
@@ -79,10 +86,28 @@ public class UserSearchFragment extends AbstractPtrFragment implements SearchAct
         protected void onPostExecute(ResponseList<User> users) {
             setEmptyViewStandby();
             if (users == null) return;
+            mExistsNewUser = false;
             for (User user : users) {
-                mAdapter.add(user);
+                if(mAdapter.getPosition(user) < 0){
+                    mAdapter.add(user);
+                    mExistsNewUser = true;
+                }
             }
+            if(!mExistsNewUser){
+                if(!mErrorOccurred && mAdapter.isEmpty()){
+                    setEmptyText(R.string.no_user);
+                }
+                removeFooterView();
+            }
+
             mPage++;
+        }
+    }
+
+    @Override
+    protected void onClickEmptyView() {
+        if(!mErrorOccurred){
+            search(mQuery);
         }
     }
 

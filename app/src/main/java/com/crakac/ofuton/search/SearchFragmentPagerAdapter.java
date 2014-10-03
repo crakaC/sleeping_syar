@@ -26,10 +26,12 @@ public class SearchFragmentPagerAdapter extends SimpleFragmentPagerAdapter<Fragm
     public CharSequence getPageTitle(int position) {
         switch (position){
             case 0:
-                return "ツイート";
+                return "トップ";
             case 1:
-                return "ユーザー";
+                return "すべて";
             case 2:
+                return "ユーザー";
+            case 3:
                 return "画像";
         }
         return "";

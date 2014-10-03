@@ -4,11 +4,12 @@ package com.crakac.ofuton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class SimpleFragmentPagerAdapter<T extends Fragment> extends FragmentPagerAdapter {
+public class SimpleFragmentPagerAdapter<T extends Fragment> extends FragmentStatePagerAdapter {
     protected ArrayList<T> mFragments;
 
     public SimpleFragmentPagerAdapter(FragmentManager fm) {
@@ -41,5 +42,9 @@ public class SimpleFragmentPagerAdapter<T extends Fragment> extends FragmentPage
     public void add(T fragment) {
         mFragments.add(fragment);
         notifyDataSetChanged();
+    }
+
+    public boolean isEmpty(){
+        return mFragments.size() == 0;
     }
 }

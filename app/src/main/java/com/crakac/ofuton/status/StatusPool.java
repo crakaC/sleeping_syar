@@ -10,14 +10,14 @@ import java.util.concurrent.ConcurrentHashMap;
 import twitter4j.Status;
 
 public class StatusPool {
-    private static Map<Long, Status> statusMap = new ConcurrentHashMap<Long, Status>();
+    private static Map<Long, Status> statusMap = new ConcurrentHashMap<>();
 
     public static Status put(long id, Status status) {
         return statusMap.put(id, status);
     }
 
     public static List<Status> search(String query) {
-        List<Status> list = new ArrayList<Status>();
+        List<Status> list = new ArrayList<>();
         for (Status status : statusMap.values()) {
             if (status.getText().toLowerCase().contains(query.toLowerCase())) {
                 list.add(status);
