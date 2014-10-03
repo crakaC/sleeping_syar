@@ -1,6 +1,5 @@
 package com.crakac.ofuton;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -9,10 +8,12 @@ import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -52,6 +53,7 @@ public class MainActivity extends ActionBarActivity {
     private TimelineFragmentPagerAdapter mAdapter;
     private ImageView mTweetBtn;
     private Menu mMenu;
+    private SearchView mSearchView;
     /* Navigation drawer */
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
@@ -93,7 +95,7 @@ public class MainActivity extends ActionBarActivity {
         setPages(mAdapter);
         mPager.setAdapter(mAdapter);// ViewPagerにアダプタ(fragment)をセット．
         mPager.setCurrentItem(getFragmentPosition(HomeTimelineFragment.class));// HomeTimelineの位置に合わせる
-        if (AppUtil.getMemoryMB() > 32) {
+        if(AppUtil.getMemoryMB() > 32){
             mPager.setOffscreenPageLimit(mAdapter.getCount());// 保持するFragmentの数を指定．全フラグメントを保持するのでぬるぬる動くがメモリを食う
         }
         mTabs.setViewPager(mPager);// PagerSlidingTabStripにViewPagerをセット．
@@ -121,7 +123,7 @@ public class MainActivity extends ActionBarActivity {
             return;
         }
         showRefreshMenu(PreferenceUtil.getBoolean(R.string.enable_refresh_btn));
-        if (PreferenceUtil.getBoolean(R.string.always_awake) && PreferenceUtil.getBoolean(R.string.streaming_mode)) {
+        if(PreferenceUtil.getBoolean(R.string.always_awake) && PreferenceUtil.getBoolean(R.string.streaming_mode)){
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         } else {
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
@@ -131,9 +133,9 @@ public class MainActivity extends ActionBarActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (ReloadChecker.shouldSoftReload()) {
+        if (ReloadChecker.shouldSoftReload()){
             ReloadChecker.reset();
-            for (AbstractTimelineFragment f : mAdapter.getFragments()) {
+            for(AbstractTimelineFragment f : mAdapter.getFragments()){
                 f.getViews();
             }
         }
@@ -153,15 +155,20 @@ public class MainActivity extends ActionBarActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main, menu);
-        this.mMenu = menu;
+        mMenu = menu;
         showRefreshMenu(PreferenceUtil.getBoolean(R.string.enable_refresh_btn));
+        MenuItem search = menu.findItem(R.id.search);
+        mSearchView = (SearchView) MenuItemCompat.getActionView(search);
+        mSearchView.setOnQueryTextListener(mOnQueryTextListener);
         return true;
     }
 
     @Override
     public void onBackPressed() {
-        if (mDrawerLayout.isDrawerOpen(mDrawerList)) {
+        if (mDrawerLayout.isDrawerOpen(mDrawerList)){
             mDrawerLayout.closeDrawer(GravityCompat.START);
+        } else if (mSearchView != null && !mSearchView.isIconified()) {
+            AppUtil.closeSearchView(mSearchView);
         } else {
             super.onBackPressed();
         }
@@ -170,25 +177,25 @@ public class MainActivity extends ActionBarActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case android.R.id.home:
+        case android.R.id.home:
+            if(mSearchView.isIconified()) {
                 toggleDrawer();
-                return true;
-            case R.id.refresh:// reload
-                for (AbstractTimelineFragment f : mAdapter.getFragments()) {
-                    f.refresh();
-                }
-                AppUtil.showToast("Refresh！");
-                break;
-            case R.id.search:
-                startActivity(SearchActivity.class);
-                break;
+            }else{
+                mSearchView.setQuery("", false);
+                mSearchView.setIconified(true);
+            }
+            return true;
+        case R.id.refresh:// reload
+            for (AbstractTimelineFragment f : mAdapter.getFragments()) {
+                f.refresh();
+            }
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
     /**
      * set pages to adapter
-     *
      * @param adapter
      */
     private void setPages(TimelineFragmentPagerAdapter adapter) {
@@ -264,8 +271,8 @@ public class MainActivity extends ActionBarActivity {
         mDrawerLayout.setDrawerListener(mDrawerToggle);
     }
 
-    public boolean isCurrentTab(Fragment f) {
-        return mAdapter.getFragmentPosition(f) == mPager.getCurrentItem();
+    public boolean isCurrentTab(Fragment f){
+        return mAdapter.getItemPosition(f) == mPager.getCurrentItem();
     }
 
     private enum MenuID {
@@ -307,7 +314,7 @@ public class MainActivity extends ActionBarActivity {
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             SlideMenu item = getItem(position);
-            if (item.getMenuId() == MenuID.syar) {
+            if(item.getMenuId() == MenuID.syar){
                 convertView = mInflater.inflate(R.layout.slide_menu_syar, null);
             } else {
                 convertView = mInflater.inflate(R.layout.slide_menu_item, null);
@@ -325,37 +332,53 @@ public class MainActivity extends ActionBarActivity {
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             SlideMenu item = (SlideMenu) parent.getItemAtPosition(position);
             switch (item.getMenuId()) {
-                case account:
-                    startActivity(new Intent(MainActivity.this, AccountActivity.class));
-                    break;
-                case home:
-                    mPager.setCurrentItem(getFragmentPosition(HomeTimelineFragment.class));
-                    break;
-                case mentions:
-                    mPager.setCurrentItem(getFragmentPosition(MentionsTimelineFragment.class));
-                    break;
-                case favorites:
-                    mPager.setCurrentItem(getFragmentPosition(FavoriteTimelineFragment.class));
-                    break;
-                case dm:
-                    startActivity(new Intent(MainActivity.this, DmActivity.class));
-                    break;
-                case lists:
-                    startActivity(new Intent(MainActivity.this, ListSelectActivity.class));
-                    break;
-                case settings:
-                    startActivity(new Intent(MainActivity.this, SettingActivity.class));
-                    break;
-                case syar:
-                    AppUtil.syar();
-                    break;
-                default:
-                    break;
+            case account:
+                startActivity(new Intent(MainActivity.this, AccountActivity.class));
+                break;
+            case home:
+                mPager.setCurrentItem(getFragmentPosition(HomeTimelineFragment.class));
+                break;
+            case mentions:
+                mPager.setCurrentItem(getFragmentPosition(MentionsTimelineFragment.class));
+                break;
+            case favorites:
+                mPager.setCurrentItem(getFragmentPosition(FavoriteTimelineFragment.class));
+                break;
+            case dm:
+                startActivity(new Intent(MainActivity.this, DmActivity.class));
+                break;
+            case lists:
+                startActivity(new Intent(MainActivity.this, ListSelectActivity.class));
+                break;
+            case settings:
+                startActivity(new Intent(MainActivity.this, SettingActivity.class));
+                break;
+            case syar:
+                AppUtil.syar();
+                break;
+            default:
+                break;
             }
             mDrawerLayout.closeDrawer(GravityCompat.START);
         }
     }
-    private void startActivity(Class<? extends Activity> targetActivity){
-        startActivity(new Intent(this, targetActivity));
-    }
+
+    private final SearchView.OnQueryTextListener mOnQueryTextListener = new SearchView.OnQueryTextListener() {
+        @Override
+        public boolean onQueryTextChange(String newText) {
+            //TODO display search history
+            return true;
+        }
+
+        @Override
+        public boolean onQueryTextSubmit(String query) {
+            Intent i = new Intent(getApplicationContext(), SearchActivity.class);
+            i.putExtra(C.QUERY, query);
+            startActivity(i);
+            AppUtil.closeSearchView(mSearchView);
+            mDrawerLayout.closeDrawer(GravityCompat.START);
+            return true;
+        }
+
+    };
 }

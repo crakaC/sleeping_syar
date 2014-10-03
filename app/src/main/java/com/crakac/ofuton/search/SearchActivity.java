@@ -1,46 +1,85 @@
 package com.crakac.ofuton.search;
 
 import android.os.Bundle;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.View;
+import android.view.MenuItem;
 
+import com.astuetz.PagerSlidingTabStrip;
+import com.crakac.ofuton.C;
 import com.crakac.ofuton.R;
-import com.crakac.ofuton.SimpleFragmentPagerAdapter;
+import com.crakac.ofuton.RelativeTimeUpdater;
+import com.crakac.ofuton.util.AppUtil;
 
 /**
  * Created by kosukeshirakashi on 2014/09/05.
  */
 public class SearchActivity extends ActionBarActivity {
 
+    private PagerSlidingTabStrip mTab;
+    private ViewPager mPager;
+    private SearchFragmentPagerAdapter mAdapter;
     private SearchView mSearchView;
-    private SearchFragment mSearchFragment;
+    private String mQuery;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_simple_tab);
-        SimpleFragmentPagerAdapter<SearchFragment> pagerAdapter = new SimpleFragmentPagerAdapter(getSupportFragmentManager());
-        pagerAdapter.add(new SearchFragment());
-        //pagerAdapter.add(new GlobalSearchFragment);
+        mQuery = getIntent().getStringExtra(C.QUERY);
+
+        mTab = (PagerSlidingTabStrip) findViewById(R.id.tab);
+        mPager = (ViewPager) findViewById(R.id.pager);
+        mAdapter = new SearchFragmentPagerAdapter(getSupportFragmentManager());
+        setFragments();
+        mPager.setAdapter(mAdapter);
+        mTab.setViewPager(mPager);
+        mTab.setOnPageChangeListener(new RelativeTimeUpdater(mAdapter));
+    }
+
+    private void setArgs(Fragment f, String query){
+        Bundle b = new Bundle(1);
+        b.putString(C.QUERY, query);
+        f.setArguments(b);
+    }
+
+    private void setFragments(){
+        TweetSearchFragment tweet = new TweetSearchFragment();
+        TweetSearchFragment pics = new TweetSearchFragment();
+        UserSearchFragment user = new UserSearchFragment();
+        setArgs(tweet, mQuery);
+        setArgs(pics, mQuery + " pic.twitter.com");
+        setArgs(user, mQuery);
+        mAdapter.add(tweet);
+        mAdapter.add(user);
+        mAdapter.add(pics);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.search, menu);
-        mSearchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.search));
+        MenuItem search = menu.findItem(R.id.search);
+        mSearchView = (SearchView) MenuItemCompat.getActionView(search);
         mSearchView.setOnQueryTextListener(mOnQueryTextListener);
-        mSearchView.setOnCloseListener(mOnCloseListener);
-
-        MenuItemCompat.expandActionView(menu.findItem(R.id.search));
+        mSearchView.setIconified(false);
         mSearchView.requestFocus();
+        mSearchView.setQuery(mQuery, true);
         return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (mSearchView != null && !mSearchView.isIconified()) {
+            AppUtil.closeSearchView(mSearchView);
+        } else {
+            super.onBackPressed();
+        }
     }
 
     private final SearchView.OnQueryTextListener mOnQueryTextListener = new SearchView.OnQueryTextListener() {
@@ -58,29 +97,6 @@ public class SearchActivity extends ActionBarActivity {
 
     };
 
-    private final SearchView.OnCloseListener mOnCloseListener = new SearchView.OnCloseListener() {
-        @Override
-        public boolean onClose() {
-            if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
-                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                ft.remove(mSearchFragment);
-                ft.commit();
-                getSupportFragmentManager().popBackStack("timelines",
-                        FragmentManager.POP_BACK_STACK_INCLUSIVE);
-            }
-            return false;
-        }
-    };
-
     private void searchStatus(String query) {
-        mSearchFragment = new SearchFragment();
-        Bundle b = new Bundle(1);
-        b.putSerializable("query", query);
-        mSearchFragment.setArguments(b);
-        FragmentManager m = getSupportFragmentManager();
-        FragmentTransaction ft = m.beginTransaction();
-        ft.replace(R.id.main_container, mSearchFragment, "search");
-        ft.addToBackStack("timelines");
-        ft.commit();
     }
 }

@@ -16,4 +16,5 @@ public class C {
 	public static final String USER_ID = "USER_ID";
     public static final String URI = "URI";
     public static final String POSITION = "POSITION";
+    public static final String QUERY = "QUERY";
 }

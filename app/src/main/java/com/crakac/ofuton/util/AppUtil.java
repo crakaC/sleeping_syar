@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.support.v7.app.ActionBar;
+import android.support.v7.widget.SearchView;
 import android.text.Html;
 import android.text.Spanned;
 import android.text.TextUtils;
@@ -139,7 +140,7 @@ public final class AppUtil {
         return Html.fromHtml(text);
     }
 
-    public static String trimUrl(twitter4j.Status status){
+    public static String trimUrl(twitter4j.Status status) {
         String text = status.getText();
         for (MediaEntity entity : status.getMediaEntities()) {
             text = text.replace(entity.getURL(), "");
@@ -214,13 +215,6 @@ public final class AppUtil {
         return memory;
     }
 
-    public static interface SyarListener {
-
-        void preSyar();
-
-        void postSyar();
-    }
-
     public static void showView(View... views) {
         for (View v : views) {
             v.setVisibility(View.VISIBLE);
@@ -292,9 +286,9 @@ public final class AppUtil {
         return (int) (dp * scale + 0.5f);
     }
 
-    public static float pxToDp(int px){
+    public static float pxToDp(int px) {
         final float scale = sContext.getResources().getDisplayMetrics().density;
-        return  (float)px / scale;
+        return (float) px / scale;
     }
 
     public static void setActionBarIcon(ActionBar actionbar, ImageView view) {
@@ -304,6 +298,17 @@ public final class AppUtil {
         int length = dpToPx(ACTIONBAR_ICON_DP);
         Bitmap resized = Bitmap.createScaledBitmap(bm, length, length, true);
         actionbar.setIcon(new BitmapDrawable(sContext.getResources(), resized));
+    }
 
+    public static void closeSearchView(SearchView searchView) {
+        searchView.setQuery(null, false);
+        searchView.setIconified(true);
+    }
+
+    public static interface SyarListener {
+
+        void preSyar();
+
+        void postSyar();
     }
 }
