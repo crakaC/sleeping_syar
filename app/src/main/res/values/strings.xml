@@ -10,6 +10,7 @@
     <string name="activity_account">Accounts</string>
     <string name="activity_list">Choose Lists</string>
     <string name="activity_user_detail">User Profile</string>
+    <string name="activity_search">Search</string>
     <string name="setting">設定</string>
     <string name="auth">認証</string>
     <string name="account">アカウント</string>

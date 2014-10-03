@@ -8,11 +8,10 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.View;
 
 import com.crakac.ofuton.R;
-import com.crakac.ofuton.SearchFragment;
 import com.crakac.ofuton.SimpleFragmentPagerAdapter;
-import com.crakac.ofuton.util.AppUtil;
 
 /**
  * Created by kosukeshirakashi on 2014/09/05.
@@ -21,11 +20,12 @@ public class SearchActivity extends ActionBarActivity {
 
     private SearchView mSearchView;
     private SearchFragment mSearchFragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_simple_tab);
-        SimpleFragmentPagerAdapter pagerAdapter = new SimpleFragmentPagerAdapter(getSupportFragmentManager());
+        SimpleFragmentPagerAdapter<SearchFragment> pagerAdapter = new SimpleFragmentPagerAdapter(getSupportFragmentManager());
         pagerAdapter.add(new SearchFragment());
         //pagerAdapter.add(new GlobalSearchFragment);
     }
@@ -33,10 +33,13 @@ public class SearchActivity extends ActionBarActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.main, menu);
+        inflater.inflate(R.menu.search, menu);
         mSearchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.search));
-        //mSearchView.setOnQueryTextListener(mOnQueryTextListener);
-        //mSearchView.setOnCloseListener(mOnCloseListener);
+        mSearchView.setOnQueryTextListener(mOnQueryTextListener);
+        mSearchView.setOnCloseListener(mOnCloseListener);
+
+        MenuItemCompat.expandActionView(menu.findItem(R.id.search));
+        mSearchView.requestFocus();
         return true;
     }
 
@@ -54,6 +57,7 @@ public class SearchActivity extends ActionBarActivity {
         }
 
     };
+
     private final SearchView.OnCloseListener mOnCloseListener = new SearchView.OnCloseListener() {
         @Override
         public boolean onClose() {

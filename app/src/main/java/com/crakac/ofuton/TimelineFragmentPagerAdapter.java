@@ -39,7 +39,7 @@ public class TimelineFragmentPagerAdapter extends FragmentPagerAdapter {
 	}
 
 	@Override
-	public Fragment getItem(int i) {
+	public AbstractTimelineFragment getItem(int i) {
 		return mFragments.get(i);
 	}
 
@@ -50,7 +50,7 @@ public class TimelineFragmentPagerAdapter extends FragmentPagerAdapter {
 
 	@Override
 	public CharSequence getPageTitle(int position) {
-		Log.d(TAG,position + ":"+ ((AbstractTimelineFragment) getItem(position)).getTimelineName() );
+		Log.d(TAG,position + ":"+ getItem(position).getTimelineName() );
 		return mFragments.get(position).getTimelineName();
 	}
 
@@ -71,8 +71,6 @@ public class TimelineFragmentPagerAdapter extends FragmentPagerAdapter {
 		lf.setArguments(bundle);
 		add(lf);
 	}
-
-
 
 	public ArrayList<AbstractTimelineFragment> getFragments(){
 		return mFragments;

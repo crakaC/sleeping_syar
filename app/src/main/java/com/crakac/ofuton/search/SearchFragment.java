@@ -1,4 +1,4 @@
-package com.crakac.ofuton;
+package com.crakac.ofuton.search;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -6,6 +6,7 @@ import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
 
+import com.crakac.ofuton.R;
 import com.crakac.ofuton.status.StatusPool;
 import com.crakac.ofuton.timeline.AbstractStatusFragment;
 
