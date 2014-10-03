@@ -52,12 +52,16 @@ public class SearchActivity extends ActionBarActivity {
         TweetSearchFragment tweet = new TweetSearchFragment();
         TweetSearchFragment pics = new TweetSearchFragment();
         UserSearchFragment user = new UserSearchFragment();
-        setArgs(tweet, mQuery);
-        setArgs(pics, mQuery + " pic.twitter.com");
-        setArgs(user, mQuery);
+        setArgs(tweet, buildQuery(mQuery));
+        setArgs(pics, buildQuery(mQuery + " pic.twitter.com"));
+        setArgs(user, buildQuery(mQuery));
         mAdapter.add(tweet);
         mAdapter.add(user);
         mAdapter.add(pics);
+    }
+
+    private String buildQuery(String query){
+        return query + " -filter:retweets";
     }
 
     @Override
