@@ -38,6 +38,7 @@ public class TweetSearchFragment extends AbstractTimelineFragment implements Sea
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setEmptyText(R.string.no_tweet);
+        setPoolStatus(false);
     }
 
     @Override

@@ -33,6 +33,7 @@ public class TweetStatusAdapter extends ArrayAdapter<Status> {
     private static LayoutInflater sInflater;
     private static Account sUserAccount;
     private static boolean shouldShowPreview = false;
+    private boolean mShouldPool = true;
     private static final String TAG = TweetStatusAdapter.class.getSimpleName();
 
     private static class ViewHolder {
@@ -53,13 +54,17 @@ public class TweetStatusAdapter extends ArrayAdapter<Status> {
     @Override
     public void add(Status status) {
         super.add(status);
-        StatusPool.put(status.getId(), status);
+        if(mShouldPool){
+            StatusPool.put(status.getId(), status);
+        }
     }
 
     @Override
     public void insert(Status status, int index) {
         super.insert(status, index);
-        StatusPool.put(status.getId(), status);
+        if(mShouldPool){
+            StatusPool.put(status.getId(), status);
+        }
     }
 
     public TweetStatusAdapter(Context context) {
@@ -308,4 +313,9 @@ public class TweetStatusAdapter extends ArrayAdapter<Status> {
     public void shouldShowInlinePreview(boolean showPreview) {
         shouldShowPreview = showPreview;
     }
+
+    public void shouldPoolStatus(boolean shouldPool) {
+        mShouldPool = shouldPool;
+    }
+
 }

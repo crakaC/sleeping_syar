@@ -82,4 +82,7 @@ public abstract class AbstractStatusFragment extends AbstractPtrFragment {
         return mListView.getFirstVisiblePosition() == 0;
     }
 
+    protected void setPoolStatus(boolean shouldPool){
+        mAdapter.shouldPoolStatus(shouldPool);
+    }
 }
