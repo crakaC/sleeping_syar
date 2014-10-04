@@ -16,7 +16,7 @@ import java.util.ListIterator;
 
 public abstract class AbstractTimelineFragment extends AbstractStatusFragment {
 
-    protected long mSinceId = Long.MIN_VALUE, mMaxId = Long.MAX_VALUE;// ツイートを取得するときに使う．
+    protected long mSinceId, mMaxId;// ツイートを取得するときに使う．
     int mCount = 50;
     private ParallelTask<Void, Void, List<twitter4j.Status>> mFetchStatusTask;
     private static final String TAG = AbstractTimelineFragment.class.getSimpleName();
@@ -62,6 +62,11 @@ public abstract class AbstractTimelineFragment extends AbstractStatusFragment {
         super.onResume();
     }
 
+    private void initId(){
+        mSinceId = Long.MIN_VALUE;
+        mMaxId = Long.MAX_VALUE;
+    }
+
     protected void initTimeline() {
         if (mFetchStatusTask != null && mFetchStatusTask.getStatus() == AsyncTask.Status.RUNNING) {
             Log.d(TAG + getTimelineName(), ":initTask is already running.");
@@ -72,6 +77,7 @@ public abstract class AbstractTimelineFragment extends AbstractStatusFragment {
             Log.d(TAG + getTimelineName(), ":mAdapter has items.");
             return;
         }
+        initId();
         mFetchStatusTask = new FetchStatusTask();
         mFetchStatusTask.executeParallel();
     }
