@@ -71,6 +71,7 @@ public class MainActivity extends ActionBarActivity {
         } else {
             TwitterUtils.fetchApiConfigurationAsync(this);
         }
+        setTitle(R.string.app_name);
         setContentView(R.layout.activity_main);
         mTweetBtn = (ImageView) findViewById(R.id.tweetEveryWhere);// 右下のツイートボタン
         mTweetBtn.setOnTouchListener(new ColorOverlayOnTouch(PorterDuff.Mode.SRC_ATOP));

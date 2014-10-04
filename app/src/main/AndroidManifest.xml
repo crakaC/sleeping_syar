@@ -32,7 +32,7 @@
 
         <activity
             android:name=".MainActivity"
-            android:label="SleepingSyar"
+            android:label="@string/syar"
             android:launchMode="singleTask"
             android:windowSoftInputMode="adjustNothing">
             <intent-filter android:label="@string/syar">
