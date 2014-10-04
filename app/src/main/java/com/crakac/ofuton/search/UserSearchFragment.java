@@ -46,7 +46,7 @@ public class UserSearchFragment extends AbstractPtrFragment implements SearchAct
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = super.onCreateView(inflater, container, savedInstanceState);
-        mSwipeWidget.setEnabled(false);
+        setSwipeRefreshEnable(false);
         mListView.setAdapter(mAdapter);
         mListView.setOnItemClickListener(new UserListClickListener(getActivity()));
         searchUser();

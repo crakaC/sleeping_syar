@@ -57,15 +57,13 @@ public class HomeTimelineFragment extends AbstractTimelineFragment {
     public void onStart() {
         super.onStart();
         if (PreferenceUtil.getBoolean(R.string.streaming_mode)) {
-            mSwipeWidget.setOnRefreshListener(null);
-            mSwipeWidget.setEnabled(false);
+            setSwipeRefreshEnable(false);
             if (!mIsStreaming) {
                 mTwitterStream.user();
                 mIsStreaming = true;
             }
         } else {
-            mSwipeWidget.setOnRefreshListener(this);
-            mSwipeWidget.setEnabled(true);
+            setSwipeRefreshEnable(true);
             if (mIsStreaming) {
                 mTwitterStream.shutdown();
                 mIsStreaming = false;

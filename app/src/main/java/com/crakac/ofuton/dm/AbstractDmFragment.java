@@ -206,14 +206,14 @@ abstract public class AbstractDmFragment extends AbstractPtrFragment {
 				Log.d(TAG,"fail to get Tilmeline");
 				failToGetMessages();
 			}
-            mSwipeWidget.setRefreshing(false);
+            setSwipeWidgetRefreshing(false);
 		}
 
 		@Override
 		protected void onCancelled() {
 			super.onCancelled();
 			Log.d(TAG,"cancel loadNewTask");
-            mSwipeWidget.setRefreshing(false);
+            setSwipeWidgetRefreshing(false);
 		}
 	}
 

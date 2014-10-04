@@ -85,7 +85,7 @@ public abstract class AbstractTimelineFragment extends AbstractStatusFragment {
         }
         // initTaskが走っておらず，中身がないときはinitTaskを呼ぶ
         if (mAdapter.isEmpty()) {
-            mSwipeWidget.setRefreshing(true);
+            setSwipeRefreshEnable(true);
             Log.d(TAG + getTimelineName(), ":initTask hasn't run.");
             initTimeline();
             return;
@@ -177,13 +177,13 @@ public abstract class AbstractTimelineFragment extends AbstractStatusFragment {
                 Log.d(TAG + getTimelineName(), "fail to get Tilmeline");
             }
             updateDisplayedTime();
-            mSwipeWidget.setRefreshing(false);
+            setSwipeWidgetRefreshing(false);
         }
 
         @Override
         protected void onCancelled() {
             Log.d(TAG + getTimelineName(), "cancel loadNewTask");
-            mSwipeWidget.setRefreshing(false);
+            setSwipeWidgetRefreshing(false);
         }
     }
 
@@ -267,7 +267,7 @@ public abstract class AbstractTimelineFragment extends AbstractStatusFragment {
     }
 
     public void refresh(){
-        mSwipeWidget.setRefreshing(true);
+        setSwipeWidgetRefreshing(true);
         loadNewTweets();
     }
 }

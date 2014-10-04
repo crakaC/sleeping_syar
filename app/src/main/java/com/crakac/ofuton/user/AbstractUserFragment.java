@@ -1,14 +1,11 @@
 package com.crakac.ofuton.user;
 
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ListView;
 
 import com.crakac.ofuton.AbstractPtrFragment;
 import com.crakac.ofuton.C;
@@ -54,7 +51,7 @@ public abstract class AbstractUserFragment extends AbstractPtrFragment {
 	}
 
 	private void initialize() {
-        mSwipeWidget.setEnabled(false);
+        setSwipeRefreshEnable(false);
         if (mAdapter.getCount() > 0) {
 			Log.d(TAG, "mAdapter already has items.");
 			return;

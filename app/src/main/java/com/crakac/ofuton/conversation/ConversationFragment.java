@@ -25,7 +25,7 @@ public class ConversationFragment extends AbstractStatusFragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initConversation();
-        mSwipeWidget.setEnabled(false);
+        setSwipeRefreshEnable(false);
     }
 
     @Override

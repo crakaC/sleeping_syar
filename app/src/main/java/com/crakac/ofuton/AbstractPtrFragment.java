@@ -11,7 +11,7 @@ import com.crakac.ofuton.widget.ListViewEx;
 import com.crakac.ofuton.widget.ProgressTextView;
 
 abstract public class AbstractPtrFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, ListViewEx.OnLastItemVisibleListener {
-    protected SwipeRefreshLayout mSwipeWidget;
+    private SwipeRefreshLayout mSwipeWidget;
 	protected ListViewEx mListView;// 引っ張って更新できるやつの中身
 	protected ProgressTextView mFooterView, mEmptyView;// 一番下のやつ,最初のやつ
 
@@ -58,6 +58,14 @@ abstract public class AbstractPtrFragment extends Fragment implements SwipeRefre
 		setEmptyViewStandby();
 		return view;
 	}
+
+    public void setSwipeRefreshEnable(boolean enable){
+        mSwipeWidget.setEnabled(enable);
+    }
+
+    public void setSwipeWidgetRefreshing(boolean refreshing){
+        mSwipeWidget.setRefreshing(refreshing);
+    }
 
 	protected void setEmptyViewLoading() {
 		if (!isAdded()) return;
