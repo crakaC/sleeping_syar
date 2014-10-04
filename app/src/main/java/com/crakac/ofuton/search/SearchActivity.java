@@ -35,6 +35,7 @@ public class SearchActivity extends ActionBarActivity {
         setContentView(R.layout.activity_simple_tab);
         mQuery = getIntent().getStringExtra(C.QUERY);
         mTab = (PagerSlidingTabStrip) findViewById(R.id.tab);
+        mTab.setTabPaddingLeftRight(AppUtil.dpToPx(8));
         mPager = (ViewPager) findViewById(R.id.pager);
         if(mAdapter == null){
             mAdapter = new SearchFragmentPagerAdapter(getSupportFragmentManager());
@@ -62,22 +63,22 @@ public class SearchActivity extends ActionBarActivity {
     }
 
     private void setFragments(){
-        TweetSearchFragment top = new TweetSearchFragment();
+        TweetSearchFragment local = new LocalSearchFragment();
         TweetSearchFragment tweet = new TweetSearchFragment();
         TweetSearchFragment pics = new TweetSearchFragment();
         UserSearchFragment user = new UserSearchFragment();
-        setArgs(top, buildQuery(mQuery), Query.MIXED);
+        setArgs(local, mQuery);
         setArgs(tweet, buildQuery(mQuery));
         setArgs(pics, buildQuery(mQuery + " pic.twitter.com"));
         setArgs(user, buildQuery(mQuery));
-        mAdapter.add(top);
+        mAdapter.add(local);
         mAdapter.add(tweet);
         mAdapter.add(user);
         mAdapter.add(pics);
     }
 
     private String buildQuery(String query){
-        return query + " -filter:retweets";
+        return query + " exclude:retweets";
     }
 
     @Override
