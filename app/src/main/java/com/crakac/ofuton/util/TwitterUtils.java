@@ -13,6 +13,7 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -353,8 +354,16 @@ public class TwitterUtils {
         MediaEntity[] mediaEntities = status.getExtendedMediaEntities().length > 0 ? status.getExtendedMediaEntities() : status.getMediaEntities();
         List<MediaEntity> guessedEntities = guessMediaEntities(status);
         Collections.addAll(guessedEntities, mediaEntities);
+        Collections.sort(guessedEntities,sMediaEntityComparator);
         return guessedEntities;
     }
+
+    private static final Comparator<MediaEntity> sMediaEntityComparator = new Comparator<MediaEntity>() {
+        @Override
+        public int compare(MediaEntity lhs, MediaEntity rhs) {
+            return lhs.getStart() - rhs.getStart();
+        }
+    };
 
     public static List<MediaEntity> guessMediaEntities(Status status) {
         List<MediaEntity> entities = new ArrayList<>();
