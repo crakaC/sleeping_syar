@@ -35,6 +35,7 @@ import com.crakac.ofuton.accounts.AccountActivity;
 import com.crakac.ofuton.dm.DmActivity;
 import com.crakac.ofuton.lists.ListSelectActivity;
 import com.crakac.ofuton.search.SearchActivity;
+import com.crakac.ofuton.status.TweetStatusAdapter;
 import com.crakac.ofuton.timeline.AbstractTimelineFragment;
 import com.crakac.ofuton.timeline.FavoriteTimelineFragment;
 import com.crakac.ofuton.timeline.HomeTimelineFragment;
@@ -128,6 +129,12 @@ public class MainActivity extends ActionBarActivity {
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         }
         AppUtil.closeSearchView(mSearchView);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        TweetStatusAdapter.shouldShowInlinePreview(PreferenceUtil.getBoolean(R.string.show_image_in_timeline, true));
     }
 
     @Override

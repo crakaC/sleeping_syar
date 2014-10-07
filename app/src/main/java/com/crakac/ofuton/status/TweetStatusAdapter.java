@@ -314,7 +314,7 @@ public class TweetStatusAdapter extends ArrayAdapter<Status> {
         return sContext.getResources().getColor(id);
     }
 
-    public void shouldShowInlinePreview(boolean showPreview) {
+    public static void shouldShowInlinePreview(boolean showPreview) {
         shouldShowPreview = showPreview;
     }
 
