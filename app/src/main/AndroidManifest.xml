@@ -155,7 +155,11 @@
                 <data
                     android:host="instagram.com"
                     android:pathPrefix="/p/"
-                    android:scheme="http" />
+                    android:scheme="http"/>
+                <data
+                    android:host="instagr.am"
+                    android:pathPrefix="/p/"
+                    android:scheme="http"/>
             </intent-filter>
         </activity>
         <activity
