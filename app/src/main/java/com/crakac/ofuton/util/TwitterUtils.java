@@ -11,6 +11,8 @@ import android.database.Cursor;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -23,6 +25,7 @@ import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 import twitter4j.TwitterStream;
 import twitter4j.TwitterStreamFactory;
+import twitter4j.URLEntity;
 import twitter4j.auth.AccessToken;
 import twitter4j.conf.Configuration;
 import twitter4j.conf.ConfigurationBuilder;
@@ -346,7 +349,21 @@ public class TwitterUtils {
         };
     }
 
-    public static MediaEntity[] getMediaEntities(Status status) {
-        return status.getExtendedMediaEntities().length > 0 ? status.getExtendedMediaEntities() : status.getMediaEntities();
+    public static List<MediaEntity> getMediaEntities(Status status) {
+        MediaEntity[] mediaEntities = status.getExtendedMediaEntities().length > 0 ? status.getExtendedMediaEntities() : status.getMediaEntities();
+        List<MediaEntity> guessedEntities = guessMediaEntities(status);
+        Collections.addAll(guessedEntities, mediaEntities);
+        return guessedEntities;
+    }
+
+    public static List<MediaEntity> guessMediaEntities(Status status) {
+        List<MediaEntity> entities = new ArrayList<>();
+        for (URLEntity urlEntity : status.getURLEntities()) {
+            if (NetUtil.isMediaUrl(urlEntity.getExpandedURL())) {
+                entities.add(new GuessedMediaEntity(urlEntity));
+                Log.d("GuessedMediaEntity", urlEntity.getExpandedURL());
+            }
+        }
+        return entities;
     }
 }

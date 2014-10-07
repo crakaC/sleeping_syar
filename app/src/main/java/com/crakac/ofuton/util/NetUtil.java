@@ -3,11 +3,15 @@ package com.crakac.ofuton.util;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.net.http.AndroidHttpClient;
 import android.os.Build;
+import android.os.Environment;
+import android.support.v4.util.LruCache;
+import android.text.TextUtils;
+import android.util.Log;
 import android.webkit.MimeTypeMap;
-import android.webkit.URLUtil;
 import android.widget.ImageView;
 
 import com.android.volley.Cache;
@@ -21,6 +25,7 @@ import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.ImageLoader.ImageContainer;
 import com.android.volley.toolbox.ImageLoader.ImageListener;
+import com.crakac.ofuton.BuildConfig;
 import com.crakac.ofuton.R;
 
 import java.io.BufferedInputStream;
@@ -30,6 +35,9 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
 
 public class NetUtil {
     private static final int CONNECT_TIMEOUT = 5000;
@@ -41,11 +49,13 @@ public class NetUtil {
     private static final int THREAD_POOL_SIZE_FOR_FETCHING_IMAGE = 2;
     public static ImageLoader PREVIEW_LOADER, ICON_LOADER;
     private static Cache sImageDiskCache;
+    private static LruCache<String, String> sUrlCache;
 
-    private static Cache createDiskCache(Context context, String cacheRoot, int cacheSize){
+    private static Cache createDiskCache(Context context, String cacheRoot, int cacheSize) {
         File cacheDir = new File(context.getCacheDir(), cacheRoot);
         return new DiskBasedCache(cacheDir, cacheSize);
     }
+
     /**
      * @param context
      * @param cacheRoot
@@ -53,12 +63,12 @@ public class NetUtil {
      * @param threadPoolSize
      * @return
      */
-    private static RequestQueue newRequestQueue(Context context, String cacheRoot, int cacheSize, int threadPoolSize){
+    private static RequestQueue newRequestQueue(Context context, String cacheRoot, int cacheSize, int threadPoolSize) {
         File cacheDir = new File(context.getCacheDir(), cacheRoot);
-        return  newRequestQueue(context, new DiskBasedCache(cacheDir, cacheSize), threadPoolSize);
+        return newRequestQueue(context, new DiskBasedCache(cacheDir, cacheSize), threadPoolSize);
     }
 
-    private static RequestQueue newRequestQueue(Context context, Cache cache, int threadPoolSize){
+    private static RequestQueue newRequestQueue(Context context, Cache cache, int threadPoolSize) {
         HttpStack stack;
         String userAgent = "volley/0";
         try {
@@ -85,11 +95,12 @@ public class NetUtil {
     }
 
     public static void init(Context context) {
-        RequestQueue iconQueue = newRequestQueue(context, ICON_CACHE_DIR, 50*1024*1024, THREAD_POOL_SIZE_FOR_FETCHING_ICONS);
+        RequestQueue iconQueue = newRequestQueue(context, ICON_CACHE_DIR, 50 * 1024 * 1024, THREAD_POOL_SIZE_FOR_FETCHING_ICONS);
         ICON_LOADER = new ImageLoader(iconQueue, new ImageLruCache());
-        sImageDiskCache = createDiskCache(context, IMAGE_CACHE_DIR, 50*1024*1024);
+        sImageDiskCache = createDiskCache(context, IMAGE_CACHE_DIR, 50 * 1024 * 1024);
         RequestQueue imageQueue = newRequestQueue(context, sImageDiskCache, THREAD_POOL_SIZE_FOR_FETCHING_IMAGE);
         PREVIEW_LOADER = new ImageLoader(imageQueue, new ImageLruCache());
+        sUrlCache = new UrlCache();
     }
 
     public static ImageContainer fetchIconAsync(ImageView targetView, String requestUrl) {
@@ -97,7 +108,7 @@ public class NetUtil {
     }
 
     public static ImageContainer fetchIconAsync(ImageView targetView, String requestUrl, int defaultImageResId,
-            int errorImageResId) {
+                                                int errorImageResId) {
         ImageListener listener = ImageLoader.getImageListener(targetView, defaultImageResId, errorImageResId);
         return fetchIconAsync(requestUrl, listener);
     }
@@ -111,25 +122,16 @@ public class NetUtil {
     }
 
     public static ImageContainer fetchNetworkImageAsync(ImageView targetView, String requestUrl, int defaultImageResId,
-            int errorImageResId) {
+                                                        int errorImageResId) {
         ImageListener listener = ImageLoader.getImageListener(targetView, defaultImageResId, errorImageResId);
         return fetchNetworkImageAsync(requestUrl, listener);
     }
 
-    public static ImageContainer fetchNetworkImageAsync(String requestUrl, ImageListener listener){
+    public static ImageContainer fetchNetworkImageAsync(String requestUrl, ImageListener listener) {
         return PREVIEW_LOADER.get(requestUrl, listener);
     }
 
-    private static boolean isCached(String requestUrl) {
-        return PREVIEW_LOADER.isCached(requestUrl, 0, 0) || PREVIEW_LOADER.isCached(requestUrl, 0, 0);
-    }
-
-    public static boolean shouldRecycle(ImageContainer container){
-        return isCached(container.getRequestUrl()) && container.getBitmap() != null && !container.getBitmap().isRecycled();
-    }
-
-
-    public static String expandUrl(String urlString) throws IOException {
+    private static String expandUrl(String urlString) throws IOException {
         URL url = new URL(urlString);
         final URLConnection conn = url.openConnection();
         if (!(conn instanceof HttpURLConnection)) {
@@ -155,38 +157,81 @@ public class NetUtil {
         return expandUrl;
     }
 
-    public static String convertUriToImageUrl(Uri uri) {
+    public static String getImageFileUrl(String url) {
+        Uri uri = Uri.parse(url);
         String host = uri.getHost();
-        Uri.Builder builder = new Uri.Builder();
+        Uri.Builder builder = uri.buildUpon();
         builder.scheme("http");
-        if (host.equals("twitpic.com") || host.equals("img.ly")) {
-            builder.authority(host);
-            builder.path("show/full".concat(uri.getPath()));
-        } else if (host.equals("gyazo.com")) {
-            builder.authority("i.gyazo.com");
-            builder.path(uri.getPath().concat(".png"));
-        } else if (host.equals("instagram.com")) {
-            builder = uri.buildUpon();
-            builder.appendEncodedPath("media/?size=l");
-        } else if (host.equals("p.twipple.jp")) {
-            builder.authority("p.twpl.jp");
-            builder.path("show/large".concat(uri.getPath()));
+        switch (host) {
+            case "twitpic.com":
+            case "img.ly":
+                builder.authority(host);
+                builder.path("show/full".concat(uri.getPath()));
+                break;
+            case "gyazo.com":
+                builder.authority("i.gyazo.com");
+                builder.path(uri.getPath().concat(".png"));
+                break;
+            case "instagram.com":
+                builder = uri.buildUpon();
+                builder.appendEncodedPath("media/?size=l");
+                break;
+            case "p.twipple.jp":
+                builder.authority("p.twpl.jp");
+                builder.path("show/large".concat(uri.getPath()));
+                break;
         }
         return builder.toString();
     }
 
-    public static String expandUrlIfNecessary(Uri uri) throws IOException{
+    public static String expandUrlIfNecessary(String url) throws IOException {
         //twitter公式ならMediaEntity#getMediaUrlでとれるurlでよい
-        if(uri.getHost().equals("pbs.twimg.com")){
+        Uri uri = Uri.parse(url);
+        if (uri.getHost().equals("pbs.twimg.com")) {
             return uri.toString();
         } else {
-            return expandUrl(convertUriToImageUrl(uri));
+            String imageUrl = getImageFileUrl(url);
+            if (sUrlCache.get(imageUrl) != null) {
+                return sUrlCache.get(imageUrl);
+            }
+            String expendedUrl = expandUrl(imageUrl);
+            sUrlCache.put(imageUrl, expendedUrl);
+            return expendedUrl;
         }
     }
 
-    public static byte[] getCache(String key){
+    public static boolean isMediaUrl(String url) {
+        Uri uri = Uri.parse(url);
+        String path = uri.getPath();
+        if (TextUtils.isEmpty(path)) return false;
+        switch (uri.getHost()) {
+            case "twitpic.com":
+            case "img.ly":
+            case "gyazo.com":
+            case "p.twipple.jp":
+                return true;
+            case "instagram.com":
+            case "instagr.am":
+                List<String> segments = uri.getPathSegments();
+                StringBuilder sb = new StringBuilder();
+                if (BuildConfig.DEBUG) {
+                    for (int i = 0; i < segments.size(); i++) {
+                        sb.append(i);
+                        sb.append(':');
+                        sb.append(segments.get(i));
+                        sb.append(", ");
+                    }
+                    Log.d("isMediaUrl:instagram", sb.toString());
+                }
+                return segments.get(0).equals("p");
+            default:
+                return false;
+        }
+    }
+
+    public static byte[] getCache(String key) {
         Cache.Entry entry = sImageDiskCache.get(key);
-        if(entry == null){
+        if (entry == null) {
             return null;
         } else {
             return entry.data;
@@ -196,30 +241,45 @@ public class NetUtil {
     public static File download(Context context, String url) {
         byte[] buf = new byte[4096];
         try {
-            HttpURLConnection conn = (HttpURLConnection) new URL(NetUtil.expandUrl(url)).openConnection();
+            String expandedUrl = NetUtil.expandUrlIfNecessary(getOriginalImageUrl(url));
+            HttpURLConnection conn = (HttpURLConnection) new URL(expandedUrl).openConnection();
             conn.setConnectTimeout(CONNECT_TIMEOUT);
             conn.setReadTimeout(READ_TIMEOUT);
 
             //ファイル名を取得するために，先に開く．
             BufferedInputStream is = new BufferedInputStream(conn.getInputStream());
-            File cacheFile = new File(context.getCacheDir(), guessFileName(url));
-            FileOutputStream os = new FileOutputStream(cacheFile);
+            File downloadedFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), createFileName(conn.getContentType()));
+            FileOutputStream os = new FileOutputStream(downloadedFile);
             int length;
             while ((length = is.read(buf)) != -1) {
                 os.write(buf, 0, length);
             }
             os.close();
             is.close();
-            return cacheFile;
+            String[] path = {downloadedFile.getPath()};
+            String extension = MimeTypeMap.getFileExtensionFromUrl(downloadedFile.getAbsolutePath());
+            String mimetype = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
+            String[] mimetypes = {mimetype};
+            MediaScannerConnection.scanFile(context.getApplicationContext(), path, mimetypes, null);
+            return downloadedFile;
         } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
     }
 
-    private static String guessFileName(String url){
-        String fileExtension = MimeTypeMap.getFileExtensionFromUrl(url);
-        String fileName = URLUtil.guessFileName(url, null, fileExtension);
-        return fileName;
+    public static String getOriginalImageUrl(String url) {
+        if (!Uri.parse(url).getHost().equals("pbs.twimg.com")) return url;
+        int lastIndex = url.lastIndexOf(':');
+        if (lastIndex > url.indexOf(':'))
+            return url.substring(0, lastIndex).concat(":orig");
+        else
+            return url.concat(":orig");
+    }
+
+    private static String createFileName(String contentType) {
+        String now = new SimpleDateFormat("yyyyMMddhhmmss.").format(new Date());
+        String extension = MimeTypeMap.getSingleton().getExtensionFromMimeType(contentType);
+        return now.concat(extension);
     }
 }

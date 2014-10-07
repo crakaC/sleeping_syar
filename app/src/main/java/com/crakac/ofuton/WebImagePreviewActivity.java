@@ -1,6 +1,6 @@
 package com.crakac.ofuton;
 
-import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -8,13 +8,11 @@ import android.support.v4.view.ViewPager;
 import android.view.View;
 
 import com.crakac.ofuton.util.AppUtil;
-import com.crakac.ofuton.util.TwitterUtils;
 import com.crakac.ofuton.widget.HackyViewPager;
 import com.crakac.ofuton.widget.ImagePreviewFragment;
 import com.crakac.ofuton.widget.PreviewNavigation;
 
-import twitter4j.MediaEntity;
-import twitter4j.Status;
+import java.util.List;
 
 public class WebImagePreviewActivity extends AbstractPreviewActivity implements PreviewNavigation.NavigationListener {
     private HackyViewPager mPager;
@@ -34,31 +32,32 @@ public class WebImagePreviewActivity extends AbstractPreviewActivity implements 
 
         mAdapter = new SimpleFragmentPagerAdapter<>(getSupportFragmentManager());
 
-        Status status = (Status) getIntent().getSerializableExtra(C.STATUS);
+        List<String> imageUrls = getIntent().getStringArrayListExtra(C.URL);
         Uri imageUri = getIntent().getData();
         if (imageUri != null) {
-            mAdapter.add(ImagePreviewFragment.createInstance(imageUri));
-        } else if (status != null) {
-            for (MediaEntity entity : TwitterUtils.getMediaEntities(status)) {
-                Uri uri = Uri.parse(entity.getMediaURL());
-                mAdapter.add(ImagePreviewFragment.createInstance(uri));
+            mAdapter.add(ImagePreviewFragment.createInstance(imageUri.toString()));
+        } else if (imageUrls != null) {
+            for (String url : imageUrls) {
+                mAdapter.add(ImagePreviewFragment.createInstance(url));
             }
         }
         mPager.setAdapter(mAdapter);
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             mPager.setPageTransformer(true, new DepthPageTransformer());
         }
 
-        int pagerMargin = getResources().getDimensionPixelSize(R.dimen.preview_pager_margin);
-        mPager.setPageMargin(pagerMargin);
-        if(savedInstanceState == null) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
+            int pagerMargin = getResources().getDimensionPixelSize(R.dimen.preview_pager_margin);
+            mPager.setPageMargin(pagerMargin);
+        }
+        if (savedInstanceState == null) {
             int position = getIntent().getIntExtra(C.POSITION, 0);
             mPager.setCurrentItem(position);
         }
     }
 
-    public void toggleNavigation(){
-        if(mNav.isShown()){
+    public void toggleNavigation() {
+        if (mNav.isShown()) {
             AppUtil.slideOut(mNav, 200);
         } else {
             AppUtil.slideIn(mNav, 200);
@@ -87,7 +86,7 @@ public class WebImagePreviewActivity extends AbstractPreviewActivity implements 
     private static class DepthPageTransformer implements ViewPager.PageTransformer {
         private static final float MIN_SCALE = 0.75f;
 
-        @SuppressLint("NewApi")
+        @TargetApi(Build.VERSION_CODES.HONEYCOMB)
         @Override
         public void transformPage(View view, float position) {
             int pageWidth = view.getWidth();

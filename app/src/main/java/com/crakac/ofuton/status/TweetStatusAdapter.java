@@ -25,6 +25,9 @@ import com.crakac.ofuton.util.TwitterUtils;
 import com.crakac.ofuton.widget.ColorOverlayOnTouch;
 import com.crakac.ofuton.widget.MultipleImagePreview;
 
+import java.util.List;
+
+import twitter4j.MediaEntity;
 import twitter4j.Status;
 import twitter4j.UserMentionEntity;
 
@@ -54,7 +57,7 @@ public class TweetStatusAdapter extends ArrayAdapter<Status> {
     @Override
     public void add(Status status) {
         super.add(status);
-        if(mShouldPool){
+        if (mShouldPool) {
             StatusPool.put(status.getId(), status);
         }
     }
@@ -62,7 +65,7 @@ public class TweetStatusAdapter extends ArrayAdapter<Status> {
     @Override
     public void insert(Status status, int index) {
         super.insert(status, index);
-        if(mShouldPool){
+        if (mShouldPool) {
             StatusPool.put(status.getId(), status);
         }
     }
@@ -152,7 +155,7 @@ public class TweetStatusAdapter extends ArrayAdapter<Status> {
         holder.screenName.setText("@" + status.getUser().getScreenName());
 
         String text = status.getText();
-        if(shouldShowPreview){
+        if (shouldShowPreview) {
             text = AppUtil.trimUrl(status);
         }
         holder.text.setText(AppUtil.getColoredText(text, status));
@@ -174,12 +177,13 @@ public class TweetStatusAdapter extends ArrayAdapter<Status> {
 
     private static void setImagePreview(final MultipleImagePreview imagePreview, final Status status) {
         imagePreview.setVisibility(View.GONE);
-        if (!shouldShowPreview || status.getMediaEntities().length == 0){
+        List<MediaEntity> mediaEntities = TwitterUtils.getMediaEntities(status);
+        if (!shouldShowPreview || mediaEntities.isEmpty()) {
             imagePreview.cleanUp();
             return;
         }
         imagePreview.setVisibility(View.VISIBLE);
-        imagePreview.setPreview(status);
+        imagePreview.setMediaEntities(mediaEntities);
     }
 
     /**

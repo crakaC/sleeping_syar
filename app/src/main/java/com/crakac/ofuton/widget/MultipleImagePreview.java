@@ -9,30 +9,33 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
-import com.android.volley.toolbox.NetworkImageView;
 import com.crakac.ofuton.C;
 import com.crakac.ofuton.R;
 import com.crakac.ofuton.WebImagePreviewActivity;
 import com.crakac.ofuton.util.NetUtil;
-import com.crakac.ofuton.util.TwitterUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import twitter4j.MediaEntity;
-import twitter4j.Status;
 
 /**
  * Created by kosukeshirakashi on 2014/09/09.
  */
 public class MultipleImagePreview extends FrameLayout {
-
-    private BitmapImageView mTL, mTR, mBL, mBR;
-    private LinearLayout mLeft, mRight;
-    private View separatorLeft, separatorRight, separatorCenter;
+    private static int URL_EXPANDING_THREADS = 2;
+    private static ExecutorService sExecutor = Executors.newFixedThreadPool(URL_EXPANDING_THREADS);
+    private BitmapImageView topLeft, topCenter, topRight, bottomLeft, bottomCenter, bottomRight;
+    private LinearLayout mLeft, mCenter, mRight;
+    private View separatorLeft, separatorCenter, separatorRight, virticalSeparatorLeft, virticalSeparatorRight;
     private List<BitmapImageView> mImageViews;
     private List<View> mSeparators;
+    private List<LinearLayout> mBlocks;
+    private List<Future<?>> mUrlExpandingFutures;
 
     public MultipleImagePreview(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -41,18 +44,25 @@ public class MultipleImagePreview extends FrameLayout {
         addView(v);
         mLeft = (LinearLayout) v.findViewById(R.id.left);
         mRight = (LinearLayout) v.findViewById(R.id.right);
+        mCenter = (LinearLayout) v.findViewById(R.id.center);
+        mBlocks = Arrays.asList(mLeft, mCenter, mRight);
         separatorLeft = v.findViewById(R.id.separatorLeft);
-        separatorRight = v.findViewById(R.id.separatorRight);
         separatorCenter = v.findViewById(R.id.separatorCenter);
-        mSeparators = Arrays.asList(separatorLeft, separatorRight, separatorCenter);
-        mTL = (BitmapImageView) v.findViewById(R.id.imageTL);
-        mTR = (BitmapImageView) v.findViewById(R.id.imageTR);
-        mBL = (BitmapImageView) v.findViewById(R.id.imageBL);
-        mBR = (BitmapImageView) v.findViewById(R.id.imageBR);
-        mImageViews = Arrays.asList(mTL, mTR, mBL, mBR);
+        separatorRight = v.findViewById(R.id.separatorRight);
+        virticalSeparatorLeft = v.findViewById(R.id.virticalSeparatorLeft);
+        virticalSeparatorRight = v.findViewById(R.id.virticalSeparatorRight);
+        mSeparators = Arrays.asList(separatorLeft, separatorCenter, separatorRight, virticalSeparatorLeft, virticalSeparatorRight);
+        topLeft = (BitmapImageView) v.findViewById(R.id.imageTL);
+        topCenter = (BitmapImageView) v.findViewById(R.id.imageTC);
+        topRight = (BitmapImageView) v.findViewById(R.id.imageTR);
+        bottomLeft = (BitmapImageView) v.findViewById(R.id.imageBL);
+        bottomCenter = (BitmapImageView) v.findViewById(R.id.imageBC);
+        bottomRight = (BitmapImageView) v.findViewById(R.id.imageBR);
+        mImageViews = Arrays.asList(topLeft, topRight, bottomLeft, bottomRight);
         for (View iv : mImageViews) {
             iv.setOnTouchListener(new ColorOverlayOnTouch());
         }
+        mUrlExpandingFutures = new ArrayList<>();
     }
 
     @Override
@@ -68,16 +78,24 @@ public class MultipleImagePreview extends FrameLayout {
             case 0:
                 break;
             case 1:
-                imageViews = Arrays.asList(mTL);
+                imageViews = Arrays.asList(topLeft);
                 break;
             case 2:
-                imageViews = Arrays.asList(mTL, mTR);
+                imageViews = Arrays.asList(topLeft, topRight);
                 break;
             case 3:
-                imageViews = Arrays.asList(mTL, mTR, mBR);
+                imageViews = Arrays.asList(topLeft, topRight, bottomRight);
                 break;
             case 4:
-                imageViews = Arrays.asList(mTL, mTR, mBL, mBR);
+                imageViews = Arrays.asList(topLeft, topRight, bottomLeft, bottomRight);
+                break;
+            case 5:
+                imageViews = Arrays.asList(topLeft, topCenter, topRight, bottomCenter, bottomRight);
+                break;
+            case 6:
+                imageViews = Arrays.asList(topLeft, topCenter, topRight, bottomLeft, bottomCenter, bottomRight);
+                break;
+            default:
                 break;
         }
         return imageViews;
@@ -89,16 +107,25 @@ public class MultipleImagePreview extends FrameLayout {
             case 0:
                 break;
             case 1:
-                mRight.setVisibility(View.GONE);
+                show(mLeft);
                 break;
             case 2:
-                show(mRight, separatorCenter);
+                show(mLeft, mRight, virticalSeparatorLeft);
                 break;
             case 3:
-                show(mRight, separatorCenter, separatorRight);
+                show(mLeft, mRight, virticalSeparatorLeft, separatorRight);
                 break;
             case 4:
-                show(mRight, separatorCenter, separatorRight, separatorLeft);
+                show(mLeft, mRight, virticalSeparatorLeft, separatorRight, separatorLeft);
+                break;
+            case 5:
+                show(mBlocks);
+                show(virticalSeparatorLeft, virticalSeparatorRight);
+                show(separatorCenter, separatorRight);
+                break;
+            case 6:
+                show(mBlocks);
+                show(mSeparators);
                 break;
         }
     }
@@ -106,9 +133,16 @@ public class MultipleImagePreview extends FrameLayout {
     private void hideAll() {
         hide(mImageViews);
         hide(mSeparators);
+        hide(mBlocks);
     }
 
     private void hide(List<? extends View> views) {
+        for (View v : views) {
+            v.setVisibility(View.GONE);
+        }
+    }
+
+    private void hide(View... views){
         for (View v : views) {
             v.setVisibility(View.GONE);
         }
@@ -120,41 +154,49 @@ public class MultipleImagePreview extends FrameLayout {
         }
     }
 
-    public void setPreview(final Status status){
-        if (status.getMediaEntities().length == 0) {
-            return;
+    private void show(List<? extends View> views){
+        for (View v : views) {
+            v.setVisibility(View.VISIBLE);
         }
+    }
 
-        final MediaEntity[] medias = TwitterUtils.getMediaEntities(status);
-
-        initLayout(medias.length);
-        List<BitmapImageView> imageViews = getRequiredImageViews(medias.length);
-
-        for (int i = 0; i < medias.length; i++) {
+    public void setMediaEntities(final List<MediaEntity> mediaEntities) {
+        initLayout(mediaEntities.size());
+        List<BitmapImageView> imageViews = getRequiredImageViews(mediaEntities.size());
+        final ArrayList<String> mediaUrls = extractMediaUrls(mediaEntities);
+        for (int i = 0; i < mediaUrls.size(); i++) {
             final BitmapImageView imageView = imageViews.get(i);
             final int position = i;
             imageView.setVisibility(View.VISIBLE);
-            final MediaEntity media = medias[i];
             imageView.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Context context = getContext();
                     Intent intent = new Intent(context, WebImagePreviewActivity.class);
-                    intent.putExtra(C.STATUS, status);
+                    intent.putStringArrayListExtra(C.URL, mediaUrls);
                     intent.putExtra(C.POSITION, position);
                     context.startActivity(intent);
-                    ((Activity)context).overridePendingTransition(R.anim.fade_in, 0);
+                    ((Activity) context).overridePendingTransition(com.crakac.ofuton.R.anim.fade_in, 0);
                 }
             });
             imageView.setDefaultImageResId(R.color.transparent_black);
             imageView.setErrorImageResId(R.color.transparent_black);
-            imageView.setImageUrl(media.getMediaURL(), NetUtil.PREVIEW_LOADER);
+            String mediaUrl = mediaUrls.get(i);
+            imageView.setImageUrl(NetUtil.getImageFileUrl(mediaUrl), NetUtil.PREVIEW_LOADER);
         }
     }
 
-    public void cleanUp(){
-        for(BitmapImageView view : mImageViews){
+    public void cleanUp() {
+        for (BitmapImageView view : mImageViews) {
             view.cleanUp();
         }
+    }
+
+    private ArrayList<String> extractMediaUrls(List<MediaEntity> entityList) {
+        ArrayList<String> urlList = new ArrayList<>(entityList.size());
+        for (MediaEntity entity : entityList) {
+            urlList.add(entity.getMediaURL());
+        }
+        return urlList;
     }
 }

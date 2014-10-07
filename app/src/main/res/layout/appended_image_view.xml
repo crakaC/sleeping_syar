@@ -7,14 +7,14 @@
         android:id="@+id/left"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="0.5"
+        android:layout_weight="1"
         android:orientation="vertical">
 
         <com.crakac.ofuton.widget.BitmapImageView
             android:id="@+id/imageTL"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="0.5"
+            android:layout_weight="1"
             android:scaleType="centerCrop"
             android:visibility="visible" />
 
@@ -28,14 +28,51 @@
             android:id="@+id/imageBL"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="0.5"
+            android:layout_weight="1"
             android:scaleType="centerCrop"
             android:visibility="visible" />
 
     </LinearLayout>
 
     <View
-        android:id="@+id/separatorCenter"
+        android:id="@+id/virticalSeparatorLeft"
+        android:layout_width="3dp"
+        android:layout_height="match_parent"
+        android:visibility="visible"/>
+
+    <LinearLayout
+        android:id="@+id/center"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <com.crakac.ofuton.widget.BitmapImageView
+            android:id="@+id/imageTC"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:scaleType="centerCrop"
+            android:visibility="visible"/>
+
+        <View
+            android:id="@+id/separatorCenter"
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:visibility="visible"/>
+
+        <com.crakac.ofuton.widget.BitmapImageView
+            android:id="@+id/imageBC"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:scaleType="centerCrop"
+            android:visibility="visible"/>
+
+    </LinearLayout>
+
+    <View
+        android:id="@+id/virticalSeparatorRight"
         android:layout_width="3dp"
         android:layout_height="match_parent"
         android:visibility="visible" />
@@ -44,14 +81,14 @@
         android:id="@+id/right"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="0.5"
+        android:layout_weight="1"
         android:orientation="vertical">
 
         <com.crakac.ofuton.widget.BitmapImageView
             android:id="@+id/imageTR"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="0.5"
+            android:layout_weight="1"
             android:scaleType="centerCrop"
             android:visibility="visible" />
 
@@ -65,7 +102,7 @@
             android:id="@+id/imageBR"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="0.5"
+            android:layout_weight="1"
             android:scaleType="centerCrop"
             android:visibility="visible" />
 

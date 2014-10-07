@@ -1,6 +1,5 @@
 package com.crakac.ofuton.widget;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -8,21 +7,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.LoaderManager;
 import android.support.v4.app.NotificationCompat;
-import android.support.v4.content.AsyncTaskLoader;
-import android.support.v4.content.Loader;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.MimeTypeMap;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
@@ -34,31 +28,24 @@ import com.crakac.ofuton.WebImagePreviewActivity;
 import com.crakac.ofuton.util.AppUtil;
 import com.crakac.ofuton.util.NetUtil;
 import com.crakac.ofuton.util.NetworkImageListener;
-import com.crakac.ofuton.util.Util;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Date;
 
 import uk.co.senab.photoview.PhotoViewAttacher;
 
 /**
  * Created by kosukeshirakashi on 2014/09/24.
  */
-public class ImagePreviewFragment extends Fragment implements LoaderManager.LoaderCallbacks<String>{
+public class ImagePreviewFragment extends Fragment {
 
     protected ImageView mImageView;
     private PhotoViewAttacher mAttacher;
     private ImageContainer mImageContainer;
     private ProgressBar mProgressBar;
 
-    public static ImagePreviewFragment createInstance(Uri imageUri) {
+    public static ImagePreviewFragment createInstance(String imageUrl) {
         Bundle b = new Bundle(1);
-        b.putParcelable(C.URI, imageUri);
+        b.putString(C.URL, imageUrl);
         ImagePreviewFragment f = new ImagePreviewFragment();
         f.setArguments(b);
         return f;
@@ -73,7 +60,7 @@ public class ImagePreviewFragment extends Fragment implements LoaderManager.Load
         mAttacher.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                ((WebImagePreviewActivity)getActivity()).toggleNavigation();
+                ((WebImagePreviewActivity) getActivity()).toggleNavigation();
                 return true;
             }
         });
@@ -86,38 +73,21 @@ public class ImagePreviewFragment extends Fragment implements LoaderManager.Load
 
         showProgress(true);
 
-        Uri imageUri = getArguments().getParcelable(C.URI);
-        Bundle b = new Bundle(1);
-        b.putParcelable(C.URI, imageUri);
-        getLoaderManager().initLoader(0, b, this).forceLoad();
-
+        String url = getArguments().getString(C.URL);
+        retrieveImage(NetUtil.getImageFileUrl(url));
         return root;
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if(mImageView != null){
+        if (mImageView != null) {
             mImageView.setImageBitmap(null);
         }
         if (mImageContainer != null) {
             mImageContainer.cancelRequest();
             mImageContainer = null;
         }
-    }
-
-    @Override
-    public Loader<String> onCreateLoader(int arg0, Bundle bundle) {
-        return new UrlExpander(getActivity(), (Uri) bundle.getParcelable(C.URI));
-    }
-
-    @Override
-    public void onLoadFinished(Loader<String> loader, String url) {
-        retrieveImage(url);
-    }
-
-    @Override
-    public void onLoaderReset(Loader<String> loader) {
     }
 
     private void retrieveImage(String url) {
@@ -210,7 +180,7 @@ public class ImagePreviewFragment extends Fragment implements LoaderManager.Load
         mAttacher.update();
     }
 
-    public void rotatePreview(float degrees){
+    public void rotatePreview(float degrees) {
         mAttacher.setRotationBy(degrees);
     }
 
@@ -219,25 +189,4 @@ public class ImagePreviewFragment extends Fragment implements LoaderManager.Load
         activity.finish();
         activity.overridePendingTransition(0, R.anim.fade_out);
     }
-
-    private static class UrlExpander extends AsyncTaskLoader<String> {
-        Uri mUri;
-
-        public UrlExpander(Context context, Uri uri) {
-            super(context);
-            mUri = uri;
-        }
-
-        @Override
-        public String loadInBackground() {
-            String expandUrl = "";
-            try {
-                expandUrl = NetUtil.expandUrlIfNecessary(mUri);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return expandUrl;
-        }
-    }
-
 }
