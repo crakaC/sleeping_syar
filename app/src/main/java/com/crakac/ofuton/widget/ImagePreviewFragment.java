@@ -112,55 +112,21 @@ public class ImagePreviewFragment extends Fragment {
     }
 
     public void saveImage() {
-        new AsyncTask<Void, Void, Boolean>() {
-            File distFile;
+        new AsyncTask<Void, Void, File>() {
 
-            @SuppressLint("SimpleDateFormat")
             @Override
-            protected Boolean doInBackground(Void... params) {
-                File cacheFile = null;
+            protected File doInBackground(Void... params) {
                 String url = mImageContainer.getRequestUrl();
-                FileOutputStream os = null;
-                FileInputStream is = null;
-                try {
-                    String extension = MimeTypeMap.getFileExtensionFromUrl(url);
-                    String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
-                    String now = new SimpleDateFormat("yyyyMMddhhmmss.").format(new Date());
-                    distFile = new File(
-                            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), now
-                            + extension);
-                    distFile.getParentFile().mkdirs();
-                    distFile.createNewFile();
-                    byte[] data = NetUtil.getCache(url);
-                    if (data == null) {
-                        cacheFile = NetUtil.download(getActivity(), url);
-                        if (cacheFile == null) return false;
-                        is = new FileInputStream(cacheFile);
-                        data = new byte[(int) cacheFile.length()];
-                        is.read(data);
-                    }
-                    os = new FileOutputStream(distFile);
-                    os.write(data);
-                    String[] path = {distFile.getPath()};
-                    MediaScannerConnection.scanFile(getActivity().getApplicationContext(), path, null, null);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    return false;
-                } finally {
-                    Util.closeQuietly(os);
-                    Util.closeQuietly(is);
-                    if (cacheFile != null)
-                        cacheFile.delete();
-                }
-                return true;
+                Log.d("DownloadImage", url);
+                return NetUtil.download(getActivity(), url);
             }
 
             @Override
-            protected void onPostExecute(Boolean result) {
-                if (result) {
+            protected void onPostExecute(File downloadedFile) {
+                if (downloadedFile != null) {
+                    Log.d("ImageDownloaded", downloadedFile.toString());
                     Intent i = new Intent(Intent.ACTION_VIEW);
-                    String mimetype = MimeTypeMap.getSingleton().getMimeTypeFromExtension(MimeTypeMap.getFileExtensionFromUrl(distFile.getAbsolutePath()));
-                    i.setDataAndType(Uri.fromFile(distFile), mimetype);
+                    i.setDataAndType(Uri.fromFile(downloadedFile), "image/*");
                     PendingIntent pi = PendingIntent.getActivity(getActivity().getApplicationContext(), 0, i, 0);
                     NotificationCompat.Builder builder = new NotificationCompat.Builder(getActivity().getApplicationContext());
                     builder.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher)).setSmallIcon(R.drawable.ic_menu_media).setTicker(getString(R.string.save_complete))
