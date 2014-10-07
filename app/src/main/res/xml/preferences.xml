@@ -78,7 +78,7 @@
     <CheckBoxPreference
         android:defaultValue="true"
         android:key="@string/show_image_in_timeline"
-        android:summary="pic.twitter.comだけ"
+        android:summary="古めの端末だとキツイかも"
         android:title="@string/show_image_in_timeline" />
 
     <PreferenceScreen

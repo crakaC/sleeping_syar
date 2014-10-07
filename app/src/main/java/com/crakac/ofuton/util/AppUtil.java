@@ -142,10 +142,10 @@ public final class AppUtil {
 
     public static String trimUrl(twitter4j.Status status) {
         String text = status.getText();
-        for (MediaEntity entity : status.getMediaEntities()) {
+        for (MediaEntity entity : TwitterUtils.getMediaEntities(status)) {
             text = text.replace(entity.getURL(), "");
         }
-        return text;
+        return text.trim();
     }
 
     public static String getString(int resId) {
