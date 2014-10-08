@@ -64,7 +64,7 @@ public class StatusDialogFragment extends DialogFragment {
 	}
 
 	public StatusDialogFragment(AbstractStatusFragment targetFragment) {
-		setTargetFragment((Fragment) targetFragment, 0);
+		setTargetFragment(targetFragment, 0);
 	}
 
 	@Override
