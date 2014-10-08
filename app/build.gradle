@@ -11,8 +11,8 @@ android {
         applicationId 'com.crakac.ofuton'
         minSdkVersion 8
         targetSdkVersion 20
-        versionCode 18
-        versionName '1.6.0'
+        versionCode 19
+        versionName '1.6.1'
     }
     buildTypes {
         release {
