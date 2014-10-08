@@ -143,6 +143,7 @@ public final class AppUtil {
     public static String trimUrl(twitter4j.Status status) {
         String text = status.getText();
         for (MediaEntity entity : TwitterUtils.getMediaEntities(status)) {
+            if(entity instanceof GuessedMediaEntity) continue;//pic.twitter.com以外はテキストを残す．
             text = text.replace(entity.getURL(), "");
         }
         return text.trim();
