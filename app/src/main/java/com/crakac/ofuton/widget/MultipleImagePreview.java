@@ -13,6 +13,7 @@ import com.crakac.ofuton.C;
 import com.crakac.ofuton.R;
 import com.crakac.ofuton.WebImagePreviewActivity;
 import com.crakac.ofuton.util.NetUtil;
+import com.crakac.ofuton.util.TwitterUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -58,7 +59,7 @@ public class MultipleImagePreview extends FrameLayout {
         bottomLeft = (BitmapImageView) v.findViewById(R.id.imageBL);
         bottomCenter = (BitmapImageView) v.findViewById(R.id.imageBC);
         bottomRight = (BitmapImageView) v.findViewById(R.id.imageBR);
-        mImageViews = Arrays.asList(topLeft, topRight, bottomLeft, bottomRight);
+        mImageViews = Arrays.asList(topLeft, topCenter, topRight, bottomLeft, bottomCenter, bottomRight);
         for (View iv : mImageViews) {
             iv.setOnTouchListener(new ColorOverlayOnTouch());
         }
@@ -163,7 +164,7 @@ public class MultipleImagePreview extends FrameLayout {
     public void setMediaEntities(final List<MediaEntity> mediaEntities) {
         initLayout(mediaEntities.size());
         List<BitmapImageView> imageViews = getRequiredImageViews(mediaEntities.size());
-        final ArrayList<String> mediaUrls = extractMediaUrls(mediaEntities);
+        final ArrayList<String> mediaUrls = TwitterUtils.extractMediaUrls(mediaEntities);
         for (int i = 0; i < mediaUrls.size(); i++) {
             final BitmapImageView imageView = imageViews.get(i);
             final int position = i;
@@ -190,13 +191,5 @@ public class MultipleImagePreview extends FrameLayout {
         for (BitmapImageView view : mImageViews) {
             view.cleanUp();
         }
-    }
-
-    private ArrayList<String> extractMediaUrls(List<MediaEntity> entityList) {
-        ArrayList<String> urlList = new ArrayList<>(entityList.size());
-        for (MediaEntity entity : entityList) {
-            urlList.add(entity.getMediaURL());
-        }
-        return urlList;
     }
 }

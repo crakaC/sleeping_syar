@@ -375,4 +375,13 @@ public class TwitterUtils {
         }
         return entities;
     }
+
+    public static ArrayList<String> extractMediaUrls(List<MediaEntity> entityList) {
+        ArrayList<String> urlList = new ArrayList<>(entityList.size());
+        for (MediaEntity entity : entityList) {
+            urlList.add(entity.getMediaURL());
+        }
+        return urlList;
+    }
+
 }
