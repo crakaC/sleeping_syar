@@ -49,7 +49,6 @@ public class NetUtil {
     private static final int THREAD_POOL_SIZE_FOR_FETCHING_IMAGE = 2;
     public static ImageLoader PREVIEW_LOADER, ICON_LOADER;
     private static Cache sImageDiskCache;
-    private static LruCache<String, String> sUrlCache;
 
     private static Cache createDiskCache(Context context, String cacheRoot, int cacheSize) {
         File cacheDir = new File(context.getCacheDir(), cacheRoot);
@@ -100,7 +99,6 @@ public class NetUtil {
         sImageDiskCache = createDiskCache(context, IMAGE_CACHE_DIR, 50 * 1024 * 1024);
         RequestQueue imageQueue = newRequestQueue(context, sImageDiskCache, THREAD_POOL_SIZE_FOR_FETCHING_IMAGE);
         PREVIEW_LOADER = new ImageLoader(imageQueue, new ImageLruCache());
-        sUrlCache = new UrlCache();
     }
 
     public static ImageContainer fetchIconAsync(ImageView targetView, String requestUrl) {
@@ -190,13 +188,7 @@ public class NetUtil {
         if (uri.getHost().equals("pbs.twimg.com")) {
             return uri.toString();
         } else {
-            String imageUrl = getImageFileUrl(url);
-            if (sUrlCache.get(imageUrl) != null) {
-                return sUrlCache.get(imageUrl);
-            }
-            String expendedUrl = expandUrl(imageUrl);
-            sUrlCache.put(imageUrl, expendedUrl);
-            return expendedUrl;
+            return expandUrl(getImageFileUrl(url));
         }
     }
 
