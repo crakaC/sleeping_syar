@@ -8,7 +8,6 @@ import android.net.Uri;
 import android.net.http.AndroidHttpClient;
 import android.os.Build;
 import android.os.Environment;
-import android.support.v4.util.LruCache;
 import android.text.TextUtils;
 import android.util.Log;
 import android.webkit.MimeTypeMap;
@@ -37,7 +36,9 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 public class NetUtil {
     private static final int CONNECT_TIMEOUT = 5000;
@@ -129,7 +130,7 @@ public class NetUtil {
         return PREVIEW_LOADER.get(requestUrl, listener);
     }
 
-    private static String expandUrl(String urlString) throws IOException {
+    synchronized private static String expandUrl(String urlString) throws IOException {
         URL url = new URL(urlString);
         final URLConnection conn = url.openConnection();
         if (!(conn instanceof HttpURLConnection)) {
@@ -142,7 +143,16 @@ public class NetUtil {
 
         final String expandUrl;
         final String location = httpConn.getHeaderField("Location");
+        Map headers = conn.getHeaderFields();
+        Iterator<String> it = httpConn.getHeaderFields().keySet().iterator();
+        StringBuilder sb = new StringBuilder();
+        while(it.hasNext()){
+            String key = it.next();
+            sb.append(key + ":" + headers.get(key).toString() + "\n");
+        }
+        Log.d("ExpandUrl Header", sb.toString());
         if (location != null && location.startsWith("http")) {
+            Log.d("ExpandUrl", String.format("%s -> %s", urlString, location));
             final int tResponseCode = httpConn.getResponseCode();
             if (tResponseCode == HttpURLConnection.HTTP_MOVED_PERM
                     || tResponseCode == HttpURLConnection.HTTP_MOVED_TEMP) {
@@ -155,7 +165,7 @@ public class NetUtil {
         return expandUrl;
     }
 
-    public static String getImageFileUrl(String url) {
+    public static String convertToImageFileUrl(String url) {
         Uri uri = Uri.parse(url);
         String host = uri.getHost();
         Uri.Builder builder = uri.buildUpon();
@@ -190,7 +200,7 @@ public class NetUtil {
         if (uri.getHost().equals("pbs.twimg.com")) {
             return uri.toString();
         } else {
-            return expandUrl(getImageFileUrl(url));
+            return expandUrl(url);
         }
     }
 

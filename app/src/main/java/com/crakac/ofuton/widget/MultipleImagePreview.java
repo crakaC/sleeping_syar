@@ -182,7 +182,7 @@ public class MultipleImagePreview extends FrameLayout {
             imageView.setDefaultImageResId(R.color.transparent_black);
             imageView.setErrorImageResId(R.color.transparent_black);
             String mediaUrl = mediaUrls.get(i);
-            imageView.setImageUrl(NetUtil.getImageFileUrl(mediaUrl), NetUtil.PREVIEW_LOADER);
+            imageView.setImageUrl(NetUtil.convertToImageFileUrl(mediaUrl), NetUtil.PREVIEW_LOADER);
         }
     }
 

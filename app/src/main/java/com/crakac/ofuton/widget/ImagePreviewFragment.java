@@ -74,7 +74,7 @@ public class ImagePreviewFragment extends Fragment {
         showProgress(true);
 
         String url = getArguments().getString(C.URL);
-        retrieveImage(NetUtil.getImageFileUrl(url));
+        retrieveImage(NetUtil.convertToImageFileUrl(url));
         return root;
     }
 
