@@ -170,6 +170,8 @@ public class NetUtil {
                 builder.authority("i.gyazo.com");
                 builder.path(uri.getPath().concat(".png"));
                 break;
+            case "instagr.am":
+                builder.authority("instagram.com");
             case "instagram.com":
                 builder = uri.buildUpon();
                 builder.appendEncodedPath("media/?size=l");
