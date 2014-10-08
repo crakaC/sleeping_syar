@@ -254,6 +254,7 @@ public abstract class AbstractTimelineFragment extends AbstractStatusFragment {
         for (int i = 0; i < visibleItems.size(); i++) {
             int position = visibleItems.keyAt(i);
             View v = visibleItems.get(position);
+            if(v.getTag() == null) continue; //avoid emptyView
             mAdapter.getView(position, v, null);
         }
     }
