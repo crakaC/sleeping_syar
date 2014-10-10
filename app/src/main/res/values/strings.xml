@@ -80,6 +80,7 @@
 
     <string name="save_complete">画像を保存しました</string>
     <string name="cancel">キャンセル</string>
+    <string name="canceled">キャンセルされました</string>
     <string name="preview">プレビュー</string>
     <string name="delete">削除</string>
     <string name="license_info">オープンソースライセンス</string>

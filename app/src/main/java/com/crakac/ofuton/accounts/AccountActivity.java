@@ -63,7 +63,15 @@ public class AccountActivity extends ActionBarActivity{
 				|| !intent.getData().toString().startsWith(mCallbackURL)){
 			return;
 		}
+        if(isDenied(intent)){
+            AppUtil.showToast(R.string.canceled);
+            return;
+        }
 		String verifier = intent.getData().getQueryParameter("oauth_verifier");
+        if(verifier == null){
+            AppUtil.showToast(R.string.something_wrong);
+            return; //if authentication denied, query parameter is denied=hogehoge
+        }
 		ParallelTask<String, Void, AccessToken> task = new ParallelTask<String, Void, AccessToken>(){
 
 			@Override
@@ -159,4 +167,8 @@ public class AccountActivity extends ActionBarActivity{
 		};
 		task.executeParallel();
 	}
+
+    private boolean isDenied(Intent intent){
+        return intent.getData().getQueryParameter("denied") != null;
+    }
 }
