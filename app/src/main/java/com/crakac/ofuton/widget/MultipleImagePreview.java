@@ -36,7 +36,6 @@ public class MultipleImagePreview extends FrameLayout {
     private List<BitmapImageView> mImageViews;
     private List<View> mSeparators;
     private List<LinearLayout> mBlocks;
-    private List<Future<?>> mUrlExpandingFutures;
 
     public MultipleImagePreview(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -63,7 +62,6 @@ public class MultipleImagePreview extends FrameLayout {
         for (View iv : mImageViews) {
             iv.setOnTouchListener(new ColorOverlayOnTouch());
         }
-        mUrlExpandingFutures = new ArrayList<>();
     }
 
     @Override

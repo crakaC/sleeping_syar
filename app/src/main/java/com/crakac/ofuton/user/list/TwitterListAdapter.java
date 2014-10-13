@@ -100,7 +100,7 @@ public class TwitterListAdapter extends ArrayAdapter<TwitterList> {
 					e.printStackTrace();
 				}
 				//結果をキャッシュに保存
-				ListCache.setMemberShip(new Pair<Long, Long>(tList.getListId(), mUserId), existsUser);
+				ListCache.setMemberShip(new Pair<>(tList.getListId(), mUserId), existsUser);
 			}
 			if (existsUser != null) {
 				setCheckMarkEnableAsync(existsUser, pBar, checkMark);
@@ -144,11 +144,11 @@ public class TwitterListAdapter extends ArrayAdapter<TwitterList> {
 	}
 
 	public void addUserToList(long listId, long userId) {
-		ListCache.setMemberShip(new Pair<Long, Long>(listId, userId), true);
+		ListCache.setMemberShip(new Pair<>(listId, userId), true);
 	}
 
 	public void removeUserFromList(long listId, long userId) {
-		ListCache.setMemberShip(new Pair<Long, Long>(listId, userId), false);
+		ListCache.setMemberShip(new Pair<>(listId, userId), false);
 	}
 
 	public void release() {
