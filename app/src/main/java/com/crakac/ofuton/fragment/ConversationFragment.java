@@ -8,8 +8,8 @@ import android.view.View;
 
 import com.crakac.ofuton.C;
 import com.crakac.ofuton.R;
-import com.crakac.ofuton.util.StatusPool;
 import com.crakac.ofuton.util.AppUtil;
+import com.crakac.ofuton.util.StatusPool;
 
 import twitter4j.Status;
 import twitter4j.TwitterException;
@@ -23,8 +23,12 @@ public class ConversationFragment extends AbstractStatusFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        initConversation();
         setSwipeRefreshEnable(false);
+        if (shouldLoad()) {
+            initConversation();
+        } else {
+            removeFooterView();
+        }
     }
 
     @Override
@@ -87,6 +91,7 @@ public class ConversationFragment extends AbstractStatusFragment {
     }
 
     private void loadPrevious(long nextId) {
+        if (!shouldLoad()) return;
         if (isRunning(mLoadConversationTask)) {
             Log.d(TAG, "loadPrevious() return : loadTask is running.");
             return;
@@ -98,6 +103,10 @@ public class ConversationFragment extends AbstractStatusFragment {
 
     private boolean isRunning(LoadConversationTask task) {
         return (task != null && task.getStatus() == AsyncTask.Status.RUNNING);
+    }
+
+    private boolean shouldLoad() {
+        return (mAdapter.isEmpty() || mAdapter.getItem(mAdapter.getCount() - 1).getInReplyToStatusId() > 0);
     }
 
     private class LoadConversationTask extends AsyncTask<Long, Void, Status> {

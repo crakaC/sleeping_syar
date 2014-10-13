@@ -43,8 +43,6 @@ public class ImagePreviewFragment extends Fragment {
     private ImageContainer mImageContainer;
     private ProgressBar mProgressBar;
 
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_preview_image, null);
