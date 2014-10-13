@@ -1,5 +1,6 @@
 package com.crakac.ofuton.activity;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
@@ -19,8 +20,6 @@ import com.crakac.ofuton.fragment.search.TweetSearchFragment;
 import com.crakac.ofuton.fragment.search.UserSearchFragment;
 import com.crakac.ofuton.util.AppUtil;
 import com.crakac.ofuton.util.RelativeTimeUpdater;
-
-import java.util.List;
 
 /**
  * Created by kosukeshirakashi on 2014/09/05.
@@ -43,7 +42,9 @@ public class SearchActivity extends ActionBarActivity {
         mPager = (ViewPager) findViewById(R.id.pager);
         mAdapter = new SearchFragmentPagerAdapter(this, mPager);
         setFragments();
-        mPager.setOffscreenPageLimit(mAdapter.getCount());
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD_MR1){
+            mPager.setOffscreenPageLimit(mAdapter.getCount());
+        }
         mTab.setViewPager(mPager);
         mTab.setOnPageChangeListener(new RelativeTimeUpdater(mAdapter));
     }

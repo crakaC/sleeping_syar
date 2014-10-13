@@ -108,7 +108,7 @@ public class MainActivity extends ActionBarActivity {
             mPager.setCurrentItem(getFragmentPosition(TAB_ID_HOME));// HomeTimelineの位置に合わせる
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
-            mPager.setOffscreenPageLimit(mAdapter.getCount());// 保持するFragmentの数を指定．全フラグメントを保持するのでぬるぬる動くがメモリを食う
+            mPager.setOffscreenPageLimit(12);// 保持するFragmentの数を指定．全フラグメントを保持するのでぬるぬる動くがメモリを食う
         }
         mTabs.setViewPager(mPager);// PagerSlidingTabStripにViewPagerをセット．
     }

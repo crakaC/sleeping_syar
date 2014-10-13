@@ -266,7 +266,9 @@ public class UserDetailActivity extends FinishableActionbarActivity {
             mPagerAdapter.add(FavoriteTimelineFragment.class, args, 3);
             mPagerAdapter.notifyDataSetChanged();
         }
-        mPager.setOffscreenPageLimit(mPagerAdapter.getCount());// 全Fragmentを保持（onCreateViewが複数呼ばれるのを抑止）
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1){
+            mPager.setOffscreenPageLimit(mPagerAdapter.getCount());// 全Fragmentを保持（onCreateViewが複数呼ばれるのを抑止）
+        }
         mTab.setOnPageChangeListener(new RelativeTimeUpdater(mPagerAdapter));
         mTab.setViewPager(mPager);
     }
