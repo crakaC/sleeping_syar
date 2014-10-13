@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.PorterDuff;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
@@ -31,23 +32,30 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.astuetz.PagerSlidingTabStrip;
+import com.crakac.ofuton.BuildConfig;
 import com.crakac.ofuton.C;
 import com.crakac.ofuton.R;
-import com.crakac.ofuton.util.RelativeTimeUpdater;
-import com.crakac.ofuton.util.ReloadChecker;
-import com.crakac.ofuton.fragment.adapter.TimelineFragmentPagerAdapter;
 import com.crakac.ofuton.adapter.TweetStatusAdapter;
+import com.crakac.ofuton.fragment.adapter.TimelineFragmentPagerAdapter;
 import com.crakac.ofuton.fragment.timeline.AbstractTimelineFragment;
 import com.crakac.ofuton.fragment.timeline.FavoriteTimelineFragment;
 import com.crakac.ofuton.fragment.timeline.HomeTimelineFragment;
 import com.crakac.ofuton.fragment.timeline.MentionsTimelineFragment;
 import com.crakac.ofuton.util.AppUtil;
 import com.crakac.ofuton.util.PreferenceUtil;
+import com.crakac.ofuton.util.RelativeTimeUpdater;
+import com.crakac.ofuton.util.ReloadChecker;
 import com.crakac.ofuton.util.TwitterList;
 import com.crakac.ofuton.util.TwitterUtils;
 import com.crakac.ofuton.widget.ColorOverlayOnTouch;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MainActivity extends ActionBarActivity {
+    public static final long TAB_ID_FAVORITE = 1;
+    public static final long TAB_ID_MENTION = 2;
+    public static final long TAB_ID_HOME = 3;
 
     private static final String TAG = MainActivity.class.getSimpleName();
     private PagerSlidingTabStrip mTabs;
@@ -93,12 +101,15 @@ public class MainActivity extends ActionBarActivity {
 
         mTabs = (PagerSlidingTabStrip) findViewById(R.id.pagerTabStrip);
         mPager = (ViewPager) findViewById(R.id.pager);
-        mAdapter = new TimelineFragmentPagerAdapter(getSupportFragmentManager());
+        mAdapter = new TimelineFragmentPagerAdapter(this, mPager);
         mTabs.setOnPageChangeListener(new RelativeTimeUpdater(mAdapter));
         setPages(mAdapter);
-        mPager.setAdapter(mAdapter);// ViewPagerにアダプタ(fragment)をセット．
-        mPager.setCurrentItem(getFragmentPosition(HomeTimelineFragment.class));// HomeTimelineの位置に合わせる
-        mPager.setOffscreenPageLimit(mAdapter.getCount());// 保持するFragmentの数を指定．全フラグメントを保持するのでぬるぬる動くがメモリを食う
+        if(savedInstanceState == null){
+            mPager.setCurrentItem(getFragmentPosition(TAB_ID_HOME));// HomeTimelineの位置に合わせる
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
+            mPager.setOffscreenPageLimit(mAdapter.getCount());// 保持するFragmentの数を指定．全フラグメントを保持するのでぬるぬる動くがメモリを食う
+        }
         mTabs.setViewPager(mPager);// PagerSlidingTabStripにViewPagerをセット．
     }
 
@@ -143,7 +154,7 @@ public class MainActivity extends ActionBarActivity {
         super.onResume();
         if (ReloadChecker.shouldSoftReload()){
             ReloadChecker.reset();
-            for(AbstractTimelineFragment f : mAdapter.getFragments()){
+            for(AbstractTimelineFragment f : getFragments()){
                 f.getViews();
             }
         }
@@ -194,7 +205,7 @@ public class MainActivity extends ActionBarActivity {
             }
             return true;
         case R.id.refresh:// reload
-            for (AbstractTimelineFragment f : mAdapter.getFragments()) {
+            for (AbstractTimelineFragment f : getFragments()) {
                 f.refresh();
             }
             return true;
@@ -208,21 +219,22 @@ public class MainActivity extends ActionBarActivity {
      */
     private void setPages(TimelineFragmentPagerAdapter adapter) {
         if (adapter.isEmpty()) {
-            adapter.add(setArguments(new FavoriteTimelineFragment()));
-            adapter.add(setArguments(new MentionsTimelineFragment()));
-            adapter.add(setArguments(new HomeTimelineFragment()));
+            Bundle b = createFragmentArgs();
+            adapter.add(FavoriteTimelineFragment.class, b, FavoriteTimelineFragment.TITLE, TAB_ID_FAVORITE);
+            adapter.add(MentionsTimelineFragment.class, b, MentionsTimelineFragment.TITLE, TAB_ID_MENTION);
+            adapter.add(HomeTimelineFragment.class, b, HomeTimelineFragment.TITLE, TAB_ID_HOME);
             for (TwitterList list : TwitterUtils.getListsOfCurrentAccount()) {
                 adapter.addList(list.getListId(), list.getName());
             }
+            adapter.notifyDataSetChanged();
         }
     }
 
-    private AbstractTimelineFragment setArguments(AbstractTimelineFragment f) {
+    private Bundle createFragmentArgs() {
         Bundle args = new Bundle();
         long id = TwitterUtils.getCurrentAccountId();
         args.putLong(C.USER_ID, id);
-        f.setArguments(args);
-        return f;
+        return args;
     }
 
     private void showRefreshMenu(boolean mode) {
@@ -240,11 +252,11 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
-    private int getFragmentPosition(Class<? extends AbstractTimelineFragment> c) {
+    private int getFragmentPosition(long fragmentId) {
         if (mAdapter == null) {
             throw new RuntimeException("pagerAdapter is null");
         }
-        return mAdapter.getFragmentPosition(c);
+        return mAdapter.findPositionById(fragmentId);
     }
 
     private void createNavigationDrawer() {
@@ -279,8 +291,8 @@ public class MainActivity extends ActionBarActivity {
         mDrawerLayout.setDrawerListener(mDrawerToggle);
     }
 
-    public boolean isCurrentTab(Fragment f){
-        return mAdapter.getItemPosition(f) == mPager.getCurrentItem();
+    public boolean isCurrentTab(long id){
+        return mAdapter.findPositionById(id) == mPager.getCurrentItem();
     }
 
     private enum MenuID {
@@ -344,13 +356,13 @@ public class MainActivity extends ActionBarActivity {
                 startActivity(new Intent(MainActivity.this, AccountActivity.class));
                 break;
             case home:
-                mPager.setCurrentItem(getFragmentPosition(HomeTimelineFragment.class));
+                mPager.setCurrentItem(getFragmentPosition(TAB_ID_HOME));
                 break;
             case mentions:
-                mPager.setCurrentItem(getFragmentPosition(MentionsTimelineFragment.class));
+                mPager.setCurrentItem(getFragmentPosition(TAB_ID_MENTION));
                 break;
             case favorites:
-                mPager.setCurrentItem(getFragmentPosition(FavoriteTimelineFragment.class));
+                mPager.setCurrentItem(getFragmentPosition(TAB_ID_FAVORITE));
                 break;
             case dm:
                 startActivity(new Intent(MainActivity.this, DmActivity.class));
@@ -369,6 +381,14 @@ public class MainActivity extends ActionBarActivity {
             }
             mDrawerLayout.closeDrawer(GravityCompat.START);
         }
+    }
+
+    private List<AbstractTimelineFragment> getFragments(){
+        List<AbstractTimelineFragment> list = new ArrayList<>();
+        for(Fragment f : getSupportFragmentManager().getFragments()){
+            if(f instanceof  AbstractTimelineFragment) list.add((AbstractTimelineFragment)f);
+        }
+        return list;
     }
 
     private final SearchView.OnQueryTextListener mOnQueryTextListener = new SearchView.OnQueryTextListener() {

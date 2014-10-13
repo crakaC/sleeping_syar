@@ -25,7 +25,7 @@ import twitter4j.User;
 import twitter4j.UserMentionEntity;
 import twitter4j.UserStreamAdapter;
 public class HomeTimelineFragment extends AbstractTimelineFragment {
-    private final String title = "Home";
+    public static final String TITLE = "Home";
 
     // UserStream
     private TwitterStream mTwitterStream;
@@ -119,7 +119,7 @@ public class HomeTimelineFragment extends AbstractTimelineFragment {
 
     @Override
     public String getTimelineName() {
-        return title;
+        return TITLE;
     }
 
     /* streaming api */
@@ -228,7 +228,7 @@ public class HomeTimelineFragment extends AbstractTimelineFragment {
     private boolean isCurrentTab(){
         if(!isAdded()) return false;
         MainActivity activity = (MainActivity)getActivity();
-        return activity.isCurrentTab(this);
+        return activity.isCurrentTab(MainActivity.TAB_ID_HOME);
     }
 
     @Override

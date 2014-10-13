@@ -7,7 +7,7 @@ import twitter4j.Status;
 import twitter4j.TwitterException;
 
 public class MentionsTimelineFragment extends AbstractTimelineFragment {
-
+    public static final String TITLE = "Mentions";
 	@Override
 	protected List<Status> newStatuses(long id, int count) {
 		try {
@@ -32,7 +32,7 @@ public class MentionsTimelineFragment extends AbstractTimelineFragment {
 
 	@Override
 	public String getTimelineName() {
-		return "Mentions";
+		return TITLE;
 	}
 
 }

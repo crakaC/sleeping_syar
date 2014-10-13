@@ -1,7 +1,9 @@
 package com.crakac.ofuton.fragment.adapter;
 
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.view.ViewPager;
 
 import com.crakac.ofuton.fragment.AbstractStatusFragment;
 import com.crakac.ofuton.fragment.AbstractUserFragment;
@@ -11,18 +13,11 @@ public class UserFragmentPagerAdapter extends SimpleFragmentPagerAdapter<Fragmen
 
 	int tweets, friends, followers, favs;
 
-	public UserFragmentPagerAdapter(FragmentManager fm) {
-		super(fm);
-        if(fm.getFragments() != null){
-            for(Fragment f : fm.getFragments()){
-                if(f instanceof AbstractStatusFragment || f instanceof AbstractUserFragment){
-                    add(f);
-                }
-            }
-        }
-	}
+    public UserFragmentPagerAdapter(FragmentActivity context, ViewPager viewPager) {
+        super(context, viewPager);
+    }
 
-	@Override
+    @Override
 	public CharSequence getPageTitle(int position) {
 		switch (position) {
 		case 0:

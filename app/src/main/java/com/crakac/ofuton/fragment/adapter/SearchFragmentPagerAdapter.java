@@ -1,7 +1,9 @@
 package com.crakac.ofuton.fragment.adapter;
 
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.view.ViewPager;
 
 import com.crakac.ofuton.fragment.search.TweetSearchFragment;
 import com.crakac.ofuton.fragment.search.UserSearchFragment;
@@ -12,15 +14,8 @@ import java.util.List;
  * Created by kosukeshirakashi on 2014/10/03.
  */
 public class SearchFragmentPagerAdapter extends SimpleFragmentPagerAdapter<Fragment>{
-    public SearchFragmentPagerAdapter(FragmentManager fm) {
-        super(fm);
-        if (fm.getFragments() != null) {
-            for (Fragment f : fm.getFragments()) {
-                if (f instanceof UserSearchFragment || f instanceof TweetSearchFragment) {
-                    add(f);
-                }
-            }
-        }
+    public SearchFragmentPagerAdapter(FragmentActivity context, ViewPager viewPager) {
+        super(context, viewPager);
     }
 
     @Override
@@ -36,9 +31,5 @@ public class SearchFragmentPagerAdapter extends SimpleFragmentPagerAdapter<Fragm
                 return "画像";
         }
         return "";
-    }
-
-    public List<Fragment> getFragments(){
-        return mFragments;
     }
 }

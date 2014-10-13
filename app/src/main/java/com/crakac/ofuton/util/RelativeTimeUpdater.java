@@ -1,9 +1,9 @@
 package com.crakac.ofuton.util;
 
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 
+import com.crakac.ofuton.fragment.adapter.SimpleFragmentPagerAdapter;
 import com.crakac.ofuton.fragment.timeline.AbstractTimelineFragment;
 
 /**
@@ -13,28 +13,27 @@ import com.crakac.ofuton.fragment.timeline.AbstractTimelineFragment;
  */
 public class RelativeTimeUpdater extends ViewPager.SimpleOnPageChangeListener {
     private boolean mIsPageChanged = false;
-    private int mPositioin;
-    private FragmentStatePagerAdapter mAdapter;
-    public RelativeTimeUpdater(FragmentStatePagerAdapter adapter){
+    private SimpleFragmentPagerAdapter<?> mAdapter;
+    public RelativeTimeUpdater(SimpleFragmentPagerAdapter<?> adapter){
         mAdapter = adapter;
     }
     @Override
     public void onPageSelected(int position) {
         mIsPageChanged = true;
-        mPositioin = position;
     }
     @Override
     public void onPageScrollStateChanged(int state) {
         if(state == ViewPager.SCROLL_STATE_IDLE && mIsPageChanged){
-            onScrollFinished(mPositioin);
+            onPageChanged();
             mIsPageChanged = false;
         }
     }
 
-    protected void onScrollFinished(int position){
-        Fragment f = mAdapter.getItem(position);
-        if(f instanceof AbstractTimelineFragment){
-            ((AbstractTimelineFragment)f).updateDisplayedTime();
+    protected void onPageChanged(){
+        for(Fragment f : mAdapter.getFragments()){
+            if (f instanceof AbstractTimelineFragment) {
+                ((AbstractTimelineFragment) f).updateDisplayedTime();
+            }
         }
     }
 }

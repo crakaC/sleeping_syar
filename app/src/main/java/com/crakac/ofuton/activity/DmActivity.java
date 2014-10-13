@@ -16,11 +16,11 @@ public class DmActivity extends ActionBarActivity {
 		super.onCreate(savedInstanceState);
 		// レイアウトとタイトルの設定
 		setContentView(R.layout.activity_simple_tab);
-		DmFragmentPagerAdapter pagerAdapter = new DmFragmentPagerAdapter(getSupportFragmentManager());
-		pagerAdapter.add(new DmReceivedFragment());
-		pagerAdapter.add(new DmSentFragment());
-		ViewPager pager = (ViewPager)findViewById(R.id.pager);
-		pager.setAdapter(pagerAdapter);
+        ViewPager pager = (ViewPager) findViewById(R.id.pager);
+        DmFragmentPagerAdapter pagerAdapter = new DmFragmentPagerAdapter(this, pager);
+		pagerAdapter.add(DmReceivedFragment.class, 0);
+		pagerAdapter.add(DmSentFragment.class, 1);
+        pagerAdapter.notifyDataSetChanged();
 
 		PagerSlidingTabStrip tab = (PagerSlidingTabStrip)findViewById(R.id.tab);
 		tab.setViewPager(pager);

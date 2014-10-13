@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 
@@ -17,7 +18,7 @@ import com.crakac.ofuton.widget.PreviewNavigation;
 
 import java.util.List;
 
-public class WebImagePreviewActivity extends AbstractPreviewActivity implements PreviewNavigation.NavigationListener {
+public class WebImagePreviewActivity extends FragmentActivity implements PreviewNavigation.NavigationListener {
     private HackyViewPager mPager;
     private SimpleFragmentPagerAdapter<ImagePreviewFragment> mAdapter;
     private PreviewNavigation mNav;
@@ -33,23 +34,22 @@ public class WebImagePreviewActivity extends AbstractPreviewActivity implements 
         mNav.setNavigationListener(this);
         mNav.setVisibility(View.VISIBLE);
 
-        mAdapter = new SimpleFragmentPagerAdapter<>(getSupportFragmentManager());
+        mAdapter = new SimpleFragmentPagerAdapter<>(this, mPager);
 
         List<String> imageUrls = getIntent().getStringArrayListExtra(C.URL);
         Uri imageUri = getIntent().getData();
         if (imageUri != null) {
-            mAdapter.add(ImagePreviewFragment.createInstance(imageUri.toString()));
+            mAdapter.add(ImagePreviewFragment.class, createArgs(imageUri.toString()), 0);
         } else if (imageUrls != null) {
-            for (String url : imageUrls) {
-                mAdapter.add(ImagePreviewFragment.createInstance(url));
+            for(int i = 0; i < imageUrls.size(); i++){
+                mAdapter.add(ImagePreviewFragment.class, createArgs(imageUrls.get(i)), i);
             }
         }
-        mPager.setAdapter(mAdapter);
+        mAdapter.notifyDataSetChanged();
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             mPager.setPageTransformer(true, new DepthPageTransformer());
-        }
-
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
+        } else {
             int pagerMargin = getResources().getDimensionPixelSize(R.dimen.preview_pager_margin);
             mPager.setPageMargin(pagerMargin);
         }
@@ -65,6 +65,12 @@ public class WebImagePreviewActivity extends AbstractPreviewActivity implements 
         } else {
             AppUtil.slideIn(mNav, 200);
         }
+    }
+
+    private Bundle createArgs(String url){
+        Bundle b = new Bundle(1);
+        b.putString(C.URL, url);
+        return b;
     }
 
     @Override

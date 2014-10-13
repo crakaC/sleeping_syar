@@ -13,14 +13,14 @@ import android.view.MenuItem;
 import com.astuetz.PagerSlidingTabStrip;
 import com.crakac.ofuton.C;
 import com.crakac.ofuton.R;
-import com.crakac.ofuton.util.RelativeTimeUpdater;
-import com.crakac.ofuton.fragment.search.LocalSearchFragment;
 import com.crakac.ofuton.fragment.adapter.SearchFragmentPagerAdapter;
+import com.crakac.ofuton.fragment.search.LocalSearchFragment;
 import com.crakac.ofuton.fragment.search.TweetSearchFragment;
 import com.crakac.ofuton.fragment.search.UserSearchFragment;
 import com.crakac.ofuton.util.AppUtil;
+import com.crakac.ofuton.util.RelativeTimeUpdater;
 
-import twitter4j.Query;
+import java.util.List;
 
 /**
  * Created by kosukeshirakashi on 2014/09/05.
@@ -41,44 +41,25 @@ public class SearchActivity extends ActionBarActivity {
         mTab = (PagerSlidingTabStrip) findViewById(R.id.tab);
         mTab.setTabPaddingLeftRight(AppUtil.dpToPx(8));
         mPager = (ViewPager) findViewById(R.id.pager);
-        if(mAdapter == null){
-            mAdapter = new SearchFragmentPagerAdapter(getSupportFragmentManager());
-        }
-        if(mAdapter.isEmpty()){
-            setFragments();
-        }
-        mPager.setAdapter(mAdapter);
+        mAdapter = new SearchFragmentPagerAdapter(this, mPager);
+        setFragments();
         mPager.setOffscreenPageLimit(mAdapter.getCount());
         mTab.setViewPager(mPager);
         mTab.setOnPageChangeListener(new RelativeTimeUpdater(mAdapter));
     }
 
-    private void setArgs(Fragment f, String query) {
+    private Bundle createArgs(String query) {
         Bundle b = new Bundle(1);
         b.putString(C.QUERY, query);
-        f.setArguments(b);
-    }
-
-    private void setArgs(Fragment f, String query, Query.ResultType resultType) {
-        Bundle b = new Bundle(2);
-        b.putString(C.QUERY, query);
-        b.putSerializable(C.TYPE, resultType);
-        f.setArguments(b);
+        return b;
     }
 
     private void setFragments(){
-        TweetSearchFragment local = new LocalSearchFragment();
-        TweetSearchFragment tweet = new TweetSearchFragment();
-        TweetSearchFragment pics = new TweetSearchFragment();
-        UserSearchFragment user = new UserSearchFragment();
-        setArgs(local, mQuery);
-        setArgs(tweet, buildQuery(mQuery));
-        setArgs(pics, buildQuery(mQuery + " pic.twitter.com"));
-        setArgs(user, buildQuery(mQuery));
-        mAdapter.add(local);
-        mAdapter.add(tweet);
-        mAdapter.add(user);
-        mAdapter.add(pics);
+        mAdapter.add(LocalSearchFragment.class, createArgs(mQuery), 0);
+        mAdapter.add(TweetSearchFragment.class, createArgs(buildQuery(mQuery)), 1);
+        mAdapter.add(UserSearchFragment.class, createArgs(buildQuery(mQuery)), 2);
+        mAdapter.add(TweetSearchFragment.class, createArgs(buildQuery(mQuery + " pic.twitter.com")), 3);
+        mAdapter.notifyDataSetChanged();
     }
 
     private String buildQuery(String query){

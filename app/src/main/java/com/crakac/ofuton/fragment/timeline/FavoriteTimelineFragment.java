@@ -7,7 +7,7 @@ import twitter4j.Status;
 import twitter4j.TwitterException;
 
 public class FavoriteTimelineFragment extends AbstractTimelineFragment {
-
+    public static final String TITLE = "Favorites";
 	@Override
 	protected List<Status> newStatuses(long id, int count) {
 		try {
@@ -31,6 +31,6 @@ public class FavoriteTimelineFragment extends AbstractTimelineFragment {
 
 	@Override
 	public String getTimelineName() {
-		return "Favorites";
+		return TITLE;
 	}
 }

@@ -43,12 +43,6 @@ public class ImagePreviewFragment extends Fragment {
     private ImageContainer mImageContainer;
     private ProgressBar mProgressBar;
 
-    public static ImagePreviewFragment createInstance(String imageUrl) {
-        Bundle b = new Bundle(1);
-        b.putString(C.URL, imageUrl);
-        ImagePreviewFragment f = new ImagePreviewFragment();
-        f.setArguments(b);
-        return f;
     }
 
     @Override

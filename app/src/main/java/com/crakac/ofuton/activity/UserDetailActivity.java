@@ -115,10 +115,8 @@ public class UserDetailActivity extends FinishableActionbarActivity {
         }
         mTwitter = TwitterUtils.getTwitterInstance();
 
-        FragmentManager fm = getSupportFragmentManager();
-
-        mPagerAdapter = new UserFragmentPagerAdapter(fm);
         mPager = (ViewPager) findViewById(R.id.pager);
+        mPagerAdapter = new UserFragmentPagerAdapter(this, mPager);
         mTab = (PagerSlidingTabStrip) findViewById(R.id.tab);
 
         findAndInitViews();
@@ -260,39 +258,24 @@ public class UserDetailActivity extends FinishableActionbarActivity {
         int followers = user.getFollowersCount();
         int favs = user.getFavouritesCount();
         mPagerAdapter.setCounts(statusCounts, friends, followers, favs);
-        if(mPagerAdapter.getCount() == 0) {
-            // ユーザーのツイート
-            UserTimelineFragment utlFragment = new UserTimelineFragment();
-            mPagerAdapter.add(utlFragment);
-
-            // ユーザーがフォローしてる人たち
-            FriendsOfUserFragment friendsFragment = new FriendsOfUserFragment();
-            mPagerAdapter.add(friendsFragment);
-
-            // ユーザーのフォロワーたち
-            FollowersOfUserFragment followersFragment = new FollowersOfUserFragment();
-            mPagerAdapter.add(followersFragment);
-
-            // ユーザーのお気に入り
-            FavoriteTimelineFragment favFragment = new FavoriteTimelineFragment();
-            mPagerAdapter.add(favFragment);
-
-            setArguments(utlFragment, friendsFragment, followersFragment, favFragment);
+        if(mPagerAdapter.isEmpty()) {
+            Bundle args = createArgs();
+            mPagerAdapter.add(UserTimelineFragment.class, args, 0);
+            mPagerAdapter.add(FriendsOfUserFragment.class, args, 1);
+            mPagerAdapter.add(FollowersOfUserFragment.class, args, 2);
+            mPagerAdapter.add(FavoriteTimelineFragment.class, args, 3);
+            mPagerAdapter.notifyDataSetChanged();
         }
-
-        mPager.setAdapter(mPagerAdapter);
         mPager.setOffscreenPageLimit(mPagerAdapter.getCount());// 全Fragmentを保持（onCreateViewが複数呼ばれるのを抑止）
         mTab.setOnPageChangeListener(new RelativeTimeUpdater(mPagerAdapter));
         mTab.setViewPager(mPager);
     }
 
-    private void setArguments(Fragment... fragments) {
+    private Bundle createArgs() {
         Bundle args = new Bundle();
         args.putSerializable(C.USER, mTargetUser);
         args.putSerializable(C.USER_ID, mTargetUser.getId());
-        for (Fragment f : fragments) {
-            f.setArguments(args);
-        }
+        return args;
     }
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR1)
