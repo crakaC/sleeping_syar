@@ -19,7 +19,7 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.crakac.ofuton.R;
-import com.crakac.ofuton.status.TweetStatusAdapter;
+import com.crakac.ofuton.adapter.TweetStatusAdapter;
 
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;

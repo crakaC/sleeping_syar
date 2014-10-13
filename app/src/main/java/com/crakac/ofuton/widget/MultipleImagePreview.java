@@ -11,7 +11,7 @@ import android.widget.LinearLayout;
 
 import com.crakac.ofuton.C;
 import com.crakac.ofuton.R;
-import com.crakac.ofuton.WebImagePreviewActivity;
+import com.crakac.ofuton.activity.WebImagePreviewActivity;
 import com.crakac.ofuton.util.NetUtil;
 import com.crakac.ofuton.util.TwitterUtils;
 
@@ -20,7 +20,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 import twitter4j.MediaEntity;
 

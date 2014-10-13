@@ -14,6 +14,7 @@ import android.util.SparseBooleanArray;
 import android.view.View;
 import android.widget.RemoteViews;
 
+import com.crakac.ofuton.activity.MainActivity;
 import com.crakac.ofuton.util.AppUtil;
 import com.crakac.ofuton.util.AppUtil.SyarListener;
 import com.crakac.ofuton.util.TwitterUtils;

@@ -31,7 +31,7 @@
         </service>
 
         <activity
-            android:name=".MainActivity"
+            android:name=".activity.MainActivity"
             android:label="@string/syar"
             android:launchMode="singleTask"
             android:windowSoftInputMode="adjustNothing">
@@ -41,49 +41,49 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".search.SearchActivity"
+        <activity android:name=".activity.SearchActivity"
                   android:label="@string/activity_search"
-            android:parentActivityName=".MainActivity">
+            android:parentActivityName=".activity.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity"/>
         </activity>
         <activity
-            android:name=".SettingActivity"
+            android:name=".activity.SettingActivity"
             android:label="@string/activity_setting"
             android:launchMode="singleTask"
-            android:parentActivityName=".MainActivity" >
+            android:parentActivityName=".activity.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
         </activity>
         <activity
-            android:name=".dm.DmActivity"
+            android:name=".activity.DmActivity"
             android:label="@string/activity_dm"
             android:launchMode="singleTask"
-            android:parentActivityName=".MainActivity" >
+            android:parentActivityName=".activity.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
         </activity>
         <activity
-            android:name=".dm.ComposeDmActivity"
+            android:name=".activity.ComposeDmActivity"
             android:label="@string/activity_dm_compose"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".lists.ListSelectActivity"
+            android:name=".activity.ListSelectActivity"
             android:label="@string/activity_list"
             android:launchMode="singleTask"
-            android:parentActivityName=".MainActivity" >
+            android:parentActivityName=".activity.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
         </activity>
         <activity
-            android:name=".TweetActivity"
+            android:name=".activity.TweetActivity"
             android:label="@string/activity_tweet"
             android:configChanges="orientation|screenSize"
-            android:parentActivityName=".MainActivity"
+            android:parentActivityName=".activity.MainActivity"
             android:windowSoftInputMode="adjustResize" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -122,11 +122,11 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".PhotoPreviewActivity"
+            android:name=".activity.PhotoPreviewActivity"
             android:theme="@style/Theme.MyTrans" >
         </activity>
         <activity
-            android:name=".WebImagePreviewActivity"
+            android:name=".activity.WebImagePreviewActivity"
             android:exported="true"
             android:multiprocess="true"
             android:theme="@style/Theme.MyTrans" >
@@ -163,16 +163,16 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".conversation.ConversationActivity"
+            android:name=".activity.ConversationActivity"
             android:label="@string/activity_conversation" />
         <activity
-            android:name=".user.UserDetailActivity"
+            android:name=".activity.UserDetailActivity"
             android:label="@string/activity_user_detail" />
         <activity
-            android:name=".accounts.AccountActivity"
+            android:name=".activity.AccountActivity"
             android:label="@string/activity_account"
             android:launchMode="singleTask"
-            android:parentActivityName=".MainActivity" >
+            android:parentActivityName=".activity.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
@@ -189,9 +189,9 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".LicenseActivity"
+        <activity android:name=".activity.LicenseActivity"
             android:label="License"
-            android:parentActivityName=".SettingActivity">
+            android:parentActivityName=".activity.SettingActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".SettingActivity" />
