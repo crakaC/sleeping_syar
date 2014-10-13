@@ -23,6 +23,7 @@ import com.crakac.ofuton.action.ClickActionAdapter;
 import com.crakac.ofuton.action.status.ClickAction;
 import com.crakac.ofuton.action.status.LinkAction;
 import com.crakac.ofuton.action.status.UserDetailAction;
+import com.crakac.ofuton.util.AppUtil;
 
 import java.util.TreeSet;
 
@@ -97,8 +98,8 @@ public class DmDialogFragment extends DialogFragment {
 		DisplayMetrics metrics = getResources().getDisplayMetrics();
 
 		// 縦幅はwrap contentで，横幅は92%で．
-		int dialogWidth = (int) (metrics.widthPixels * 0.92);
-		int dialogHeight = WindowManager.LayoutParams.WRAP_CONTENT;
+        int dialogWidth = (int) Math.min((metrics.widthPixels * 0.92), AppUtil.dpToPx(360));
+        int dialogHeight = WindowManager.LayoutParams.WRAP_CONTENT;
 
 		lp.width = dialogWidth;
 		lp.height = dialogHeight;
