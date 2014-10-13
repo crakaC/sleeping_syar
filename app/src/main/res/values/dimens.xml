@@ -8,5 +8,5 @@
     <dimen name="preview_pager_margin">12dp</dimen>
     <dimen name="nav_button">48dp</dimen>
     <dimen name="nav_button_margin">8dp</dimen>
-
+    <dimen name="inline_preview_margin">4dp</dimen>
 </resources>

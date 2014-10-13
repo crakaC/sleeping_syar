@@ -21,7 +21,7 @@
         <View
             android:id="@+id/separatorLeft"
             android:layout_width="match_parent"
-            android:layout_height="3dp"
+            android:layout_height="@dimen/inline_preview_margin"
             android:visibility="visible" />
 
         <com.crakac.ofuton.widget.BitmapImageView
@@ -36,7 +36,7 @@
 
     <View
         android:id="@+id/virticalSeparatorLeft"
-        android:layout_width="3dp"
+        android:layout_width="@dimen/inline_preview_margin"
         android:layout_height="match_parent"
         android:visibility="visible"/>
 
@@ -58,7 +58,7 @@
         <View
             android:id="@+id/separatorCenter"
             android:layout_width="match_parent"
-            android:layout_height="3dp"
+            android:layout_height="@dimen/inline_preview_margin"
             android:visibility="visible"/>
 
         <com.crakac.ofuton.widget.BitmapImageView
@@ -73,7 +73,7 @@
 
     <View
         android:id="@+id/virticalSeparatorRight"
-        android:layout_width="3dp"
+        android:layout_width="@dimen/inline_preview_margin"
         android:layout_height="match_parent"
         android:visibility="visible" />
 
@@ -95,7 +95,7 @@
         <View
             android:id="@+id/separatorRight"
             android:layout_width="match_parent"
-            android:layout_height="3dp"
+            android:layout_height="@dimen/inline_preview_margin"
             android:visibility="visible" />
 
         <com.crakac.ofuton.widget.BitmapImageView
