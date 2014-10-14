@@ -10,7 +10,7 @@ import com.crakac.ofuton.fragment.adapter.DmFragmentPagerAdapter;
 import com.crakac.ofuton.fragment.dm.DmReceivedFragment;
 import com.crakac.ofuton.fragment.dm.DmSentFragment;
 
-public class DmActivity extends ActionBarActivity {
+public class DmActivity extends FinishableActionbarActivity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);

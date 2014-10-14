@@ -24,7 +24,7 @@ import com.crakac.ofuton.util.RelativeTimeUpdater;
 /**
  * Created by kosukeshirakashi on 2014/09/05.
  */
-public class SearchActivity extends ActionBarActivity {
+public class SearchActivity extends FinishableActionbarActivity {
 
     private PagerSlidingTabStrip mTab;
     private ViewPager mPager;

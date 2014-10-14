@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.crakac.ofuton">
+<manifest
+    package="com.crakac.ofuton"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
     <application
         android:name=".OfutonApp"
@@ -11,21 +12,21 @@
         android:hardwareAccelerated="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/syar"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme">
         <receiver
             android:name="SyarWidget"
-            android:label="SyarWidget" >
+            android:label="SyarWidget">
             <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
             </intent-filter>
 
             <meta-data
                 android:name="android.appwidget.provider"
-                android:resource="@xml/syar_widget" />
+                android:resource="@xml/syar_widget"/>
         </receiver>
 
-        <service android:name="SyarWidget$SyarService" >
-            <intent-filter >
+        <service android:name="SyarWidget$SyarService">
+            <intent-filter>
                 <action android:name="SYAR_ACTION"/>
             </intent-filter>
         </service>
@@ -36,122 +37,108 @@
             android:launchMode="singleTask"
             android:windowSoftInputMode="adjustNothing">
             <intent-filter android:label="@string/syar">
-                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.MAIN"/>
 
-                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".activity.SearchActivity"
-                  android:label="@string/activity_search"
-            android:parentActivityName=".activity.MainActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity"/>
-        </activity>
+        <activity
+            android:name=".activity.SearchActivity"
+            android:label="@string/activity_search"/>
         <activity
             android:name=".activity.SettingActivity"
             android:label="@string/activity_setting"
             android:launchMode="singleTask"
-            android:parentActivityName=".activity.MainActivity" >
+            android:parentActivityName=".activity.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
+                android:value=".activity.MainActivity"/>
         </activity>
         <activity
             android:name=".activity.DmActivity"
             android:label="@string/activity_dm"
-            android:launchMode="singleTask"
-            android:parentActivityName=".activity.MainActivity" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
-        </activity>
+            android:launchMode="singleTask"/>
         <activity
             android:name=".activity.ComposeDmActivity"
             android:label="@string/activity_dm_compose"
-            android:windowSoftInputMode="adjustResize" />
+            android:windowSoftInputMode="adjustResize"/>
         <activity
             android:name=".activity.ListSelectActivity"
             android:label="@string/activity_list"
-            android:launchMode="singleTask"
-            android:parentActivityName=".activity.MainActivity" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
-        </activity>
+            android:launchMode="singleTask"/>
         <activity
             android:name=".activity.TweetActivity"
-            android:label="@string/activity_tweet"
             android:configChanges="orientation|screenSize"
+            android:label="@string/activity_tweet"
             android:parentActivityName=".activity.MainActivity"
-            android:windowSoftInputMode="adjustResize" >
+            android:windowSoftInputMode="adjustResize">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
+                android:value=".activity.MainActivity"/>
 
             <intent-filter android:label="@string/app_name">
-                <action android:name="android.intent.action.SEND" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="text/*" />
+                <action android:name="android.intent.action.SEND"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <data android:mimeType="text/*"/>
             </intent-filter>
             <intent-filter android:label="@string/app_name">
-                <action android:name="android.intent.action.SEND" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="image/*" />
+                <action android:name="android.intent.action.SEND"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <data android:mimeType="image/*"/>
             </intent-filter>
             <intent-filter android:label="@string/app_name">
-                <action android:name="android.intent.action.VIEW" />
+                <action android:name="android.intent.action.VIEW"/>
 
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
 
                 <data
                     android:host="twitter.com"
                     android:pathPrefix="/intent/tweet"
-                    android:scheme="https" />
+                    android:scheme="https"/>
 
                 <data
                     android:host="twitter.com"
                     android:pathPrefix="/share"
-                    android:scheme="https" />
+                    android:scheme="https"/>
                 <data
                     android:host="twitter.com"
                     android:pathPrefix="/share"
-                    android:scheme="http" />
+                    android:scheme="http"/>
 
             </intent-filter>
         </activity>
         <activity
             android:name=".activity.PhotoPreviewActivity"
-            android:theme="@style/Theme.MyTrans" >
+            android:theme="@style/Theme.MyTrans">
         </activity>
         <activity
             android:name=".activity.WebImagePreviewActivity"
             android:exported="true"
             android:multiprocess="true"
-            android:theme="@style/Theme.MyTrans" >
-            <intent-filter android:label="@string/preview" >
-                <action android:name="android.intent.action.VIEW" />
+            android:theme="@style/Theme.MyTrans">
+            <intent-filter android:label="@string/preview">
+                <action android:name="android.intent.action.VIEW"/>
 
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
 
                 <data
                     android:host="twitpic.com"
                     android:pathPrefix="/"
-                    android:scheme="http" />
+                    android:scheme="http"/>
                 <data
                     android:host="img.ly"
                     android:pathPrefix="/"
-                    android:scheme="http" />
+                    android:scheme="http"/>
                 <data
                     android:host="gyazo.com"
                     android:pathPrefix="/"
-                    android:scheme="http" />
+                    android:scheme="http"/>
                 <data
                     android:host="p.twipple.jp"
                     android:pathPrefix="/"
-                    android:scheme="http" />
+                    android:scheme="http"/>
                 <data
                     android:host="instagram.com"
                     android:pathPrefix="/p/"
@@ -164,38 +151,34 @@
         </activity>
         <activity
             android:name=".activity.ConversationActivity"
-            android:label="@string/activity_conversation" />
+            android:label="@string/activity_conversation"/>
         <activity
             android:name=".activity.UserDetailActivity"
-            android:label="@string/activity_user_detail" />
+            android:label="@string/activity_user_detail"/>
         <activity
             android:name=".activity.AccountActivity"
             android:label="@string/activity_account"
             android:launchMode="singleTask"
-            android:parentActivityName=".activity.MainActivity" >
+            android:parentActivityName=".activity.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
+                android:value=".activity.MainActivity"/>
 
             <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
+                <action android:name="android.intent.action.VIEW"/>
 
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
 
                 <data
                     android:host="ofuton"
-                    android:scheme="crakac" />
+                    android:scheme="crakac"/>
             </intent-filter>
         </activity>
 
-        <activity android:name=".activity.LicenseActivity"
-            android:label="License"
-            android:parentActivityName=".activity.SettingActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".SettingActivity" />
-        </activity>
+        <activity
+            android:name=".activity.LicenseActivity"
+            android:label="License"/>
     </application>
 
 </manifest>
