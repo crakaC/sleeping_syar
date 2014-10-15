@@ -55,11 +55,18 @@ public class SearchActivity extends FinishableActionbarActivity {
         return b;
     }
 
+    private Bundle createArgs(String query, String optionQuery){
+        Bundle b = new Bundle(2);
+        b.putString(C.QUERY, query);
+        b.putString(C.OPTION_QUERY, optionQuery);
+        return b;
+    }
+
     private void setFragments(){
         mAdapter.add(LocalSearchFragment.class, createArgs(mQuery), 0);
         mAdapter.add(TweetSearchFragment.class, createArgs(buildQuery(mQuery)), 1);
         mAdapter.add(UserSearchFragment.class, createArgs(buildQuery(mQuery)), 2);
-        mAdapter.add(TweetSearchFragment.class, createArgs(buildQuery(mQuery + " pic.twitter.com")), 3);
+        mAdapter.add(TweetSearchFragment.class, createArgs(buildQuery(mQuery), "pic.twitter.com"), 3);
         mAdapter.notifyDataSetChanged();
     }
 
@@ -97,7 +104,7 @@ public class SearchActivity extends FinishableActionbarActivity {
 
         @Override
         public boolean onQueryTextSubmit(String query) {
-            search(query);
+            search(buildQuery(query));
             mSearchView.clearFocus();// clear focus and hide software keyboard
             return true;
         }
@@ -109,6 +116,7 @@ public class SearchActivity extends FinishableActionbarActivity {
             if(f instanceof Searchable){
                 ((Searchable) f).search(query);
             }
+
         }
     }
 

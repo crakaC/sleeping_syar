@@ -22,16 +22,19 @@ import twitter4j.TwitterException;
 public class TweetSearchFragment extends AbstractTimelineFragment implements SearchActivity.Searchable{
     protected String mQuery;
     private Query.ResultType mResultType;
+    private String mOptionQuery;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mQuery = getArguments().getString(C.QUERY);
+        mOptionQuery = getArguments().getString(C.OPTION_QUERY);
         mResultType = (Query.ResultType) getArguments().getSerializable(C.TYPE);
         if(mResultType == null){
             mResultType = Query.RECENT;
         }
         if(savedInstanceState != null){
             mQuery = savedInstanceState.getString(C.QUERY);
+            mOptionQuery = savedInstanceState.getString(C.OPTION_QUERY);
         }
     }
 
@@ -45,7 +48,7 @@ public class TweetSearchFragment extends AbstractTimelineFragment implements Sea
     @Override
     protected List<Status> newStatuses(long sinceId, int count) {
         try{
-            QueryResult result = TwitterUtils.getTwitterInstance().search(new Query(mQuery).count(count).sinceId(sinceId).resultType(mResultType));
+            QueryResult result = TwitterUtils.getTwitterInstance().search(new Query(buildQuery()).count(count).sinceId(sinceId).resultType(mResultType));
             return result.getTweets();
         }catch (TwitterException e){
             e.printStackTrace();
@@ -56,7 +59,7 @@ public class TweetSearchFragment extends AbstractTimelineFragment implements Sea
     @Override
     protected List<Status> previousStatuses(long maxId, int count) {
         try {
-            QueryResult result = TwitterUtils.getTwitterInstance().search(new Query(mQuery).count(count).maxId(maxId - 1L).resultType(mResultType));
+            QueryResult result = TwitterUtils.getTwitterInstance().search(new Query(buildQuery()).count(count).maxId(maxId - 1L).resultType(mResultType));
             return result.getTweets();
         } catch (TwitterException e) {
             e.printStackTrace();
@@ -80,6 +83,17 @@ public class TweetSearchFragment extends AbstractTimelineFragment implements Sea
     @Override
     public void onSaveInstanceState(Bundle outState) {
         outState.putString(C.QUERY, mQuery);
+        if(mOptionQuery != null){
+            outState.putString(C.OPTION_QUERY, mOptionQuery);
+        }
         super.onSaveInstanceState(outState);
+    }
+
+    public String buildQuery(){
+        if(mOptionQuery == null){
+            return mQuery;
+        }
+
+        return mQuery + " " + mOptionQuery;
     }
 }

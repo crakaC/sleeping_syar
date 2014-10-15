@@ -17,6 +17,7 @@ public class C {
     public static final String URI = "URI";
     public static final String POSITION = "POSITION";
     public static final String QUERY = "QUERY";
+    public static final String OPTION_QUERY = "OPTION_QUERY";
     public static final String TYPE = "TYPE";
     public static final String INDEX = "INDEX";
 }
