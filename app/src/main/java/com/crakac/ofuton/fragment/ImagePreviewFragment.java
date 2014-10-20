@@ -35,10 +35,10 @@ public class ImagePreviewFragment extends Fragment implements Rotatable {
     private ProgressBar mProgressBar;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
         int index = getArguments().getInt(C.INDEX, 0);
-        ((Rotator)getActivity()).setRotatable(index, this);
+        ((Rotator) getActivity()).setRotatable(index, this);
     }
 
     @Override
