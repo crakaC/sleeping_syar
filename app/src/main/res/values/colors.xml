@@ -25,10 +25,10 @@
     <color name="droid_darkyellow">#FF8800</color>
     <color name="droid_red">#FF4444</color>
     <color name="droid_darkred">#CC0000</color>
-    <color name="refresh1">#31b6e6</color>
-    <color name="refresh2">#73c7e6</color>
-    <color name="refresh4">#aadff2</color>
-    <color name="refresh3">#ffffff</color>
+    <color name="refresh1">#007AB7</color>
+    <color name="refresh2">#A4C520</color>
+    <color name="refresh3">#EDAD0B</color>
+    <color name="refresh4">#B61972</color>
 <!--
     <color name="gray_blue">#1c1f26</color>
     <color name="gray_green">#1d2620</color>

@@ -48,7 +48,7 @@ import twitter4j.UserMentionEntity;
  *
  * @author Kosuke
  */
-public class TweetActivity extends ActionBarActivity implements View.OnClickListener {
+public class TweetActivity extends FinishableActionbarActivity implements View.OnClickListener {
 
     private static final String TAG = TweetActivity.class.getSimpleName();
 
