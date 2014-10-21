@@ -23,23 +23,23 @@
 
     <ImageView
         android:id="@+id/remove"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:layout_margin="6dp"
         android:background="@drawable/bg_remove"
-        android:src="@drawable/ic_remove"
+        android:src="@drawable/ic_delete_white_48dp"
         android:visibility="visible" />
 
     <ImageView
         android:id="@+id/checkMark"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:layout_margin="6dp"
-        android:src="@drawable/ic_check"
+        android:src="@drawable/ic_check_white_48dp"
         android:visibility="visible" />
 
 </RelativeLayout>

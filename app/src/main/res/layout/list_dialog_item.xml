@@ -6,11 +6,11 @@
 
     <ImageView
         android:id="@+id/checkMark"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
-        android:src="@drawable/ic_check"
+        android:src="@drawable/ic_check_white_36dp"
         android:visibility="visible" />
 
     <TextView

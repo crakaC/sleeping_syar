@@ -199,11 +199,11 @@ public class UserDetailActivity extends FinishableActionbarActivity {
                 if (mProfileView.getVisibility() == View.VISIBLE) {
                     mProfileView.setVisibility(View.GONE);
                     mProfileContentView.setVisibility(View.GONE);
-                    mCollapseMark.setImageResource(R.drawable.ic_expand);
+                    mCollapseMark.setImageResource(R.drawable.ic_expand_more_white_36dp);
                 } else {
                     mProfileView.setVisibility(View.VISIBLE);
                     mProfileContentView.setVisibility(View.VISIBLE);
-                    mCollapseMark.setImageResource(R.drawable.ic_collapse);
+                    mCollapseMark.setImageResource(R.drawable.ic_expand_less_white_36dp);
                 }
             }
         });

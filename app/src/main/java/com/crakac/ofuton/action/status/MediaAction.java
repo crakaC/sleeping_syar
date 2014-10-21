@@ -11,7 +11,7 @@ import com.crakac.ofuton.activity.WebImagePreviewActivity;
 public class MediaAction extends ClickAction {
 	private String mDispUrl, mMediaUrl;
 	public MediaAction(Context context, String displayUrl, String mediaUrl) {
-		super(context, 0, R.drawable.ic_menu_media);
+		super(context, 0, R.drawable.ic_open_in_browser_white_36dp);
 		mDispUrl = displayUrl;
 		mMediaUrl = mediaUrl;
 	}

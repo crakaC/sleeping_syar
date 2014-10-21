@@ -22,7 +22,7 @@ public class RetweetAction extends ClickAction {
 	 *            リツイート後に中身を変更するために必要
 	 */
 	public RetweetAction(Context context, TweetStatusAdapter adapter, twitter4j.Status status) {
-		super(context, 0, R.drawable.ic_menu_retweet);
+		super(context, 0, R.drawable.ic_repeat_white_36dp);
 		mContext = context;
 		selectedStatus = status;
 	//	mAdapter = adapter;

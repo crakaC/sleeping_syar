@@ -45,11 +45,11 @@
 
     <ImageView
         android:id="@+id/lockedIcon"
-        android:layout_width="16dp"
-        android:layout_height="16dp"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
         android:layout_alignTop="@+id/name"
         android:layout_toRightOf="@+id/name"
-        android:src="@drawable/ic_locked"
+        android:src="@drawable/ic_lock_white_18dp"
         android:visibility="visible" />
 
     <TextView

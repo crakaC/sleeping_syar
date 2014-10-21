@@ -43,7 +43,7 @@
                     android:layout_height="48dp"
                     android:layout_alignBottom="@+id/iconFrame"
                     android:layout_alignRight="@+id/iconFrame"
-                    android:src="@drawable/ic_locked"
+                    android:src="@drawable/ic_lock_white_48dp"
                     android:visibility="visible" />
 
                 <RelativeLayout
@@ -167,7 +167,7 @@
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
             android:background="@color/collapse_and_expand"
-            android:src="@drawable/ic_collapse" />
+            android:src="@drawable/ic_expand_less_white_36dp" />
 
         <View
             android:id="@+id/shortUnderLine"

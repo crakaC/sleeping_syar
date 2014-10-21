@@ -36,13 +36,13 @@
         <ImageButton
             android:id="@+id/dmInfoBtn"
             style="@style/optionItem"
-            android:src="@drawable/ic_menu_conversation"
+            android:src="@drawable/ic_question_answer_white_48dp"
             android:visibility="gone" />
 
         <ImageButton
             android:id="@+id/sendBtn"
             style="@style/optionItem"
-            android:src="@drawable/ic_send" />
+            android:src="@drawable/ic_send_white_48dp" />
     </LinearLayout>
 
 </RelativeLayout>

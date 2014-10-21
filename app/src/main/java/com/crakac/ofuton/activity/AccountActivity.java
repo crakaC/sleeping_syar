@@ -20,7 +20,7 @@ import twitter4j.TwitterException;
 import twitter4j.auth.AccessToken;
 import twitter4j.auth.RequestToken;
 
-public class AccountActivity extends ActionBarActivity{
+public class AccountActivity extends FinishableActionbarActivity{
 	private RequestToken mRequestToken;
 	private String mCallbackURL;
 	private DialogManager mDialogManager;

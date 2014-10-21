@@ -10,7 +10,7 @@ import com.crakac.ofuton.activity.TweetActivity;
 public class HashtagAction extends ClickAction {
 	private String tag;
 	public HashtagAction(Context context, String tag) {
-		super(context, 0, R.drawable.ic_menu_hashtag);
+		super(context, 0, R.drawable.ic_create_white_36dp);
 		this.tag = tag;
 	}
 

@@ -8,8 +8,9 @@
 
     <ImageView
         android:id="@+id/action_icon"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:padding="4dp"
         android:layout_marginLeft="8dp"
         android:src="@android:drawable/ic_menu_edit" />
 
@@ -21,6 +22,6 @@
         android:textColor="@android:color/white"
         android:textSize="14sp"
         android:textStyle="bold"
-        android:layout_marginLeft="12dp" />
+        android:layout_marginLeft="8dp" />
 
 </LinearLayout>

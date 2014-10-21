@@ -42,26 +42,26 @@
             android:clickable="true"
             style="@style/optionItem" />
 
-        <ImageButton
+        <ImageView
             android:id="@+id/tweetInfoBtn"
             style="@style/optionItem"
-            android:src="@drawable/ic_menu_conversation"
+            android:src="@drawable/ic_question_answer_white_36dp"
             android:visibility="gone" />
 
-        <ImageButton
+        <ImageView
             android:id="@+id/appendPic"
             style="@style/optionItem"
-            android:src="@drawable/btn_picture" />
+            android:src="@drawable/ic_insert_photo_white_36dp" />
 
-        <ImageButton
+        <ImageView
             android:id="@+id/picFromCamera"
             style="@style/optionItem"
-            android:src="@drawable/btn_camera" />
+            android:src="@drawable/ic_camera_alt_white_36dp" />
 
-        <ImageButton
+        <ImageView
             android:id="@+id/action_tweet"
             style="@style/optionItem"
-            android:src="@drawable/btn_pencil" />
+            android:src="@drawable/ic_send_white_36dp" />
     </LinearLayout>
 
 </RelativeLayout>

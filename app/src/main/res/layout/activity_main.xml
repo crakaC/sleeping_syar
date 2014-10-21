@@ -24,11 +24,11 @@
 
         <ImageView
             android:id="@+id/tweetEveryWhere"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
-            android:src="@drawable/ic_compose_everywhere" />
+            android:src="@drawable/ic_create_white_48dp" />
     </RelativeLayout>
 
     <!-- The navigation drawer -->
@@ -41,8 +41,6 @@
         android:background="@color/dark_gray"
         android:cacheColorHint="#00000000"
         android:choiceMode="singleChoice"
-        android:divider="@color/light_gray"
-        android:dividerHeight="1dp"
         android:listSelector="@android:color/transparent"
         android:scrollingCache="false" />
 

@@ -172,7 +172,7 @@ public class WebImagePreviewActivity extends FragmentActivity implements Preview
                     i.setDataAndType(Uri.fromFile(downloadedFile), "image/*");
                     PendingIntent pi = PendingIntent.getActivity(getApplicationContext(), 0, i, 0);
                     NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext());
-                    builder.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher)).setSmallIcon(R.drawable.ic_menu_media).setTicker(getString(R.string.save_complete))
+                    builder.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher)).setSmallIcon(R.drawable.ic_insert_photo_white_18dp).setTicker(getString(R.string.save_complete))
                             .setAutoCancel(true).setContentTitle(getString(R.string.save_complete))
                             .setContentText(getString(R.string.app_name)).setContentIntent(pi);
                     NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);

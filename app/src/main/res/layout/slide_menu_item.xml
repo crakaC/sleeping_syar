@@ -1,8 +1,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/status_action_list"
     android:gravity="center_vertical"
+    android:background="@color/status_action_list"
     android:orientation="horizontal"
     android:padding="4dp" >
 
@@ -11,6 +11,7 @@
         android:layout_width="32dp"
         android:layout_height="32dp"
         android:layout_marginLeft="8dp"
+        android:padding="4dp"
         android:src="@android:drawable/ic_menu_edit" />
 
     <TextView

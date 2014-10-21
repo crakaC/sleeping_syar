@@ -6,7 +6,6 @@ import android.content.res.Configuration;
 import android.graphics.PorterDuff;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
@@ -14,6 +13,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -32,7 +32,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.astuetz.PagerSlidingTabStrip;
-import com.crakac.ofuton.BuildConfig;
 import com.crakac.ofuton.C;
 import com.crakac.ofuton.R;
 import com.crakac.ofuton.adapter.TweetStatusAdapter;
@@ -263,19 +262,18 @@ public class MainActivity extends ActionBarActivity {
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
         MenuAdapter adapter = new MenuAdapter(this);
-        adapter.add(new SlideMenu("Home", R.drawable.ic_menu_home, MenuID.home));
-        adapter.add(new SlideMenu("Mentions", R.drawable.ic_menu_mentions, MenuID.mentions));
-        adapter.add(new SlideMenu("Favorites", R.drawable.ic_menu_favorite, MenuID.favorites));
-        adapter.add(new SlideMenu("DM", R.drawable.ic_dm, MenuID.dm));
-        adapter.add(new SlideMenu("Lists", R.drawable.ic_menu_lists, MenuID.lists));
-        adapter.add(new SlideMenu("Accounts", R.drawable.ic_menu_accounts, MenuID.account));
-        adapter.add(new SlideMenu("Settings", R.drawable.ic_menu_settings, MenuID.settings));
+        adapter.add(new SlideMenu("Home", R.drawable.ic_home_white_36dp, MenuID.home));
+        adapter.add(new SlideMenu("Mentions", R.drawable.ic_reply_all_white_36dp, MenuID.mentions));
+        adapter.add(new SlideMenu("Favorites", R.drawable.ic_star_white_36dp, MenuID.favorites));
+        adapter.add(new SlideMenu("DM", R.drawable.ic_email_white_36dp, MenuID.dm));
+        adapter.add(new SlideMenu("Lists", R.drawable.ic_list_white_36dp, MenuID.lists));
+        adapter.add(new SlideMenu("Accounts", R.drawable.ic_group_white_36dp, MenuID.account));
+        adapter.add(new SlideMenu("Settings", R.drawable.ic_settings_white_36dp, MenuID.settings));
         adapter.add(new SlideMenu("( ˘ω˘)ｽﾔｧ…", R.drawable.ic_syar, MenuID.syar));
         mDrawerList.setAdapter(adapter);
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
-        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.drawable.ic_drawer,
-                R.string.drawer_open, R.string.drawer_close) {
+        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.drawer_open, R.string.drawer_close) {
             @Override
             public void onDrawerClosed(View drawerView) {
                 super.onDrawerClosed(drawerView);

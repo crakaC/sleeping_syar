@@ -15,7 +15,7 @@ public class DestroyStatusAction extends ClickAction {
 	private TweetStatusAdapter statusAdapter;
 	twitter4j.Status selectedStatus;
 	public DestroyStatusAction(Context context, TweetStatusAdapter adapter, twitter4j.Status status) {
-		super(context, R.string.destroy_status, R.drawable.ic_remove);
+		super(context, R.string.destroy_status, R.drawable.ic_delete_white_36dp);
 		statusAdapter = adapter;
 		selectedStatus = status;
 	}
