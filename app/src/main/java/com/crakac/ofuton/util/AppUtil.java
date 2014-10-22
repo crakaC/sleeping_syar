@@ -4,6 +4,8 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.SearchView;
 import android.text.Html;
@@ -45,8 +47,13 @@ public final class AppUtil {
         Toast.makeText(sContext, msg, Toast.LENGTH_SHORT).show();
     }
 
-    public static void showToast(int resId) {
-        Toast.makeText(sContext, getString(resId), Toast.LENGTH_SHORT).show();
+    public static void showToast(final int resId) {
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(sContext, getString(resId), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     public static String shapingNums(int num) {
@@ -131,10 +138,10 @@ public final class AppUtil {
     public static Spanned getColoredText(String text, EntitySupport entitySupport) {
         text = TextUtils.htmlEncode(text);// <>とかが含まれてると良くないのでhtmlEncodeする．
         for (URLEntity entity : entitySupport.getURLEntities()) {
-            text = text.replace(entity.getURL(), "<font color=#33b5e5>" + entity.getDisplayURL() + "</font>");
+            text = text.replace(entity.getURL(), "<font color=#80cbc4>" + entity.getDisplayURL() + "</font>");
         }
         for (MediaEntity entity : entitySupport.getMediaEntities()) {
-            text = text.replace(entity.getURL(), "<font color=#33b5e5>" + entity.getDisplayURL() + "</font>");
+            text = text.replace(entity.getURL(), "<font color=#80cbc4>" + entity.getDisplayURL() + "</font>");
         }
         text = text.replace("\n", "<br/>");
         return Html.fromHtml(text);

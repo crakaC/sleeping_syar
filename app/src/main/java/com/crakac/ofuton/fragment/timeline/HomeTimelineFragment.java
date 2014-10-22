@@ -8,14 +8,15 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.crakac.ofuton.activity.MainActivity;
 import com.crakac.ofuton.R;
+import com.crakac.ofuton.activity.MainActivity;
 import com.crakac.ofuton.util.AppUtil;
 import com.crakac.ofuton.util.PreferenceUtil;
 import com.crakac.ofuton.util.TwitterUtils;
 
 import java.util.List;
 
+import twitter4j.ConnectionLifeCycleListener;
 import twitter4j.DirectMessage;
 import twitter4j.Paging;
 import twitter4j.Status;
@@ -24,7 +25,8 @@ import twitter4j.TwitterStream;
 import twitter4j.User;
 import twitter4j.UserMentionEntity;
 import twitter4j.UserStreamAdapter;
-public class HomeTimelineFragment extends AbstractTimelineFragment {
+
+public class HomeTimelineFragment extends AbstractTimelineFragment implements ConnectionLifeCycleListener {
     public static final String TITLE = "Home";
 
     // UserStream
@@ -33,11 +35,52 @@ public class HomeTimelineFragment extends AbstractTimelineFragment {
 
     private boolean mIsOverflowing = false;
 
+    static class ConnectStreamingRunnable implements Runnable {
+        private TwitterStream stream;
+
+        ConnectStreamingRunnable(TwitterStream stream) {
+            this.stream = stream;
+        }
+
+        @Override
+        public void run() {
+            stream.user();
+        }
+    }
+
+    static class DisconnectStreamingRunnable implements Runnable {
+        private TwitterStream stream;
+
+        DisconnectStreamingRunnable(TwitterStream stream) {
+            this.stream = stream;
+        }
+
+        @Override
+        public void run() {
+            stream.shutdown();
+        }
+    }
+
+    @Override
+    public void onConnect() {
+        AppUtil.showToast(R.string.connected);
+    }
+
+    @Override
+    public void onDisconnect() {
+        AppUtil.showToast(R.string.disconnected);
+    }
+
+    @Override
+    public void onCleanUp() {
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mTwitterStream = TwitterUtils.getTwitterStreamInstance();
         mTwitterStream.addListener(new StreamListener());
+        mTwitterStream.addConnectionLifeCycleListener(this);
     }
 
     @Override
@@ -59,13 +102,13 @@ public class HomeTimelineFragment extends AbstractTimelineFragment {
         if (PreferenceUtil.getBoolean(R.string.streaming_mode)) {
             setSwipeRefreshEnable(false);
             if (!mIsStreaming) {
-                mTwitterStream.user();
+                new Thread(new ConnectStreamingRunnable(mTwitterStream)).start();
                 mIsStreaming = true;
             }
         } else {
             setSwipeRefreshEnable(true);
             if (mIsStreaming) {
-                mTwitterStream.shutdown();
+                new Thread(new DisconnectStreamingRunnable(mTwitterStream)).start();
                 mIsStreaming = false;
             }
         }
@@ -129,9 +172,10 @@ public class HomeTimelineFragment extends AbstractTimelineFragment {
         public StreamListener() {
             mHandler = new Handler(Looper.getMainLooper());
         }
+
         @Override
         public void onStatus(final Status status) {
-            if(mAdapter.getPosition(status) >= 0) return;
+            if (mAdapter.getPosition(status) >= 0) return;
             updateDisplayedTime();
             mSinceId = status.getId();
             mHandler.post(new Runnable() {
@@ -226,15 +270,15 @@ public class HomeTimelineFragment extends AbstractTimelineFragment {
         }
     }
 
-    private boolean isCurrentTab(){
-        if(!isAdded()) return false;
-        MainActivity activity = (MainActivity)getActivity();
+    private boolean isCurrentTab() {
+        if (!isAdded()) return false;
+        MainActivity activity = (MainActivity) getActivity();
         return activity.isCurrentTab(MainActivity.TAB_ID_HOME);
     }
 
     @Override
     public void refresh() {
-        if(!mIsStreaming){
+        if (!mIsStreaming) {
             super.refresh();
         }
     }
