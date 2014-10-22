@@ -144,7 +144,7 @@
         android:id="@+id/tab"
         style="@style/HoloTab"
         android:layout_below="@+id/profile"
-        android:layout_toLeftOf="@+id/nav"
+        android:layout_toLeftOf="@+id/collapse"
         app:pstsShouldExpand="true" />
 
     <android.support.v4.view.ViewPager
@@ -153,29 +153,15 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/tab" />
 
-    <RelativeLayout
-        android:id="@+id/nav"
-        android:layout_width="31dp"
-        android:layout_height="30dp"
+
+    <ImageView
+        android:id="@+id/collapse"
         android:layout_above="@+id/pager"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         android:layout_alignParentRight="true"
-        android:background="@color/tab_background" >
+        android:background="@color/collapse_and_expand"
+        android:src="@drawable/ic_expand_less_white_36dp" />
 
-        <ImageView
-            android:id="@+id/collapse"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_alignParentRight="true"
-            android:background="@color/collapse_and_expand"
-            android:src="@drawable/ic_expand_less_white_36dp" />
-
-        <View
-            android:id="@+id/shortUnderLine"
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:layout_alignParentBottom="true"
-            android:background="@color/transparent_black" />
-
-    </RelativeLayout>
 
 </RelativeLayout>

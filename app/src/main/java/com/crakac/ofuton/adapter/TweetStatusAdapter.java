@@ -195,26 +195,21 @@ public class TweetStatusAdapter extends ArrayAdapter<Status> {
      */
     private static void setColors(ViewHolder holder, Status status) {
         if (status.isRetweet()) {
-            // Retweet
-            holder.base.setBackgroundResource(R.color.retweet_background);
             // スクリーンネームの色
             holder.name.setTextColor(getColor(R.color.droid_green));
             holder.screenName.setTextColor(getColor(R.color.droid_green));
         } else if (isMention(status)) {
             // mention
-            holder.base.setBackgroundResource(R.color.mention_background);
             holder.name.setTextColor(getColor(R.color.droid_red));
             holder.screenName.setTextColor(getColor(R.color.droid_red));
         } else if (status.getUser().getId() == sUserAccount.getUserId()) {
             // user's own tweet
-            holder.base.setBackgroundResource(R.color.mytweet_background);
             holder.name.setTextColor(getColor(R.color.droid_blue));
             holder.screenName.setTextColor(getColor(R.color.droid_blue));
         } else {
             // others' tweet
-            holder.base.setBackgroundResource(R.color.timeline_background);
-            holder.name.setTextColor(getColor(R.color.droid_blue));
-            holder.screenName.setTextColor(getColor(R.color.droid_blue));
+            holder.name.setTextColor(getColor(R.color.text));
+            holder.screenName.setTextColor(getColor(R.color.text));
         }
     }
 
