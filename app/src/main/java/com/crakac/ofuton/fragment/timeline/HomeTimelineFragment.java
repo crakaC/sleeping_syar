@@ -132,6 +132,7 @@ public class HomeTimelineFragment extends AbstractTimelineFragment {
         @Override
         public void onStatus(final Status status) {
             if(mAdapter.getPosition(status) >= 0) return;
+            updateDisplayedTime();
             mSinceId = status.getId();
             mHandler.post(new Runnable() {
                 @Override
