@@ -1,7 +1,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/timeline_background"
+    android:background="@color/clickable_background"
     android:padding="8dp">
 
     <ImageView

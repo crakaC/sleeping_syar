@@ -202,14 +202,10 @@ public class TweetStatusAdapter extends ArrayAdapter<Status> {
             // mention
             holder.name.setTextColor(getColor(R.color.droid_red));
             holder.screenName.setTextColor(getColor(R.color.droid_red));
-        } else if (status.getUser().getId() == sUserAccount.getUserId()) {
-            // user's own tweet
-            holder.name.setTextColor(getColor(R.color.droid_blue));
-            holder.screenName.setTextColor(getColor(R.color.droid_blue));
         } else {
             // others' tweet
-            holder.name.setTextColor(getColor(R.color.text));
-            holder.screenName.setTextColor(getColor(R.color.text));
+            holder.name.setTextColor(getColor(R.color.droid_blue));
+            holder.screenName.setTextColor(getColor(R.color.droid_blue));
         }
     }
 
