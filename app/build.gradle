@@ -6,11 +6,11 @@ android {
         targetCompatibility JavaVersion.VERSION_1_7
     }
     compileSdkVersion 21
-    buildToolsVersion '21.0.1'
+    buildToolsVersion '21.0.2'
     defaultConfig {
         applicationId 'com.crakac.ofuton'
         minSdkVersion 8
-        targetSdkVersion 20
+        targetSdkVersion 21
         versionCode 23
         versionName '1.6.5'
     }
