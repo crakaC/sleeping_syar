@@ -3,6 +3,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
+    <com.crakac.ofuton.widget.ProgressTextView
+        android:id="@+id/emptyView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:text="@string/tap_to_reload"
+        android:background='@color/empty_background'/>
+
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/swipeRefresh"
         android:layout_width="match_parent"
@@ -16,18 +23,5 @@
             android:fadingEdge="none"
             />
     </android.support.v4.widget.SwipeRefreshLayout>
-
-    <com.crakac.ofuton.widget.ProgressTextView
-        android:id="@+id/emptyView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:text="@string/tap_to_reload"
-        android:background='@color/empty_background' />
-
-    <ImageView
-        android:id="@+id/listViewCache"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone"/>
 
 </RelativeLayout>
