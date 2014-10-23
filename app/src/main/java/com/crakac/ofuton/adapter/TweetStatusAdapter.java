@@ -46,6 +46,7 @@ public class TweetStatusAdapter extends ArrayAdapter<Status> {
         TextView screenName;
         TextView text;
         TextView postedAt;
+        View retweeterInfo;
         TextView via;
         TextView retweetedBy;
         NetworkImageView icon;
@@ -204,8 +205,8 @@ public class TweetStatusAdapter extends ArrayAdapter<Status> {
             holder.screenName.setTextColor(getColor(R.color.droid_red));
         } else {
             // others' tweet
-            holder.name.setTextColor(getColor(R.color.droid_blue));
-            holder.screenName.setTextColor(getColor(R.color.droid_blue));
+            holder.name.setTextColor(getColor(R.color.twitter_blue));
+            holder.screenName.setTextColor(getColor(R.color.twitter_blue));
         }
     }
 
@@ -218,6 +219,7 @@ public class TweetStatusAdapter extends ArrayAdapter<Status> {
         holder.via = (TextView) convertView.findViewById(R.id.via);
         holder.icon = (NetworkImageView) convertView.findViewById(R.id.icon);
         holder.icon.setOnTouchListener(new ColorOverlayOnTouch());
+        holder.retweeterInfo = convertView.findViewById(R.id.retweeterInfo);
         holder.smallIcon = (NetworkImageView) convertView.findViewById(R.id.smallIcon);
         holder.retweetedBy = (TextView) convertView.findViewById(R.id.retweeted_by);
         holder.imagePreview = (MultipleImagePreview) convertView.findViewById(R.id.inline_preview);
@@ -231,8 +233,7 @@ public class TweetStatusAdapter extends ArrayAdapter<Status> {
         // 不要な部分を非表示に
         holder.via.setVisibility(View.GONE);
         // 必要な部分を表示
-        holder.smallIcon.setVisibility(View.VISIBLE);
-        holder.retweetedBy.setVisibility(View.VISIBLE);
+        holder.retweeterInfo.setVisibility(View.VISIBLE);
 
         setIcon(holder.smallIcon, origStatus);
 
@@ -243,9 +244,7 @@ public class TweetStatusAdapter extends ArrayAdapter<Status> {
 
     private static void setNormalTweetView(ViewHolder holder, Status status) {
         // 不要な部分を非表示に
-        holder.smallIcon.setVisibility(View.GONE);
-        holder.retweetedBy.setVisibility(View.GONE);
-
+        holder.retweeterInfo.setVisibility(View.GONE);
         // via表示
         String source = status.getSource();
         if (source.contains(">")) {

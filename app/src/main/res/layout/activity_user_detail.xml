@@ -112,6 +112,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="3dp"
                         android:text="@string/dummy"
+                        android:textColorLink="@color/twitter_blue"
                         android:textAppearance="@style/userDetailText" />
 
                     <TextView
@@ -127,6 +128,7 @@
                         android:layout_height="wrap_content"
                         android:autoLink="web"
                         android:text="@string/dummy"
+                        android:textColorLink="@color/twitter_blue"
                         android:textAppearance="@style/userDetailText" />
                 </LinearLayout>
             </ScrollView>

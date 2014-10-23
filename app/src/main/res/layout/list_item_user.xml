@@ -26,7 +26,7 @@
             android:ellipsize="end"
             android:singleLine="true"
             android:text="@string/dummy"
-            android:textColor="@color/droid_blue"
+            android:textColor="@color/twitter_blue"
             android:textStyle="bold"/>
 
         <ImageView
@@ -47,7 +47,7 @@
         android:ellipsize="end"
         android:singleLine="true"
         android:text="@string/dummy"
-        android:textColor="@color/droid_blue"/>
+        android:textColor="@color/twitter_blue"/>
 
     <TextView
         android:id="@+id/text"

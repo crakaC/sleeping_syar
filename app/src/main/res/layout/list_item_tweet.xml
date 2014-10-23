@@ -15,6 +15,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_marginLeft="8dp"
+        android:layout_marginBottom="2dp"
         android:layout_toLeftOf="@+id/postedAt"
         android:layout_toRightOf="@+id/icon"
         android:gravity="left"
@@ -33,7 +34,7 @@
                 android:ellipsize="end"
                 android:singleLine="true"
                 android:text="@string/dummy"
-                android:textColor="@color/droid_blue"
+                android:textColor="@color/twitter_blue"
                 android:textStyle="bold"/>
 
             <ImageView
@@ -79,8 +80,6 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:layout_marginBottom="2dp"
-            android:layout_marginTop="2dp"
             android:layout_toLeftOf="@+id/favedStar"
             android:gravity="left|top"
             android:text="@string/dummy"
@@ -110,11 +109,13 @@
     <!-- retweeted area -->
 
     <LinearLayout
+        android:id="@+id/retweeterInfo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/content"
         android:layout_below="@+id/inline_preview"
         android:gravity="left|center_vertical"
+        android:layout_marginTop="4dp"
         android:orientation="horizontal">
 
         <com.crakac.ofuton.widget.BitmapImageView
@@ -137,6 +138,7 @@
         android:id="@+id/via"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
         android:layout_alignParentRight="true"
         android:layout_below="@+id/inline_preview"
         android:ellipsize="end"

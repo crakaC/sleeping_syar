@@ -48,7 +48,6 @@
     <style name="userDetailText">
         <item name="android:textSize">12sp</item>
         <item name="android:textColor">@color/text</item>
-        <item name="android:textColorLink">@color/droid_blue</item>
     </style>
 
     <style name="optionItem">

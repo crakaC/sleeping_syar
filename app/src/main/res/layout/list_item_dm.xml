@@ -17,7 +17,7 @@
         android:layout_marginLeft="8dp"
         android:layout_toRightOf="@+id/icon"
         android:text="@string/dummy"
-        android:textColor="@color/droid_blue"
+        android:textColor="@color/twitter_blue"
         android:textSize="12sp"
         android:textStyle="bold" />
 
