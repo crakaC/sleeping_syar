@@ -43,11 +43,11 @@ public class UsersListFragment extends Fragment{
 		super.onCreate(savedInstanceState);
 		setRetainInstance(true);
         //表示するリストに変更があったか確かめるために，最初の時点でのリストのID一覧を持ってくる
-        mInitialListIdSet = new TreeSet<Long>();
+        mInitialListIdSet = new TreeSet<>();
         for(TwitterList list : TwitterUtils.getListsOfCurrentAccount()){
             mInitialListIdSet.add(list.getListId());
         }
-        mCurrentListIdSet = new TreeSet<Long>(mInitialListIdSet);
+        mCurrentListIdSet = new TreeSet<>(mInitialListIdSet);
         ReloadChecker.reset();
 	}
 
