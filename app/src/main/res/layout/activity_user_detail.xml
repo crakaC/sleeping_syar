@@ -43,7 +43,7 @@
                     android:layout_height="48dp"
                     android:layout_alignBottom="@+id/iconFrame"
                     android:layout_alignRight="@+id/iconFrame"
-                    android:src="@drawable/ic_lock_white_48dp"
+                    android:src="@drawable/ic_lock_grey600_48dp"
                     android:visibility="visible" />
 
                 <RelativeLayout
