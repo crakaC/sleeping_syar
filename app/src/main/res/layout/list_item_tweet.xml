@@ -83,6 +83,7 @@
             android:layout_toLeftOf="@+id/favedStar"
             android:gravity="left|top"
             android:text="@string/dummy"
+            android:textColorLink="@color/twitter_blue"
             android:textColor="@color/text"/>
 
         <ImageView
