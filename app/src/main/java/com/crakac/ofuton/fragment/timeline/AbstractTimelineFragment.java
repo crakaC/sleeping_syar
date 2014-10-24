@@ -38,7 +38,6 @@ public abstract class AbstractTimelineFragment extends AbstractStatusFragment {
 
     @Override
     public void onRefresh() {
-        updateDisplayedTime();
         loadNewTweets();
     }
 
@@ -139,6 +138,7 @@ public abstract class AbstractTimelineFragment extends AbstractStatusFragment {
                 if (result.size() > 0) {
                     mMaxId = Math.min(mMaxId, result.listIterator(result.size()).previous().getId());
                     mSinceId = Math.max(mSinceId, result.iterator().next().getId());
+                    mAdapter.notifyDataSetChanged();
                 } else {
                     removeFooterView();
                     mListView.setOnLastItemVisibleListener(null);
@@ -177,6 +177,10 @@ public abstract class AbstractTimelineFragment extends AbstractStatusFragment {
                     if (mAdapter.getPosition(status) < 0) {
                         mAdapter.insert(status, 0);
                     }
+                }
+                if (result.size() > 0) {
+                    mSinceId = result.get(0).getId();
+                    mAdapter.notifyDataSetChanged();
                 }
                 restorePosition();
             } else {
