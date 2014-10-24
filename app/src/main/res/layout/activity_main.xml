@@ -35,10 +35,18 @@
             fab:fab_colorNormal="@color/twitter_blue"
             fab:fab_colorPressed="@color/twitter_blue_bright"
             android:src="@drawable/ic_create_white_24dp" />
+
+        <FrameLayout
+            android:id="@+id/quick_tweet"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_alignParentBottom="true"
+            />
+
     </RelativeLayout>
 
-    <!-- The navigation drawer -->
 
+    <!-- The navigation drawer -->
     <ListView
         android:id="@+id/left_drawer"
         android:layout_width="200dp"
