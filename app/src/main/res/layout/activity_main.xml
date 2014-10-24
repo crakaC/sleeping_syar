@@ -11,6 +11,7 @@
     <RelativeLayout
         android:id="@+id/main_container"
         android:layout_width="match_parent"
+        android:paddingTop="?attr/actionBarSize"
         android:layout_height="match_parent" >
 
         <com.astuetz.PagerSlidingTabStrip
@@ -48,6 +49,7 @@
 
     <!-- The navigation drawer -->
     <ListView
+        android:paddingTop="?attr/actionBarSize"
         android:id="@+id/left_drawer"
         android:layout_width="200dp"
         android:layout_height="match_parent"

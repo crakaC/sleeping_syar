@@ -3,6 +3,7 @@ package com.crakac.ofuton.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -30,6 +31,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.astuetz.PagerSlidingTabStrip;
@@ -141,6 +143,20 @@ public class MainActivity extends ActionBarActivity {
             mPager.setOffscreenPageLimit(12);// 保持するFragmentの数を指定．全フラグメントを保持するのでぬるぬる動くがメモリを食う
         }
         mTabs.setViewPager(mPager);// PagerSlidingTabStripにViewPagerをセット．
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            Resources res = getResources();
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION | WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            if (res.getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+            } else {
+                int resourceId = res.getIdentifier("navigation_bar_height", "dimen", "android");
+                int navHeight = res.getDimensionPixelSize(resourceId);
+                RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mTweetBtn.getLayoutParams();
+                params.bottomMargin += navHeight;
+                mTweetBtn.setLayoutParams(params);
+            }
+        }
     }
 
     @Override
