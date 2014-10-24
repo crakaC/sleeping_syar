@@ -60,7 +60,6 @@ public class MainActivity extends ActionBarActivity {
     private PagerSlidingTabStrip mTabs;
     private ViewPager mPager;
     private TimelineFragmentPagerAdapter mAdapter;
-    private ImageView mTweetBtn;
     private Menu mMenu;
     private SearchView mSearchView;
     /* Navigation drawer */
@@ -82,9 +81,8 @@ public class MainActivity extends ActionBarActivity {
         }
         setTitle(R.string.app_name);
         setContentView(R.layout.activity_main);
-        mTweetBtn = (ImageView) findViewById(R.id.tweetEveryWhere);// 右下のツイートボタン
-        mTweetBtn.setOnTouchListener(new ColorOverlayOnTouch(PorterDuff.Mode.SRC_ATOP));
-        mTweetBtn.setOnClickListener(new OnClickListener() {
+        View tweetBtn = findViewById(R.id.tweetEveryWhere);// 右下のツイートボタン
+        tweetBtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, TweetActivity.class);
