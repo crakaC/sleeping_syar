@@ -1,48 +1,58 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="8dp">
+    android:paddingTop="?attr/actionBarSize">
 
-    <EditText
-        android:id="@+id/input_text"
+    <RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_above="@+id/navs"
-        android:ems="10"
-        android:gravity="left|top"
-        android:inputType="textMultiLine"
-        android:textSize="13sp" >
-        <requestFocus />
-    </EditText>
+        android:layout_height="match_parent"
+        android:padding="8dp"
+        android:paddingTop="?attr/actionBarSize">
 
-    <TextView
-        android:id="@+id/remainingText"
-        style="@style/remainingText"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/input_text"
-        android:text="@string/dummy" />
+        <EditText
+            android:id="@+id/input_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/navs"
+            android:layout_alignParentTop="true"
+            android:ems="10"
+            android:gravity="left|top"
+            android:inputType="textMultiLine"
+            android:textSize="13sp">
 
-    <LinearLayout
-        android:id="@+id/navs"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentBottom="true"
-        android:gravity="right"
-        android:orientation="horizontal"
-        android:padding="4dp" >
+            <requestFocus/>
+        </EditText>
 
-        <ImageButton
-            android:id="@+id/dmInfoBtn"
-            style="@style/optionItem"
-            android:src="@drawable/ic_question_answer_white_48dp"
-            android:visibility="gone" />
+        <TextView
+            android:id="@+id/remainingText"
+            style="@style/remainingText"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/input_text"
+            android:text="@string/dummy"/>
 
-        <ImageButton
-            android:id="@+id/sendBtn"
-            style="@style/optionItem"
-            android:src="@drawable/ic_send_white_48dp" />
-    </LinearLayout>
+        <LinearLayout
+            android:id="@+id/navs"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:gravity="right"
+            android:orientation="horizontal"
+            android:padding="4dp">
 
-</RelativeLayout>
+            <ImageButton
+                android:id="@+id/dmInfoBtn"
+                style="@style/optionItem"
+                android:src="@drawable/ic_question_answer_white_48dp"
+                android:visibility="gone"/>
+
+            <ImageButton
+                android:id="@+id/sendBtn"
+                style="@style/optionItem"
+                android:src="@drawable/ic_send_white_48dp"/>
+        </LinearLayout>
+
+    </RelativeLayout>
+</FrameLayout>
