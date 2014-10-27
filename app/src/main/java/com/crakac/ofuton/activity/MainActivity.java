@@ -29,6 +29,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -98,9 +99,19 @@ public class MainActivity extends ActionBarActivity {
 
         FragmentManager fm = getSupportFragmentManager();
         mDummyFragment = fm.findFragmentByTag("dummy");
-        if (mDummyFragment == null) mDummyFragment = TweetFragment.getDummy();
+        if (mDummyFragment == null){
+            mDummyFragment = TweetFragment.getDummy();
+            if(isTranslucentNav()){
+                TweetFragment.setTranslucentPadding(mDummyFragment, getNavHeight());
+            }
+        }
         mTweetFragment = fm.findFragmentByTag("tweet");
-        if (mTweetFragment == null) mTweetFragment = new TweetFragment();
+        if (mTweetFragment == null){
+            mTweetFragment = new TweetFragment();
+            if (isTranslucentNav()) {
+                TweetFragment.setTranslucentPadding(mTweetFragment, getNavHeight());
+            }
+        }
 
         int counts = fm.getBackStackEntryCount();
         if (counts == 0) {
@@ -461,5 +472,15 @@ public class MainActivity extends ActionBarActivity {
 
     public FloatingActionButton getTweetButton(){
         return mTweetBtn;
+    }
+
+    private boolean isTranslucentNav(){
+        return (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT);
+    }
+
+    private int getNavHeight(){
+        Resources res = getResources();
+        int resourceId = res.getIdentifier("navigation_bar_height", "dimen", "android");
+        return res.getDimensionPixelSize(resourceId);
     }
 }

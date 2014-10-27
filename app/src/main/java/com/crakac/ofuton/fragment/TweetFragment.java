@@ -1,14 +1,18 @@
 package com.crakac.ofuton.fragment;
 
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -42,6 +46,8 @@ import com.crakac.ofuton.widget.ColorOverlayOnTouch;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import twitter4j.Status;
 import twitter4j.StatusUpdate;
@@ -54,17 +60,18 @@ import twitter4j.TwitterException;
 public class TweetFragment extends Fragment implements View.OnClickListener {
     private static final String TAG = TweetActivity.class.getSimpleName();
 
-    private static final int REQUEST_SELECT_PICTURE = 1;
-    private static final int REQUEST_CAMERA = 2;
+
+    private static final int SELECT_PICTURE = 1;
 
     private static final int MAX_TWEET_LENGTH = 140;
     private static final int MAX_APPEND_PICTURE_EDGE_LENGTH = 1920;
     private static final String IMAGE_URI = "IMAGE_URI";
+    public static final String BOTTOM_PADDING = "bottom_padding";
 
     private EditText mInputText;
     private File mAppendingFile; // 画像のアップロードに使用
     private TextView mRemainingText;// 残り文字数を表示
-    private View mTweetBtn, mAppendPicBtn, mCameraBtn, mInfoBtn;// つぶやくボタン，画像追加ボタン，リプライ元情報ボタン
+    private View mTweetBtn, mAppendBtn;// つぶやくボタン，画像追加ボタン，リプライ元情報ボタン
     private ImageView mAppendedImageView;
     private Uri mImageUri;// カメラ画像添付用
     private boolean mIsUpdatingStatus = false;//ツイート中かどうか。onDestroyで添付ファイルを削除する際の判定に使う。
@@ -76,6 +83,23 @@ public class TweetFragment extends Fragment implements View.OnClickListener {
         b.putBoolean("dummy", true);
         dummy.setArguments(b);
         return dummy;
+    }
+
+    public static void setTranslucentPadding(Fragment f, int navHeight) {
+        Bundle b = f.getArguments();
+        if (b == null) {
+            b = new Bundle();
+        }
+        b.putInt(BOTTOM_PADDING, navHeight);
+        f.setArguments(b);
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (savedInstanceState != null) {
+            mImageUri = savedInstanceState.getParcelable(IMAGE_URI);
+        }
     }
 
     @Override
@@ -115,17 +139,13 @@ public class TweetFragment extends Fragment implements View.OnClickListener {
                 }
             }
         });
-        mTweetBtn = (View) root.findViewById(R.id.action_tweet);// ツイートボタン
-        mAppendPicBtn = (View) root.findViewById(R.id.appendPic);// 画像添付ボダン
-        mCameraBtn = (View) root.findViewById(R.id.picFromCamera);// 撮影して添付するボタン
-        mInfoBtn = (View) root.findViewById(R.id.tweetInfoBtn);// リプライ先表示ボタン
+        mTweetBtn = root.findViewById(R.id.action_tweet);// ツイートボタン
+        mAppendBtn = root.findViewById(R.id.appendPic);// 画像添付ボダン
         mRemainingText = (TextView) root.findViewById(R.id.remainingText);// 残り文字数
         mAppendedImageView = (ImageView) root.findViewById(R.id.appendedImage);
 
         // 画像添付ボタンタップの動作
-        mAppendPicBtn.setOnClickListener(this);
-        // カメラボタンタップの動作
-        mCameraBtn.setOnClickListener(this);
+        mAppendBtn.setOnClickListener(this);
         // 添付画像ミニプレビュータップの動作
         mAppendedImageView.setOnClickListener(this);
         mAppendedImageView.setOnTouchListener(new ColorOverlayOnTouch());
@@ -150,9 +170,7 @@ public class TweetFragment extends Fragment implements View.OnClickListener {
         });
 
         // 画像添付ボタンタップの動作
-        mAppendPicBtn.setOnClickListener(this);
-        // カメラボタンタップの動作
-        mCameraBtn.setOnClickListener(this);
+        mAppendBtn.setOnClickListener(this);
         // 添付画像ミニプレビュータップの動作
         mAppendedImageView.setOnClickListener(this);
         mAppendedImageView.setOnTouchListener(new ColorOverlayOnTouch());
@@ -179,6 +197,14 @@ public class TweetFragment extends Fragment implements View.OnClickListener {
 
         if (mAppendingFile != null) {
             setAppendingImageDrawable(mAppendingFile);
+        }
+
+        Bundle b = getArguments();
+        if (b != null) {
+            int bottomPadding = b.getInt(BOTTOM_PADDING, -1);
+            if (bottomPadding != -1) {
+                root.setPadding(root.getPaddingLeft(), root.getPaddingTop(), root.getPaddingRight(), bottomPadding);
+            }
         }
 
         return root;
@@ -266,18 +292,28 @@ public class TweetFragment extends Fragment implements View.OnClickListener {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         Log.d(TAG, "onActivityResult");
-        if (resultCode == Activity.RESULT_OK) {
-            Uri uri = null;
-            if (data != null) {
-                uri = data.getData();
+        if (requestCode == SELECT_PICTURE) {
+            boolean isCamera = false;
+            if (resultCode == Activity.RESULT_OK) {
+                Uri uri = null;
+                if (data != null) {
+                    uri = data.getData();
+                    isCamera = data.getAction().equals(MediaStore.ACTION_IMAGE_CAPTURE);
+                } else {
+                    isCamera = true;
+                }
+                if (uri == null) {
+                    uri = mImageUri;
+                }
+                appendPicture(uri);
+
+                if (!isCamera) {
+                    // ContentResolverでファイルを登録してあるので削除する。しないとゴミが出る。
+                    getActivity().getContentResolver().delete(mImageUri, null, null);
+                }
+            } else {
+                getActivity().getContentResolver().delete(mImageUri, null, null);
             }
-            if (uri == null) {
-                uri = mImageUri;
-            }
-            appendPicture(uri);
-        } else if (requestCode == REQUEST_CAMERA) {
-            // ContentResolverでファイルを登録してあるので削除する。しないとゴミが出る。
-            getActivity().getContentResolver().delete(mImageUri, null, null);
         }
     }
 
@@ -352,29 +388,10 @@ public class TweetFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        Intent intent = null;
         switch (v.getId()) {
             case R.id.appendPic:
-                // 画像添付ボタン押下時の動作
-                // 画像を選びに行く．画像を選んだらonActivityResultが呼ばれる
-                intent = new Intent(Intent.ACTION_PICK);
-                intent.setType("image/*");
-                startActivityForResult(intent, REQUEST_SELECT_PICTURE);
+                pickOrTakePicture();
                 break;
-            case R.id.picFromCamera:
-                String filename = System.currentTimeMillis() + ".jpg";
-                // コンテントプロバイダを使用し,ギャラリーに画像を保存. 保存したUriを取得.
-                ContentValues values = new ContentValues();
-                values.put(MediaStore.Images.Media.TITLE, filename);
-                values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
-                mImageUri = getActivity().getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
-
-                intent = new Intent();
-                intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
-                intent.putExtra(MediaStore.EXTRA_OUTPUT, mImageUri);
-                startActivityForResult(intent, REQUEST_CAMERA);
-                break;
-
             case R.id.tweetInfoBtn:
                 TweetInfoDialogFragment dialog = new TweetInfoDialogFragment();
                 Bundle b = new Bundle();
@@ -394,6 +411,38 @@ public class TweetFragment extends Fragment implements View.OnClickListener {
                 unregisterForContextMenu(mAppendedImageView);
                 break;
         }
+    }
+
+    private void pickOrTakePicture() {
+
+        //take picture intent
+        String filename = System.currentTimeMillis() + ".jpg";
+        // コンテントプロバイダを使用し,ギャラリーに画像を保存. 保存したUriを取得.
+        ContentValues values = new ContentValues();
+        values.put(MediaStore.Images.Media.TITLE, filename);
+        values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
+        mImageUri = getActivity().getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+        final List<Intent> cameraIntents = new ArrayList<>();
+        final Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        final PackageManager pm = getActivity().getPackageManager();
+        final List<ResolveInfo> cameraList = pm.queryIntentActivities(cameraIntent, 0);
+        for (ResolveInfo info : cameraList) {
+            final Intent intent = new Intent(cameraIntent);
+            intent.setComponent(new ComponentName(info.activityInfo.packageName, info.activityInfo.name));
+            intent.setPackage(info.activityInfo.packageName);
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, mImageUri);
+            cameraIntents.add(intent);
+        }
+
+        //select picture intent
+        final Intent galleryIntent = new Intent(Intent.ACTION_PICK);
+        galleryIntent.setType("image/*");
+
+        String pickTitle = getString(R.string.choose_or_take_picture);
+        Intent chooserIntent = Intent.createChooser(galleryIntent, pickTitle);
+        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, cameraIntents.toArray(new Parcelable[]{}));
+
+        startActivityForResult(chooserIntent, SELECT_PICTURE);
     }
 
     /**
