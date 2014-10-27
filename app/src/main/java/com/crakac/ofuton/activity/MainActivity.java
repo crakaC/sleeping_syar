@@ -457,6 +457,9 @@ public class MainActivity extends ActionBarActivity {
             mDrawerLayout.closeDrawer(GravityCompat.START);
             return true;
         }
-
     };
+
+    public FloatingActionButton getTweetButton(){
+        return mTweetBtn;
+    }
 }

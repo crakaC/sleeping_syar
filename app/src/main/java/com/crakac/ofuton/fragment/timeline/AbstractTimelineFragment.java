@@ -1,7 +1,9 @@
 package com.crakac.ofuton.fragment.timeline;
 
+import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
@@ -9,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.crakac.ofuton.C;
+import com.crakac.ofuton.activity.MainActivity;
 import com.crakac.ofuton.fragment.AbstractStatusFragment;
 import com.crakac.ofuton.util.ParallelTask;
 
@@ -34,6 +37,15 @@ public abstract class AbstractTimelineFragment extends AbstractStatusFragment {
         View view = super.onCreateView(inflater, container, savedInstanceState);
         Log.d(TAG, getTimelineName() + " onCreateView");
         return view;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        Activity activity = getActivity();
+        if(activity instanceof MainActivity){
+            mListView.setFab(((MainActivity)activity).getTweetButton());
+        }
     }
 
     @Override

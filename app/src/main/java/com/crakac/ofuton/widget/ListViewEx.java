@@ -6,6 +6,8 @@ import android.util.Log;
 import android.widget.AbsListView;
 import android.widget.ListView;
 
+import com.melnykov.fab.FloatingActionButton;
+
 /**
  * Created by kosukeshirakashi on 2014/09/01.
  */
@@ -27,8 +29,15 @@ public class ListViewEx extends ListView implements AbsListView.OnScrollListener
 
     private int preLast = -1;
 
+    private final FloatingActionButton.FabOnScrollListener mFabOnScrollListener = new FloatingActionButton.FabOnScrollListener();
+
     public void setOnLastItemVisibleListener(OnLastItemVisibleListener listener) {
         mListener = listener;
+    }
+
+    public void setFab(FloatingActionButton button){
+        mFabOnScrollListener.setFloatingActionButton(button);
+        mFabOnScrollListener.setListView(this);
     }
 
     @Override
@@ -39,6 +48,7 @@ public class ListViewEx extends ListView implements AbsListView.OnScrollListener
 
     @Override
     public void onScrollStateChanged(AbsListView absListView, int i) {
+        mFabOnScrollListener.onScrollStateChanged(absListView, i);
         if (i == SCROLL_STATE_IDLE) {
             if (mIsBottomOfLastItemShown) {
                 if (mListener != null) mListener.onBottomOfLastItemShown();
@@ -49,6 +59,7 @@ public class ListViewEx extends ListView implements AbsListView.OnScrollListener
 
     @Override
     public void onScroll(AbsListView absListView, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+        mFabOnScrollListener.onScroll(absListView, firstVisibleItem, visibleItemCount, totalItemCount);
         if (visibleItemCount == 0) return;
         int lastItem = firstVisibleItem + visibleItemCount;
         if (lastItem == totalItemCount) {
@@ -63,6 +74,17 @@ public class ListViewEx extends ListView implements AbsListView.OnScrollListener
             mIsBottomOfLastItemShown = false;
         }
         preLast = lastItem;
+    }
+
+    private static class ScrollDirectionDetector implements OnScrollListener{
+        @Override
+        public void onScrollStateChanged(AbsListView view, int scrollState) {
+
+        }
+        @Override
+        public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+
+        }
     }
 
     public static interface OnLastItemVisibleListener {
