@@ -151,12 +151,11 @@ public class StatusDialogFragment extends DialogFragment {
 
 		// 全画面化
 		mDialog.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-				WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN);
+				WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
 		// 背景を透明に
 		mDialog.getWindow().setBackgroundDrawable(
 				new ColorDrawable(Color.TRANSPARENT));
-
 		return mDialog;
 	}
 
