@@ -76,12 +76,12 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">30dp</item>
         <item name="android:background">@color/dark_gray</item>
-        <item name="pstsIndicatorColor">@color/gray</item>
         <item name="android:textAppearance">@style/pagerTabStripText</item>
         <item name="android:textColor">@color/tab_text</item>
-        <item name="pstsDividerColor">@android:color/transparent</item>
         <item name="android:textSize">12sp</item>
-        <item name="pstsIndicatorHeight">30dp</item>
+        <item name="pstsDividerColor">@android:color/transparent</item>
+        <item name="pstsIndicatorHeight">4dp</item>
+        <item name="pstsIndicatorColor">@color/twitter_blue</item>
         <item name="pstsUnderlineHeight">0dp</item>
         <item name="pstsShouldExpand">true</item>
     </style>
