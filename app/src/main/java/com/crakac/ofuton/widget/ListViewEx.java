@@ -40,6 +40,10 @@ public class ListViewEx extends ListView implements AbsListView.OnScrollListener
         mFabOnScrollListener.setListView(this);
     }
 
+    public void enableFabListener(boolean enable){
+        mFabOnScrollListener.setListView( enable ? this : null);
+    }
+
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();

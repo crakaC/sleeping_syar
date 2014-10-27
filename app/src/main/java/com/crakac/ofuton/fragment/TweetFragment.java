@@ -34,6 +34,7 @@ import android.widget.TextView;
 
 import com.crakac.ofuton.C;
 import com.crakac.ofuton.R;
+import com.crakac.ofuton.activity.MainActivity;
 import com.crakac.ofuton.activity.PhotoPreviewActivity;
 import com.crakac.ofuton.activity.TweetActivity;
 import com.crakac.ofuton.fragment.dialog.TweetInfoDialogFragment;
@@ -58,15 +59,14 @@ import twitter4j.TwitterException;
  * Created by kosukeshirakashi on 2014/10/24.
  */
 public class TweetFragment extends Fragment implements View.OnClickListener {
-    private static final String TAG = TweetActivity.class.getSimpleName();
-
+    private static final String TAG = TweetFragment.class.getSimpleName();
 
     private static final int SELECT_PICTURE = 1;
 
     private static final int MAX_TWEET_LENGTH = 140;
     private static final int MAX_APPEND_PICTURE_EDGE_LENGTH = 1920;
     private static final String IMAGE_URI = "IMAGE_URI";
-    public static final String BOTTOM_PADDING = "bottom_padding";
+    public static final String APPENDED_FILE = "APPENDED_FILE";
 
     private EditText mInputText;
     private File mAppendingFile; // 画像のアップロードに使用
@@ -74,7 +74,6 @@ public class TweetFragment extends Fragment implements View.OnClickListener {
     private View mTweetBtn, mAppendBtn;// つぶやくボタン，画像追加ボタン，リプライ元情報ボタン
     private ImageView mAppendedImageView;
     private Uri mImageUri;// カメラ画像添付用
-    private boolean mIsUpdatingStatus = false;//ツイート中かどうか。onDestroyで添付ファイルを削除する際の判定に使う。
     private TwitterAPIConfiguration mApiConfiguration;
 
     public static Fragment getDummy() {
@@ -83,23 +82,6 @@ public class TweetFragment extends Fragment implements View.OnClickListener {
         b.putBoolean("dummy", true);
         dummy.setArguments(b);
         return dummy;
-    }
-
-    public static void setTranslucentPadding(Fragment f, int navHeight) {
-        Bundle b = f.getArguments();
-        if (b == null) {
-            b = new Bundle();
-        }
-        b.putInt(BOTTOM_PADDING, navHeight);
-        f.setArguments(b);
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (savedInstanceState != null) {
-            mImageUri = savedInstanceState.getParcelable(IMAGE_URI);
-        }
     }
 
     @Override
@@ -118,6 +100,14 @@ public class TweetFragment extends Fragment implements View.OnClickListener {
             }
         }
         return super.onCreateAnimation(transit, enter, nextAnim);
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (savedInstanceState != null) {
+            mImageUri = savedInstanceState.getParcelable(IMAGE_URI);
+        }
     }
 
     @Override
@@ -193,20 +183,22 @@ public class TweetFragment extends Fragment implements View.OnClickListener {
                 setRemainLength();
             }
         });
-        setRemainLength();
 
+        MainActivity activity = (MainActivity)getActivity();
+        if (activity != null) {
+            if(activity.isTranslucentNav()){
+                root.setPadding(root.getPaddingLeft(), root.getPaddingTop(), root.getPaddingRight(), activity.getNavHeight());
+            }
+        }
+
+        if (savedInstanceState != null) {
+            mAppendingFile = (File) savedInstanceState.getSerializable(APPENDED_FILE);
+        }
         if (mAppendingFile != null) {
             setAppendingImageDrawable(mAppendingFile);
         }
 
-        Bundle b = getArguments();
-        if (b != null) {
-            int bottomPadding = b.getInt(BOTTOM_PADDING, -1);
-            if (bottomPadding != -1) {
-                root.setPadding(root.getPaddingLeft(), root.getPaddingTop(), root.getPaddingRight(), bottomPadding);
-            }
-        }
-
+        setRemainLength();
         return root;
     }
 
@@ -253,14 +245,13 @@ public class TweetFragment extends Fragment implements View.OnClickListener {
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelable(IMAGE_URI, mImageUri);
+        outState.putSerializable(APPENDED_FILE, mAppendingFile);
     }
 
     @Override
     public void onDestroy() {
         //ツイートボタン押下時にfinishする仕様だとツイート終了前にonDestroyが走るのでフラグで判定する
-        if (!mIsUpdatingStatus) {
-            clearTemporaryImageFile();
-        }
+        Log.d(TAG, "onDestroy");
         super.onDestroy();
     }
 
@@ -298,7 +289,10 @@ public class TweetFragment extends Fragment implements View.OnClickListener {
                 Uri uri = null;
                 if (data != null) {
                     uri = data.getData();
-                    isCamera = data.getAction().equals(MediaStore.ACTION_IMAGE_CAPTURE);
+                    String action = data.getAction();
+                    if(action != null){
+                        isCamera = action.equals(MediaStore.ACTION_IMAGE_CAPTURE);
+                    }
                 } else {
                     isCamera = true;
                 }
@@ -343,7 +337,7 @@ public class TweetFragment extends Fragment implements View.OnClickListener {
     }
 
     private void setAppendingImageDrawable(File appendingFile) {
-        final int BITMAP_EDGE_LENGTH = 128;
+        final int BITMAP_EDGE_LENGTH = 96;
         Bitmap bm = BitmapUtil.getResizedBitmap(appendingFile, BITMAP_EDGE_LENGTH);
         mAppendedImageView.setImageBitmap(BitmapUtil.rotateImage(bm, appendingFile.toString()));
         mAppendedImageView.setVisibility(View.VISIBLE);
@@ -351,7 +345,6 @@ public class TweetFragment extends Fragment implements View.OnClickListener {
 
     private void updateStatus() {
         mInputText.clearFocus();
-        mIsUpdatingStatus = true;
         StatusUpdate update = new StatusUpdate(mInputText.getText().toString());
         ParallelTask<StatusUpdate, Void, Status> task = new ParallelTask<StatusUpdate, Void, Status>() {
             @Override
@@ -379,8 +372,6 @@ public class TweetFragment extends Fragment implements View.OnClickListener {
                 } else {
                     AppUtil.showToast(R.string.impossible);
                 }
-                mIsUpdatingStatus = false;
-
             }
         };
         task.executeParallel(update);
@@ -466,5 +457,13 @@ public class TweetFragment extends Fragment implements View.OnClickListener {
 
     private boolean isDummy() {
         return getArguments() != null && getArguments().getBoolean("dummy", false);
+    }
+
+    public boolean hasFocus(){
+        return (mInputText != null && mInputText.hasFocus());
+    }
+
+    public void clearFocus(){
+        mInputText.clearFocus();
     }
 }

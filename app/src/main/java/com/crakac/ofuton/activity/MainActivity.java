@@ -101,16 +101,10 @@ public class MainActivity extends ActionBarActivity {
         mDummyFragment = fm.findFragmentByTag("dummy");
         if (mDummyFragment == null){
             mDummyFragment = TweetFragment.getDummy();
-            if(isTranslucentNav()){
-                TweetFragment.setTranslucentPadding(mDummyFragment, getNavHeight());
-            }
         }
         mTweetFragment = fm.findFragmentByTag("tweet");
         if (mTweetFragment == null){
             mTweetFragment = new TweetFragment();
-            if (isTranslucentNav()) {
-                TweetFragment.setTranslucentPadding(mTweetFragment, getNavHeight());
-            }
         }
 
         int counts = fm.getBackStackEntryCount();
@@ -130,6 +124,9 @@ public class MainActivity extends ActionBarActivity {
         mTweetBtn.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
+                for(AbstractTimelineFragment f : getFragments()){
+                    f.enableFabListener(false);
+                }
                 mTweetBtn.hide();
                 getSupportFragmentManager().popBackStack();
                 return true;
@@ -246,7 +243,14 @@ public class MainActivity extends ActionBarActivity {
         } else if (mSearchView != null && !mSearchView.isIconified()) {
             AppUtil.closeSearchView(mSearchView);
         } else if (mTweetFragment.isVisible()) {
+            if(((TweetFragment)mTweetFragment).hasFocus()){
+                ((TweetFragment) mTweetFragment).clearFocus();
+                return;
+            }
             mTweetBtn.show();
+            for (AbstractTimelineFragment f :  getFragments()){
+                f.enableFabListener(true);
+            }
             getSupportFragmentManager().beginTransaction().replace(R.id.quick_tweet, mDummyFragment).addToBackStack(null).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
         } else if (getSupportFragmentManager().getBackStackEntryCount() == 2) {
             finish();
@@ -474,11 +478,12 @@ public class MainActivity extends ActionBarActivity {
         return mTweetBtn;
     }
 
-    private boolean isTranslucentNav(){
-        return (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT);
+    public boolean isTranslucentNav(){
+        return (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT
+                && getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT );
     }
 
-    private int getNavHeight(){
+    public int getNavHeight(){
         Resources res = getResources();
         int resourceId = res.getIdentifier("navigation_bar_height", "dimen", "android");
         return res.getDimensionPixelSize(resourceId);

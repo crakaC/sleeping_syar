@@ -294,4 +294,8 @@ public abstract class AbstractTimelineFragment extends AbstractStatusFragment {
         setSwipeWidgetRefreshing(true);
         loadNewTweets();
     }
+
+    public void enableFabListener(boolean enable){
+        mListView.enableFabListener(enable);
+    }
 }
