@@ -40,15 +40,6 @@ public abstract class AbstractTimelineFragment extends AbstractStatusFragment {
     }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        Activity activity = getActivity();
-        if(activity instanceof MainActivity){
-            mListView.setFab(((MainActivity)activity).getTweetButton());
-        }
-    }
-
-    @Override
     public void onRefresh() {
         loadNewTweets();
     }
@@ -293,9 +284,5 @@ public abstract class AbstractTimelineFragment extends AbstractStatusFragment {
     public void refresh(){
         setSwipeWidgetRefreshing(true);
         loadNewTweets();
-    }
-
-    public void enableFabListener(boolean enable){
-        mListView.enableFabListener(enable);
     }
 }

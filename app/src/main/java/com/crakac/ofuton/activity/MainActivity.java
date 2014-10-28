@@ -124,9 +124,6 @@ public class MainActivity extends ActionBarActivity {
         mTweetBtn.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                for(AbstractTimelineFragment f : getFragments()){
-                    f.enableFabListener(false);
-                }
                 mTweetBtn.hide();
                 getSupportFragmentManager().popBackStack();
                 return true;
@@ -248,9 +245,6 @@ public class MainActivity extends ActionBarActivity {
                 return;
             }
             mTweetBtn.show();
-            for (AbstractTimelineFragment f :  getFragments()){
-                f.enableFabListener(true);
-            }
             getSupportFragmentManager().beginTransaction().replace(R.id.quick_tweet, mDummyFragment).addToBackStack(null).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
         } else if (getSupportFragmentManager().getBackStackEntryCount() == 2) {
             finish();
@@ -473,10 +467,6 @@ public class MainActivity extends ActionBarActivity {
             return true;
         }
     };
-
-    public FloatingActionButton getTweetButton(){
-        return mTweetBtn;
-    }
 
     public boolean isTranslucentNav(){
         return (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT
