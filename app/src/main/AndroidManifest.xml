@@ -124,6 +124,10 @@
                 <category android:name="android.intent.category.BROWSABLE"/>
 
                 <data
+                    android:host="twitpic.com"
+                    android:pathPrefix="/"
+                    android:scheme="http"/>
+                <data
                     android:host="img.ly"
                     android:pathPrefix="/"
                     android:scheme="http"/>

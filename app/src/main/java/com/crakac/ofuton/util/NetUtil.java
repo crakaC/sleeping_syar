@@ -209,6 +209,7 @@ public class NetUtil {
         String path = uri.getPath();
         if (TextUtils.isEmpty(path)) return false;
         switch (uri.getHost()) {
+            case "twitpic.com":
             case "img.ly":
             case "gyazo.com":
             case "p.twipple.jp":
