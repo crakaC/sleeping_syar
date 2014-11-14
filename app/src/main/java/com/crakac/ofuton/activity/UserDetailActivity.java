@@ -242,7 +242,7 @@ public class UserDetailActivity extends FinishableActionbarActivity {
             description = description.replace(url.getURL(),
                     "<a href=\"" + url.getExpandedURL() + "\">" + url.getDisplayURL() + "</a>");
         }
-        description = description.replace("\n", "<br/>");
+        description = (description != null) ? description.replace("\n", "<br/>") : "";
         mBioText.setText(Html.fromHtml(description));
         // URLをタップしてリンク先を開けるようにする
         MovementMethod mMethod = LinkMovementMethod.getInstance();

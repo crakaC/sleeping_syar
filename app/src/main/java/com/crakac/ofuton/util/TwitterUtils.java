@@ -349,6 +349,10 @@ public class TwitterUtils {
         };
     }
 
+    public static MediaEntity[] getTwitterMediaEntities(Status status){
+        return status.getExtendedMediaEntities().length > 0 ? status.getExtendedMediaEntities() : status.getMediaEntities();
+    }
+
     public static List<MediaEntity> getMediaEntities(Status status) {
         MediaEntity[] mediaEntities = status.getExtendedMediaEntities().length > 0 ? status.getExtendedMediaEntities() : status.getMediaEntities();
         List<MediaEntity> guessedEntities = guessMediaEntities(status);

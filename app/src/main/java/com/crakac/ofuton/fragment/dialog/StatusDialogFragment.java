@@ -280,9 +280,9 @@ public class StatusDialogFragment extends DialogFragment {
 	private void setMediaEntities(Status status){
         MediaEntity[] mediaEntities;
         if (status.isRetweet()) {
-            mediaEntities = status.getRetweetedStatus().getExtendedMediaEntities();
+            mediaEntities = TwitterUtils.getTwitterMediaEntities(status.getRetweetedStatus());
         } else {
-            mediaEntities = status.getExtendedMediaEntities();
+            mediaEntities = TwitterUtils.getTwitterMediaEntities(status);
         }
 
         for (MediaEntity media : mediaEntities) {
