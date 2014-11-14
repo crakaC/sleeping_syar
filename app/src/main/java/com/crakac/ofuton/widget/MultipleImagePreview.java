@@ -71,32 +71,22 @@ public class MultipleImagePreview extends FrameLayout {
     }
 
     public List<BitmapImageView> getRequiredImageViews(int mediaNum) {
-        List<BitmapImageView> imageViews = new ArrayList<>();
         switch (mediaNum) {
-            case 0:
-                break;
             case 1:
-                imageViews = Arrays.asList(topLeft);
-                break;
+                return Arrays.asList(topLeft);
             case 2:
-                imageViews = Arrays.asList(topLeft, topRight);
-                break;
+                return Arrays.asList(topLeft, topRight);
             case 3:
-                imageViews = Arrays.asList(topLeft, topRight, bottomRight);
-                break;
+                return Arrays.asList(topLeft, topRight, bottomRight);
             case 4:
-                imageViews = Arrays.asList(topLeft, topRight, bottomLeft, bottomRight);
-                break;
+                return Arrays.asList(topLeft, topRight, bottomLeft, bottomRight);
             case 5:
-                imageViews = Arrays.asList(topLeft, topCenter, topRight, bottomCenter, bottomRight);
-                break;
+                return Arrays.asList(topLeft, topCenter, topRight, bottomCenter, bottomRight);
             case 6:
-                imageViews = Arrays.asList(topLeft, topCenter, topRight, bottomLeft, bottomCenter, bottomRight);
-                break;
+                return Arrays.asList(topLeft, topCenter, topRight, bottomLeft, bottomCenter, bottomRight);
             default:
-                break;
+                return new ArrayList<>();
         }
-        return imageViews;
     }
 
     public void initLayout(int mediaNum) {
