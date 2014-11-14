@@ -87,5 +87,6 @@
     <string name="delete">削除</string>
     <string name="license_info">オープンソースライセンス</string>
     <string name="choose_or_take_picture">画像を選択</string>
+    <string name="show_source">ソースを表示する</string>
 
 </resources>

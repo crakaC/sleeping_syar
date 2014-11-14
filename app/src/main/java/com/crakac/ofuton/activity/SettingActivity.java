@@ -16,9 +16,9 @@ import android.preference.PreferenceScreen;
 import com.crakac.ofuton.R;
 import com.crakac.ofuton.util.ReloadChecker;
 
+@SuppressWarnings("deprecation")
 public class SettingActivity extends PreferenceActivity {
 
-    @SuppressWarnings("deprecation")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,9 +29,9 @@ public class SettingActivity extends PreferenceActivity {
         displayLicenseInfo();
         displayVersionInfo();
         authorsWebsite();
+        requestSoftReloadOnClick(R.string.show_image_in_timeline, R.string.show_source, R.string.date_display_mode);
     }
 
-    @SuppressWarnings("deprecation")
     private void setInlinePreview() {
         CheckBoxPreference inlinePref = (CheckBoxPreference) findPreference(getString(R.string.show_image_in_timeline));
         inlinePref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
@@ -43,7 +43,6 @@ public class SettingActivity extends PreferenceActivity {
         });
     }
 
-    @SuppressWarnings("deprecation")
     private void setFontSize() {
         ListPreference fontPref;
         fontPref = (ListPreference) findPreference(getString(R.string.font_size));
@@ -58,7 +57,6 @@ public class SettingActivity extends PreferenceActivity {
         });
     }
 
-    @SuppressWarnings("deprecation")
     private void setDateDisplayMode() {
         ListPreference datePref;
         datePref = (ListPreference) findPreference(getString(R.string.date_display_mode));
@@ -75,7 +73,6 @@ public class SettingActivity extends PreferenceActivity {
     /**
      * バージョン情報を表示する
      */
-    @SuppressWarnings("deprecation")
     private void displayVersionInfo() {
         String versionName = null;
         PackageManager packageManager = this.getPackageManager();
@@ -94,7 +91,6 @@ public class SettingActivity extends PreferenceActivity {
     /**
      * 作者のページへ飛ぶ
      */
-    @SuppressWarnings("deprecation")
     private void authorsWebsite() {
         PreferenceScreen gotoWeb;
         gotoWeb = (PreferenceScreen) findPreference(getString(R.string.goto_webpage));
@@ -107,7 +103,6 @@ public class SettingActivity extends PreferenceActivity {
         });
     }
 
-    @SuppressWarnings("deprecation")
     private void displayLicenseInfo(){
         PreferenceScreen license = (PreferenceScreen) findPreference(getString(R.string.license_info));
         license.setOnPreferenceClickListener(new OnPreferenceClickListener() {
@@ -117,5 +112,17 @@ public class SettingActivity extends PreferenceActivity {
                 return true;
             }
         });
+    }
+
+    private void requestSoftReloadOnClick(int... ids){
+        for(int id : ids){
+            findPreference(getString(id)).setOnPreferenceClickListener(new OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    ReloadChecker.requestSoftReload(true);
+                    return true;
+                }
+            });
+        }
     }
 }

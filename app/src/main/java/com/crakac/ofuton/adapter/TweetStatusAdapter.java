@@ -245,13 +245,18 @@ public class TweetStatusAdapter extends ArrayAdapter<Status> {
     private static void setNormalTweetView(ViewHolder holder, Status status) {
         // 不要な部分を非表示に
         holder.retweeterInfo.setVisibility(View.GONE);
+        if(PrefUtil.getBoolean(R.string.show_source, true)){
+            holder.via.setVisibility(View.VISIBLE);
+        } else {
+            holder.via.setVisibility(View.GONE);
+            return;
+        }
         // via表示
         String source = status.getSource();
         if (source.contains(">")) {
             source = source.substring(source.indexOf(">") + 1, source.indexOf("</"));
         }
         holder.via.setText("via " + source);
-        holder.via.setVisibility(View.VISIBLE);
     }
 
     private static void setPostedAtTime(ViewHolder holder, Status status) {

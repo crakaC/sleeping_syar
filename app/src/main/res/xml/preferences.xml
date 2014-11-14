@@ -62,12 +62,19 @@
         android:entryValues="@array/entryvalues_font_size"
         android:key="@string/font_size"
         android:title="@string/font_size" />
+
     <ListPreference
         android:defaultValue="@string/relative"
         android:entries="@array/date_display_modes"
         android:entryValues="@array/date_display_modes"
         android:key="@string/date_display_mode"
         android:title="@string/date_display_mode" />
+
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="@string/show_source"
+        android:summary="via名を表示する"
+        android:title="@string/show_source"/>
 
     <CheckBoxPreference
         android:defaultValue="false"
@@ -84,6 +91,7 @@
     <PreferenceScreen
         android:key="@string/version_info"
         android:title="@string/version_info" />
+
     <PreferenceScreen
         android:key="@string/goto_webpage"
         android:title="@string/goto_webpage" />
