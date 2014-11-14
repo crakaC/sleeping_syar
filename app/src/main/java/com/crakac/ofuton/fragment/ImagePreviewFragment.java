@@ -117,6 +117,7 @@ public class ImagePreviewFragment extends Fragment implements Rotatable {
 
     public void finishActivity() {
         Activity activity = getActivity();
+        if(activity == null) return;
         activity.finish();
         activity.overridePendingTransition(0, R.anim.fade_out);
     }
