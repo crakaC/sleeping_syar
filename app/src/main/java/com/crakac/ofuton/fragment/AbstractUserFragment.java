@@ -120,6 +120,7 @@ public abstract class AbstractUserFragment extends AbstractPtrFragment {
 					mCursor = result.getNextCursor();
 				} else {
 					removeFooterView();
+                    mListView.setOnLastItemVisibleListener(null);
 				}
 			} else {
 				failToLoad();
