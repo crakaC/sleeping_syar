@@ -60,7 +60,7 @@ public class BitmapUtil {
      * @return リサイズ後のファイル
      * @throws java.io.IOException
      */
-    public static File resize(File src, int longEdge) throws IOException {
+    public static File createTemporaryResizedImage(File src, int longEdge) throws IOException {
         Bitmap bm = getResizedBitmap(src, longEdge);
         float scaleW = (float) longEdge / bm.getWidth();
         float scaleH = (float) longEdge / bm.getHeight();
@@ -83,7 +83,7 @@ public class BitmapUtil {
         bm.compress(Bitmap.CompressFormat.JPEG, 90, bytes);
         bm.recycle();
 
-        File tempFile = File.createTempFile("DCIM", ".jpg");
+        File tempFile = File.createTempFile("TMP", ".jpg");
 
         FileOutputStream os = new FileOutputStream(tempFile);
         os.write(bytes.toByteArray());

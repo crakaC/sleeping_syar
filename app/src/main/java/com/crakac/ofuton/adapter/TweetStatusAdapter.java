@@ -16,12 +16,12 @@ import android.widget.TextView;
 import com.android.volley.toolbox.NetworkImageView;
 import com.crakac.ofuton.C;
 import com.crakac.ofuton.R;
+import com.crakac.ofuton.util.PrefUtil;
 import com.crakac.ofuton.util.StatusPool;
 import com.crakac.ofuton.activity.UserDetailActivity;
 import com.crakac.ofuton.util.Account;
 import com.crakac.ofuton.util.AppUtil;
 import com.crakac.ofuton.util.NetUtil;
-import com.crakac.ofuton.util.PreferenceUtil;
 import com.crakac.ofuton.util.TwitterUtils;
 import com.crakac.ofuton.widget.ColorOverlayOnTouch;
 import com.crakac.ofuton.widget.MultipleImagePreview;
@@ -139,8 +139,8 @@ public class TweetStatusAdapter extends ArrayAdapter<Status> {
 
     private static void optimizeFontSize(ViewHolder holder) {
         // フォントサイズの調整
-        int fontSize = PreferenceUtil.getFontSize();
-        float subFontSize = PreferenceUtil.getSubFontSize();
+        int fontSize = PrefUtil.getFontSize();
+        float subFontSize = PrefUtil.getSubFontSize();
         holder.name.setTextSize(fontSize);
         holder.screenName.setTextSize(subFontSize);
         holder.text.setTextSize(fontSize);

@@ -9,7 +9,7 @@ import com.crakac.ofuton.R;
 /**
  * Created by kosukeshirakashi on 2014/09/12.
  */
-public class PreferenceUtil {
+public class PrefUtil {
 
     private static Context sContext;
     private static String FONT_SIZE_KEY;

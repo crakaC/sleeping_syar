@@ -446,24 +446,22 @@ public class TweetFragment extends Fragment implements View.OnClickListener {
     }
 
     /**
-     * 画像添付用に縮小画像を生成するので、添付し直し時、アクティビティ終了時にファイルを削除する。
+     * 添付画像用の一時ファイルをクリア．
      */
     private void clearTemporaryImageFile() {
         if (mAppendingFile != null && mAppendingFile.exists()) {
             mAppendingFile.delete();
-            mAppendingFile = null;
         }
+        mAppendingFile = null;
     }
 
-    private boolean isDummy() {
-        return getArguments() != null && getArguments().getBoolean("dummy", false);
+    public void show(){
+        if(mRootView == null) return;
+        mRootView.setVisibility(View.VISIBLE);
     }
 
-    public boolean hasFocus(){
-        return (mInputText != null && mInputText.hasFocus());
-    }
-
-    public void clearFocus(){
-        mInputText.clearFocus();
+    public void hide(){
+        if (mRootView == null) return;
+        mRootView.setVisibility(View.GONE);
     }
 }

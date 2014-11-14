@@ -36,7 +36,7 @@ import com.crakac.ofuton.action.status.UserDetailAction;
 import com.crakac.ofuton.adapter.TweetStatusAdapter;
 import com.crakac.ofuton.fragment.AbstractStatusFragment;
 import com.crakac.ofuton.util.AppUtil;
-import com.crakac.ofuton.util.PreferenceUtil;
+import com.crakac.ofuton.util.PrefUtil;
 import com.crakac.ofuton.util.TwitterUtils;
 
 import java.util.ArrayList;
@@ -220,7 +220,7 @@ public class StatusDialogFragment extends DialogFragment {
 
 		setUserEntities(mSelectedStatus);
 		setUrlEntities(mSelectedStatus);
-        if(!PreferenceUtil.getBoolean(R.string.show_image_in_timeline)){
+        if(!PrefUtil.getBoolean(R.string.show_image_in_timeline)){
             setMediaEntities(mSelectedStatus);
         }
 		setHashtagEntities(mSelectedStatus);

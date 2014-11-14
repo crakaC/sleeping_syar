@@ -2,17 +2,11 @@ package com.crakac.ofuton;
 
 
 import android.app.Application;
-import android.graphics.Bitmap;
-import android.util.Log;
-import android.widget.ImageView;
 
-import com.android.volley.toolbox.ImageLoader;
 import com.crakac.ofuton.util.AppUtil;
 import com.crakac.ofuton.util.NetUtil;
-import com.crakac.ofuton.util.PreferenceUtil;
+import com.crakac.ofuton.util.PrefUtil;
 import com.crakac.ofuton.util.TwitterUtils;
-
-import java.util.concurrent.ConcurrentHashMap;
 
 
 public class OfutonApp extends Application {
@@ -24,6 +18,6 @@ public class OfutonApp extends Application {
         TwitterUtils.init(this);
         AppUtil.init(this);
         NetUtil.init(this);
-        PreferenceUtil.init(this);
+        PrefUtil.init(this);
     }
 }

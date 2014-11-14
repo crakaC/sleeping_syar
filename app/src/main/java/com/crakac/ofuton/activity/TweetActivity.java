@@ -9,7 +9,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -334,7 +333,7 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
         c.moveToFirst();
         File imageFile = new File(c.getString(0));
         try {
-            mAppendingFile = BitmapUtil.resize(imageFile, MAX_APPEND_PICTURE_EDGE_LENGTH);
+            mAppendingFile = BitmapUtil.createTemporaryResizedImage(imageFile, MAX_APPEND_PICTURE_EDGE_LENGTH);
         } catch (IOException e) {
             e.printStackTrace();
         }

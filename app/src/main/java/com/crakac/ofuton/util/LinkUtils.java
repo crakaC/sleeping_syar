@@ -139,7 +139,7 @@ public class LinkUtils {
         }
 
         for (MediaEntity entity : entitySupport.getMediaEntities()) {
-            if(PreferenceUtil.getBoolean(R.string.show_image_in_timeline)){
+            if(PrefUtil.getBoolean(R.string.show_image_in_timeline)){
                 text = text.replace(entity.getURL(), "");
             } else {
                 text = text.replace(entity.getURL(), "<a href=\"" + entity.getExpandedURL() + "\">" + entity.getDisplayURL() + "</a>");

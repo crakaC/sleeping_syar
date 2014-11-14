@@ -12,7 +12,7 @@ import com.android.volley.toolbox.NetworkImageView;
 import com.crakac.ofuton.R;
 import com.crakac.ofuton.util.AppUtil;
 import com.crakac.ofuton.util.NetUtil;
-import com.crakac.ofuton.util.PreferenceUtil;
+import com.crakac.ofuton.util.PrefUtil;
 
 import twitter4j.DirectMessage;
 
@@ -56,8 +56,8 @@ public class DmAdapter extends ArrayAdapter<DirectMessage> {
             }
 
             // フォントサイズの調整
-            int fontSize = PreferenceUtil.getFontSize();
-            float subFontSize = PreferenceUtil.getSubFontSize();
+            int fontSize = PrefUtil.getFontSize();
+            float subFontSize = PrefUtil.getSubFontSize();
             holder.name.setTextSize(fontSize);
             holder.text.setTextSize(fontSize);
             holder.postedAt.setTextSize(subFontSize);

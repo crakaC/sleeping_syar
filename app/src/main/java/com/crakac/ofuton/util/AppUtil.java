@@ -70,7 +70,7 @@ public final class AppUtil {
      */
     public static String getIconURL(twitter4j.User user) {
         String url = null;
-        if (PreferenceUtil.getBoolean(R.string.use_bigger_icon)) {
+        if (PrefUtil.getBoolean(R.string.use_bigger_icon)) {
             url = user.getBiggerProfileImageURLHttps();
         } else {
             url = user.getProfileImageURLHttps();
@@ -172,7 +172,7 @@ public final class AppUtil {
             String syar;
 
             private int getSyarCount() {
-                return PreferenceUtil.getInt(R.string.syar);
+                return PrefUtil.getInt(R.string.syar);
             }
 
             @Override
@@ -209,7 +209,7 @@ public final class AppUtil {
                     AppUtil.showToast(R.string.something_wrong);
                 } else {
                     AppUtil.showToast(syar);
-                    PreferenceUtil.getSharedPreference().edit().putInt(getString(R.string.syar), getSyarCount() + 1).commit();
+                    PrefUtil.getSharedPreference().edit().putInt(getString(R.string.syar), getSyarCount() + 1).commit();
                 }
             }
         };

@@ -11,7 +11,6 @@ import android.database.Cursor;
 import android.util.Log;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -267,7 +266,7 @@ public class TwitterUtils {
 	}
 
     public static void fetchApiConfigurationAsync(final Context context){
-        SharedPreferences pref = PreferenceUtil.getSharedPreference(API_CONFIG_PREF);
+        SharedPreferences pref = PrefUtil.getSharedPreference(API_CONFIG_PREF);
         long fechedOn = pref.getLong("fetched_on", 0);
         if(Util.daysPast(fechedOn) == 0){
             return;

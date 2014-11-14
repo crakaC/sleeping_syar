@@ -46,7 +46,7 @@ import com.crakac.ofuton.fragment.timeline.FavoriteTimelineFragment;
 import com.crakac.ofuton.fragment.timeline.HomeTimelineFragment;
 import com.crakac.ofuton.fragment.timeline.MentionsTimelineFragment;
 import com.crakac.ofuton.util.AppUtil;
-import com.crakac.ofuton.util.PreferenceUtil;
+import com.crakac.ofuton.util.PrefUtil;
 import com.crakac.ofuton.util.RelativeTimeUpdater;
 import com.crakac.ofuton.util.ReloadChecker;
 import com.crakac.ofuton.util.TwitterList;
@@ -185,8 +185,8 @@ public class MainActivity extends ActionBarActivity {
             startActivity(new Intent(getIntent()));
             return;
         }
-        showRefreshMenu(PreferenceUtil.getBoolean(R.string.enable_refresh_btn));
-        if (PreferenceUtil.getBoolean(R.string.always_awake) && PreferenceUtil.getBoolean(R.string.streaming_mode)) {
+        showRefreshMenu(PrefUtil.getBoolean(R.string.enable_refresh_btn));
+        if (PrefUtil.getBoolean(R.string.always_awake) && PrefUtil.getBoolean(R.string.streaming_mode)) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         } else {
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
@@ -197,7 +197,7 @@ public class MainActivity extends ActionBarActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        TweetStatusAdapter.shouldShowInlinePreview(PreferenceUtil.getBoolean(R.string.show_image_in_timeline, true));
+        TweetStatusAdapter.shouldShowInlinePreview(PrefUtil.getBoolean(R.string.show_image_in_timeline, true));
     }
 
     @Override
@@ -226,7 +226,7 @@ public class MainActivity extends ActionBarActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main, menu);
         mMenu = menu;
-        showRefreshMenu(PreferenceUtil.getBoolean(R.string.enable_refresh_btn));
+        showRefreshMenu(PrefUtil.getBoolean(R.string.enable_refresh_btn));
         MenuItem search = menu.findItem(R.id.search);
         mSearchView = (SearchView) MenuItemCompat.getActionView(search);
         mSearchView.setOnQueryTextListener(mOnQueryTextListener);
