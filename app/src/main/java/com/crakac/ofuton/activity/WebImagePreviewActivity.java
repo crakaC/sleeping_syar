@@ -46,6 +46,12 @@ public class WebImagePreviewActivity extends FragmentActivity implements Preview
         setContentView(R.layout.actvity_image_preview);
 
         mPager = (HackyViewPager) findViewById(R.id.pager);
+        mPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener(){
+            @Override
+            public void onPageSelected(int position) {
+                mNav.setImageIndex(position);
+            }
+        });
         mNav = (PreviewNavigation) findViewById(R.id.preview_nav);
         mNav.setNavigationListener(this);
         mNav.setVisibility(View.VISIBLE);
@@ -66,6 +72,7 @@ public class WebImagePreviewActivity extends FragmentActivity implements Preview
             mUrls = imageUrls;
         }
         mAdapter.notifyDataSetChanged();
+        mNav.setImageNums(mUrls.size());
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             mPager.setPageTransformer(true, new DepthPageTransformer());
