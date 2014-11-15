@@ -85,14 +85,6 @@ public class WebImagePreviewActivity extends FragmentActivity implements Preview
         mRotatables.clear();
     }
 
-    public void toggleNavigation() {
-        if (mNav.isShown()) {
-            AppUtil.slideOut(mNav, 200);
-        } else {
-            AppUtil.slideIn(mNav, 200);
-        }
-    }
-
     private Bundle createArgs(String url, int index) {
         Bundle b = new Bundle(2);
         b.putString(C.URL, url);
