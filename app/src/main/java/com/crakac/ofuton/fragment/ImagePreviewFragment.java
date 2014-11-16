@@ -47,13 +47,6 @@ public class ImagePreviewFragment extends Fragment implements Rotatable {
         mImageView = (ImageView) root.findViewById(R.id.iv_photo);
         mProgressBar = (ProgressBar) root.findViewById(R.id.progress);
         mAttacher = new PhotoViewAttacher(mImageView);
-        mAttacher.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                ((WebImagePreviewActivity) getActivity()).toggleNavigation();
-                return true;
-            }
-        });
         mAttacher.setOnViewTapListener(new PhotoViewAttacher.OnViewTapListener() {
             @Override
             public void onViewTap(View view, float x, float y) {
