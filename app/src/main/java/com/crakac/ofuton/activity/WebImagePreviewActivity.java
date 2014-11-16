@@ -5,8 +5,6 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -17,8 +15,6 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.View;
-import android.view.WindowManager;
-import android.widget.RelativeLayout;
 
 import com.crakac.ofuton.C;
 import com.crakac.ofuton.R;
@@ -81,21 +77,6 @@ public class WebImagePreviewActivity extends FragmentActivity implements Preview
             int position = getIntent().getIntExtra(C.POSITION, 0);
             mPager.setCurrentItem(position);
         }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            Resources res = getResources();
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION | WindowManager.LayoutParams.FLAG_FULLSCREEN);
-            if (res.getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
-            } else {
-                int resourceId = res.getIdentifier("navigation_bar_height", "dimen", "android");
-                int navHeight = res.getDimensionPixelSize(resourceId);
-                RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mNav.getLayoutParams();
-                params.bottomMargin += navHeight;
-                mNav.setLayoutParams(params);
-            }
-        }
-
     }
 
     @Override
