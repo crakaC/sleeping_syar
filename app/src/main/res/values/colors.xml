@@ -5,12 +5,7 @@
     <color name="dark_gray">#212121</color>
     <color name="dark_gray_transparent">#D01A1A1A</color>
     <color name="tab_background">#181a1a</color>
-    <color name="nav_background">#B0181a1a</color>
     <color name="transparent_black">#20000000</color>
-    <color name="gray_blue">#303540</color>
-    <color name="gray_green">#304035</color>
-    <color name="gray_red">#453030</color>
-    <color name="dark_orange">#403530</color>
     <color name="sub_text">#707070</color>
     <color name="text">#D0D0D0</color>
     <color name="twitter_blue">#55acee</color>
