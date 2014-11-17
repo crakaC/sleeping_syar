@@ -41,7 +41,8 @@
                 fab:fab_colorPressed="@color/twitter_blue_bright"
                 fab:fab_type="mini"/>
 
-            <FrameLayout
+            <fragment
+                android:name="com.crakac.ofuton.fragment.TweetFragment"
                 android:id="@+id/quick_tweet"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

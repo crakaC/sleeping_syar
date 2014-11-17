@@ -5,17 +5,15 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/tab_background"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin">
+    android:background="@color/tab_background">
 
     <TextView
         android:id="@+id/indicatorText"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:gravity="center_horizontal"
         android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:gravity="center"
         android:layout_toLeftOf="@+id/rotateLeft"
         android:text="@string/dummy"
         android:textColor="@color/tab_text"/>

@@ -8,7 +8,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
@@ -29,7 +28,6 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -72,7 +70,7 @@ public class MainActivity extends ActionBarActivity {
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
-    private Fragment mTweetFragment, mDummyFragment;
+    private TweetFragment mTweetFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,36 +94,13 @@ public class MainActivity extends ActionBarActivity {
                 startActivity(intent);
             }
         });
-
-        FragmentManager fm = getSupportFragmentManager();
-        mDummyFragment = fm.findFragmentByTag("dummy");
-        if (mDummyFragment == null){
-            mDummyFragment = TweetFragment.getDummy();
-        }
-        mTweetFragment = fm.findFragmentByTag("tweet");
-        if (mTweetFragment == null){
-            mTweetFragment = new TweetFragment();
-        }
-
-        int counts = fm.getBackStackEntryCount();
-        if (counts == 0) {
-            Log.i("Fragment BackStack", "added 2 fragments");
-            fm.beginTransaction()
-                    .addToBackStack(null)
-                    .replace(R.id.quick_tweet, mTweetFragment, "tweet")
-                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                    .commit();
-            fm.beginTransaction()
-                    .addToBackStack(null)
-                    .replace(R.id.quick_tweet, mDummyFragment, "dummy")
-                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                    .commit();
-        }
         mTweetBtn.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
                 mTweetBtn.hide();
-                getSupportFragmentManager().popBackStack();
+                FragmentManager fm = getSupportFragmentManager();
+                mTweetFragment = (TweetFragment)fm.findFragmentById(R.id.quick_tweet);
+                mTweetFragment.show();
                 return true;
             }
         });
@@ -160,6 +135,10 @@ public class MainActivity extends ActionBarActivity {
                 RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mTweetBtn.getLayoutParams();
                 params.bottomMargin += navHeight;
                 mTweetBtn.setLayoutParams(params);
+                View quickTweet = findViewById(R.id.quick_tweet);
+                params = (RelativeLayout.LayoutParams)quickTweet.getLayoutParams();
+                params.bottomMargin += navHeight;
+                quickTweet.setLayoutParams(params);
             }
         }
     }
@@ -239,15 +218,6 @@ public class MainActivity extends ActionBarActivity {
             mDrawerLayout.closeDrawer(GravityCompat.START);
         } else if (mSearchView != null && !mSearchView.isIconified()) {
             AppUtil.closeSearchView(mSearchView);
-        } else if (mTweetFragment.isVisible()) {
-            if(((TweetFragment)mTweetFragment).hasFocus()){
-                ((TweetFragment) mTweetFragment).clearFocus();
-                return;
-            }
-            mTweetBtn.show();
-            getSupportFragmentManager().beginTransaction().replace(R.id.quick_tweet, mDummyFragment).addToBackStack(null).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
-        } else if (getSupportFragmentManager().getBackStackEntryCount() == 2) {
-            finish();
         } else {
             super.onBackPressed();
         }

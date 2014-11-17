@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -16,7 +15,6 @@ import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -25,18 +23,13 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.crakac.ofuton.C;
 import com.crakac.ofuton.R;
-import com.crakac.ofuton.activity.MainActivity;
 import com.crakac.ofuton.activity.PhotoPreviewActivity;
-import com.crakac.ofuton.activity.TweetActivity;
 import com.crakac.ofuton.fragment.dialog.TweetInfoDialogFragment;
 import com.crakac.ofuton.util.AppUtil;
 import com.crakac.ofuton.util.BitmapUtil;
@@ -75,32 +68,7 @@ public class TweetFragment extends Fragment implements View.OnClickListener {
     private ImageView mAppendedImageView;
     private Uri mImageUri;// カメラ画像添付用
     private TwitterAPIConfiguration mApiConfiguration;
-
-    public static Fragment getDummy() {
-        Fragment dummy = new TweetFragment();
-        Bundle b = new Bundle(1);
-        b.putBoolean("dummy", true);
-        dummy.setArguments(b);
-        return dummy;
-    }
-
-    @Override
-    public Animation onCreateAnimation(int transit, boolean enter, int nextAnim) {
-        if (transit == FragmentTransaction.TRANSIT_FRAGMENT_OPEN) {
-            if (enter) {
-                return AnimationUtils.loadAnimation(getActivity(), R.anim.slide_in);
-            } else {
-                return AnimationUtils.loadAnimation(getActivity(), R.anim.slide_out);
-            }
-        } else if (transit == FragmentTransaction.TRANSIT_FRAGMENT_CLOSE) {
-            if (enter) {
-                return AnimationUtils.loadAnimation(getActivity(), R.anim.slide_in);
-            } else {
-                return AnimationUtils.loadAnimation(getActivity(), R.anim.slide_out);
-            }
-        }
-        return super.onCreateAnimation(transit, enter, nextAnim);
-    }
+    private View mRootView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -112,27 +80,15 @@ public class TweetFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_tweet, null);
-        if (isDummy()) {
-            root.setVisibility(View.INVISIBLE);
-            return root;
-        }
-        root.setOnClickListener(this);
+        mRootView = inflater.inflate(R.layout.fragment_tweet, null);
+        mRootView.setVisibility(View.INVISIBLE);
+        mRootView.setOnClickListener(this);
         mApiConfiguration = TwitterUtils.getApiConfiguration();
-        mInputText = (EditText) root.findViewById(R.id.input_text);// 入力欄
-        mInputText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                if (!hasFocus) {
-                    imm.hideSoftInputFromWindow(mInputText.getWindowToken(), 0);
-                }
-            }
-        });
-        mTweetBtn = root.findViewById(R.id.action_tweet);// ツイートボタン
-        mAppendBtn = root.findViewById(R.id.appendPic);// 画像添付ボダン
-        mRemainingText = (TextView) root.findViewById(R.id.remainingText);// 残り文字数
-        mAppendedImageView = (ImageView) root.findViewById(R.id.appendedImage);
+        mInputText = (EditText) mRootView.findViewById(R.id.input_text);// 入力欄
+        mTweetBtn = mRootView.findViewById(R.id.action_tweet);// ツイートボタン
+        mAppendBtn = mRootView.findViewById(R.id.appendPic);// 画像添付ボダン
+        mRemainingText = (TextView) mRootView.findViewById(R.id.remainingText);// 残り文字数
+        mAppendedImageView = (ImageView) mRootView.findViewById(R.id.appendedImage);
 
         // 画像添付ボタンタップの動作
         mAppendBtn.setOnClickListener(this);
@@ -183,13 +139,6 @@ public class TweetFragment extends Fragment implements View.OnClickListener {
                 setRemainLength();
             }
         });
-
-        MainActivity activity = (MainActivity)getActivity();
-        if (activity != null) {
-            if(activity.isTranslucentNav()){
-                root.setPadding(root.getPaddingLeft(), root.getPaddingTop(), root.getPaddingRight(), activity.getNavHeight());
-            }
-        }
 
         if (savedInstanceState != null) {
             mAppendingFile = (File) savedInstanceState.getSerializable(APPENDED_FILE);
@@ -199,7 +148,7 @@ public class TweetFragment extends Fragment implements View.OnClickListener {
         }
 
         setRemainLength();
-        return root;
+        return mRootView;
     }
 
     private final static int PREVIEW_APPENDED_IMAGE = 1;
@@ -250,7 +199,6 @@ public class TweetFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public void onDestroy() {
-        //ツイートボタン押下時にfinishする仕様だとツイート終了前にonDestroyが走るのでフラグで判定する
         Log.d(TAG, "onDestroy");
         super.onDestroy();
     }
@@ -323,7 +271,7 @@ public class TweetFragment extends Fragment implements View.OnClickListener {
         c.moveToFirst();
         File imageFile = new File(c.getString(0));
         try {
-            mAppendingFile = BitmapUtil.resize(imageFile, MAX_APPEND_PICTURE_EDGE_LENGTH);
+            mAppendingFile = BitmapUtil.createTemporaryResizedImage(imageFile, MAX_APPEND_PICTURE_EDGE_LENGTH);
         } catch (IOException e) {
             e.printStackTrace();
         }
