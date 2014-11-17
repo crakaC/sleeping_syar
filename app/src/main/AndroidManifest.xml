@@ -35,6 +35,7 @@
             android:name=".activity.MainActivity"
             android:label="@string/syar"
             android:launchMode="singleTask"
+            android:theme="@style/ToolbarTheme"
             android:windowSoftInputMode="adjustUnspecified">
             <intent-filter android:label="@string/syar">
                 <action android:name="android.intent.action.MAIN"/>

@@ -16,6 +16,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.SearchView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -106,6 +107,8 @@ public class MainActivity extends ActionBarActivity {
         });
 
         /* actionbar */
+        Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         ActionBar actionbar = getSupportActionBar();
         actionbar.setDisplayHomeAsUpEnabled(true);
         actionbar.setHomeButtonEnabled(true);
@@ -123,24 +126,6 @@ public class MainActivity extends ActionBarActivity {
             mPager.setOffscreenPageLimit(12);// 保持するFragmentの数を指定．全フラグメントを保持するのでぬるぬる動くがメモリを食う
         }
         mTabs.setViewPager(mPager);// PagerSlidingTabStripにViewPagerをセット．
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            Resources res = getResources();
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION | WindowManager.LayoutParams.FLAG_FULLSCREEN);
-            if (res.getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
-            } else {
-                int resourceId = res.getIdentifier("navigation_bar_height", "dimen", "android");
-                int navHeight = res.getDimensionPixelSize(resourceId);
-                RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mTweetBtn.getLayoutParams();
-                params.bottomMargin += navHeight;
-                mTweetBtn.setLayoutParams(params);
-                View quickTweet = findViewById(R.id.quick_tweet);
-                params = (RelativeLayout.LayoutParams)quickTweet.getLayoutParams();
-                params.bottomMargin += navHeight;
-                quickTweet.setLayoutParams(params);
-            }
-        }
     }
 
     @Override
@@ -437,15 +422,4 @@ public class MainActivity extends ActionBarActivity {
             return true;
         }
     };
-
-    public boolean isTranslucentNav(){
-        return (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT
-                && getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT );
-    }
-
-    public int getNavHeight(){
-        Resources res = getResources();
-        int resourceId = res.getIdentifier("navigation_bar_height", "dimen", "android");
-        return res.getDimensionPixelSize(resourceId);
-    }
 }

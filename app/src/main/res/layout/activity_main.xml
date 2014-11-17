@@ -1,67 +1,82 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:fab="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    >
 
-    <android.support.v4.widget.DrawerLayout
-        android:id="@+id/drawer_layout"
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:background="@color/dark_gray"
+        android:minHeight="?attr/actionBarSize"/>
 
-        <!-- The main content view -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingTop="?attr/actionBarSize">
 
-        <RelativeLayout
-            android:id="@+id/main_container"
+        <android.support.v4.widget.DrawerLayout
+            android:id="@+id/drawer_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <com.astuetz.PagerSlidingTabStrip
-                android:id="@+id/pagerTabStrip"
-                style="@style/HoloTab"
-                android:layout_alignParentTop="true"/>
+            <!-- The main content view -->
 
-            <android.support.v4.view.ViewPager
-                android:id="@+id/pager"
+            <RelativeLayout
+                android:id="@+id/main_container"
                 android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <com.astuetz.PagerSlidingTabStrip
+                    android:id="@+id/pagerTabStrip"
+                    style="@style/HoloTab"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"/>
+
+                <android.support.v4.view.ViewPager
+                    android:id="@+id/pager"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_below="@+id/pagerTabStrip"/>
+
+                <com.melnykov.fab.FloatingActionButton
+                    android:id="@+id/tweetEveryWhere"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_margin="8dp"
+                    android:src="@drawable/ic_create_white_24dp"
+                    fab:fab_colorNormal="@color/twitter_blue"
+                    fab:fab_colorPressed="@color/twitter_blue_bright"
+                    fab:fab_type="mini"/>
+
+                <fragment
+                    android:id="@+id/quick_tweet"
+                    android:name="com.crakac.ofuton.fragment.TweetFragment"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    />
+
+            </RelativeLayout>
+
+
+            <!-- The navigation drawer -->
+            <ListView
+                android:id="@+id/left_drawer"
+                android:layout_width="260dp"
                 android:layout_height="match_parent"
-                android:layout_below="@+id/pagerTabStrip"/>
+                android:layout_gravity="start"
+                android:background="@color/dark_gray"
+                android:cacheColorHint="#00000000"
+                android:choiceMode="singleChoice"
+                android:listSelector="@android:color/transparent"
+                android:scrollingCache="false"/>
 
-            <com.melnykov.fab.FloatingActionButton
-                android:id="@+id/tweetEveryWhere"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentRight="true"
-                android:layout_margin="8dp"
-                android:src="@drawable/ic_create_white_24dp"
-                fab:fab_colorNormal="@color/twitter_blue"
-                fab:fab_colorPressed="@color/twitter_blue_bright"
-                fab:fab_type="mini"/>
-
-            <fragment
-                android:name="com.crakac.ofuton.fragment.TweetFragment"
-                android:id="@+id/quick_tweet"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                />
-
-        </RelativeLayout>
-
-
-        <!-- The navigation drawer -->
-        <ListView
-            android:id="@+id/left_drawer"
-            android:layout_width="200dp"
-            android:layout_height="match_parent"
-            android:layout_gravity="start"
-            android:background="@color/dark_gray"
-            android:cacheColorHint="#00000000"
-            android:choiceMode="singleChoice"
-            android:listSelector="@android:color/transparent"
-            android:scrollingCache="false"/>
-
-    </android.support.v4.widget.DrawerLayout>
-</FrameLayout>
+        </android.support.v4.widget.DrawerLayout>
+    </FrameLayout>
+</RelativeLayout>
