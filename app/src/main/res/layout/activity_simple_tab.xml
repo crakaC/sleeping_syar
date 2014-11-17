@@ -1,18 +1,16 @@
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingTop="?attr/actionBarSize">
+    android:layout_height="match_parent">
 
     <com.astuetz.PagerSlidingTabStrip
         android:id="@+id/tab"
         style="@style/HoloTab"
-        android:layout_alignParentTop="true"/>
+        android:layout_alignParentTop="true" />
 
     <android.support.v4.view.ViewPager
         android:id="@+id/pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/tab"/>
+        android:layout_below="@+id/tab" />
 
 </RelativeLayout>
