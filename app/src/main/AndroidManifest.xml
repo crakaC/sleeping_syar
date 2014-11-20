@@ -180,6 +180,15 @@
         <activity
             android:name=".activity.LicenseActivity"
             android:label="License"/>
+
+        <activity android:name=".activity.ImagePickActivity"
+                  android:launchMode="singleTask"
+                  android:label="ImagePick">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+      </activity>
     </application>
 
 </manifest>
