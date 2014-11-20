@@ -215,8 +215,9 @@ public class StatusDialogFragment extends DialogFragment {
 		}
 
 		//TofuBuster
-		//TODO 未インストール時は表示しない
-		mActionAdapter.add(new TofuBusterAction(getActivity(), mSelectedStatus));
+        if(AppUtil.existsPackage("com.product.kanzmrsw.tofubuster")){
+            mActionAdapter.add(new TofuBusterAction(getActivity(), mSelectedStatus));
+        }
 
 		setUserEntities(mSelectedStatus);
 		setUrlEntities(mSelectedStatus);

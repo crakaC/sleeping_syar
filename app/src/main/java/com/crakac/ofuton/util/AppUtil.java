@@ -2,6 +2,7 @@ package com.crakac.ofuton.util;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Handler;
@@ -54,6 +55,16 @@ public final class AppUtil {
                 Toast.makeText(sContext, getString(resId), Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    public static boolean existsPackage(String packageName) {
+        PackageManager pm = sContext.getPackageManager();
+        try {
+            pm.getPackageInfo(packageName, 0);
+        } catch (PackageManager.NameNotFoundException e) {
+            return false;
+        }
+        return true;
     }
 
     public static String shapingNums(int num) {
@@ -150,7 +161,7 @@ public final class AppUtil {
     public static String trimUrl(twitter4j.Status status) {
         String text = status.getText();
         for (MediaEntity entity : TwitterUtils.getMediaEntities(status)) {
-            if(entity instanceof GuessedMediaEntity) continue;//pic.twitter.com以外はテキストを残す．
+            if (entity instanceof GuessedMediaEntity) continue;//pic.twitter.com以外はテキストを残す．
             text = text.replace(entity.getURL(), "");
         }
         return text.trim();
