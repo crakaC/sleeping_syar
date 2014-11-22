@@ -1,23 +1,19 @@
 package com.crakac.ofuton.util;
 
 import android.content.ContentResolver;
+import android.content.ContentUris;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
-import android.media.ExifInterface;
 import android.net.Uri;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.widget.ImageView;
 
 import com.crakac.ofuton.R;
 
-import java.io.File;
-import java.io.IOException;
-
 /**
  * Created by kosukeshirakashi on 2014/11/20.
  */
-
 
 public class ThumbnailTask extends ParallelTask<Void, Bitmap, Bitmap> {
 
@@ -25,13 +21,11 @@ public class ThumbnailTask extends ParallelTask<Void, Bitmap, Bitmap> {
     private ContentResolver mContentResolver;
     private ImageView mImageView;
     private long mId;
-    private String mImageFileName;
 
-    public ThumbnailTask(ContentResolver contentResolver, ImageView imageView, long id, String imageFileName) {
+    public ThumbnailTask(ContentResolver contentResolver, ImageView imageView, long id) {
         mContentResolver = contentResolver;
         mImageView = imageView;
         mId = id;
-        mImageFileName = imageFileName;
     }
 
     @Override
@@ -54,8 +48,13 @@ public class ThumbnailTask extends ParallelTask<Void, Bitmap, Bitmap> {
 
     @Override
     protected Bitmap doInBackground(Void... params) {
-        int orientation = getOrientation(mImageFileName);
-
+        int orientation = 0;
+        Uri contentUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, mId);
+        Cursor c = MediaStore.Images.Media.query(mContentResolver, contentUri, new String[]{MediaStore.Images.ImageColumns.ORIENTATION});
+        if(c != null){
+            c.moveToFirst();
+            orientation = c.getInt(0);
+        }
         Bitmap bm = getThumbnail(MediaStore.Images.Thumbnails.MICRO_KIND, orientation);
         publishProgress(bm);
         return getThumbnail(MediaStore.Images.Thumbnails.MINI_KIND, orientation);
@@ -79,23 +78,6 @@ public class ThumbnailTask extends ParallelTask<Void, Bitmap, Bitmap> {
         Bitmap rotated = Bitmap.createBitmap(bm, 0, 0, bm.getWidth(), bm.getHeight(), m, false);
         bm.recycle();
         return rotated;
-    }
 
-    private int getOrientation(String filePath) {
-        int degree = 0;
-        try {
-            ExifInterface exifInterface = new ExifInterface(filePath);
-            int orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_UNDEFINED);
-            if (orientation == ExifInterface.ORIENTATION_ROTATE_90) {
-                degree = 90;
-            } else if (orientation == ExifInterface.ORIENTATION_ROTATE_180) {
-                degree = 180;
-            } else if (orientation == ExifInterface.ORIENTATION_ROTATE_270) {
-                degree = 270;
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return degree;
     }
 }

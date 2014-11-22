@@ -21,7 +21,7 @@ public class ColorOverlayOnTouch implements OnTouchListener {
         ImageView iv = ((ImageView) v);
         switch (event.getAction()) {
         case MotionEvent.ACTION_DOWN:
-            iv.setColorFilter(0x4000ddff, mMode);
+            iv.setColorFilter(0x4808080, mMode);
             break;
         case MotionEvent.ACTION_UP:
         case MotionEvent.ACTION_CANCEL:
