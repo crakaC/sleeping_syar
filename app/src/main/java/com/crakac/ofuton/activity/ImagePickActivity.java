@@ -1,10 +1,9 @@
 package com.crakac.ofuton.activity;
 
-import android.content.AsyncQueryHandler;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.MergeCursor;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBar;
@@ -19,8 +18,8 @@ import android.widget.GridView;
 import android.widget.ImageView;
 
 import com.crakac.ofuton.R;
+import com.crakac.ofuton.util.ParallelTask;
 import com.crakac.ofuton.util.ThumbnailTask;
-import com.crakac.ofuton.widget.ColorOverlayOnTouch;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -88,10 +87,11 @@ public class ImagePickActivity extends ActionBarActivity {
 
         static class ViewHolder {
             ImageView image;
-            ImageView check;
+            View check;
+            ThumbnailTask task;
             ViewHolder(View v){
                 image = (ImageView)v.findViewById(R.id.image);
-                check = (ImageView)v.findViewById(R.id.check);
+                check = v.findViewById(R.id.check);
             }
             public void setSelected(boolean selected){
                 check.setVisibility((selected) ? View.VISIBLE : View.GONE);
@@ -110,7 +110,6 @@ public class ImagePickActivity extends ActionBarActivity {
             View v = mInflater.inflate(R.layout.image_pick_item, parent, false);
             ViewHolder holder = new ViewHolder(v);
             v.setTag(holder);
-            holder.image.setOnTouchListener(new ColorOverlayOnTouch());
             bindExistView(holder, cursor);
             return v;
         }
@@ -122,13 +121,18 @@ public class ImagePickActivity extends ActionBarActivity {
 
         private void bindExistView(ViewHolder holder, Cursor cursor) {
             long id = cursor.getLong(0);
+            String imageFilePath = cursor.getString(1);
             holder.image.setTag(id);
             Log.d("ContentId", id + "");
-            new ThumbnailTask(mContentResolver, holder.image, id).executeParallel();
+            if(holder.task != null && holder.task.getStatus().equals(AsyncTask.Status.RUNNING)){
+                holder.task.cancel(true);
+            }
+            holder.task = new ThumbnailTask(mContentResolver, holder.image, imageFilePath, id);
+            holder.task.executeParallel();
             setSelectState(holder.check, id);
         }
 
-        public void setSelectState(ImageView check, long id){
+        public void setSelectState(View check, long id){
             if(mActivity.isSelected(id)){
                 check.setVisibility(View.VISIBLE);
             } else {

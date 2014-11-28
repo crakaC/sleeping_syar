@@ -6,6 +6,7 @@
     <color name="dark_gray_transparent">#D01A1A1A</color>
     <color name="tab_background">#181a1a</color>
     <color name="transparent_black">#20000000</color>
+    <color name="image_overlay">#40808080</color>
     <color name="sub_text">#707070</color>
     <color name="text">#D0D0D0</color>
     <color name="twitter_blue">#55acee</color>

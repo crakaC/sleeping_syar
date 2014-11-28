@@ -6,6 +6,8 @@ import android.view.View;
 import android.view.View.OnTouchListener;
 import android.widget.ImageView;
 
+import com.crakac.ofuton.R;
+
 public class ColorOverlayOnTouch implements OnTouchListener {
 
     Mode mMode;
@@ -21,7 +23,7 @@ public class ColorOverlayOnTouch implements OnTouchListener {
         ImageView iv = ((ImageView) v);
         switch (event.getAction()) {
         case MotionEvent.ACTION_DOWN:
-            iv.setColorFilter(0x40808080, mMode);
+            iv.setColorFilter(v.getResources().getColor(R.color.image_overlay), mMode);
             break;
         case MotionEvent.ACTION_UP:
         case MotionEvent.ACTION_CANCEL:

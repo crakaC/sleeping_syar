@@ -11,15 +11,19 @@ abstract public class ParallelTask<Params, Progress, Result> extends AsyncTask<P
 	@SuppressLint("NewApi")
     @SuppressWarnings("unchecked")
     public final void executeParallel(Params... params){
-        if(getStatus().equals(Status.RUNNING)) return;
-        try {
-            if (Build.VERSION.SDK_INT >= 11) {
-                super.executeOnExecutor(THREAD_POOL_EXECUTOR, params);
-            } else {
-                super.execute(params);
-            }
+        try{
+            executeParallelAnyVersion(params);
         } catch (RejectedExecutionException e){
-            executeParallel(params);
+            executeParallelAnyVersion(params);
         }
 	}
+
+    private void executeParallelAnyVersion(Params... params) {
+        if (getStatus().equals(Status.RUNNING)) return;
+        if (Build.VERSION.SDK_INT >= 11) {
+            super.executeOnExecutor(THREAD_POOL_EXECUTOR, params);
+        } else {
+            super.execute(params);
+        }
+    }
 }
