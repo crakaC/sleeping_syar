@@ -111,7 +111,7 @@
 
     <LinearLayout
         android:id="@+id/retweeterInfo"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/content"
         android:layout_below="@+id/inline_preview"
@@ -126,7 +126,7 @@
 
         <TextView
             android:id="@+id/retweeted_by"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="4dp"
             android:ellipsize="end"
