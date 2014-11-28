@@ -80,6 +80,7 @@
     <string name="goto_webpage">作者HP</string>
     <string name="homepage">http://crakac.com</string>
 
+    <string name="complete">完了</string>
     <string name="save_complete">画像を保存しました</string>
     <string name="cancel">キャンセル</string>
     <string name="canceled">キャンセルされました</string>
@@ -87,6 +88,8 @@
     <string name="delete">削除</string>
     <string name="license_info">オープンソースライセンス</string>
     <string name="choose_or_take_picture">画像を選択</string>
+    <string name="take_picture">写真を撮影</string>
+    <string name="insert_picture">画像を選択</string>
     <string name="show_source">ソースを表示する</string>
 
 </resources>

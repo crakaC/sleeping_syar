@@ -1,12 +1,9 @@
 package com.crakac.ofuton.util;
 
 import android.content.ContentResolver;
-import android.content.ContentUris;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
-import android.net.Uri;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.widget.ImageView;

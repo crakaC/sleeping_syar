@@ -183,6 +183,7 @@
 
         <activity android:name=".activity.ImagePickActivity"
                   android:launchMode="singleTask"
+                  android:uiOptions="splitActionBarWhenNarrow"
                   android:label="ImagePick">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
