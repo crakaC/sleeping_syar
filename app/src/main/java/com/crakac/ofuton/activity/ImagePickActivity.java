@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +32,7 @@ public class ImagePickActivity extends ActionBarActivity {
 
     public static final String EXTRA_PICK_LIMIT = "limit";
     private static final String[] IMAGE_COLUMNS = {MediaStore.Images.Media._ID, MediaStore.Images.Media.DATA};
+    private static final int SELECT_LIMIT_DEFAULT = 4;
 
     private GridView mGridView;
     private int mSelectLimits;
@@ -42,36 +44,37 @@ public class ImagePickActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_pick);
 
-        mSelectLimits = getIntent().getIntExtra(EXTRA_PICK_LIMIT, 4);
+        mSelectLimits = getIntent().getIntExtra(EXTRA_PICK_LIMIT, SELECT_LIMIT_DEFAULT);
 
         ActionBar actionbar = getSupportActionBar();
         actionbar.setDisplayHomeAsUpEnabled(true);
         actionbar.setHomeButtonEnabled(true);
 
         mGridView = (GridView) findViewById(R.id.gridView);
-        AsyncQueryHandler mQueryHandler = new AsyncQueryHandler(getContentResolver()) {
-            Cursor[] imageCursors = new Cursor[2];
-
-            @Override
-            protected void onQueryComplete(int token, Object cookie, Cursor cursor) {
-                imageCursors[token] = cursor;
-                if (imageCursors[0] == null || imageCursors[1] == null) return;
-                mGridView.setAdapter(new GridImageAdapter(getApplicationContext(), cursor, getContentResolver()));
-            }
-        };
         if(mAdapter == null) {
-            Cursor[] imageCursors = new Cursor[2];
-            imageCursors[0] = MediaStore.Images.Media.query(getContentResolver(), MediaStore.Images.Media.EXTERNAL_CONTENT_URI, IMAGE_COLUMNS, null, null, MediaStore.Images.Media._ID + " desc");
-            imageCursors[1] = MediaStore.Images.Media.query(getContentResolver(), MediaStore.Images.Media.INTERNAL_CONTENT_URI, IMAGE_COLUMNS, null, null, MediaStore.Images.Media._ID + " desc");
-            mAdapter = new GridImageAdapter(getApplicationContext(), new MergeCursor(imageCursors), getContentResolver());
+            //TODO CursorLoaderを使った実装に変更する
+            Cursor imageCursor = MediaStore.Images.Media.query(getContentResolver(), MediaStore.Images.Media.EXTERNAL_CONTENT_URI, IMAGE_COLUMNS, null, null, MediaStore.Images.Media._ID + " desc");
+            mAdapter = new GridImageAdapter(this, imageCursor, getContentResolver());
         }
         mGridView.setAdapter(mAdapter);
         mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+                Log.d("ItemId", id + "");
+                Log.d("ItemId by tag", parent.getAdapter().getItem(position).toString());
+                toggleItem(view, id);
             }
         });
+    }
+
+    private void toggleItem(View v, long itemId){
+        if(isSelected(itemId)){
+            mSelectedIds.remove(itemId);
+            ((GridImageAdapter.ViewHolder)v.getTag()).setSelected(false);
+        } else if (mSelectedIds.size() < mSelectLimits){
+            mSelectedIds.add(itemId);
+            ((GridImageAdapter.ViewHolder) v.getTag()).setSelected(true);
+        }
     }
 
     boolean isSelected(long id){
@@ -82,14 +85,16 @@ public class ImagePickActivity extends ActionBarActivity {
         private ImagePickActivity mActivity;
         private LayoutInflater mInflater;
         private ContentResolver mContentResolver;
-        private List<Long> mSelectedIds;
 
-        private static class ViewHolder {
+        static class ViewHolder {
             ImageView image;
             ImageView check;
             ViewHolder(View v){
                 image = (ImageView)v.findViewById(R.id.image);
                 check = (ImageView)v.findViewById(R.id.check);
+            }
+            public void setSelected(boolean selected){
+                check.setVisibility((selected) ? View.VISIBLE : View.GONE);
             }
         }
 
@@ -97,7 +102,7 @@ public class ImagePickActivity extends ActionBarActivity {
             super(context, c, true);
             mInflater = (LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE);
             mContentResolver = contentResolver;
-            mSelectedIds = new ArrayList<>();
+            mActivity = (ImagePickActivity)context;
         }
 
         @Override
@@ -118,11 +123,12 @@ public class ImagePickActivity extends ActionBarActivity {
         private void bindExistView(ViewHolder holder, Cursor cursor) {
             long id = cursor.getLong(0);
             holder.image.setTag(id);
+            Log.d("ContentId", id + "");
             new ThumbnailTask(mContentResolver, holder.image, id).executeParallel();
             setSelectState(holder.check, id);
         }
 
-        private void setSelectState(ImageView check, long id){
+        public void setSelectState(ImageView check, long id){
             if(mActivity.isSelected(id)){
                 check.setVisibility(View.VISIBLE);
             } else {

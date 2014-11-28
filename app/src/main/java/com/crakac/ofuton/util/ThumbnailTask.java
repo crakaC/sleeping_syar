@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.widget.ImageView;
 
 import com.crakac.ofuton.R;
@@ -62,9 +63,11 @@ public class ThumbnailTask extends ParallelTask<Void, Bitmap, Bitmap> {
 
     @Override
     protected void onPostExecute(Bitmap bitmap) {
-        if (mImageView.getTag() != null && mImageView.getTag().equals(mId)) {
+        if (bitmap != null && mImageView.getTag() != null && mImageView.getTag().equals(mId)) {
             mBitmapCache.put(String.valueOf(mId), bitmap);
             mImageView.setImageBitmap(bitmap);
+        } else {
+            Log.w("ThumbnailTask", "Bitmap is null");
         }
     }
 
@@ -73,6 +76,7 @@ public class ThumbnailTask extends ParallelTask<Void, Bitmap, Bitmap> {
         if (orientation == 0) {
             return bm;
         }
+        Log.d("ImageOrientation", orientation + "");
         Matrix m = new Matrix();
         m.setRotate(orientation);
         Bitmap rotated = Bitmap.createBitmap(bm, 0, 0, bm.getWidth(), bm.getHeight(), m, false);
