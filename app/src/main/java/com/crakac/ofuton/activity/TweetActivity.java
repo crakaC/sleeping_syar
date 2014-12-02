@@ -1,9 +1,7 @@
 package com.crakac.ofuton.activity;
 
-import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -117,55 +115,64 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
 
         setReplyData();
 
-        Intent i = getIntent();
-        if (Intent.ACTION_SEND.equals(i.getAction())) {
-            Bundle b = i.getExtras();
-            if (b != null) {
-                String text = b.getString(Intent.EXTRA_TEXT);
-                if (text != null) {
-                    mInputText.setText(text);
-                }
-                Uri imageUri = (Uri) b.get(Intent.EXTRA_STREAM);
-                if (imageUri != null) {
-                    appendPicture(imageUri);
-                }
-            }
-        } else if (Intent.ACTION_VIEW.equals(i.getAction())) {
-            Uri data = i.getData();
-            if (data == null) {
-                AppUtil.showToast(R.string.something_wrong);
-            } else {
-                StringBuilder sb = new StringBuilder();
-                boolean isFirstItem = true;
-                boolean setLink = false;
-                for (String q : new String[]{"text", "url", "original_referer", "via"}) {
-                    if (hasQuery(data, q)) {
-                        if (isFirstItem) {
-                            isFirstItem = false;
-                        } else {
-                            sb.append(' ');
-                        }
-
-                        if (q.equals("via")) {
-                            sb.append("via @");
-                        }
-
-                        if (q.equals("url")) {
-                            setLink = true;
-                        }
-
-                        if (q.equals("original_referer") && setLink) {
-                            continue;
-                        }
-                        sb.append(data.getQueryParameter(q));
-                    }
-                }
-                mInputText.setText(sb.toString());
-                mInputText.setSelection(sb.length());
-            }
+        Intent intent = getIntent();
+        if (Intent.ACTION_SEND.equals(intent.getAction())) {
+            handleSendIntent(intent);
+        } else if (Intent.ACTION_VIEW.equals(intent.getAction())) {
+            handleViewIntent(intent);
         }
+
         // アクティビティ開始時の残り文字数をセットする．リプライ時やハッシュタグ時のときも140字にならないために．
         setRemainLength();
+    }
+
+    private void handleSendIntent(Intent intent) {
+        Bundle b = intent.getExtras();
+        if (b != null) {
+            String text = b.getString(Intent.EXTRA_TEXT);
+            if (text != null) {
+                mInputText.setText(text);
+            }
+            Uri imageUri = (Uri) b.get(Intent.EXTRA_STREAM);
+            if (imageUri != null) {
+                appendPicture(imageUri);
+            }
+        }
+    }
+
+    private void handleViewIntent(Intent intent) {
+        Uri data = intent.getData();
+        if (data == null) {
+            AppUtil.showToast(R.string.something_wrong);
+        } else {
+            StringBuilder sb = new StringBuilder();
+            boolean isFirstItem = true;
+            boolean setLink = false;
+            for (String q : new String[]{"text", "url", "original_referer", "via"}) {
+                if (hasQuery(data, q)) {
+                    if (isFirstItem) {
+                        isFirstItem = false;
+                    } else {
+                        sb.append(' ');
+                    }
+
+                    if (q.equals("via")) {
+                        sb.append("via @");
+                    }
+
+                    if (q.equals("url")) {
+                        setLink = true;
+                    }
+
+                    if (q.equals("original_referer") && setLink) {
+                        continue;
+                    }
+                    sb.append(data.getQueryParameter(q));
+                }
+            }
+            mInputText.setText(sb.toString());
+            mInputText.setSelection(sb.length());
+        }
     }
 
     private boolean hasQuery(Uri data, String query) {
@@ -327,11 +334,7 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
 
     private void appendPicture(Uri uri) {
         clearTemporaryImageFile();
-        ContentResolver cr = getContentResolver();
-        String[] columns = {MediaStore.Images.Media.DATA};
-        Cursor c = cr.query(uri, columns, null, null, null);
-        c.moveToFirst();
-        File imageFile = new File(c.getString(0));
+        File imageFile = AppUtil.convertUriToFile(this, uri);
         try {
             mAppendingFile = BitmapUtil.createTemporaryResizedImage(imageFile, MAX_APPEND_PICTURE_EDGE_LENGTH);
         } catch (IOException e) {

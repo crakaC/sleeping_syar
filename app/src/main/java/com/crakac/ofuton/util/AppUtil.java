@@ -1,12 +1,16 @@
 package com.crakac.ofuton.util;
 
 import android.annotation.SuppressLint;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
+import android.provider.MediaStore;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.SearchView;
 import android.text.Html;
@@ -24,6 +28,9 @@ import android.widget.Toast;
 import com.crakac.ofuton.R;
 import com.crakac.ofuton.adapter.TweetStatusAdapter;
 
+import java.io.File;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -322,6 +329,23 @@ public final class AppUtil {
     public static void closeSearchView(SearchView searchView) {
         searchView.setQuery(null, false);
         searchView.setIconified(true);
+    }
+
+    public static File convertUriToFile(Context context, Uri uri){
+        File imageFile = null;
+        if (uri.getScheme().equals("file")) {
+            try {
+                imageFile = new File(new URI(uri.toString()));
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
+            }
+        } else {
+            ContentResolver cr = context.getContentResolver();
+            Cursor c = cr.query(uri, new String[]{MediaStore.Images.ImageColumns.DATA}, null, null, null);
+            c.moveToFirst();
+            imageFile = new File(c.getString(0));
+        }
+        return imageFile;
     }
 
     public static interface SyarListener {
