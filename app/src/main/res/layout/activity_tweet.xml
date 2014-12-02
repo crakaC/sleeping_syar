@@ -17,13 +17,6 @@
         <requestFocus />
     </EditText>
 
-    <TextView
-        android:id="@+id/remainingText"
-        style="@style/remainingText"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/input_text"
-        android:text="@string/dummy" />
-
     <LinearLayout
         android:id="@+id/navs"
         android:layout_width="wrap_content"
@@ -58,7 +51,7 @@
             style="@style/imageButton"
             android:src="@drawable/ic_camera_alt_white_36dp" />
 
-        <ImageButton
+        <ImageView
             android:id="@+id/action_tweet"
             style="@style/imageButton"
             android:src="@drawable/ic_send_white_36dp" />

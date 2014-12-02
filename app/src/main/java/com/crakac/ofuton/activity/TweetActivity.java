@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBar;
 import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -16,16 +15,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.crakac.ofuton.C;
 import com.crakac.ofuton.R;
 import com.crakac.ofuton.fragment.dialog.TweetInfoDialogFragment;
 import com.crakac.ofuton.util.AppUtil;
 import com.crakac.ofuton.util.BitmapUtil;
-import com.crakac.ofuton.util.NetUtil;
-import com.crakac.ofuton.util.NetworkImageListener;
 import com.crakac.ofuton.util.ParallelTask;
+import com.crakac.ofuton.util.SimpleTextChangeListener;
 import com.crakac.ofuton.util.TwitterUtils;
 import com.crakac.ofuton.util.Util;
 import com.crakac.ofuton.widget.ColorOverlayOnTouch;
@@ -58,7 +55,6 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
 
     private EditText mInputText;
     private File mAppendingFile; // 画像のアップロードに使用
-    private TextView mRemainingText;// 残り文字数を表示
     private View mTweetBtn, mAppendPicBtn, mCameraBtn, mInfoBtn;// つぶやくボタン，画像追加ボタン，リプライ元情報ボタン
     private ImageView mAppendedImageView;
     private Uri mImageUri;// カメラ画像添付用
@@ -79,34 +75,20 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
         setContentView(R.layout.activity_tweet);
 
         mInputText = (EditText) findViewById(R.id.input_text);// 入力欄
-        mTweetBtn = (View) findViewById(R.id.action_tweet);// ツイートボタン
-        mAppendPicBtn = (View) findViewById(R.id.appendPic);// 画像添付ボダン
-        mCameraBtn = (View) findViewById(R.id.picFromCamera);// 撮影して添付するボタン
-        mInfoBtn = (View) findViewById(R.id.tweetInfoBtn);// リプライ先表示ボタン
-        mRemainingText = (TextView) findViewById(R.id.remainingText);// 残り文字数
+        mTweetBtn = findViewById(R.id.action_tweet);// ツイートボタン
+        mAppendPicBtn = findViewById(R.id.appendPic);// 画像添付ボダン
+        mCameraBtn = findViewById(R.id.picFromCamera);// 撮影して添付するボタン
+        mInfoBtn = findViewById(R.id.tweetInfoBtn);// リプライ先表示ボタン
         mAppendedImageView = (ImageView) findViewById(R.id.appendedImage);
 
-        // 画像添付ボタンタップの動作
-        mAppendPicBtn.setOnClickListener(this);
-        // カメラボタンタップの動作
-        mCameraBtn.setOnClickListener(this);
-        // 添付画像ミニプレビュータップの動作
-        mAppendedImageView.setOnClickListener(this);
+        for (View clickable : new View[]{mTweetBtn, mAppendPicBtn, mCameraBtn, mInfoBtn, mAppendedImageView}) {
+            clickable.setOnClickListener(this);
+        }
+
         mAppendedImageView.setOnTouchListener(new ColorOverlayOnTouch());
 
-        // tweetボタンの動作
-        mTweetBtn.setOnClickListener(this);
-
         // 文章に変更があったら残り文字数を変化させる
-        mInputText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
+        mInputText.addTextChangedListener(new SimpleTextChangeListener() {
             @Override
             public void afterTextChanged(Editable s) {
                 setRemainLength();
@@ -197,7 +179,6 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
             Status targetStatus = getTargetStatus();
             if (targetStatus != null) {
                 User user = targetStatus.getUser();
-                setActionbarIcon(user);
                 actionbar.setSubtitle("Reply to " + user.getName());
                 // マルチリプライ
                 if (intent.getBooleanExtra(C.REPLY_ALL, false)) {
@@ -210,10 +191,6 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
                 }
                 // リプライ先のツイートを見れるように
                 mInfoBtn.setVisibility(View.VISIBLE);
-                mInfoBtn.setOnClickListener(this);
-            } else if (mMentionUser != null) {
-                setActionbarIcon(mMentionUser);
-                actionbar.setSubtitle("Mention to " + mMentionUser.getName());
             }
         }
 
@@ -306,7 +283,7 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
         } else {
             enableTweetButton(true);
         }
-        mRemainingText.setText(String.valueOf(remainLength));
+        getSupportActionBar().setSubtitle(String.valueOf(remainLength));
     }
 
     @Override
@@ -354,16 +331,6 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
         Bitmap bm = BitmapUtil.getResizedBitmap(appendingFile, BITMAP_EDGE_LENGTH);
         mAppendedImageView.setImageBitmap(BitmapUtil.rotateImage(bm, appendingFile.toString()));
         mAppendedImageView.setVisibility(View.VISIBLE);
-    }
-
-    private void setActionbarIcon(User user) {
-        final ImageView icon = new ImageView(this);
-        NetUtil.fetchIconAsync(AppUtil.getIconURL(user), new NetworkImageListener(icon) {
-            @Override
-            public void onBitmap(Bitmap bm) {
-                AppUtil.setActionBarIcon(getSupportActionBar(), icon);
-            }
-        });
     }
 
     private void updateStatus() {
