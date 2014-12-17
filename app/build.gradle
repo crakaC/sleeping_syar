@@ -6,17 +6,16 @@ android {
         targetCompatibility JavaVersion.VERSION_1_7
     }
     compileSdkVersion 21
-    buildToolsVersion '21.1.1'
+    buildToolsVersion '21.1.2'
     defaultConfig {
         applicationId 'com.crakac.ofuton'
         minSdkVersion 14
         targetSdkVersion 21
-        versionCode 26
+        versionCode 27
         versionName '2.0.0a'
     }
     buildTypes {
         release {
-            runProguard true
             debuggable false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
