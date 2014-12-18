@@ -114,6 +114,7 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
             String text = b.getString(Intent.EXTRA_TEXT);
             if (text != null) {
                 mInputText.setText(text);
+                mInputText.setSelection(text.length());
             }
             Uri imageUri = (Uri) b.get(Intent.EXTRA_STREAM);
             if (imageUri != null) {
@@ -127,39 +128,10 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
         if (data == null) {
             AppUtil.showToast(R.string.something_wrong);
         } else {
-            StringBuilder sb = new StringBuilder();
-            boolean isFirstItem = true;
-            boolean setLink = false;
-            for (String q : new String[]{"text", "url", "original_referer", "via"}) {
-                if (hasQuery(data, q)) {
-                    if (isFirstItem) {
-                        isFirstItem = false;
-                    } else {
-                        sb.append(' ');
-                    }
-
-                    if (q.equals("via")) {
-                        sb.append("via @");
-                    }
-
-                    if (q.equals("url")) {
-                        setLink = true;
-                    }
-
-                    if (q.equals("original_referer") && setLink) {
-                        continue;
-                    }
-                    sb.append(data.getQueryParameter(q));
-                }
-            }
-            mInputText.setText(sb.toString());
-            mInputText.setSelection(sb.length());
+            String sharedText = Util.parseSharedText(data);
+            mInputText.setText(sharedText);
+            mInputText.setSelection(sharedText.length());
         }
-    }
-
-    private boolean hasQuery(Uri data, String query) {
-        String text = data.getQueryParameter(query);
-        return text != null;
     }
 
     private void setReplyData() {
@@ -262,8 +234,7 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
         super.onDestroy();
     }
 
-    public static final String MATCH_URL_HTTPS = "(https)(:\\/\\/[-_.!~*\\'()a-zA-Z0-9;\\/?:\\@&=+\\$,%#]+)";
-    public static final String MATCH_URL_HTTP = "(http)(:\\/\\/[-_.!~*\\'()a-zA-Z0-9;\\/?:\\@&=+\\$,%#]+)";
+    public static final String URL_PATTERN = "(https?)(:\\/\\/[-_.!~*\\'()a-zA-Z0-9;\\/?:\\@&=+\\$,%#]+)";
 
     /**
      * ツイートの残り文字数を求め，テキストビューに反映する
@@ -272,8 +243,7 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
      */
     private void setRemainLength() {
         String text = mInputText.getEditableText().toString();
-        text = text.replaceAll(MATCH_URL_HTTPS, Util.blanks(mApiConfiguration.getShortURLLengthHttps()));
-        text = text.replaceAll(MATCH_URL_HTTP, Util.blanks(mApiConfiguration.getShortURLLength()));
+        text = text.replaceAll(URL_PATTERN, Util.blanks(mApiConfiguration.getShortURLLength()));
         int remainLength = MAX_TWEET_LENGTH - text.length();
         if (mAppendingFile != null) {
             remainLength -= mApiConfiguration.getCharactersReservedPerMedia();
@@ -392,12 +362,10 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
                 break;
 
             case R.id.tweetInfoBtn:
-                TweetInfoDialogFragment dialog = new TweetInfoDialogFragment();
-                Bundle b = new Bundle();
-                Status targetStatus = (Status) getIntent().getSerializableExtra(C.STATUS);
-                b.putSerializable(C.STATUS, targetStatus);
-                dialog.setArguments(b);
-                dialog.show(getSupportFragmentManager(), "StatusInfo");
+                Status targetStatus = getTargetStatus();
+                intent = new Intent(this, ConversationActivity.class);
+                intent.putExtra(C.STATUS, targetStatus);
+                startActivity(intent);
                 break;
 
             case R.id.action_tweet:

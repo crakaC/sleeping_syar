@@ -20,8 +20,7 @@ public class ConversationActivity extends FinishableActionbarActivity {
             cf.setArguments(b);
             //レイアウト内にフラグメントを突っ込む
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.fragment, cf);
-            ft.commit();
+            ft.replace(R.id.fragment, cf).commit();
         }
 	}
 }

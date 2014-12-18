@@ -1,9 +1,11 @@
 package com.crakac.ofuton.util;
 
 import android.content.Context;
+import android.net.Uri;
 import android.util.Log;
 
 import java.io.Closeable;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -64,5 +66,46 @@ public class Util {
             sb.append(' ');
         }
         return sb.toString();
+    }
+
+    public static String parseSharedText(Uri data){
+        StringBuilder sb = new StringBuilder();
+        boolean isFirstItem = true;
+        boolean setLink = false;
+        for (String q : new String[]{"text", "url", "original_referer", "via"}) {
+            if (hasQuery(data, q)) {
+                if (isFirstItem) {
+                    isFirstItem = false;
+                } else {
+                    sb.append(' ');
+                }
+
+                if (q.equals("via")) {
+                    sb.append("via @");
+                }
+
+                if (q.equals("url")) {
+                    setLink = true;
+                }
+
+                if (q.equals("original_referer") && setLink) {
+                    continue;
+                }
+                sb.append(data.getQueryParameter(q));
+            }
+        }
+        return sb.toString();
+    }
+
+    private static boolean hasQuery(Uri data, String query) {
+        String text = data.getQueryParameter(query);
+        return text != null;
+    }
+
+    public static boolean clearFile(File file){
+        if(file != null && file.exists()){
+            return file.delete();
+        }
+        return false;
     }
 }
