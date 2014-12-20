@@ -58,6 +58,10 @@
     <string name="impossible">無理でした</string>
     <string name="syar">( ˘ω˘)ｽﾔｧ</string>
 
+    <string name="streaming_and_notification">ストリーミング/通知</string>
+    <string name="appearance">見た目</string>
+    <string name="others">その他</string>
+
     <string name="notification">通知</string>
     <string name="reply_notification">リプライ</string>
     <string name="fav_notification">お気に入り</string>
