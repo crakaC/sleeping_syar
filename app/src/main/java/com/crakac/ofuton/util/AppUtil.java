@@ -25,6 +25,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.crakac.ofuton.C;
 import com.crakac.ofuton.R;
 import com.crakac.ofuton.adapter.TweetStatusAdapter;
 
@@ -51,17 +52,17 @@ public final class AppUtil {
         sContext = context.getApplicationContext();
     }
 
-    public static void showToast(String msg) {
-        Toast.makeText(sContext, msg, Toast.LENGTH_SHORT).show();
-    }
-
-    public static void showToast(final int resId) {
+    public static void showToast(final String msg) {
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override
             public void run() {
-                Toast.makeText(sContext, getString(resId), Toast.LENGTH_SHORT).show();
+                Toast.makeText(sContext, msg, Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    public static void showToast(final int resId) {
+        showToast(getString(resId));
     }
 
     public static boolean existsPackage(String packageName) {
@@ -346,6 +347,18 @@ public final class AppUtil {
             imageFile = new File(c.getString(0));
         }
         return imageFile;
+    }
+
+    public static void checkTofuBuster() {
+        if(existsPackage(getString(R.string.tofubuster_package))){
+            PrefUtil.put(R.string.pref_tofu, true);
+        } else {
+            PrefUtil.put(R.string.pref_tofu, false);
+        }
+    }
+
+    public static boolean existsTofuBuster(){
+        return PrefUtil.getBoolean(R.string.pref_tofu);
     }
 
     public static interface SyarListener {

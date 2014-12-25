@@ -215,7 +215,7 @@ public class StatusDialogFragment extends DialogFragment {
 		}
 
 		//TofuBuster
-        if(AppUtil.existsPackage("com.product.kanzmrsw.tofubuster")){
+        if(AppUtil.existsTofuBuster()){
             mActionAdapter.add(new TofuBusterAction(getActivity(), mSelectedStatus));
         }
 

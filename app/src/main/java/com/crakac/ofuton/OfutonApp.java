@@ -19,5 +19,6 @@ public class OfutonApp extends Application {
         AppUtil.init(this);
         NetUtil.init(this);
         PrefUtil.init(this);
+        AppUtil.checkTofuBuster();
     }
 }

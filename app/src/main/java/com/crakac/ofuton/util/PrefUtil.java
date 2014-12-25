@@ -43,6 +43,10 @@ public class PrefUtil {
         return getSharedPreference().getString(key, defValue);
     }
 
+    public static void put(int prefKeyResid, boolean value){
+        getSharedPreference().edit().putBoolean(sContext.getString(prefKeyResid), value).commit();
+    }
+
     /**
      * SharedPreferenceからフォントサイズを読み込む
      *
