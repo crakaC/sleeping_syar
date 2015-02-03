@@ -14,11 +14,20 @@ android {
         versionCode 27
         versionName '2.0.0a'
     }
+    signingConfigs {
+        release{
+            storeFile file(productKeyStore)
+            storePassword productKeyStorePassword
+            keyAlias productKeyAlias
+            keyPassword productKeyPassword
+        }
+    }
     buildTypes {
         release {
             debuggable false
             minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
         debug {
             applicationIdSuffix '.debug'
