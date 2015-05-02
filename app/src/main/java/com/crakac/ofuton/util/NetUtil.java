@@ -51,6 +51,9 @@ public class NetUtil {
     public static ImageLoader PREVIEW_LOADER, ICON_LOADER;
     private static Cache sImageDiskCache;
 
+
+    private NetUtil(){}
+
     private static Cache createDiskCache(Context context, String cacheRoot, int cacheSize) {
         File cacheDir = new File(context.getCacheDir(), cacheRoot);
         return new DiskBasedCache(cacheDir, cacheSize);

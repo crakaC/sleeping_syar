@@ -43,6 +43,8 @@ public class TwitterUtils {
 	private static String mConsumerKey;
 	private static String mConsumerSecret;
 
+	private TwitterUtils(){}
+
 	public static void init(Context context) {
 		sContext = context;
 		AuthKey authKey = new AuthKey(context);

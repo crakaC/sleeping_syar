@@ -48,6 +48,7 @@ import twitter4j.URLEntity;
 public final class AppUtil {
     private static Context sContext;
 
+    private AppUtil(){}
     public static void init(Context context) {
         sContext = context.getApplicationContext();
     }

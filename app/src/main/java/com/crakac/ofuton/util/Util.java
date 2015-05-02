@@ -14,6 +14,9 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 public class Util {
+
+    private Util(){}
+
     public static void closeQuietly(Closeable c) {
         if(c == null) return;
         try {
