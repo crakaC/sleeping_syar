@@ -14,7 +14,6 @@ public class OfutonApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        // The following line triggers the initialization of ACRA
         TwitterUtils.init(this);
         AppUtil.init(this);
         NetUtil.init(this);
