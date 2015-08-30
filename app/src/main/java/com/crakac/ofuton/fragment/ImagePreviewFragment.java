@@ -15,7 +15,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader.ImageContainer;
 import com.crakac.ofuton.C;
 import com.crakac.ofuton.R;
-import com.crakac.ofuton.activity.WebImagePreviewActivity;
 import com.crakac.ofuton.util.AppUtil;
 import com.crakac.ofuton.util.NetUtil;
 import com.crakac.ofuton.util.NetworkImageListener;

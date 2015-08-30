@@ -5,16 +5,14 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_7
         targetCompatibility JavaVersion.VERSION_1_7
     }
-    compileSdkVersion 22
+    compileSdkVersion 23
     buildToolsVersion '22.0.1'
     defaultConfig {
         applicationId 'com.crakac.ofuton'
         minSdkVersion 14
-        targetSdkVersion 22
+        targetSdkVersion 23
         versionCode 27
         versionName '2.0.0a'
-
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     signingConfigs {
         release{
@@ -44,54 +42,18 @@ android {
     }
 }
 
-repositories{
-    maven {
-        url 'https://raw.github.com/chrisbanes/PhotoView/maven/'
-    }
+repositories {
+    mavenCentral()
 }
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:support-annotations:21.0.3'
-    compile 'com.android.support:appcompat-v7:22.+'
+    compile 'com.android.support:appcompat-v7:23.0.0'
     compile 'com.melnykov:floatingactionbutton:1.0.4'
     compile 'com.astuetz:pagerslidingtabstrip:1.0.1'
     compile 'com.github.chrisbanes.photoview:library:1.2.3'
-    compile 'org.twitter4j:twitter4j-core:4.0.2'
-    compile 'org.twitter4j:twitter4j-stream:4.0.2'
+    compile 'org.twitter4j:twitter4j-core:4.0.4'
+    compile 'org.twitter4j:twitter4j-stream:4.0.4'
     compile project(':volley')
-}
-
-apply plugin: 'android-unit-test'
-
-dependencies {
-    repositories {
-        mavenCentral()
-    }
-
-    // Espresso
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.0')
-    androidTestCompile('com.android.support.test:testing-support-lib:0.1')
-
-    // Robolectric
-    testCompile 'junit:junit:4.12'
-    testCompile 'com.squareup:fest-android:1.0.8'
-
-    testCompile('org.robolectric:robolectric:2.4') {
-        exclude module: 'classworlds'
-        exclude module: 'commons-logging'
-        exclude module: 'httpclient'
-        exclude module: 'maven-artifact'
-        exclude module: 'maven-artifact-manager'
-        exclude module: 'maven-error-diagnostics'
-        exclude module: 'maven-model'
-        exclude module: 'maven-project'
-        exclude module: 'maven-settings'
-        exclude module: 'plexus-container-default'
-        exclude module: 'plexus-interpolation'
-        exclude module: 'plexus-utils'
-        exclude module: 'wagon-file'
-        exclude module: 'wagon-http-lightweight'
-        exclude module: 'wagon-provider-api'
-    }
 }

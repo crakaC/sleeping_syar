@@ -5,7 +5,6 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
-import android.net.http.AndroidHttpClient;
 import android.os.Build;
 import android.os.Environment;
 import android.text.TextUtils;
@@ -59,35 +58,13 @@ public class NetUtil {
         return new DiskBasedCache(cacheDir, cacheSize);
     }
 
-    /**
-     * @param context
-     * @param cacheRoot
-     * @param cacheSize
-     * @param threadPoolSize
-     * @return
-     */
     private static RequestQueue newRequestQueue(Context context, String cacheRoot, int cacheSize, int threadPoolSize) {
         File cacheDir = new File(context.getCacheDir(), cacheRoot);
         return newRequestQueue(context, new DiskBasedCache(cacheDir, cacheSize), threadPoolSize);
     }
 
     private static RequestQueue newRequestQueue(Context context, Cache cache, int threadPoolSize) {
-        HttpStack stack;
-        String userAgent = "volley/0";
-        try {
-            String packageName = context.getPackageName();
-            PackageInfo info = context.getPackageManager().getPackageInfo(packageName, 0);
-            userAgent = packageName + "/" + info.versionCode;
-        } catch (NameNotFoundException e) {
-        }
-
-        if (Build.VERSION.SDK_INT >= 9) {
-            stack = new HurlStack();
-        } else {
-            // Prior to Gingerbread, HttpUrlConnection was unreliable.
-            // See: http://android-developers.blogspot.com/2011/09/androids-http-clients.html
-            stack = new HttpClientStack(AndroidHttpClient.newInstance(userAgent));
-        }
+        HttpStack stack = new HurlStack();
 
         Network network = new BasicNetwork(stack);
 
@@ -151,7 +128,7 @@ public class NetUtil {
         StringBuilder sb = new StringBuilder();
         while(it.hasNext()){
             String key = it.next();
-            sb.append(key + ":" + headers.get(key).toString() + "\n");
+            sb.append(key).append(":").append(headers.get(key).toString()).append("\n");
         }
         Log.d("ExpandUrl Header", sb.toString());
         if (location != null && location.startsWith("http")) {
@@ -221,14 +198,11 @@ public class NetUtil {
             case "instagr.am":
                 List<String> segments = uri.getPathSegments();
                 StringBuilder sb = new StringBuilder();
-                if (BuildConfig.DEBUG) {
-                    for (int i = 0; i < segments.size(); i++) {
-                        sb.append(i);
-                        sb.append(':');
-                        sb.append(segments.get(i));
-                        sb.append(", ");
-                    }
-                    Log.d("isMediaUrl:instagram", sb.toString());
+                for (int i = 0; i < segments.size(); i++) {
+                    sb.append(i);
+                    sb.append(':');
+                    sb.append(segments.get(i));
+                    sb.append(", ");
                 }
                 return segments.get(0).equals("p");
             default:
