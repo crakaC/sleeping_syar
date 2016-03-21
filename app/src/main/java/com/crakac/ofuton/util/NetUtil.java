@@ -224,7 +224,7 @@ public class NetUtil {
     public static File download(Context context, String url, int notificationId) {
         NotificationManager manager = (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context);
-        mBuilder.setContentTitle("ダウンロード中").setContentText("ダウンロード中").setSmallIcon(R.drawable.ic_syar);
+        mBuilder.setContentTitle("ダウンロード中").setContentText("ダウンロード中").setSmallIcon(R.drawable.ic_file_download_white_18dp);
         mBuilder.setProgress(0, 0, true);
         manager.notify(notificationId, mBuilder.build());
         byte[] buf = new byte[4096];

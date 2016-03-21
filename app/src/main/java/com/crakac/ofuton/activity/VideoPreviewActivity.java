@@ -14,6 +14,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -75,24 +76,28 @@ public class VideoPreviewActivity extends Activity {
 
     private boolean viewTouched = false;
     private float touchStartTime = 0f;
-    private final float LONG_TOUCH_TIME_MS = 1000f;
+    private final long LONG_TOUCH_TIME_MS = 1000;
+    private final Handler mHandler = new Handler();
     @OnTouch(R.id.videoView)
-    public boolean onTouch(View v, MotionEvent ev){
+    public boolean onTouch(final View v, MotionEvent ev){
         if(ev.getAction() == MotionEvent.ACTION_DOWN) {
             viewTouched = true;
-            touchStartTime = System.currentTimeMillis();
         } else if (ev.getAction() == MotionEvent.ACTION_UP){
             viewTouched = false;
         }
 
-        float passedTime = System.currentTimeMillis() - touchStartTime;
-        if(viewTouched == true/* && passedTime > LONG_TOUCH_TIME_MS*/){
-            registerForContextMenu(v);
-            openContextMenu(v);
-            unregisterForContextMenu(v);
-            viewTouched = false;
-        }
-        return true;
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if(viewTouched) {
+                    registerForContextMenu(v);
+                    openContextMenu(v);
+                    unregisterForContextMenu(v);
+                    viewTouched = false;
+                }
+            }
+        }, LONG_TOUCH_TIME_MS);
+        return false;
     }
 
     @Override
@@ -145,7 +150,7 @@ public class VideoPreviewActivity extends Activity {
                     Bitmap icon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher);
                     icon.setHasMipMap(true);
                     builder.setLargeIcon(icon)
-                            .setSmallIcon(R.drawable.ic_insert_photo_white_18dp)
+                            .setSmallIcon(R.drawable.ic_file_download_white_18dp)
                             .setTicker(getString(R.string.complete_download))
                             .setAutoCancel(true).setContentTitle(getString(R.string.complete_download))
                             .setContentText(getString(R.string.app_name)).setContentIntent(pi);

@@ -246,7 +246,7 @@ public class WebImagePreviewActivity extends FragmentActivity implements Preview
                     Bitmap icon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher);
                     icon.setHasMipMap(true);
                     builder.setLargeIcon(icon)
-                            .setSmallIcon(R.drawable.ic_insert_photo_white_18dp)
+                            .setSmallIcon(R.drawable.ic_file_download_white_18dp)
                             .setTicker(getString(R.string.complete_download))
                             .setAutoCancel(true).setContentTitle(getString(R.string.save_complete))
                             .setContentText(getString(R.string.app_name)).setContentIntent(pi);

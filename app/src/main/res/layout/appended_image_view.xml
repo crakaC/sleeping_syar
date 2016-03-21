@@ -24,10 +24,10 @@
 
             <ImageView
                 android:id="@+id/videoIcon"
-                android:layout_width="64dp"
-                android:layout_height="64dp"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:layout_gravity="center"
-                android:src="@drawable/ic_play_circle_filled_white_24dp" />
+                android:src="@drawable/ic_play_circle_filled_white_48dp" />
         </FrameLayout>
 
         <View
