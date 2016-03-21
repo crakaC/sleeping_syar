@@ -33,6 +33,7 @@ public class TimelineFragmentPagerAdapter extends SimpleFragmentPagerAdapter<Abs
         ListTimelineFragment lf = new ListTimelineFragment();
         Bundle bundle = new Bundle();
         bundle.putLong(C.LIST_ID, listId);
+        bundle.putString(C.LIST_TITLE, title);
         lf.setArguments(bundle);
         add(ListTimelineFragment.class, bundle, title, listId);
     }

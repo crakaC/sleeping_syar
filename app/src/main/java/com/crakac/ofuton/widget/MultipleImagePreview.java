@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.util.AttributeSet;
 import android.util.Pair;
@@ -195,27 +196,31 @@ public class MultipleImagePreview extends FrameLayout {
             final BitmapImageView imageView = imageViews.get(i);
             final int position = i;
             imageView.setVisibility(View.VISIBLE);
-            final ExtendedMediaEntity e = (ExtendedMediaEntity)mediaEntities.get(position);
-            if(position == 0 && e.getVideoDurationMillis() > 0){
+            MediaEntity me = mediaEntities.get(position);
+            if(hasVideoEntity(me)) {
                 videoIcon.setVisibility(View.VISIBLE);
-            }
-            imageView.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if(e.getVideoDurationMillis() > 0){
-                        Context context = getContext();
-                        Intent intent = new Intent(context, VideoPreviewActivity.class);
-                        intent.putExtra(C.MEDIA_ENTITY, e);
-                        context.startActivity(intent, ActivityOptions.makeSceneTransitionAnimation((Activity) context, (Pair<View, String>[])null).toBundle());
-                    } else {
+                final ExtendedMediaEntity e = (ExtendedMediaEntity)me;
+                imageView.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                    Context context = getContext();
+                    Intent intent = new Intent(context, VideoPreviewActivity.class);;
+                    intent.putExtra(C.MEDIA_ENTITY, e);
+                    context.startActivity(intent);
+                    }
+                });
+            } else {
+                imageView.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
                         Context context = getContext();
                         Intent intent = new Intent(context, WebImagePreviewActivity.class);
                         intent.putExtra(C.MEDIA_ENTITY, (Serializable) mediaEntities);
                         intent.putExtra(C.POSITION, position);
-                        context.startActivity(intent, ActivityOptions.makeSceneTransitionAnimation((Activity) context, (Pair<View, String>[])null).toBundle());
+                        context.startActivity(intent);
                     }
-                }
-            });
+                });
+            }
             imageView.setDefaultImageResId(R.color.transparent_black);
             imageView.setErrorImageResId(R.color.transparent_black);
             String mediaUrl = mediaUrls.get(i);
@@ -227,5 +232,9 @@ public class MultipleImagePreview extends FrameLayout {
         for (BitmapImageView view : mImageViews) {
             view.cleanUp();
         }
+    }
+
+    private boolean hasVideoEntity(MediaEntity e){
+        return (e.getType().contains("gif") || e.getType().contains("video"));
     }
 }

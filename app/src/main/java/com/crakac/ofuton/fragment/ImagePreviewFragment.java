@@ -71,8 +71,8 @@ public class ImagePreviewFragment extends Fragment implements Rotatable {
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
+    public void onDestroyView() {
+        super.onDetach();
         if (mImageView != null) {
             mImageView.setImageBitmap(null);
         }

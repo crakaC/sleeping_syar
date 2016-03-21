@@ -21,8 +21,10 @@ import android.view.ContextMenu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.MediaController;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.VideoView;
 
 import com.crakac.ofuton.C;
@@ -45,11 +47,13 @@ public class VideoPreviewActivity extends Activity {
     private ExtendedMediaEntity mEntity;
     @Bind(R.id.videoView) VideoView mVideoView;
     @Bind(R.id.progress) ProgressBar mProgressBar;
+    @Bind(R.id.videoFrame) ImageView mFrame;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video_preview);
         ButterKnife.bind(this);
+        registerForContextMenu(mFrame);
         showProgress(true);
         mEntity = (ExtendedMediaEntity) getIntent().getSerializableExtra(C.MEDIA_ENTITY);
         for(ExtendedMediaEntity.Variant v : mEntity.getVideoVariants()){
@@ -74,35 +78,14 @@ public class VideoPreviewActivity extends Activity {
         mVideoView.setVisibility(View.GONE);
     }
 
-    private boolean viewTouched = false;
-    private float touchStartTime = 0f;
-    private final long LONG_TOUCH_TIME_MS = 1000;
-    private final Handler mHandler = new Handler();
-    @OnTouch(R.id.videoView)
-    public boolean onTouch(final View v, MotionEvent ev){
-        if(ev.getAction() == MotionEvent.ACTION_DOWN) {
-            viewTouched = true;
-        } else if (ev.getAction() == MotionEvent.ACTION_UP){
-            viewTouched = false;
-        }
-
-        mHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if(viewTouched) {
-                    registerForContextMenu(v);
-                    openContextMenu(v);
-                    unregisterForContextMenu(v);
-                    viewTouched = false;
-                }
-            }
-        }, LONG_TOUCH_TIME_MS);
-        return false;
-    }
-
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         menu.add(R.string.download);
+    }
+
+    @OnTouch(R.id.videoFrame)
+    boolean onTouch(View v, MotionEvent me){
+        return false;
     }
 
     @Override
