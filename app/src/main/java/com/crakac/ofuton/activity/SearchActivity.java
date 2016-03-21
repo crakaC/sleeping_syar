@@ -66,7 +66,8 @@ public class SearchActivity extends FinishableActionbarActivity {
         mAdapter.add(LocalSearchFragment.class, createArgs(mQuery), 0);
         mAdapter.add(TweetSearchFragment.class, createArgs(buildQuery(mQuery)), 1);
         mAdapter.add(UserSearchFragment.class, createArgs(buildQuery(mQuery)), 2);
-        mAdapter.add(TweetSearchFragment.class, createArgs(buildQuery(mQuery), "pic.twitter.com"), 3);
+        mAdapter.add(TweetSearchFragment.class, createArgs(buildQuery(mQuery), "f=images"), 3);
+        mAdapter.add(TweetSearchFragment.class, createArgs(buildQuery(mQuery), "f=videos"), 4);
         mAdapter.notifyDataSetChanged();
     }
 

@@ -42,6 +42,7 @@ import com.crakac.ofuton.util.TwitterUtils;
 import java.util.ArrayList;
 import java.util.List;
 
+import twitter4j.ExtendedMediaEntity;
 import twitter4j.HashtagEntity;
 import twitter4j.MediaEntity;
 import twitter4j.Status;
@@ -290,8 +291,11 @@ public class StatusDialogFragment extends DialogFragment {
             mActionAdapter.add(new MediaAction(getActivity(), media
                     .getExpandedURL(), media
                     .getMediaURL()));
-            Log.d("MediaEntity", media.getExpandedURL());
         }
+
+		for(ExtendedMediaEntity e : status.getExtendedMediaEntities()){
+			Log.d("ExtendedMediaEntity", e.getExpandedURL());
+		}
 	}
 
 	private void setHashtagEntities(Status status){

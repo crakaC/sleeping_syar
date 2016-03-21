@@ -13,6 +13,10 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
+import twitter4j.ExtendedMediaEntity;
+import twitter4j.Twitter;
+import twitter4j.TwitterAPIConfiguration;
+
 public class Util {
 
     private Util(){}
@@ -63,12 +67,22 @@ public class Util {
         return days;
     }
 
-    public static String blanks(int n){
+    public static final String MATCH_URL_HTTPS = "(https)(:\\/\\/[-_.!~*\\'()a-zA-Z0-9;\\/?:\\@&=+\\$,%#]+)";
+    public static final String MATCH_URL_HTTP = "(http)(:\\/\\/[-_.!~*\\'()a-zA-Z0-9;\\/?:\\@&=+\\$,%#]+)";
+
+    private static String blanks(int n){
         StringBuilder sb = new StringBuilder(n);
         for(int i = 0; i < n; i++){
             sb.append(' ');
         }
         return sb.toString();
+    }
+
+    public static int getActualTextLength(String text){
+        TwitterAPIConfiguration conf = TwitterUtils.getApiConfiguration();
+        text = text.replaceAll(MATCH_URL_HTTP, Util.blanks(conf.getShortURLLength()));
+        text = text.replaceAll(MATCH_URL_HTTPS, Util.blanks(conf.getShortURLLengthHttps()));
+        return text.length();
     }
 
     public static String parseSharedText(Uri data){
@@ -110,5 +124,14 @@ public class Util {
             return file.delete();
         }
         return false;
+    }
+
+    public static String getValidVideoUrl(ExtendedMediaEntity e){
+        for(ExtendedMediaEntity.Variant v : e.getVideoVariants()){
+            if(v.getContentType().contains("mp4")){
+                return v.getUrl();
+            }
+        }
+        return "";
     }
 }

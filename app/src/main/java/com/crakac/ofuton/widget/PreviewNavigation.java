@@ -75,7 +75,7 @@ public class PreviewNavigation extends FrameLayout implements View.OnClickListen
         }
     }
 
-    public static interface NavigationListener {
+    public interface NavigationListener {
         void onDownloadClick();
         void onRotateLeftClick();
         void onRotateRightClick();

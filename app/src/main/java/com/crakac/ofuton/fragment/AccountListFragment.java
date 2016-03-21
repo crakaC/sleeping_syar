@@ -42,7 +42,7 @@ public class AccountListFragment extends Fragment{
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		Log.d(TAG, "onCreateView");
+		Log.d(TAG, "onCreateView:" + getId());
 		mDialogManager = new DialogManager(getActivity().getSupportFragmentManager());
 		View view = inflater.inflate(R.layout.base_listfragment, container, false);
 		mAdapter = new AccountAdapter(getActivity());
@@ -158,7 +158,7 @@ public class AccountListFragment extends Fragment{
 			notifyDataSetChanged();
 		}
 
-		public void addIfnotContains(Account user){
+		public void addIfNotContains(Account user){
 			if(!mAccountList.contains(user)){
 				mAccountList.add(user);
 			}
@@ -169,7 +169,7 @@ public class AccountListFragment extends Fragment{
 		Log.d(TAG, "called reloadAcounts");
 		List<Account> users = TwitterUtils.getAccounts();
 		for(Account user : users){
-			mAdapter.addIfnotContains(user);
+			mAdapter.addIfNotContains(user);
 		}
 		mAdapter.notifyDataSetChanged();
 	}

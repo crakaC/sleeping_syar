@@ -1,5 +1,6 @@
 package com.crakac.ofuton.util;
 
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -7,6 +8,7 @@ import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
+import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
 import android.util.Log;
 import android.webkit.MimeTypeMap;
@@ -219,7 +221,12 @@ public class NetUtil {
         }
     }
 
-    public static File download(Context context, String url) {
+    public static File download(Context context, String url, int notificationId) {
+        NotificationManager manager = (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context);
+        mBuilder.setContentTitle("ダウンロード中").setContentText("ダウンロード中").setSmallIcon(R.drawable.ic_syar);
+        mBuilder.setProgress(0, 0, true);
+        manager.notify(notificationId, mBuilder.build());
         byte[] buf = new byte[4096];
         try {
             String expandedUrl = NetUtil.expandUrlIfNecessary(getOriginalImageUrl(url));
@@ -242,10 +249,15 @@ public class NetUtil {
             String mimetype = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
             String[] mimetypes = {mimetype};
             MediaScannerConnection.scanFile(context.getApplicationContext(), path, mimetypes, null);
+            mBuilder.setProgress(0, 0, false);
+            manager.notify(notificationId, mBuilder.build());
+
             return downloadedFile;
         } catch (Exception e) {
             e.printStackTrace();
         }
+        mBuilder.setProgress(0, 0, false);
+        manager.notify(notificationId, mBuilder.build());
         return null;
     }
 

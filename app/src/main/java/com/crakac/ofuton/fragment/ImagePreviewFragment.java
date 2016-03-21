@@ -2,6 +2,7 @@ package com.crakac.ofuton.fragment;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -9,7 +10,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.MediaController;
 import android.widget.ProgressBar;
+import android.widget.VideoView;
 
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader.ImageContainer;
@@ -21,6 +24,8 @@ import com.crakac.ofuton.util.NetworkImageListener;
 import com.crakac.ofuton.widget.Rotatable;
 import com.crakac.ofuton.widget.Rotator;
 
+import twitter4j.ExtendedMediaEntity;
+import twitter4j.MediaEntity;
 import uk.co.senab.photoview.PhotoViewAttacher;
 
 /**
@@ -56,6 +61,11 @@ public class ImagePreviewFragment extends Fragment implements Rotatable {
         showProgress(true);
 
         String url = getArguments().getString(C.URL);
+        if(url == null){
+            MediaEntity e = (MediaEntity) getArguments().getSerializable(C.MEDIA_ENTITY);
+            url = e.getMediaURLHttps();
+        }
+
         retrieveImage(NetUtil.convertToImageFileUrl(url));
         return root;
     }

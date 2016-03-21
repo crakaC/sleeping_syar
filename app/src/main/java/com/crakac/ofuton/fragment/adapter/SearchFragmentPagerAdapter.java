@@ -29,6 +29,8 @@ public class SearchFragmentPagerAdapter extends SimpleFragmentPagerAdapter<Fragm
                 return "ユーザー";
             case 3:
                 return "画像";
+            case 4:
+                return "動画";
         }
         return "";
     }

@@ -63,13 +63,10 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
     private String mHashTag;// ハッシュタグ
     private User mMentionUser;
     private boolean mIsUpdatingStatus = false;//ツイート中かどうか。onDestroyで添付ファイルを削除する際の判定に使う。
-    private TwitterAPIConfiguration mApiConfiguration;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        mApiConfiguration = TwitterUtils.getApiConfiguration();
 
         // レイアウトを読み込み
         setContentView(R.layout.activity_tweet);
@@ -234,8 +231,6 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
         super.onDestroy();
     }
 
-    public static final String URL_PATTERN = "(https?)(:\\/\\/[-_.!~*\\'()a-zA-Z0-9;\\/?:\\@&=+\\$,%#]+)";
-
     /**
      * ツイートの残り文字数を求め，テキストビューに反映する
      * <p/>
@@ -243,10 +238,9 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
      */
     private void setRemainLength() {
         String text = mInputText.getEditableText().toString();
-        text = text.replaceAll(URL_PATTERN, Util.blanks(mApiConfiguration.getShortURLLength()));
-        int remainLength = MAX_TWEET_LENGTH - text.length();
+        int remainLength = MAX_TWEET_LENGTH - Util.getActualTextLength(text);
         if (mAppendingFile != null) {
-            remainLength -= mApiConfiguration.getCharactersReservedPerMedia();
+            remainLength -= TwitterUtils.getApiConfiguration().getCharactersReservedPerMedia();
         }
         if (remainLength < 0 || (remainLength == MAX_TWEET_LENGTH && mAppendingFile == null)) {
             enableTweetButton(false);

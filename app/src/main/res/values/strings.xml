@@ -11,6 +11,7 @@
     <string name="activity_list">Choose Lists</string>
     <string name="activity_user_detail">User Profile</string>
     <string name="activity_search">Search</string>
+    <string name="activity_video_preview">Preview</string>
     <string name="setting">設定</string>
     <string name="auth">認証</string>
     <string name="account">アカウント</string>
@@ -95,7 +96,12 @@
     <string name="take_picture">写真を撮影</string>
     <string name="insert_picture">画像を選択</string>
     <string name="show_source">ソースを表示する</string>
+    <string name="download">ダウンロード</string>
+    <string name="complete_download">ダウンロードが完了しました</string>
 
     <string name="tofubuster_package">com.product.kanzmrsw.tofubuster</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

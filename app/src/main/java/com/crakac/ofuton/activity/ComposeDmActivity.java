@@ -26,7 +26,6 @@ import twitter4j.Twitter;
 import twitter4j.TwitterException;
 
 public class ComposeDmActivity extends FinishableActionbarActivity {
-	private static final int MAX_TEXT_LENGTH = 140;
 	private EditText mInputText;
 	private Twitter mTwitter;
 	private TextView remaining;// 残り文字数を表示
@@ -34,6 +33,7 @@ public class ComposeDmActivity extends FinishableActionbarActivity {
 	private String screenName;// リプライ先スクリーンネーム
 	private DirectMessage replyDM;
 	private ActionBar mActionbar;
+	private int MAX_TEXT_LENGTH = 1000;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -121,11 +121,12 @@ public class ComposeDmActivity extends FinishableActionbarActivity {
 	}
 
 	private void sendDM() {
+		final String text = mInputText.getText().toString();
 		ParallelTask<Void, Void, DirectMessage>task = new ParallelTask<Void, Void, DirectMessage>(){
 			@Override
 			protected DirectMessage doInBackground(Void... params) {
 				try {
-					return mTwitter.sendDirectMessage(screenName, mInputText.getText().toString());
+					return mTwitter.sendDirectMessage(screenName, text);
 				} catch (TwitterException e) {
 					e.printStackTrace();
 				}

@@ -1,15 +1,20 @@
 package com.crakac.ofuton.activity;
 
+import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.view.ViewPager;
@@ -19,6 +24,7 @@ import android.view.View;
 import com.crakac.ofuton.C;
 import com.crakac.ofuton.R;
 import com.crakac.ofuton.fragment.ImagePreviewFragment;
+import com.crakac.ofuton.fragment.VideoPreviewFragment;
 import com.crakac.ofuton.fragment.adapter.SimpleFragmentPagerAdapter;
 import com.crakac.ofuton.util.AppUtil;
 import com.crakac.ofuton.util.NetUtil;
@@ -32,12 +38,18 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import twitter4j.ExtendedMediaEntity;
+import twitter4j.MediaEntity;
+import twitter4j.URLEntity;
+
 public class WebImagePreviewActivity extends FragmentActivity implements PreviewNavigation.NavigationListener, Rotator {
     private HackyViewPager mPager;
-    private SimpleFragmentPagerAdapter<ImagePreviewFragment> mAdapter;
+    private SimpleFragmentPagerAdapter<Fragment> mAdapter;
     private PreviewNavigation mNav;
     private List<String> mUrls;
     private HashMap<Integer, Rotatable> mRotatables;
+
+    private static final int PERMISSION_REQUEST_STORAGE = 8686;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,17 +71,31 @@ public class WebImagePreviewActivity extends FragmentActivity implements Preview
         mAdapter = new SimpleFragmentPagerAdapter<>(this, mPager);
         mRotatables = new HashMap<>();
 
-        List<String> imageUrls = getIntent().getStringArrayListExtra(C.URL);
+        List<MediaEntity> mediaEntities = (List<MediaEntity>) getIntent().getSerializableExtra(C.MEDIA_ENTITY);
         Uri imageUri = getIntent().getData();
         if (imageUri != null) {
             mAdapter.add(ImagePreviewFragment.class, createArgs(imageUri.toString(), 0), 0);
             mUrls = new ArrayList<>(1);
             mUrls.add(imageUri.toString());
-        } else if (imageUrls != null) {
-            for (int i = 0; i < imageUrls.size(); i++) {
-                mAdapter.add(ImagePreviewFragment.class, createArgs(imageUrls.get(i), i), i);
+        } else if (mediaEntities != null) {
+            for (int i = 0; i < mediaEntities.size(); i++) {
+                MediaEntity e = mediaEntities.get(i);
+                if(e instanceof ExtendedMediaEntity){
+                    boolean hasValidVideo = false;
+                    for(ExtendedMediaEntity.Variant v : ((ExtendedMediaEntity) e).getVideoVariants()){
+                        if(v.getContentType().contains("mp4")) {
+                            mAdapter.add(VideoPreviewFragment.class, createArgs(e, i), i);
+                            hasValidVideo = true;
+                        }
+                    }
+                    if(hasValidVideo == false){
+                        mAdapter.add(ImagePreviewFragment.class, createArgs(e, i), i);
+                    }
+                } else {
+                    mAdapter.add(ImagePreviewFragment.class, createArgs(e, i), i);
+                }
             }
-            mUrls = imageUrls;
+            mUrls = extractUrl(mediaEntities);
         }
         mAdapter.notifyDataSetChanged();
         mNav.setImageNums(mUrls.size());
@@ -86,6 +112,28 @@ public class WebImagePreviewActivity extends FragmentActivity implements Preview
         }
     }
 
+    private List<String> extractUrl(List<MediaEntity> entities){
+        List<String> ret = new ArrayList<>();
+        for(MediaEntity e : entities){
+            if(e instanceof ExtendedMediaEntity){
+                boolean hasValidUrl = false;
+                for(ExtendedMediaEntity.Variant v : ((ExtendedMediaEntity) e).getVideoVariants()){
+                    if(v.getContentType().contains("mp4")){
+                        ret.add(v.getUrl());
+                        hasValidUrl = true;
+                        break;
+                    }
+                }
+                if(!hasValidUrl) {
+                    ret.add(e.getMediaURLHttps());
+                }
+            }else {
+                ret.add(e.getMediaURLHttps());
+            }
+        }
+        return ret;
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -99,10 +147,33 @@ public class WebImagePreviewActivity extends FragmentActivity implements Preview
         return b;
     }
 
+    private Bundle createArgs(MediaEntity entity, int index) {
+        Bundle b = new Bundle(2);
+        b.putSerializable(C.MEDIA_ENTITY, entity);
+        b.putInt(C.INDEX, index);
+        return b;
+    }
+
     @Override
     public void onDownloadClick() {
         String url = mUrls.get(mPager.getCurrentItem());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if(checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_REQUEST_STORAGE);
+                return;
+            }
+        }
         saveImage(NetUtil.convertToImageFileUrl(url));
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch(requestCode){
+            case PERMISSION_REQUEST_STORAGE:
+                if(grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                    onDownloadClick();
+                }
+        }
     }
 
     @Override
@@ -157,10 +228,11 @@ public class WebImagePreviewActivity extends FragmentActivity implements Preview
     public void saveImage(String url) {
         new AsyncTask<String, Void, File>() {
 
+            int notificationId = 0;
             @Override
             protected File doInBackground(String... params) {
                 Log.d("DownloadImage", params[0]);
-                return NetUtil.download(WebImagePreviewActivity.this, params[0]);
+                return NetUtil.download(WebImagePreviewActivity.this, params[0], notificationId);
             }
 
             @Override
@@ -171,12 +243,16 @@ public class WebImagePreviewActivity extends FragmentActivity implements Preview
                     i.setDataAndType(Uri.fromFile(downloadedFile), "image/*");
                     PendingIntent pi = PendingIntent.getActivity(getApplicationContext(), 0, i, 0);
                     NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext());
-                    builder.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher)).setSmallIcon(R.drawable.ic_insert_photo_white_18dp).setTicker(getString(R.string.save_complete))
+                    Bitmap icon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher);
+                    icon.setHasMipMap(true);
+                    builder.setLargeIcon(icon)
+                            .setSmallIcon(R.drawable.ic_insert_photo_white_18dp)
+                            .setTicker(getString(R.string.complete_download))
                             .setAutoCancel(true).setContentTitle(getString(R.string.save_complete))
                             .setContentText(getString(R.string.app_name)).setContentIntent(pi);
                     NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-                    nm.cancel(0);
-                    nm.notify(0, builder.build());
+                    nm.cancel(notificationId);
+                    nm.notify(notificationId, builder.build());
                 } else {
                     AppUtil.showToast(R.string.impossible);
                 }

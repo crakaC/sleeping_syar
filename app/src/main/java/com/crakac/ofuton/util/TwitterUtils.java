@@ -298,10 +298,15 @@ public class TwitterUtils {
             }
         }.executeParallel();
     }
+
+	private static TwitterAPIConfiguration sConfiguration;
     public static TwitterAPIConfiguration getApiConfiguration(){
-        TwitterAPIConfiguration configuration = Util.restoreFile(sContext, API_CONFIG_PREF);
-        if(configuration != null){
-            return configuration;
+		if(sConfiguration != null){
+			return sConfiguration;
+		}
+		sConfiguration = Util.restoreFile(sContext, API_CONFIG_PREF);
+        if(sConfiguration != null){
+            return sConfiguration;
         }
         return new TwitterAPIConfiguration() {
             @Override

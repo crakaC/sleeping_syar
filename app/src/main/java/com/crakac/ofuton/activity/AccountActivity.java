@@ -29,6 +29,7 @@ public class AccountActivity extends FinishableActionbarActivity{
 	private static final String TAG = AccountActivity.class.getSimpleName();
 
 	private void setFragment(){
+		if(mFragment != null) return;
 		mFragment = new AccountListFragment();
 		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 		ft.add(R.id.accountList, mFragment);
@@ -52,7 +53,6 @@ public class AccountActivity extends FinishableActionbarActivity{
 		setContentView(R.layout.activity_account);
 		mCallbackURL = getString(R.string.twitter_callback_url);
 		mDialogManager = new DialogManager(getSupportFragmentManager());
-
 		setFragment();
 	}
 

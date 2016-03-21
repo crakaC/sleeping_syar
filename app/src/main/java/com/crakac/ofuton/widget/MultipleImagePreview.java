@@ -1,26 +1,37 @@
 package com.crakac.ofuton.widget;
 
 import android.app.Activity;
+import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.util.AttributeSet;
+import android.util.Pair;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.crakac.ofuton.C;
 import com.crakac.ofuton.R;
+import com.crakac.ofuton.activity.VideoPreviewActivity;
 import com.crakac.ofuton.activity.WebImagePreviewActivity;
 import com.crakac.ofuton.util.NetUtil;
 import com.crakac.ofuton.util.TwitterUtils;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import twitter4j.ExtendedMediaEntity;
 import twitter4j.MediaEntity;
 
 /**
@@ -28,6 +39,7 @@ import twitter4j.MediaEntity;
  */
 public class MultipleImagePreview extends FrameLayout {
     private BitmapImageView imageL1, imageC1, imageR1, imageL2, imageC2, imageR2, imageL3, imageC3, imageR3;
+    private ImageView videoIcon;
     private LinearLayout mLeft, mCenter, mRight;
     private View separatorL1, separatorL2, separatorC1, separatorC2, separatorR1, separatorR2, virticalSeparatorLeft, virticalSeparatorRight;
     private List<BitmapImageView> mImageViews;
@@ -39,6 +51,7 @@ public class MultipleImagePreview extends FrameLayout {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View v = inflater.inflate(R.layout.appended_image_view, null);
         addView(v);
+        videoIcon = (ImageView) v.findViewById(R.id.videoIcon);
         mLeft = (LinearLayout) v.findViewById(R.id.left);
         mRight = (LinearLayout) v.findViewById(R.id.right);
         mCenter = (LinearLayout) v.findViewById(R.id.center);
@@ -147,6 +160,7 @@ public class MultipleImagePreview extends FrameLayout {
         hide(mImageViews);
         hide(mSeparators);
         hide(mBlocks);
+        hide(videoIcon);
     }
 
     private void hide(List<? extends View> views) {
@@ -181,15 +195,25 @@ public class MultipleImagePreview extends FrameLayout {
             final BitmapImageView imageView = imageViews.get(i);
             final int position = i;
             imageView.setVisibility(View.VISIBLE);
+            final ExtendedMediaEntity e = (ExtendedMediaEntity)mediaEntities.get(position);
+            if(position == 0 && e.getVideoDurationMillis() > 0){
+                videoIcon.setVisibility(View.VISIBLE);
+            }
             imageView.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Context context = getContext();
-                    Intent intent = new Intent(context, WebImagePreviewActivity.class);
-                    intent.putStringArrayListExtra(C.URL, mediaUrls);
-                    intent.putExtra(C.POSITION, position);
-                    context.startActivity(intent);
-                    ((Activity) context).overridePendingTransition(com.crakac.ofuton.R.anim.fade_in, 0);
+                    if(e.getVideoDurationMillis() > 0){
+                        Context context = getContext();
+                        Intent intent = new Intent(context, VideoPreviewActivity.class);
+                        intent.putExtra(C.MEDIA_ENTITY, e);
+                        context.startActivity(intent, ActivityOptions.makeSceneTransitionAnimation((Activity) context, (Pair<View, String>[])null).toBundle());
+                    } else {
+                        Context context = getContext();
+                        Intent intent = new Intent(context, WebImagePreviewActivity.class);
+                        intent.putExtra(C.MEDIA_ENTITY, (Serializable) mediaEntities);
+                        intent.putExtra(C.POSITION, position);
+                        context.startActivity(intent, ActivityOptions.makeSceneTransitionAnimation((Activity) context, (Pair<View, String>[])null).toBundle());
+                    }
                 }
             });
             imageView.setDefaultImageResId(R.color.transparent_black);

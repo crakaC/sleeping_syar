@@ -45,7 +45,6 @@ import java.util.List;
 
 import twitter4j.Status;
 import twitter4j.StatusUpdate;
-import twitter4j.TwitterAPIConfiguration;
 import twitter4j.TwitterException;
 
 /**
@@ -67,7 +66,6 @@ public class TweetFragment extends Fragment implements View.OnClickListener {
     private View mTweetBtn, mAppendBtn;// つぶやくボタン，画像追加ボタン，リプライ元情報ボタン
     private ImageView mAppendedImageView;
     private Uri mImageUri;// カメラ画像添付用
-    private TwitterAPIConfiguration mApiConfiguration;
     private View mRootView;
 
     @Override
@@ -83,7 +81,6 @@ public class TweetFragment extends Fragment implements View.OnClickListener {
         mRootView = inflater.inflate(R.layout.fragment_tweet, null);
         mRootView.setVisibility(View.INVISIBLE);
         mRootView.setOnClickListener(this);
-        mApiConfiguration = TwitterUtils.getApiConfiguration();
         mInputText = (EditText) mRootView.findViewById(R.id.input_text);// 入力欄
         mTweetBtn = mRootView.findViewById(R.id.action_tweet);// ツイートボタン
         mAppendBtn = mRootView.findViewById(R.id.appendPic);// 画像添付ボダン
@@ -203,8 +200,6 @@ public class TweetFragment extends Fragment implements View.OnClickListener {
         super.onDestroy();
     }
 
-    public static final String MATCH_URL_HTTPS = "(https)(:\\/\\/[-_.!~*\\'()a-zA-Z0-9;\\/?:\\@&=+\\$,%#]+)";
-    public static final String MATCH_URL_HTTP = "(http)(:\\/\\/[-_.!~*\\'()a-zA-Z0-9;\\/?:\\@&=+\\$,%#]+)";
 
     /**
      * ツイートの残り文字数を求め，テキストビューに反映する
@@ -213,11 +208,9 @@ public class TweetFragment extends Fragment implements View.OnClickListener {
      */
     private void setRemainLength() {
         String text = mInputText.getEditableText().toString();
-        text = text.replaceAll(MATCH_URL_HTTPS, Util.blanks(mApiConfiguration.getShortURLLengthHttps()));
-        text = text.replaceAll(MATCH_URL_HTTP, Util.blanks(mApiConfiguration.getShortURLLength()));
-        int remainLength = MAX_TWEET_LENGTH - text.length();
+        int remainLength = MAX_TWEET_LENGTH - Util.getActualTextLength(text);
         if (mAppendingFile != null) {
-            remainLength -= mApiConfiguration.getCharactersReservedPerMedia();
+            remainLength -= TwitterUtils.getApiConfiguration().getCharactersReservedPerMedia();
         }
         if (remainLength < 0 || (remainLength == MAX_TWEET_LENGTH && mAppendingFile == null)) {
             enableTweetButton(false);
@@ -238,7 +231,7 @@ public class TweetFragment extends Fragment implements View.OnClickListener {
                 if (data != null) {
                     uri = data.getData();
                     String action = data.getAction();
-                    if(action != null){
+                    if (action != null) {
                         isCamera = action.equals(MediaStore.ACTION_IMAGE_CAPTURE);
                     }
                 } else {
@@ -403,12 +396,12 @@ public class TweetFragment extends Fragment implements View.OnClickListener {
         mAppendingFile = null;
     }
 
-    public void show(){
-        if(mRootView == null) return;
+    public void show() {
+        if (mRootView == null) return;
         mRootView.setVisibility(View.VISIBLE);
     }
 
-    public void hide(){
+    public void hide() {
         if (mRootView == null) return;
         mRootView.setVisibility(View.GONE);
     }

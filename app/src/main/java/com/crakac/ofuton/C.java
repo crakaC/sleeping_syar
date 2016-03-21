@@ -20,4 +20,5 @@ public class C {
     public static final String OPTION_QUERY = "OPTION_QUERY";
     public static final String TYPE = "TYPE";
     public static final String INDEX = "INDEX";
+	public static final String MEDIA_ENTITY = "MEDIA_ENTITY";
 }

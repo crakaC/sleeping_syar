@@ -70,8 +70,17 @@
 
     <drawable name="translucent_background">#A0000000</drawable>
 
-    <style name="Theme.MyTrans" parent="android:style/Theme.Translucent.NoTitleBar">
+    <style name="Theme.MyTrans" parent="AppTheme">
+        <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowBackground">@drawable/translucent_background</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:colorBackgroundCacheHint">@null</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:backgroundDimEnabled">false</item>
+        <item name="android:windowContentTransitions">true</item>
+        <item name="android:windowEnterTransition">@android:transition/fade</item>
+        <item name="android:windowExitTransition">@android:transition/fade</item>
     </style>
 
     <style name="HoloTab">
