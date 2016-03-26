@@ -66,8 +66,8 @@ public class SearchActivity extends FinishableActionbarActivity {
         mAdapter.add(LocalSearchFragment.class, createArgs(mQuery), 0);
         mAdapter.add(TweetSearchFragment.class, createArgs(buildQuery(mQuery)), 1);
         mAdapter.add(UserSearchFragment.class, createArgs(buildQuery(mQuery)), 2);
-        mAdapter.add(TweetSearchFragment.class, createArgs(buildQuery(mQuery), "f=images"), 3);
-        mAdapter.add(TweetSearchFragment.class, createArgs(buildQuery(mQuery), "f=videos"), 4);
+        mAdapter.add(TweetSearchFragment.class, createArgs(buildQuery(mQuery), "filter:images"), 3);
+        mAdapter.add(TweetSearchFragment.class, createArgs(buildQuery(mQuery), "filter:videos"), 4);
         mAdapter.notifyDataSetChanged();
     }
 
@@ -117,11 +117,10 @@ public class SearchActivity extends FinishableActionbarActivity {
             if(f instanceof Searchable){
                 ((Searchable) f).search(query);
             }
-
         }
     }
 
-    public static interface Searchable{
+    public interface Searchable{
         void search(String query);
     }
 }
