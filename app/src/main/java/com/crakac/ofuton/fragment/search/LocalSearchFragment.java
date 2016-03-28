@@ -28,6 +28,6 @@ public class LocalSearchFragment extends TweetSearchFragment{
 
     @Override
     protected List<Status> previousStatuses(long maxId, int count) {
-        return StatusPool.search(mQuery);
+        return StatusPool.search(getMQuery());
     }
 }

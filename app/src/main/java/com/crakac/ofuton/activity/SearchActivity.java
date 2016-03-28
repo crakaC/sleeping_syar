@@ -42,9 +42,7 @@ public class SearchActivity extends FinishableActionbarActivity {
         mPager = (ViewPager) findViewById(R.id.pager);
         mAdapter = new SearchFragmentPagerAdapter(this, mPager);
         setFragments();
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD_MR1){
-            mPager.setOffscreenPageLimit(mAdapter.getCount());
-        }
+        mPager.setOffscreenPageLimit(mAdapter.getCount());
         mTab.setViewPager(mPager);
         mTab.setOnPageChangeListener(new RelativeTimeUpdater(mAdapter));
     }
@@ -56,7 +54,7 @@ public class SearchActivity extends FinishableActionbarActivity {
     }
 
     private Bundle createArgs(String query, String optionQuery){
-        Bundle b = new Bundle(2);
+        Bundle b = new Bundle(3);
         b.putString(C.QUERY, query);
         b.putString(C.OPTION_QUERY, optionQuery);
         return b;
@@ -67,7 +65,9 @@ public class SearchActivity extends FinishableActionbarActivity {
         mAdapter.add(TweetSearchFragment.class, createArgs(buildQuery(mQuery)), 1);
         mAdapter.add(UserSearchFragment.class, createArgs(buildQuery(mQuery)), 2);
         mAdapter.add(TweetSearchFragment.class, createArgs(buildQuery(mQuery), "filter:images"), 3);
-        mAdapter.add(TweetSearchFragment.class, createArgs(buildQuery(mQuery), "filter:videos"), 4);
+        Bundle b = createArgs(buildQuery(mQuery), "filter:videos");
+        b.putBoolean(C.NEED_LOOK_UP, true);
+        mAdapter.add(TweetSearchFragment.class, b, 4);
         mAdapter.notifyDataSetChanged();
     }
 

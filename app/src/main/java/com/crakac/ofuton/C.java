@@ -21,4 +21,5 @@ public class C {
     public static final String TYPE = "TYPE";
     public static final String INDEX = "INDEX";
 	public static final String MEDIA_ENTITY = "MEDIA_ENTITY";
+	public static final String NEED_LOOK_UP = "NEED_LOOK_UP";
 }
