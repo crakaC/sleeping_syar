@@ -27,11 +27,14 @@ android {
         release {
             debuggable false
             minifyEnabled true
+            useProguard true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
         }
         debug {
+            debuggable true
             applicationIdSuffix '.debug'
+            minifyEnabled false
         }
     }
     packagingOptions {
@@ -56,7 +59,7 @@ dependencies {
     compile project(':volley')
     compile 'com.android.support:support-annotations:23.3.0'
     compile 'com.android.support:appcompat-v7:23.3.0'
-    compile 'com.melnykov:floatingactionbutton:1.0.4'
+    compile 'com.android.support:design:23.3.0'
     compile 'com.astuetz:pagerslidingtabstrip:1.0.1'
     compile 'com.github.chrisbanes.photoview:library:1.2.3'
     compile 'org.twitter4j:twitter4j-core:4.0.4'

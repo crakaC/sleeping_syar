@@ -6,8 +6,6 @@ import android.util.Log;
 import android.widget.AbsListView;
 import android.widget.ListView;
 
-import com.melnykov.fab.FloatingActionButton;
-
 /**
  * Created by kosukeshirakashi on 2014/09/01.
  */
