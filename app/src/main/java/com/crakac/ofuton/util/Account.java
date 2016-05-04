@@ -37,4 +37,9 @@ public class Account {
 	public boolean IsCurrent() {
 		return isCurrent;
 	}
+
+	@Override
+	public boolean equals(Object other) {
+		return other instanceof Account && userId == ((Account)other).userId;
+	}
 }

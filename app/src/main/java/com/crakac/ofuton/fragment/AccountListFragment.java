@@ -166,7 +166,6 @@ public class AccountListFragment extends Fragment{
 	}
 
 	public void reloadAcounts() {
-		Log.d(TAG, "called reloadAcounts");
 		List<Account> users = TwitterUtils.getAccounts();
 		for(Account user : users){
 			mAdapter.addIfNotContains(user);
