@@ -50,7 +50,7 @@
                     android:src="@drawable/ic_create_white_18dp"
                     app:rippleColor="@color/twitter_blue_bright"
                     app:fabSize="mini"
-                    android:backgroundTint="@color/twitter_blue"
+                    app:backgroundTint="@color/twitter_blue"
                 />
 
                 <fragment
