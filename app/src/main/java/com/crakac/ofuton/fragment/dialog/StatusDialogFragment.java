@@ -134,7 +134,7 @@ public class StatusDialogFragment extends DialogFragment {
 		DisplayMetrics metrics = getResources().getDisplayMetrics();
 
 		// 縦幅はwrap contentで，横幅は92%で．
-		int dialogWidth = (int) Math.min((metrics.widthPixels * 0.92), AppUtil.dpToPx(360));
+		int dialogWidth = (int) Math.min((metrics.widthPixels * 0.92), AppUtil.dpToPx(480));
 		int dialogHeight = WindowManager.LayoutParams.WRAP_CONTENT;
 
 		lp.width = dialogWidth;
