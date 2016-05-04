@@ -1,17 +1,10 @@
 package com.crakac.ofuton.widget;
 
-import android.app.Activity;
-import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.ActivityOptionsCompat;
 import android.util.AttributeSet;
-import android.util.Pair;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -27,11 +20,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
-import butterknife.Bind;
-import butterknife.ButterKnife;
 import twitter4j.ExtendedMediaEntity;
 import twitter4j.MediaEntity;
 
@@ -224,7 +213,7 @@ public class MultipleImagePreview extends FrameLayout {
             imageView.setDefaultImageResId(R.color.transparent_black);
             imageView.setErrorImageResId(R.color.transparent_black);
             String mediaUrl = mediaUrls.get(i);
-            imageView.setImageUrl(NetUtil.convertToImageFileUrl(mediaUrl), NetUtil.PREVIEW_LOADER);
+            imageView.setImageUrl(NetUtil.convertToImageFileUrl(mediaUrl), NetUtil.INLINE_PREVIEW_LOADER);
         }
     }
 

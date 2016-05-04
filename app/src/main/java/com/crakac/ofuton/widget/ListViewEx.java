@@ -56,7 +56,6 @@ public class ListViewEx extends ListView implements AbsListView.OnScrollListener
             if (preLast != lastItem) {
                 if (mListener != null) {
                     mListener.onLastItemVisible();
-                    Log.d("OnScroll", "Last item is visible");
                 }
             }
         } else {

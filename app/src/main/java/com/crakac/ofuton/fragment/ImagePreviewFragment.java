@@ -88,7 +88,7 @@ public class ImagePreviewFragment extends Fragment implements Rotatable {
     }
 
     private void retrieveImage(String url) {
-        mImageContainer = NetUtil.fetchNetworkImageAsync(url, new NetworkImageListener(mImageView) {
+        mImageContainer = NetUtil.fetchPreviewImageAsync(url, new NetworkImageListener(mImageView) {
             @Override
             protected void onBitmap(Bitmap bitmap) {
                 showProgress(false);

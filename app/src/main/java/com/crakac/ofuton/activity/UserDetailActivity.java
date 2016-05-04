@@ -8,8 +8,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.text.Html;
@@ -220,7 +218,7 @@ public class UserDetailActivity extends FinishableActionbarActivity {
         // ユーザーの情報
         mActionbar.setTitle(user.getName());
         mActionbar.setSubtitle("@" + user.getScreenName());
-        mIconImage.setImageUrl(user.getOriginalProfileImageURLHttps(), NetUtil.PREVIEW_LOADER);
+        mIconImage.setImageUrl(user.getOriginalProfileImageURLHttps(), NetUtil.INLINE_PREVIEW_LOADER);
         mIconImage.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {

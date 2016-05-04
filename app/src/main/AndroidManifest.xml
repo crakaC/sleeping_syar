@@ -142,13 +142,13 @@
                     android:pathPrefix="/"
                     android:scheme="http" />
                 <data
-                    android:host="instagram.com"
+                    android:host="www.instagram.com"
                     android:pathPrefix="/p/"
                     android:scheme="https" />
                 <data
                     android:host="instagr.am"
                     android:pathPrefix="/p/"
-                    android:scheme="https" />
+                    android:scheme="http" />
             </intent-filter>
         </activity>
         <activity

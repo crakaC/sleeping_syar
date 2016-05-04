@@ -2,11 +2,8 @@ package com.crakac.ofuton.util;
 
 import android.app.NotificationManager;
 import android.content.Context;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager.NameNotFoundException;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Environment;
 import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
@@ -19,13 +16,11 @@ import com.android.volley.Network;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.BasicNetwork;
 import com.android.volley.toolbox.DiskBasedCache;
-import com.android.volley.toolbox.HttpClientStack;
 import com.android.volley.toolbox.HttpStack;
 import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.ImageLoader.ImageContainer;
 import com.android.volley.toolbox.ImageLoader.ImageListener;
-import com.crakac.ofuton.BuildConfig;
 import com.crakac.ofuton.R;
 
 import java.io.BufferedInputStream;
@@ -47,11 +42,10 @@ public class NetUtil {
 
     private static final String ICON_CACHE_DIR = "icon";
     private static final String IMAGE_CACHE_DIR = "image";
-    private static final int THREAD_POOL_SIZE_FOR_FETCHING_ICONS = 2;
-    private static final int THREAD_POOL_SIZE_FOR_FETCHING_IMAGE = 2;
-    public static ImageLoader PREVIEW_LOADER, ICON_LOADER;
+    private static final int THREAD_POOL_SIZE_FOR_FETCHING_ICONS = 5;
+    private static final int THREAD_POOL_SIZE_FOR_FETCHING_IMAGE = 5;
+    public static ImageLoader  PREVIEW_LOADER, INLINE_PREVIEW_LOADER, ICON_LOADER;
     private static Cache sImageDiskCache;
-
 
     private NetUtil(){}
 
@@ -81,7 +75,8 @@ public class NetUtil {
         ICON_LOADER = new ImageLoader(iconQueue, new ImageLruCache());
         sImageDiskCache = createDiskCache(context, IMAGE_CACHE_DIR, 50 * 1024 * 1024);
         RequestQueue imageQueue = newRequestQueue(context, sImageDiskCache, THREAD_POOL_SIZE_FOR_FETCHING_IMAGE);
-        PREVIEW_LOADER = new ImageLoader(imageQueue, new ImageLruCache());
+        INLINE_PREVIEW_LOADER = new ImageLoader(imageQueue, new ImageLruCache());
+        PREVIEW_LOADER = new ImageLoader(newRequestQueue(context, sImageDiskCache, 3), new ImageLruCache());
     }
 
     public static ImageContainer fetchIconAsync(ImageView targetView, String requestUrl) {
@@ -109,6 +104,10 @@ public class NetUtil {
     }
 
     public static ImageContainer fetchNetworkImageAsync(String requestUrl, ImageListener listener) {
+        return INLINE_PREVIEW_LOADER.get(requestUrl, listener);
+    }
+
+    public static ImageContainer fetchPreviewImageAsync(String requestUrl, ImageListener listener) {
         return PREVIEW_LOADER.get(requestUrl, listener);
     }
 
@@ -151,7 +150,6 @@ public class NetUtil {
         Uri uri = Uri.parse(url);
         String host = uri.getHost();
         Uri.Builder builder = uri.buildUpon();
-        builder.scheme("http");
         switch (host) {
             case "twitpic.com":
             case "img.ly":
@@ -163,10 +161,14 @@ public class NetUtil {
                 builder.path(uri.getPath().concat(".png"));
                 break;
             case "instagr.am":
-                builder.authority("instagram.com");
-            case "instagram.com":
-                builder = uri.buildUpon();
-                builder.appendEncodedPath("media/?size=l");
+            case "www.instagram.com":
+                String query = uri.getQuery();
+                if(query != null && query.contains("size")) {
+                    builder.clearQuery();
+                    builder.appendQueryParameter("size", "l");
+                } else {
+                    builder.appendEncodedPath("media/?size=l");
+                }
                 break;
             case "p.twipple.jp":
                 builder.authority("p.twpl.jp");
@@ -196,16 +198,9 @@ public class NetUtil {
             case "gyazo.com":
             case "p.twipple.jp":
                 return true;
-            case "instagram.com":
+            case "www.instagram.com":
             case "instagr.am":
                 List<String> segments = uri.getPathSegments();
-                StringBuilder sb = new StringBuilder();
-                for (int i = 0; i < segments.size(); i++) {
-                    sb.append(i);
-                    sb.append(':');
-                    sb.append(segments.get(i));
-                    sb.append(", ");
-                }
                 return segments.get(0).equals("p");
             default:
                 return false;

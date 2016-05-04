@@ -181,10 +181,10 @@ public class TweetStatusAdapter extends ArrayAdapter<Status> {
         imagePreview.setVisibility(View.GONE);
         List<MediaEntity> mediaEntities = TwitterUtils.getMediaEntities(status);
         if (!shouldShowPreview || mediaEntities.isEmpty()) {
-            imagePreview.cleanUp();
             return;
         }
         imagePreview.setVisibility(View.VISIBLE);
+        imagePreview.cleanUp();
         imagePreview.setMediaEntities(mediaEntities);
     }
 
