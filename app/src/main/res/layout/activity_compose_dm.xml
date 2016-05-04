@@ -33,16 +33,16 @@
         android:orientation="horizontal"
         android:padding="4dp" >
 
-        <ImageButton
+        <ImageView
             android:id="@+id/dmInfoBtn"
-            style="@style/optionItem"
-            android:src="@drawable/ic_question_answer_white_48dp"
+            style="@style/imageButton"
+            android:src="@drawable/ic_question_answer_white_36dp"
             android:visibility="gone" />
 
-        <ImageButton
+        <ImageView
             android:id="@+id/sendBtn"
-            style="@style/optionItem"
-            android:src="@drawable/ic_send_white_48dp" />
+            style="@style/imageButton"
+            android:src="@drawable/ic_send_white_36dp" />
     </LinearLayout>
 
 </RelativeLayout>

@@ -91,7 +91,7 @@ public class DmAdapter extends ArrayAdapter<DirectMessage> {
             return convertView;
         }
 
-        private class ViewHolder {
+        private static class ViewHolder {
             TextView name;
             TextView text;
             TextView postedAt;

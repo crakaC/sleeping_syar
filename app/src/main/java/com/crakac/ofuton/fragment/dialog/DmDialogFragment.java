@@ -24,6 +24,7 @@ import com.crakac.ofuton.action.status.ClickAction;
 import com.crakac.ofuton.action.status.LinkAction;
 import com.crakac.ofuton.action.status.UserDetailAction;
 import com.crakac.ofuton.util.AppUtil;
+import com.crakac.ofuton.util.TwitterUtils;
 
 import java.util.TreeSet;
 
@@ -98,7 +99,7 @@ public class DmDialogFragment extends DialogFragment {
 		DisplayMetrics metrics = getResources().getDisplayMetrics();
 
 		// 縦幅はwrap contentで，横幅は92%で．
-        int dialogWidth = (int) Math.min((metrics.widthPixels * 0.92), AppUtil.dpToPx(360));
+        int dialogWidth = (int) Math.min((metrics.widthPixels * 0.92), AppUtil.dpToPx(480));
         int dialogHeight = WindowManager.LayoutParams.WRAP_CONTENT;
 
 		lp.width = dialogWidth;
@@ -126,7 +127,9 @@ public class DmDialogFragment extends DialogFragment {
 
 	private void setActions(){
 		//返信する
-		mActionAdapter.add(new DmReplyAction(getActivity(), dm));
+		if(dm.getSender().getId() != TwitterUtils.getCurrentAccount().getUserId()) {
+			mActionAdapter.add(new DmReplyAction(getActivity(), dm));
+		}
 		//ユーザー詳細
 		mActionAdapter.add(new UserDetailAction(getActivity(), dm.getSender()));
 		if(dm.getSenderId() != dm.getRecipientId()){
