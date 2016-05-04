@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
@@ -31,6 +32,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -101,8 +103,14 @@ public class MainActivity extends AppCompatActivity {
             public boolean onLongClick(View v) {
                 mTweetBtn.hide();
                 FragmentManager fm = getSupportFragmentManager();
-                mTweetFragment = (TweetFragment)fm.findFragmentById(R.id.quick_tweet);
-                mTweetFragment.show();
+                if(mTweetFragment == null) {
+                    mTweetFragment = new TweetFragment();
+                }
+                fm.beginTransaction()
+                        .setCustomAnimations(R.anim.slide_in, R.anim.slide_out)
+                        .add(R.id.quick_tweet, mTweetFragment)
+                        .addToBackStack(null)
+                        .commit();
                 return true;
             }
         });
@@ -203,6 +211,9 @@ public class MainActivity extends AppCompatActivity {
         } else if (mSearchView != null && !mSearchView.isIconified()) {
             AppUtil.closeSearchView(mSearchView);
         } else {
+            if(!mTweetBtn.isShown()){
+                mTweetBtn.show();
+            }
             super.onBackPressed();
         }
     }

@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="match_parent">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/dark_gray"
-        android:minHeight="?attr/actionBarSize"/>
+        android:minHeight="?attr/actionBarSize" />
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -32,34 +32,35 @@
                     android:id="@+id/pagerTabStrip"
                     style="@style/HoloTab"
                     android:layout_width="match_parent"
-                    android:layout_height="30dp"/>
+                    android:layout_height="30dp" />
 
                 <android.support.v4.view.ViewPager
                     android:id="@+id/pager"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_below="@+id/pagerTabStrip"/>
+                    android:layout_below="@+id/pagerTabStrip" />
 
                 <android.support.design.widget.FloatingActionButton
                     android:id="@+id/tweetEveryWhere"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="16dp"
                     android:layout_alignParentBottom="true"
                     android:layout_alignParentRight="true"
-                    android:src="@drawable/ic_create_white_18dp"
-                    app:rippleColor="@color/twitter_blue_bright"
-                    app:fabSize="mini"
+                    android:layout_margin="16dp"
+                    android:src="@drawable/ic_create_white_48dp"
                     app:backgroundTint="@color/twitter_blue"
-                />
+                    app:borderWidth="0dp"
+                    app:elevation="5dp"
+                    app:fabSize="normal"
+                    app:rippleColor="@color/twitter_blue_bright" />
 
-                <fragment
+                <FrameLayout
                     android:id="@+id/quick_tweet"
-                    android:name="com.crakac.ofuton.fragment.TweetFragment"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentBottom="true"
-                    />
+                    android:layout_centerHorizontal="true"
+                    android:layout_margin="8dp"/>
 
             </RelativeLayout>
 
@@ -74,7 +75,7 @@
                 android:cacheColorHint="#00000000"
                 android:choiceMode="singleChoice"
                 android:listSelector="@android:color/transparent"
-                android:scrollingCache="false"/>
+                android:scrollingCache="false" />
 
         </android.support.v4.widget.DrawerLayout>
     </FrameLayout>

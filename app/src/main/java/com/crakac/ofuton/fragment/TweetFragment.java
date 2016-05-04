@@ -17,6 +17,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -24,7 +25,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.crakac.ofuton.C;
@@ -79,7 +82,6 @@ public class TweetFragment extends Fragment implements View.OnClickListener {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mRootView = inflater.inflate(R.layout.fragment_tweet, null);
-        mRootView.setVisibility(View.INVISIBLE);
         mRootView.setOnClickListener(this);
         mInputText = (EditText) mRootView.findViewById(R.id.input_text);// 入力欄
         mTweetBtn = mRootView.findViewById(R.id.action_tweet);// ツイートボタン
@@ -192,6 +194,16 @@ public class TweetFragment extends Fragment implements View.OnClickListener {
         super.onSaveInstanceState(outState);
         outState.putParcelable(IMAGE_URI, mImageUri);
         outState.putSerializable(APPENDED_FILE, mAppendingFile);
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        DisplayMetrics metrics = getResources().getDisplayMetrics();
+        int width = (int) Math.min((metrics.widthPixels * 0.92), AppUtil.dpToPx(480));
+        ViewGroup.LayoutParams p = mRootView.getLayoutParams();
+        p.width = width;
+        mRootView.setLayoutParams(p);
     }
 
     @Override

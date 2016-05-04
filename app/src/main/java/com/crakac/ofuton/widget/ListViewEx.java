@@ -64,9 +64,8 @@ public class ListViewEx extends ListView implements AbsListView.OnScrollListener
         preLast = lastItem;
     }
 
-    public static interface OnLastItemVisibleListener {
-        public void onBottomOfLastItemShown();
-
-        public void onLastItemVisible();
+    public interface OnLastItemVisibleListener {
+        void onBottomOfLastItemShown();
+        void onLastItemVisible();
     }
 }
