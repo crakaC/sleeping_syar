@@ -3,19 +3,16 @@ package com.crakac.ofuton.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.content.res.Resources;
-import android.os.Build;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
@@ -32,10 +29,8 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.astuetz.PagerSlidingTabStrip;
@@ -49,19 +44,26 @@ import com.crakac.ofuton.fragment.timeline.FavoriteTimelineFragment;
 import com.crakac.ofuton.fragment.timeline.HomeTimelineFragment;
 import com.crakac.ofuton.fragment.timeline.MentionsTimelineFragment;
 import com.crakac.ofuton.util.AppUtil;
+import com.crakac.ofuton.util.NetUtil;
+import com.crakac.ofuton.util.ParallelTask;
 import com.crakac.ofuton.util.PrefUtil;
 import com.crakac.ofuton.util.RelativeTimeUpdater;
 import com.crakac.ofuton.util.ReloadChecker;
 import com.crakac.ofuton.util.TwitterList;
 import com.crakac.ofuton.util.TwitterUtils;
+import com.crakac.ofuton.widget.BitmapImageView;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import twitter4j.TwitterException;
+import twitter4j.User;
 
 public class MainActivity extends AppCompatActivity {
     public static final long TAB_ID_FAVORITE = 1;
     public static final long TAB_ID_MENTION = 2;
     public static final long TAB_ID_HOME = 3;
+    private static final String IS_SHOWN_TWEET_BTN = "is_shown_tweetbtn";
 
     private static final String TAG = MainActivity.class.getSimpleName();
     private PagerSlidingTabStrip mTabs;
@@ -72,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
     FloatingActionButton mTweetBtn;
     /* Navigation drawer */
     private DrawerLayout mDrawerLayout;
-    private ListView mDrawerList;
+    private NavigationView mNavigationView;
     private ActionBarDrawerToggle mDrawerToggle;
     private TweetFragment mTweetFragment;
 
@@ -90,6 +92,7 @@ public class MainActivity extends AppCompatActivity {
         }
         setTitle(R.string.app_name);
         setContentView(R.layout.activity_main);
+        mTweetFragment = (TweetFragment) getSupportFragmentManager().findFragmentById(R.id.quick_tweet);
         mTweetBtn = (FloatingActionButton) findViewById(R.id.tweetEveryWhere);// 右下のツイートボタン
         mTweetBtn.setOnClickListener(new OnClickListener() {
             @Override
@@ -102,21 +105,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onLongClick(View v) {
                 mTweetBtn.hide();
-                FragmentManager fm = getSupportFragmentManager();
-                if(mTweetFragment == null) {
-                    mTweetFragment = new TweetFragment();
-                }
-                fm.beginTransaction()
-                        .setCustomAnimations(R.anim.slide_in, R.anim.slide_out)
-                        .add(R.id.quick_tweet, mTweetFragment)
-                        .addToBackStack(null)
-                        .commit();
+                mTweetFragment.show();
                 return true;
             }
         });
 
         /* actionbar */
-        Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionbar = getSupportActionBar();
         actionbar.setDisplayHomeAsUpEnabled(true);
@@ -206,14 +201,14 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (mDrawerLayout.isDrawerOpen(mDrawerList)) {
+        if (mDrawerLayout.isDrawerOpen(mNavigationView)) {
             mDrawerLayout.closeDrawer(GravityCompat.START);
         } else if (mSearchView != null && !mSearchView.isIconified()) {
             AppUtil.closeSearchView(mSearchView);
+        } else if (!mTweetBtn.isShown()) {
+            mTweetBtn.show();
+            mTweetFragment.hide();
         } else {
-            if(!mTweetBtn.isShown()){
-                mTweetBtn.show();
-            }
             super.onBackPressed();
         }
     }
@@ -287,19 +282,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void createNavigationDrawer() {
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mDrawerList = (ListView) findViewById(R.id.left_drawer);
-        MenuAdapter adapter = new MenuAdapter(this);
-        adapter.add(new SlideMenu("Home", R.drawable.ic_home_white_36dp, MenuID.home));
-        adapter.add(new SlideMenu("Mentions", R.drawable.ic_reply_all_white_36dp, MenuID.mentions));
-        adapter.add(new SlideMenu("Favorites", R.drawable.ic_star_white_36dp, MenuID.favorites));
-        adapter.add(new SlideMenu("DM", R.drawable.ic_email_white_36dp, MenuID.dm));
-        adapter.add(new SlideMenu("Lists", R.drawable.ic_list_white_36dp, MenuID.lists));
-        adapter.add(new SlideMenu("Accounts", R.drawable.ic_group_white_36dp, MenuID.account));
-        adapter.add(new SlideMenu("Settings", R.drawable.ic_settings_white_36dp, MenuID.settings));
-        adapter.add(new SlideMenu("( ˘ω˘)ｽﾔｧ…", R.drawable.ic_syar, MenuID.syar));
-        mDrawerList.setAdapter(adapter);
+        mNavigationView = (NavigationView) findViewById(R.id.navigation_header);
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
-        mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.drawer_open, R.string.drawer_close) {
             @Override
             public void onDrawerClosed(View drawerView) {
@@ -314,98 +298,86 @@ public class MainActivity extends AppCompatActivity {
             }
         };
         mDrawerLayout.setDrawerListener(mDrawerToggle);
+
+
+        mNavigationView = (NavigationView) findViewById(R.id.navigation_header);
+        mNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(MenuItem menuItem) {
+                mDrawerLayout.closeDrawer(GravityCompat.START);
+                switch (menuItem.getItemId()) {
+                    case R.id.menu_home:
+                        mPager.setCurrentItem(getFragmentPosition(TAB_ID_HOME));
+                        break;
+                    case R.id.menu_account:
+                        startActivity(new Intent(MainActivity.this, AccountActivity.class));
+                        break;
+                    case R.id.menu_mention:
+                        mPager.setCurrentItem(getFragmentPosition(TAB_ID_MENTION));
+                        break;
+                    case R.id.manu_favorite:
+                        mPager.setCurrentItem(getFragmentPosition(TAB_ID_FAVORITE));
+                        break;
+                    case R.id.menu_dm:
+                        startActivity(new Intent(MainActivity.this, DmActivity.class));
+                        break;
+                    case R.id.menu_list:
+                        startActivity(new Intent(MainActivity.this, ListSelectActivity.class));
+                        break;
+                    case R.id.menu_setting:
+                        startActivity(new Intent(MainActivity.this, SettingActivity.class));
+                        break;
+                    case R.id.syar:
+                        AppUtil.syar();
+                        break;
+                    default:
+                        break;
+                }
+                return false;
+            }
+        });
+
+        View v = mNavigationView.getHeaderView(0);
+        final TextView userName = (TextView) v.findViewById(R.id.screenName);
+        final BitmapImageView iv = (BitmapImageView) v.findViewById(R.id.user_icon);
+        final BitmapImageView bv = (BitmapImageView) v.findViewById(R.id.background);
+        ParallelTask<Void, Void, twitter4j.User> pt = new ParallelTask<Void, Void, twitter4j.User>() {
+            @Override
+            protected void onPreExecute() {
+                userName.setText("@" + TwitterUtils.getCurrentAccount().getScreenName());
+            }
+
+            @Override
+            protected twitter4j.User doInBackground(Void... params) {
+                try {
+                    return TwitterUtils.getTwitterInstance().showUser(TwitterUtils.getCurrentAccountId());
+                } catch (TwitterException e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(User user) {
+                if (user == null) return;
+                iv.setImageUrl(user.getOriginalProfileImageURLHttps(), NetUtil.PREVIEW_LOADER);
+                bv.setImageUrl(user.getProfileBannerURL(), NetUtil.PREVIEW_LOADER);
+            }
+        };
+        bv.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, UserDetailActivity.class);
+                intent.putExtra(C.SCREEN_NAME, TwitterUtils.getCurrentAccount().getScreenName());
+                startActivity(intent);
+                mDrawerLayout.closeDrawer(GravityCompat.START);
+            }
+        });
+        pt.executeParallel();
     }
 
     public boolean isCurrentTab(long id) {
         return mAdapter.findPositionById(id) == mPager.getCurrentItem();
-    }
-
-    private enum MenuID {
-        account, home, mentions, favorites, dm, lists, settings, syar
-    }
-
-    private class SlideMenu {
-        private String mText;
-        private int mIconId;
-        private MenuID mId;
-
-        public SlideMenu(String text, int resId, MenuID menuId) {
-            mText = text;
-            mIconId = resId;
-            mId = menuId;
-        }
-
-        public String getText() {
-            return mText;
-        }
-
-        public int getIconId() {
-            return mIconId;
-        }
-
-        public MenuID getMenuId() {
-            return mId;
-        }
-    }
-
-    public class MenuAdapter extends ArrayAdapter<SlideMenu> {
-        private LayoutInflater mInflater;
-
-        public MenuAdapter(Context context) {
-            super(context, android.R.layout.simple_list_item_1);
-            mInflater = (LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE);
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            SlideMenu item = getItem(position);
-            if (item.getMenuId() == MenuID.syar) {
-                convertView = mInflater.inflate(R.layout.slide_menu_syar, null);
-            } else {
-                convertView = mInflater.inflate(R.layout.slide_menu_item, null);
-                TextView text = (TextView) convertView.findViewById(R.id.menu_name);
-                text.setText(item.getText());
-                ImageView icon = (ImageView) convertView.findViewById(R.id.menu_icon);
-                icon.setImageResource(item.getIconId());
-            }
-            return convertView;
-        }
-    }
-
-    private class DrawerItemClickListener implements ListView.OnItemClickListener {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            SlideMenu item = (SlideMenu) parent.getItemAtPosition(position);
-            switch (item.getMenuId()) {
-                case account:
-                    startActivity(new Intent(MainActivity.this, AccountActivity.class));
-                    break;
-                case home:
-                    mPager.setCurrentItem(getFragmentPosition(TAB_ID_HOME));
-                    break;
-                case mentions:
-                    mPager.setCurrentItem(getFragmentPosition(TAB_ID_MENTION));
-                    break;
-                case favorites:
-                    mPager.setCurrentItem(getFragmentPosition(TAB_ID_FAVORITE));
-                    break;
-                case dm:
-                    startActivity(new Intent(MainActivity.this, DmActivity.class));
-                    break;
-                case lists:
-                    startActivity(new Intent(MainActivity.this, ListSelectActivity.class));
-                    break;
-                case settings:
-                    startActivity(new Intent(MainActivity.this, SettingActivity.class));
-                    break;
-                case syar:
-                    AppUtil.syar();
-                    break;
-                default:
-                    break;
-            }
-            mDrawerLayout.closeDrawer(GravityCompat.START);
-        }
     }
 
     private List<AbstractTimelineFragment> getFragments() {

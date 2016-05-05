@@ -197,16 +197,6 @@ public class TweetFragment extends Fragment implements View.OnClickListener {
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        DisplayMetrics metrics = getResources().getDisplayMetrics();
-        int width = (int) Math.min((metrics.widthPixels * 0.92), AppUtil.dpToPx(480));
-        ViewGroup.LayoutParams p = mRootView.getLayoutParams();
-        p.width = width;
-        mRootView.setLayoutParams(p);
-    }
-
-    @Override
     public void onDestroy() {
         Log.d(TAG, "onDestroy");
         super.onDestroy();
