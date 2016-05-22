@@ -311,6 +311,7 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
                     if (mAppendingFile != null) {
                         params[0].media(mAppendingFile);
                     }
+                    TwitterUtils.checkUpdateName(params[0].getStatus());
                     return TwitterUtils.getTwitterInstance().updateStatus(params[0]);
                 } catch (TwitterException e) {
                     e.printStackTrace();

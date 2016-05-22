@@ -297,6 +297,7 @@ public class TweetFragment extends Fragment implements View.OnClickListener {
                     if (mAppendingFile != null) {
                         params[0].media(mAppendingFile);
                     }
+                    TwitterUtils.checkUpdateName(params[0].getStatus());
                     return TwitterUtils.getTwitterInstance().updateStatus(params[0]);
                 } catch (TwitterException e) {
                     e.printStackTrace();

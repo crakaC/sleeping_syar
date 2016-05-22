@@ -200,8 +200,7 @@ public class TwitterUtils {
 					c.getString(c.getColumnIndex(AccountDBAdapter.COL_SCREEN_NAME)),
 					c.getString(c.getColumnIndex(AccountDBAdapter.COL_ICON_URL)),
 					c.getString(c.getColumnIndex(AccountDBAdapter.COL_TOKEN)),
-					c.getString(c
-							.getColumnIndex(AccountDBAdapter.COL_TOKEN_SECRET)),
+					c.getString(c.getColumnIndex(AccountDBAdapter.COL_TOKEN_SECRET)),
 					c.getInt(c.getColumnIndex(AccountDBAdapter.COL_IS_CURRENT)) > 0);
 		}
 		dbAdapter.close();
@@ -223,8 +222,7 @@ public class TwitterUtils {
 					c.getString(c.getColumnIndex(AccountDBAdapter.COL_SCREEN_NAME)),
 					c.getString(c.getColumnIndex(AccountDBAdapter.COL_ICON_URL)),
 					c.getString(c.getColumnIndex(AccountDBAdapter.COL_TOKEN)),
-					c.getString(c
-							.getColumnIndex(AccountDBAdapter.COL_TOKEN_SECRET)),
+					c.getString(c.getColumnIndex(AccountDBAdapter.COL_TOKEN_SECRET)),
 					c.getInt(c.getColumnIndex(AccountDBAdapter.COL_IS_CURRENT)) > 0));
 		}
 		dbAdapter.close();
@@ -255,12 +253,11 @@ public class TwitterUtils {
 		dbAdapter.open();
 		Cursor c = dbAdapter.getLists(getCurrentAccount().getUserId());
 		while (c.moveToNext()) {
-			list.add(new TwitterList(c.getLong(c
-					.getColumnIndex(AccountDBAdapter.COL_USERID)), c.getInt(c
-					.getColumnIndex(AccountDBAdapter.COL_LIST_ID)), c.getString(c
-					.getColumnIndex(AccountDBAdapter.COL_LIST_NAME)), c
-					.getString(c
-							.getColumnIndex(AccountDBAdapter.COL_LIST_LONGNAME))));
+			list.add(new TwitterList(
+                    c.getLong(c.getColumnIndex(AccountDBAdapter.COL_USERID)),
+                    c.getInt(c.getColumnIndex(AccountDBAdapter.COL_LIST_ID)),
+                    c.getString(c.getColumnIndex(AccountDBAdapter.COL_LIST_NAME)),
+                    c.getString(c.getColumnIndex(AccountDBAdapter.COL_LIST_LONGNAME))));
 		}
 		dbAdapter.close();// cursorを使用するより先にcloseするとinvalid statement in
 							// fillWindow()とかいうエラーが出る
@@ -394,4 +391,21 @@ public class TwitterUtils {
         return urlList;
     }
 
+	/**
+	 * update_nameで始まるツイートの場合、名前を更新する。
+	 * @param text
+     */
+	public static void checkUpdateName(String text)
+	{
+		if(!text.toLowerCase().startsWith("update_name")){
+			return;
+		}
+		String next = text.replaceFirst("(?i)update_name\\s+", "");
+        if(next.isEmpty()) return;
+		try {
+            TwitterUtils.getTwitterInstance().updateProfile(next, null, null, null);
+		} catch (TwitterException e) {
+			e.printStackTrace();
+		}
+	}
 }
