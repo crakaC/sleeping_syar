@@ -37,26 +37,26 @@ public class TwitterUtils {
 	private static final String TOKEN = "token";
 	private static final String TOKEN_SECRET = "tokenSecret";
 	private static final String PREF_NAME = "accessToken";
-    public static final String API_CONFIG_PREF = "api_config";
+    private static final String API_CONFIG_PREF = "api_config";
 	private static Context sContext;
 	private static Account sAccount;
-	private static String mConsumerKey;
-	private static String mConsumerSecret;
+	private static String sConsumerKey;
+	private static String sConsumerSecret;
 
 	private TwitterUtils(){}
 
 	public static void init(Context context) {
 		sContext = context;
 		AuthKey authKey = new AuthKey(context);
-		mConsumerKey = authKey.getConsumerKey();
-		mConsumerSecret = authKey.getConsumerSecret();
+		sConsumerKey = authKey.getConsumerKey();
+		sConsumerSecret = authKey.getConsumerSecret();
 		sAccount = getCurrentAccount();
 	}
 
     private static ConfigurationBuilder baseConfiguratoinBuilder() {
         ConfigurationBuilder cb = new ConfigurationBuilder();
-        cb.setOAuthConsumerKey(mConsumerKey);
-        cb.setOAuthConsumerSecret(mConsumerSecret);
+        cb.setOAuthConsumerKey(sConsumerKey);
+        cb.setOAuthConsumerSecret(sConsumerSecret);
         cb.setHttpConnectionTimeout(HTTP_CONNECTION_TIMEOUT_MS);
         cb.setHttpReadTimeout(HTTP_READ_TIMEOUT_MS);
         return cb;
