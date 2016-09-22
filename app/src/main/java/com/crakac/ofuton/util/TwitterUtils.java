@@ -326,7 +326,12 @@ public class TwitterUtils {
                 return 23;
             }
 
-            @Override
+			@Override
+			public int getDmTextCharacterLimit() {
+				return 1000;
+			}
+
+			@Override
             public Map<Integer, MediaEntity.Size> getPhotoSizes() {
                 return null;
             }
