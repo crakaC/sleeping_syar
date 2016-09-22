@@ -229,7 +229,7 @@ public final class AppUtil {
                     AppUtil.showToast(R.string.something_wrong);
                 } else {
                     AppUtil.showToast(syar);
-                    PrefUtil.getSharedPreference().edit().putInt(getString(R.string.syar), getSyarCount() + 1).commit();
+                    PrefUtil.getSharedPreference().edit().putInt(getString(R.string.syar), getSyarCount() + 1).apply();
                 }
             }
         };

@@ -112,7 +112,7 @@ public class TwitterUtils {
 		Editor editor = preferences.edit();
 		editor.putString(TOKEN, accessToken.getToken());
 		editor.putString(TOKEN_SECRET, accessToken.getTokenSecret());
-		editor.commit();
+		editor.apply();
 	}
 
 	/**
@@ -289,7 +289,7 @@ public class TwitterUtils {
                     return;
                 }
                 Editor editor = context.getSharedPreferences(API_CONFIG_PREF, Context.MODE_PRIVATE).edit();
-                editor.putLong("fetched_on", System.currentTimeMillis()).commit();
+                editor.putLong("fetched_on", System.currentTimeMillis()).apply();
                 Log.d("APIConfiguration", configuration.toString());
                 Util.saveFile(context, configuration, API_CONFIG_PREF);
             }

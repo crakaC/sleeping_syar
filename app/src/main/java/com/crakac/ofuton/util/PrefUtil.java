@@ -44,7 +44,7 @@ public class PrefUtil {
     }
 
     public static void put(int prefKeyResid, boolean value){
-        getSharedPreference().edit().putBoolean(sContext.getString(prefKeyResid), value).commit();
+        getSharedPreference().edit().putBoolean(sContext.getString(prefKeyResid), value).apply();
     }
 
     /**
