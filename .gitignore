@@ -4,4 +4,6 @@
 .DS_Store
 /build
 gradle.properties
+twitter.properties
 app/keystore
+/projectFilesBackup

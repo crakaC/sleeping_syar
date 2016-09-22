@@ -6,12 +6,12 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_7
         targetCompatibility JavaVersion.VERSION_1_7
     }
-    compileSdkVersion 23
-    buildToolsVersion '23.0.3'
+    compileSdkVersion 24
+    buildToolsVersion '24.0.2'
     defaultConfig {
         applicationId 'com.crakac.ofuton'
         minSdkVersion 14
-        targetSdkVersion 23
+        targetSdkVersion 24
         versionCode 27
         versionName '2.0.0a'
     }
@@ -36,6 +36,11 @@ android {
             applicationIdSuffix '.debug'
             minifyEnabled false
         }
+        applicationVariants.all { variant ->
+            def twitterProps = getProps("app/twitter.properties")
+            variant.buildConfigField "String", "TWITTER_API_KEY", "\""+twitterProps["key"]+"\""
+            variant.buildConfigField "String", "TWITTER_API_SECRET", "\""+twitterProps["secret"]+"\""
+        }
     }
     packagingOptions {
         exclude 'META-INF/LICENSE.txt'
@@ -57,9 +62,9 @@ repositories {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile project(':volley')
-    compile 'com.android.support:support-annotations:23.4.0'
-    compile 'com.android.support:appcompat-v7:23.4.0'
-    compile 'com.android.support:design:23.4.0'
+    compile 'com.android.support:support-annotations:24.2.1'
+    compile 'com.android.support:appcompat-v7:24.2.1'
+    compile 'com.android.support:design:24.2.1'
     compile 'com.astuetz:pagerslidingtabstrip:1.0.1'
     compile 'com.github.chrisbanes.photoview:library:1.2.3'
     compile 'org.twitter4j:twitter4j-core:4.0.5'
@@ -67,12 +72,9 @@ dependencies {
     compile 'com.jakewharton:butterknife:7.0.1'
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 }
-buildscript {
-    ext.kotlin_version = '1.0.1-1'
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-    }
+
+def getProps(String key) {
+    def Properties props = new Properties()
+    props.load(new FileInputStream(new File(key)))
+    return props
 }

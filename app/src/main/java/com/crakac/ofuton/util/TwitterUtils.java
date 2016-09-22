@@ -10,6 +10,8 @@ import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
 import android.util.Log;
 
+import com.crakac.ofuton.BuildConfig;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -40,23 +42,20 @@ public class TwitterUtils {
     private static final String API_CONFIG_PREF = "api_config";
 	private static Context sContext;
 	private static Account sAccount;
-	private static String sConsumerKey;
-	private static String sConsumerSecret;
+	private static final String CONSUMER_KEY = BuildConfig.TWITTER_API_KEY;
+	private static final String CONSUMER_SECRET = BuildConfig.TWITTER_API_SECRET;
 
 	private TwitterUtils(){}
 
 	public static void init(Context context) {
 		sContext = context;
-		AuthKey authKey = new AuthKey(context);
-		sConsumerKey = authKey.getConsumerKey();
-		sConsumerSecret = authKey.getConsumerSecret();
 		sAccount = getCurrentAccount();
 	}
 
     private static ConfigurationBuilder baseConfiguratoinBuilder() {
         ConfigurationBuilder cb = new ConfigurationBuilder();
-        cb.setOAuthConsumerKey(sConsumerKey);
-        cb.setOAuthConsumerSecret(sConsumerSecret);
+        cb.setOAuthConsumerKey(CONSUMER_KEY);
+        cb.setOAuthConsumerSecret(CONSUMER_SECRET);
         cb.setHttpConnectionTimeout(HTTP_CONNECTION_TIMEOUT_MS);
         cb.setHttpReadTimeout(HTTP_READ_TIMEOUT_MS);
         return cb;
