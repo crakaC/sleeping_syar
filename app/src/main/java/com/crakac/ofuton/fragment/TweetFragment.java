@@ -263,6 +263,10 @@ public class TweetFragment extends Fragment implements View.OnClickListener {
         ContentResolver cr = getActivity().getContentResolver();
         String[] columns = {MediaStore.Images.Media.DATA};
         Cursor c = cr.query(uri, columns, null, null, null);
+        if(c == null){
+            AppUtil.showToast(getString(R.string.impossible));
+            return;
+        }
         c.moveToFirst();
         File imageFile = new File(c.getString(0));
         try {
@@ -277,6 +281,7 @@ public class TweetFragment extends Fragment implements View.OnClickListener {
             enableTweetButton(true);
             setRemainLength();
         }
+        c.close();
     }
 
     private void setAppendingImageDrawable(File appendingFile) {
@@ -288,6 +293,7 @@ public class TweetFragment extends Fragment implements View.OnClickListener {
 
     private void updateStatus() {
         mInputText.clearFocus();
+        enableTweetButton(false);
         StatusUpdate update = new StatusUpdate(mInputText.getText().toString());
         ParallelTask<StatusUpdate, Void, Status> task = new ParallelTask<StatusUpdate, Void, Status>() {
             @Override
@@ -315,6 +321,7 @@ public class TweetFragment extends Fragment implements View.OnClickListener {
                     }
                 } else {
                     AppUtil.showToast(R.string.impossible);
+                    enableTweetButton(true);
                 }
             }
         };
