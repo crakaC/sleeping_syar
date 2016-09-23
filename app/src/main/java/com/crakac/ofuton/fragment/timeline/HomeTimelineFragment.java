@@ -176,16 +176,15 @@ public class HomeTimelineFragment extends AbstractTimelineFragment implements Co
         @Override
         public void onStatus(final Status status) {
             if (mAdapter.getPosition(status) >= 0) return;
-            updateDisplayedTime();
             mSinceId = status.getId();
             mHandler.post(new Runnable() {
                 @Override
                 public void run() {
                     insertQuietly(status);
-                    if(isFirstItemVisible() && isCurrentTab() && isResumed()){
+                    if (isFirstItemVisible() && isCurrentTab() && isResumed()) {
                         mListView.smoothScrollToPosition(0);
                         mIsOverflowing = true;
-                    } else if(mIsOverflowing){
+                    } else if (mIsOverflowing) {
                         mListView.smoothScrollToPosition(0);
                     }
                     if (PrefUtil.getBoolean(R.string.notification)) {
@@ -206,6 +205,7 @@ public class HomeTimelineFragment extends AbstractTimelineFragment implements Co
                             }
                         }
                     }
+                    updateDisplayedTime();
                 }
             });
         }

@@ -62,6 +62,7 @@ public abstract class AbstractStatusFragment extends AbstractPtrFragment {
             savePosition();
         }
         mAdapter.insert(status, 0);
+        mAdapter.notifyDataSetChanged();
         restorePosition();
     }
 
