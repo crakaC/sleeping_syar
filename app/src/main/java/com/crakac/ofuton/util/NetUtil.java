@@ -217,14 +217,14 @@ public class NetUtil {
     }
 
     public static File download(Context context, String url, int notificationId) {
-        NotificationManager manager = (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
+        NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context);
         mBuilder.setContentTitle("ダウンロード中").setContentText("ダウンロード中").setSmallIcon(R.drawable.ic_file_download_white_18dp);
         mBuilder.setProgress(0, 0, true);
         manager.notify(notificationId, mBuilder.build());
         byte[] buf = new byte[4096];
         try {
-            String expandedUrl = NetUtil.expandUrlIfNecessary(getOriginalImageUrl(url));
+            String expandedUrl = NetUtil.expandUrlIfNecessary(url);
             HttpURLConnection conn = (HttpURLConnection) new URL(expandedUrl).openConnection();
             conn.setConnectTimeout(CONNECT_TIMEOUT);
             conn.setReadTimeout(READ_TIMEOUT);
@@ -254,15 +254,6 @@ public class NetUtil {
         mBuilder.setProgress(0, 0, false);
         manager.notify(notificationId, mBuilder.build());
         return null;
-    }
-
-    public static String getOriginalImageUrl(String url) {
-        if (!Uri.parse(url).getHost().equals("pbs.twimg.com")) return url;
-        int lastIndex = url.lastIndexOf(':');
-        if (lastIndex > url.indexOf(':'))
-            return url.substring(0, lastIndex).concat(":orig");
-        else
-            return url.concat(":orig");
     }
 
     private static String createFileName(String contentType) {
