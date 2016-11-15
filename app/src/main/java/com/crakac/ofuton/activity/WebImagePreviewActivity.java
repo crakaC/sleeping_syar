@@ -17,6 +17,7 @@ import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.View;
@@ -240,11 +241,13 @@ public class WebImagePreviewActivity extends FragmentActivity implements Preview
                 if (downloadedFile != null) {
                     Log.d("ImageDownloaded", downloadedFile.toString());
                     Intent i = new Intent(Intent.ACTION_VIEW);
-                    i.setDataAndType(Uri.fromFile(downloadedFile), "image/*");
+                    Uri fileUri = FileProvider.getUriForFile(getApplicationContext(), "com.crakac.fileprovider", downloadedFile);
+                    Log.d("FileURI", fileUri.toString());
+                    i.setDataAndType(fileUri, "image/*");
+                    i.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                     PendingIntent pi = PendingIntent.getActivity(getApplicationContext(), 0, i, 0);
                     NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext());
                     Bitmap icon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher);
-                    icon.setHasMipMap(true);
                     builder.setLargeIcon(icon)
                             .setSmallIcon(R.drawable.ic_file_download_white_18dp)
                             .setTicker(getString(R.string.complete_download))
