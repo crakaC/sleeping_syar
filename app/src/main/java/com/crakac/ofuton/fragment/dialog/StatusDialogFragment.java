@@ -271,7 +271,11 @@ public class StatusDialogFragment extends DialogFragment {
         } else {
             urlEntities = status.getURLEntities();
         }
+		boolean showImageInTimeline = PrefUtil.getBoolean(R.string.show_image_in_timeline);
         for (URLEntity url : urlEntities) {
+			if(showImageInTimeline && url.getDisplayURL().startsWith("pic.twitter.com/")){
+				continue;
+			}
             mActionAdapter.add(new LinkAction(getActivity(), url
                     .getExpandedURL()));
             urls.add(url.getExpandedURL());
