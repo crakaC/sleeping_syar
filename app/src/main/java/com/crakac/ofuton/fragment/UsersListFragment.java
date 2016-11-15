@@ -189,7 +189,7 @@ public class UsersListFragment extends Fragment{
 		private TreeSet<Long> selectedListIds;
 		private ImageView check;
 
-		public UsersListAdapter(Context context, TreeSet<Long> listIds) {
+		UsersListAdapter(Context context, TreeSet<Long> listIds) {
 			super(context, android.R.layout.simple_list_item_1);
 			mInflater = (LayoutInflater) context
 					.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);

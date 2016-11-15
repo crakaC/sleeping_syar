@@ -74,7 +74,6 @@ public class TweetStatusAdapter extends ArrayAdapter<Status> {
 
     public TweetStatusAdapter(Context context) {
         super(context, android.R.layout.simple_list_item_1);
-        Log.d(TAG, "constructor");
         sContext = context;
         sInflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
 

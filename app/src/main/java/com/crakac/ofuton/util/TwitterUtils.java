@@ -254,7 +254,7 @@ public class TwitterUtils {
 		while (c.moveToNext()) {
 			list.add(new TwitterList(
                     c.getLong(c.getColumnIndex(AccountDBAdapter.COL_USERID)),
-                    c.getInt(c.getColumnIndex(AccountDBAdapter.COL_LIST_ID)),
+                    c.getLong(c.getColumnIndex(AccountDBAdapter.COL_LIST_ID)),
                     c.getString(c.getColumnIndex(AccountDBAdapter.COL_LIST_NAME)),
                     c.getString(c.getColumnIndex(AccountDBAdapter.COL_LIST_LONGNAME))));
 		}
