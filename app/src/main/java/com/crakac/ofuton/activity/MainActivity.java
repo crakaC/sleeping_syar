@@ -1,10 +1,8 @@
 package com.crakac.ofuton.activity;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -19,18 +17,12 @@ import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.astuetz.PagerSlidingTabStrip;
@@ -63,10 +55,8 @@ public class MainActivity extends AppCompatActivity {
     public static final long TAB_ID_FAVORITE = 1;
     public static final long TAB_ID_MENTION = 2;
     public static final long TAB_ID_HOME = 3;
-    private static final String IS_SHOWN_TWEET_BTN = "is_shown_tweetbtn";
 
     private static final String TAG = MainActivity.class.getSimpleName();
-    private PagerSlidingTabStrip mTabs;
     private ViewPager mPager;
     private TimelineFragmentPagerAdapter mAdapter;
     private Menu mMenu;
@@ -77,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
     private NavigationView mNavigationView;
     private ActionBarDrawerToggle mDrawerToggle;
     private TweetFragment mTweetFragment;
+    private PagerSlidingTabStrip mTab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,16 +109,16 @@ public class MainActivity extends AppCompatActivity {
         actionbar.setHomeButtonEnabled(true);
         createNavigationDrawer();
 
-        mTabs = (PagerSlidingTabStrip) findViewById(R.id.pagerTabStrip);
+        mTab = (PagerSlidingTabStrip) findViewById(R.id.pagerTabStrip);
         mPager = (ViewPager) findViewById(R.id.pager);
         mAdapter = new TimelineFragmentPagerAdapter(this, mPager);
-        mTabs.setOnPageChangeListener(new RelativeTimeUpdater(mAdapter));
+        mTab.setOnPageChangeListener(new RelativeTimeUpdater(mAdapter));
         setPages(mAdapter);
         if (savedInstanceState == null) {
             mPager.setCurrentItem(getFragmentPosition(TAB_ID_HOME));// HomeTimelineの位置に合わせる
         }
         mPager.setOffscreenPageLimit(12);// 保持するFragmentの数を指定．全フラグメントを保持するのでぬるぬる動くがメモリを食う
-        mTabs.setViewPager(mPager);// PagerSlidingTabStripにViewPagerをセット．
+        mTab.setViewPager(mPager);// PagerSlidingTabStripにViewPagerをセット．
     }
 
     @Override
@@ -158,6 +149,8 @@ public class MainActivity extends AppCompatActivity {
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         }
         AppUtil.closeSearchView(mSearchView);
+        mTab.notifyDataSetChanged();
+
     }
 
     @Override
