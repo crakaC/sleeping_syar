@@ -41,6 +41,31 @@ public class GuessedMediaEntity implements MediaEntity {
     }
 
     @Override
+    public int getVideoAspectRatioWidth() {
+        return 0;
+    }
+
+    @Override
+    public int getVideoAspectRatioHeight() {
+        return 0;
+    }
+
+    @Override
+    public long getVideoDurationMillis() {
+        return 0;
+    }
+
+    @Override
+    public Variant[] getVideoVariants() {
+        return new Variant[0];
+    }
+
+    @Override
+    public String getExtAltText() {
+        return null;
+    }
+
+    @Override
     public String getText() {
         return mURLEntity.getText();
     }

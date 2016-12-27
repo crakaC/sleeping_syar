@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import twitter4j.ExtendedMediaEntity;
 import twitter4j.MediaEntity;
 
 /**
@@ -185,16 +184,15 @@ public class MultipleImagePreview extends FrameLayout {
             final BitmapImageView imageView = imageViews.get(i);
             final int position = i;
             imageView.setVisibility(View.VISIBLE);
-            MediaEntity me = mediaEntities.get(position);
+            final MediaEntity me = mediaEntities.get(position);
             if(hasVideoEntity(me)) {
                 videoIcon.setVisibility(View.VISIBLE);
-                final ExtendedMediaEntity e = (ExtendedMediaEntity)me;
                 imageView.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View v) {
                     Context context = getContext();
                     Intent intent = new Intent(context, VideoPreviewActivity.class);;
-                    intent.putExtra(C.MEDIA_ENTITY, e);
+                    intent.putExtra(C.MEDIA_ENTITY, me);
                     context.startActivity(intent);
                     }
                 });

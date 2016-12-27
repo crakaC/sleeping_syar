@@ -24,7 +24,6 @@ import com.crakac.ofuton.util.NetworkImageListener;
 import com.crakac.ofuton.widget.Rotatable;
 import com.crakac.ofuton.widget.Rotator;
 
-import twitter4j.ExtendedMediaEntity;
 import twitter4j.MediaEntity;
 import uk.co.senab.photoview.PhotoViewAttacher;
 
@@ -72,7 +71,7 @@ public class ImagePreviewFragment extends Fragment implements Rotatable {
 
     @Override
     public void onDestroyView() {
-        super.onDetach();
+        super.onDestroyView();
         if (mImageView != null) {
             mImageView.setImageBitmap(null);
         }

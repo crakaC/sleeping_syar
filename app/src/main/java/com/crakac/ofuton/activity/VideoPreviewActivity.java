@@ -38,13 +38,13 @@ import java.io.File;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnTouch;
-import twitter4j.ExtendedMediaEntity;
+import twitter4j.MediaEntity;
 
 public class VideoPreviewActivity extends Activity {
 
     private static final int PERMISSION_REQUEST_STORAGE = 8686;
 
-    private ExtendedMediaEntity mEntity;
+    private MediaEntity mEntity;
     @Bind(R.id.videoView) VideoView mVideoView;
     @Bind(R.id.progress) ProgressBar mProgressBar;
     @Bind(R.id.videoFrame) ImageView mFrame;
@@ -55,8 +55,8 @@ public class VideoPreviewActivity extends Activity {
         ButterKnife.bind(this);
         registerForContextMenu(mFrame);
         showProgress(true);
-        mEntity = (ExtendedMediaEntity) getIntent().getSerializableExtra(C.MEDIA_ENTITY);
-        for(ExtendedMediaEntity.Variant v : mEntity.getVideoVariants()){
+        mEntity = (MediaEntity) getIntent().getSerializableExtra(C.MEDIA_ENTITY);
+        for(MediaEntity.Variant v : mEntity.getVideoVariants()){
             if(v.getContentType().contains("mp4")){
                 mVideoView.setVideoURI(Uri.parse(v.getUrl()));
                 mVideoView.setMediaController(new MediaController(this));

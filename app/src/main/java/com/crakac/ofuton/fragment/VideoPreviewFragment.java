@@ -26,7 +26,6 @@ import com.crakac.ofuton.util.NetworkImageListener;
 import com.crakac.ofuton.widget.Rotatable;
 import com.crakac.ofuton.widget.Rotator;
 
-import twitter4j.ExtendedMediaEntity;
 import twitter4j.MediaEntity;
 import uk.co.senab.photoview.PhotoViewAttacher;
 
@@ -50,12 +49,10 @@ public class VideoPreviewFragment extends Fragment implements Rotatable{
         String url = getArguments().getString(C.URL);
         if(url == null){
             MediaEntity e = (MediaEntity) getArguments().getSerializable(C.MEDIA_ENTITY);
-            if(e instanceof ExtendedMediaEntity){
-                for(ExtendedMediaEntity.Variant v : ((ExtendedMediaEntity) e).getVideoVariants()){
-                    if(v.getContentType().contains("mp4")){
-                        url = v.getUrl();
-                        break;
-                    }
+            for(MediaEntity.Variant v : e.getVideoVariants()){
+                if(v.getContentType().contains("mp4")){
+                    url = v.getUrl();
+                    break;
                 }
             }
         }

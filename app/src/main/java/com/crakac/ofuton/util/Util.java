@@ -13,7 +13,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
-import twitter4j.ExtendedMediaEntity;
+import twitter4j.MediaEntity;
 import twitter4j.Twitter;
 import twitter4j.TwitterAPIConfiguration;
 
@@ -126,8 +126,8 @@ public class Util {
         return false;
     }
 
-    public static String getValidVideoUrl(ExtendedMediaEntity e){
-        for(ExtendedMediaEntity.Variant v : e.getVideoVariants()){
+    public static String getValidVideoUrl(MediaEntity e){
+        for(MediaEntity.Variant v : e.getVideoVariants()){
             if(v.getContentType().contains("mp4")){
                 return v.getUrl();
             }

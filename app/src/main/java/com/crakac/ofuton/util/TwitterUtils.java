@@ -54,10 +54,11 @@ public class TwitterUtils {
 
     private static ConfigurationBuilder baseConfiguratoinBuilder() {
         ConfigurationBuilder cb = new ConfigurationBuilder();
-        cb.setOAuthConsumerKey(CONSUMER_KEY);
-        cb.setOAuthConsumerSecret(CONSUMER_SECRET);
-        cb.setHttpConnectionTimeout(HTTP_CONNECTION_TIMEOUT_MS);
-        cb.setHttpReadTimeout(HTTP_READ_TIMEOUT_MS);
+        cb.setOAuthConsumerKey(CONSUMER_KEY)
+        .setOAuthConsumerSecret(CONSUMER_SECRET)
+        .setHttpConnectionTimeout(HTTP_CONNECTION_TIMEOUT_MS)
+        .setHttpReadTimeout(HTTP_READ_TIMEOUT_MS)
+		.setTweetModeExtended(true);
         return cb;
     }
 
@@ -69,8 +70,7 @@ public class TwitterUtils {
 	public static Twitter getTwitterInstanceWithoutToken() {
 		Configuration conf = baseConfiguratoinBuilder().build();
 		TwitterFactory factory = new TwitterFactory(conf);
-		Twitter twitter = factory.getInstance();
-		return twitter;
+		return factory.getInstance();
 	}
 
 	/**
@@ -357,12 +357,8 @@ public class TwitterUtils {
         };
     }
 
-    public static MediaEntity[] getTwitterMediaEntities(Status status){
-        return status.getExtendedMediaEntities().length > 0 ? status.getExtendedMediaEntities() : status.getMediaEntities();
-    }
-
     public static List<MediaEntity> getMediaEntities(Status status) {
-        MediaEntity[] mediaEntities = status.getExtendedMediaEntities().length > 0 ? status.getExtendedMediaEntities() : status.getMediaEntities();
+        MediaEntity[] mediaEntities = status.getMediaEntities();
         List<MediaEntity> guessedEntities = guessMediaEntities(status);
         Collections.addAll(guessedEntities, mediaEntities);
         Collections.sort(guessedEntities,sMediaEntityComparator);

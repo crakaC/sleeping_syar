@@ -39,7 +39,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import twitter4j.ExtendedMediaEntity;
 import twitter4j.MediaEntity;
 import twitter4j.URLEntity;
 
@@ -81,18 +80,14 @@ public class WebImagePreviewActivity extends FragmentActivity implements Preview
         } else if (mediaEntities != null) {
             for (int i = 0; i < mediaEntities.size(); i++) {
                 MediaEntity e = mediaEntities.get(i);
-                if(e instanceof ExtendedMediaEntity){
-                    boolean hasValidVideo = false;
-                    for(ExtendedMediaEntity.Variant v : ((ExtendedMediaEntity) e).getVideoVariants()){
-                        if(v.getContentType().contains("mp4")) {
-                            mAdapter.add(VideoPreviewFragment.class, createArgs(e, i), i);
-                            hasValidVideo = true;
-                        }
+                boolean hasValidVideo = false;
+                for(MediaEntity.Variant v : e.getVideoVariants()){
+                    if(v.getContentType().contains("mp4")) {
+                        mAdapter.add(VideoPreviewFragment.class, createArgs(e, i), i);
+                        hasValidVideo = true;
                     }
-                    if(hasValidVideo == false){
-                        mAdapter.add(ImagePreviewFragment.class, createArgs(e, i), i);
-                    }
-                } else {
+                }
+                if(!hasValidVideo){
                     mAdapter.add(ImagePreviewFragment.class, createArgs(e, i), i);
                 }
             }
@@ -116,19 +111,15 @@ public class WebImagePreviewActivity extends FragmentActivity implements Preview
     private List<String> extractUrl(List<MediaEntity> entities){
         List<String> ret = new ArrayList<>();
         for(MediaEntity e : entities){
-            if(e instanceof ExtendedMediaEntity){
-                boolean hasValidUrl = false;
-                for(ExtendedMediaEntity.Variant v : ((ExtendedMediaEntity) e).getVideoVariants()){
-                    if(v.getContentType().contains("mp4")){
-                        ret.add(v.getUrl());
-                        hasValidUrl = true;
-                        break;
-                    }
+            boolean hasValidUrl = false;
+            for(MediaEntity.Variant v :  e.getVideoVariants()){
+                if(v.getContentType().contains("mp4")){
+                    ret.add(v.getUrl());
+                    hasValidUrl = true;
+                    break;
                 }
-                if(!hasValidUrl) {
-                    ret.add(e.getMediaURLHttps());
-                }
-            }else {
+            }
+            if(!hasValidUrl) {
                 ret.add(e.getMediaURLHttps());
             }
         }
