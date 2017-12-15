@@ -27,7 +27,6 @@ import com.crakac.ofuton.widget.Rotatable;
 import com.crakac.ofuton.widget.Rotator;
 
 import twitter4j.MediaEntity;
-import uk.co.senab.photoview.PhotoViewAttacher;
 
 public class VideoPreviewFragment extends Fragment implements Rotatable{
     private VideoView mVideoView;

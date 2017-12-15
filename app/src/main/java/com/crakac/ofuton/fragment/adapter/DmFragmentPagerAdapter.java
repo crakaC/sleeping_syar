@@ -3,7 +3,9 @@ package com.crakac.ofuton.fragment.adapter;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 
-public class DmFragmentPagerAdapter extends SimpleFragmentPagerAdapter {
+import com.crakac.ofuton.fragment.dm.AbstractDmFragment;
+
+public class DmFragmentPagerAdapter extends SimpleFragmentPagerAdapter<AbstractDmFragment> {
 
     public DmFragmentPagerAdapter(FragmentActivity context, ViewPager pager) {
         super(context, pager);

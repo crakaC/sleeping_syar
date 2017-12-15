@@ -2,11 +2,10 @@ package com.crakac.ofuton.activity;
 
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
-public class FinishableActionbarActivity extends AppCompatActivity {
+abstract public class FinishableActionbarActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // TODO Auto-generated method stub

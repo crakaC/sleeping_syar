@@ -193,7 +193,7 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
                 removeAppendedImage();
                 return true;
             default:
-                return super.onContextItemSelected(item);
+                return false;
         }
     }
 

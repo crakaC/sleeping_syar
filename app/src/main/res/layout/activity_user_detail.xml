@@ -155,13 +155,12 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/tab" />
 
-
     <ImageView
         android:id="@+id/collapse"
         android:layout_above="@+id/pager"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_alignParentRight="true"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_alignParentEnd="true"
         android:background="@color/collapse_and_expand"
         android:src="@drawable/ic_expand_less_white_36dp" />
 

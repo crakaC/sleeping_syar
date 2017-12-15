@@ -4,7 +4,6 @@ package com.crakac.ofuton.activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.ActionBarActivity;
 
 import com.crakac.ofuton.R;
 import com.crakac.ofuton.fragment.UsersListFragment;

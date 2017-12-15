@@ -4,14 +4,12 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.ImageView;
 
 import com.crakac.ofuton.R;
 import com.crakac.ofuton.util.AppUtil;
-
-import uk.co.senab.photoview.PhotoViewAttacher;
-import uk.co.senab.photoview.PhotoViewAttacher.OnViewTapListener;
+import com.github.chrisbanes.photoview.OnViewTapListener;
+import com.github.chrisbanes.photoview.PhotoViewAttacher;
 
 abstract public class AbstractPreviewActivity extends FragmentActivity {
 
@@ -22,7 +20,7 @@ abstract public class AbstractPreviewActivity extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_photo_preview);
-        mImageView = (ImageView) findViewById(R.id.iv_photo);
+        mImageView = findViewById(R.id.iv_photo);
         mAttacher = new PhotoViewAttacher(mImageView);
         mAttacher.setOnViewTapListener(new OnViewTapListener() {
             @Override

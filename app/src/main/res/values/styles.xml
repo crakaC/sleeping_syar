@@ -78,23 +78,18 @@
         <item name="android:colorBackgroundCacheHint">@null</item>
         <item name="android:windowIsFloating">false</item>
         <item name="android:backgroundDimEnabled">false</item>
-        <item name="android:windowContentTransitions">true</item>
-        <item name="android:windowEnterTransition">@android:transition/fade</item>
-        <item name="android:windowExitTransition">@android:transition/fade</item>
     </style>
 
     <style name="HoloTab">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">30dp</item>
+        <item name="android:layout_height">32dp</item>
         <item name="android:background">?attr/colorPrimary</item>
-        <item name="android:textAppearance">@style/pagerTabStripText</item>
-        <item name="android:textColor">@color/tab_text</item>
-        <item name="android:textSize">12sp</item>
+        <item name="pstsTabTextColor">@color/tab_text</item>
+        <item name="pstsTabTextSize">12sp</item>
         <item name="pstsDividerColor">@android:color/transparent</item>
-        <item name="pstsIndicatorHeight">4dp</item>
+        <item name="pstsIndicatorHeight">2dp</item>
         <item name="pstsIndicatorColor">?attr/colorAccent</item>
         <item name="pstsUnderlineHeight">0dp</item>
-        <item name="pstsShouldExpand">true</item>
     </style>
 
 </resources>

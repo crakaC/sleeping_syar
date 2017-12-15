@@ -14,7 +14,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -24,7 +23,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.MediaController;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.VideoView;
 
 import com.crakac.ofuton.C;
@@ -35,9 +33,6 @@ import com.crakac.ofuton.util.Util;
 
 import java.io.File;
 
-import butterknife.Bind;
-import butterknife.ButterKnife;
-import butterknife.OnTouch;
 import twitter4j.MediaEntity;
 
 public class VideoPreviewActivity extends Activity {
@@ -45,14 +40,16 @@ public class VideoPreviewActivity extends Activity {
     private static final int PERMISSION_REQUEST_STORAGE = 8686;
 
     private MediaEntity mEntity;
-    @Bind(R.id.videoView) VideoView mVideoView;
-    @Bind(R.id.progress) ProgressBar mProgressBar;
-    @Bind(R.id.videoFrame) ImageView mFrame;
+    private VideoView mVideoView;
+    private ProgressBar mProgressBar;
+    private ImageView mFrame;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video_preview);
-        ButterKnife.bind(this);
+        mVideoView = findViewById(R.id.videoView);
+        mProgressBar = findViewById(R.id.progress);
+        mFrame = findViewById(R.id.videoFrame);
         registerForContextMenu(mFrame);
         showProgress(true);
         mEntity = (MediaEntity) getIntent().getSerializableExtra(C.MEDIA_ENTITY);
@@ -83,7 +80,6 @@ public class VideoPreviewActivity extends Activity {
         menu.add(R.string.download);
     }
 
-    @OnTouch(R.id.videoFrame)
     boolean onTouch(View v, MotionEvent me){
         return false;
     }

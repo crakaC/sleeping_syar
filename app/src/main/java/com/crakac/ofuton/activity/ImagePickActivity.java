@@ -10,7 +10,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -31,7 +31,7 @@ import java.util.List;
 /**
  * Created by kosukeshirakashi on 2014/11/20.
  */
-public class ImagePickActivity extends ActionBarActivity {
+public class ImagePickActivity extends AppCompatActivity {
 
     public static final String EXTRA_PICK_LIMIT = "limit";
     public static final String EXTRA_IMAGE_URIS = "extra_image_uris";
@@ -118,11 +118,11 @@ public class ImagePickActivity extends ActionBarActivity {
             ThumbnailTask task;
 
             ViewHolder(View v) {
-                image = (ImageView) v.findViewById(R.id.image);
+                image = v.findViewById(R.id.image);
                 check = v.findViewById(R.id.check);
             }
 
-            public void setSelected(boolean selected) {
+            void setSelected(boolean selected) {
                 check.setVisibility((selected) ? View.VISIBLE : View.GONE);
             }
         }
