@@ -79,6 +79,7 @@ public class UserDetailActivity extends FinishableActionbarActivity {
     private ProgressBar mloadingSpinner;
     private int mShortAnimeDuration;
     private ActionBar mActionbar;
+    private String mScreenName;
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
@@ -120,10 +121,12 @@ public class UserDetailActivity extends FinishableActionbarActivity {
         findAndInitViews();
 
         if (mTargetUser == null) {
-            loadUserAndSetRelationship(getIntent().getStringExtra(C.SCREEN_NAME));
+            mScreenName = getIntent().getStringExtra(C.SCREEN_NAME);
+            loadUserAndSetRelationship(mScreenName);
         } else {
             setContent(mTargetUser);
             loadRelationship(mTargetUser);
+            mScreenName = mTargetUser.getScreenName();
         }
     }
 
@@ -452,7 +455,7 @@ public class UserDetailActivity extends FinishableActionbarActivity {
             break;
         case R.id.menu_mention:
             i = new Intent(this, TweetActivity.class);
-            i.putExtra(C.SCREEN_NAME, mTargetUser.getScreenName());
+            i.putExtra(C.SCREEN_NAME, mScreenName);
             i.putExtra(C.USER, mTargetUser);
             startActivity(i);
             break;
