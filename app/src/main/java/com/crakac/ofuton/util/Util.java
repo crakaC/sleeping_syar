@@ -1,7 +1,11 @@
 package com.crakac.ofuton.util;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
 import java.io.Closeable;
@@ -12,16 +16,17 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
 
 import twitter4j.MediaEntity;
-import twitter4j.Twitter;
 import twitter4j.TwitterAPIConfiguration;
 
 public class Util {
 
     private Util(){}
 
-    public static void closeQuietly(Closeable c) {
+    static void closeQuietly(Closeable c) {
         if(c == null) return;
         try {
             c.close();
@@ -29,7 +34,7 @@ public class Util {
         }
     }
 
-    public static <T extends Serializable> T restoreFile(Context context, String fileName){
+    static <T extends Serializable> T restoreFile(Context context, String fileName){
         FileInputStream fis = null;
         ObjectInputStream ois = null;
         T obj = null;
@@ -46,7 +51,7 @@ public class Util {
         return obj;
     }
 
-    public static<T extends Serializable> void saveFile(Context context, T file, String fileName){
+    static<T extends Serializable> void saveFile(Context context, T file, String fileName){
         FileOutputStream fos = null;
         ObjectOutputStream oos = null;
         try {
@@ -61,14 +66,14 @@ public class Util {
         }
     }
 
-    public static int daysPast(long fromMs){
+    static int daysPast(long fromMs){
         int days = (int) ((System.currentTimeMillis() - fromMs) / (1000 * 60 * 60 * 24));
         Log.d("Days Past", days + "days past from " + fromMs);
         return days;
     }
 
-    public static final String MATCH_URL_HTTPS = "(https)(:\\/\\/[-_.!~*\\'()a-zA-Z0-9;\\/?:\\@&=+\\$,%#]+)";
-    public static final String MATCH_URL_HTTP = "(http)(:\\/\\/[-_.!~*\\'()a-zA-Z0-9;\\/?:\\@&=+\\$,%#]+)";
+    static final String MATCH_URL_HTTPS = "(https)(:\\/\\/[-_.!~*\\'()a-zA-Z0-9;\\/?:\\@&=+\\$,%#]+)";
+    static final String MATCH_URL_HTTP = "(http)(:\\/\\/[-_.!~*\\'()a-zA-Z0-9;\\/?:\\@&=+\\$,%#]+)";
 
     private static String blanks(int n){
         StringBuilder sb = new StringBuilder(n);
@@ -84,6 +89,35 @@ public class Util {
         text = text.replaceAll(MATCH_URL_HTTPS, Util.blanks(conf.getShortURLLengthHttps()));
         return text.length();
     }
+
+    public static boolean checkRuntimePermission(Activity activity, String permission, int requestId){
+        if (ContextCompat.checkSelfPermission(activity, permission) != PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(activity,
+                    new String[]{permission},
+                    requestId);
+            return false;
+        }
+        return true;
+    }
+
+    public static boolean checkRuntimePermissions(Activity activity, String[] permissions, int requestId){
+        ArrayList<String> notGrantedPermissions = new ArrayList<>();
+        for(String permission: permissions){
+            if(ContextCompat.checkSelfPermission(activity, permission) != PackageManager.PERMISSION_GRANTED){
+                notGrantedPermissions.add(permission);
+            }
+        }
+        if (notGrantedPermissions.isEmpty()){
+            return true;
+        } else {
+            ActivityCompat.requestPermissions(activity,
+                    notGrantedPermissions.toArray(new String[notGrantedPermissions.size()]),
+                    requestId);
+            return false;
+        }
+
+    }
+
 
     public static String parseSharedText(Uri data){
         StringBuilder sb = new StringBuilder();

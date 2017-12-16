@@ -1,5 +1,6 @@
 package com.crakac.ofuton.activity;
 
+import android.Manifest;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -46,6 +47,9 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
 
     private static final int REQUEST_SELECT_PICTURE = 1;
     private static final int REQUEST_CAMERA = 2;
+
+    private static final int EXTERNAL_STORAGE_PERMISSION_REQUEST = 11;
+    private static final int CAMERA_PERMISSION_REQUEST = 12;
 
     private static final int MAX_TWEET_LENGTH = 140;
     private static final int MAX_APPEND_PICTURE_EDGE_LENGTH = 1024;
@@ -336,11 +340,16 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
             case R.id.appendPic:
                 // 画像添付ボタン押下時の動作
                 // 画像を選びに行く．画像を選んだらonActivityResultが呼ばれる
+                if(!Util.checkRuntimePermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE, EXTERNAL_STORAGE_PERMISSION_REQUEST))
+                    return;
                 intent = new Intent(Intent.ACTION_PICK);
                 intent.setType("image/*");
                 startActivityForResult(intent, REQUEST_SELECT_PICTURE);
                 break;
             case R.id.picFromCamera:
+                if(!Util.checkRuntimePermission(this, Manifest.permission.CAMERA, CAMERA_PERMISSION_REQUEST))
+                    return;
+
                 String filename = System.currentTimeMillis() + ".jpg";
                 // コンテントプロバイダを使用し,ギャラリーに画像を保存. 保存したUriを取得.
                 ContentValues values = new ContentValues();

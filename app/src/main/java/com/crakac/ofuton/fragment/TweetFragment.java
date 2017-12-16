@@ -1,5 +1,6 @@
 package com.crakac.ofuton.fragment;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.ContentResolver;
@@ -67,6 +68,8 @@ public class TweetFragment extends Fragment implements View.OnClickListener {
     private ImageView mAppendedImageView;
     private Uri mImageUri;// カメラ画像添付用
     private View mRootView;
+
+    private static final String[] REQUIRED_PERMISSIONS = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA};
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -353,6 +356,8 @@ public class TweetFragment extends Fragment implements View.OnClickListener {
     }
 
     private void pickOrTakePicture() {
+        if (!Util.checkRuntimePermissions(getActivity(), REQUIRED_PERMISSIONS, 1))
+            return;
 
         //take picture intent
         String filename = System.currentTimeMillis() + ".jpg";
@@ -411,5 +416,6 @@ public class TweetFragment extends Fragment implements View.OnClickListener {
     public void hide() {
         if (mRootView == null) return;
         mRootView.setVisibility(View.GONE);
+
     }
 }
