@@ -79,7 +79,7 @@
     <string name="version_info">バージョン情報</string>
     <string name="drawer_open">open</string>
     <string name="drawer_close">close</string>
-    <string name="use_bigger_icon">アイコンを高画質に</string>
+    <string name="use_bigger_icon">アイコンを高画質で表示</string>
     <string name="show_image_in_timeline">タイムラインに画像を表示</string>
     <string name="add_animation">TweetをTween</string>
     <string name="goto_webpage">作者HP</string>

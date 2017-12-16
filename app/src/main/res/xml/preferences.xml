@@ -88,7 +88,7 @@
         <CheckBoxPreference
             android:defaultValue="true"
             android:key="@string/show_image_in_timeline"
-            android:summary="古めの端末だとキツイかも"
+            android:summary="ギガが気になる人はオフにするといいかも"
             android:title="@string/show_image_in_timeline"/>
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/others">
