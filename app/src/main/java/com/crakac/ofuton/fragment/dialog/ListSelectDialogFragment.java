@@ -84,13 +84,13 @@ public class ListSelectDialogFragment extends DialogFragment {
 					}
 				}
 			}
-			private void addList(long listId, final ProgressBar pBar, final ImageView check) {
+			private void addList(final long listId, final ProgressBar pBar, final ImageView check) {
 				pBar.setVisibility(View.VISIBLE);
-				ParallelTask<Long, Void, UserList> addTask = new ParallelTask<Long, Void, UserList>() {
+				ParallelTask<Void, UserList> addTask = new ParallelTask<Void, UserList>() {
 					@Override
-					protected UserList doInBackground(Long... params) {
+					protected UserList doInBackground() {
 						try {
-							return mTwitter.createUserListMember(params[0], userId);
+							return mTwitter.createUserListMember(listId, userId);
 						} catch (TwitterException e) {
 							e.printStackTrace();
 						}
@@ -107,18 +107,18 @@ public class ListSelectDialogFragment extends DialogFragment {
 						}
 					}
 				};
-				addTask.executeParallel(listId);
+				addTask.executeParallel();
 			}
 
-			private void removeList(long listId, final ProgressBar pBar, final ImageView check) {
+			private void removeList(final long listId, final ProgressBar pBar, final ImageView check) {
 				//プログレスバーを表示
 				check.setVisibility(View.INVISIBLE);
 				pBar.setVisibility(View.VISIBLE);
-				ParallelTask<Long, Void, UserList> removeTask = new ParallelTask<Long, Void, UserList>() {
+				ParallelTask<Void, UserList> removeTask = new ParallelTask<Void, UserList>() {
 					@Override
-					protected UserList doInBackground(Long... params) {
+					protected UserList doInBackground() {
 						try {
-							return mTwitter.destroyUserListMember(params[0], userId);
+							return mTwitter.destroyUserListMember(listId, userId);
 						} catch (TwitterException e) {
 							e.printStackTrace();
 						}
@@ -135,7 +135,7 @@ public class ListSelectDialogFragment extends DialogFragment {
 						pBar.setVisibility(View.GONE);
 					}
 				};
-				removeTask.executeParallel(listId);
+				removeTask.executeParallel();
 			}
 		});
 		return view;

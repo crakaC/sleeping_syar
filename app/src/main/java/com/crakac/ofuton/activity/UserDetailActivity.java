@@ -62,8 +62,8 @@ public class UserDetailActivity extends FinishableActionbarActivity {
     private PagerSlidingTabStrip mTab;
     private UserFragmentPagerAdapter mPagerAdapter;
     private ImageView mCollapseMark;
-    private ParallelTask<Long, Void, Relationship> mloadRelationTask;
-    private ParallelTask<String, Void, User> mLoadUserTask;
+    private ParallelTask<Void, Relationship> mloadRelationTask;
+    private ParallelTask<Void, User> mLoadUserTask;
     private static ProgressDialogFragment mDialog;
     private Twitter mTwitter;
     private User mTargetUser;
@@ -72,7 +72,7 @@ public class UserDetailActivity extends FinishableActionbarActivity {
     private RelationTask mChangeRelationTask;
     private ListSelectDialogFragment mListSelectDgFragment;
     private TwitterListAdapter mTwitterListAdapter;
-    private ParallelTask<Void, Void, List<UserList>> mLoadListTask;
+    private ParallelTask<Void, List<UserList>> mLoadListTask;
     private TextView mBioText, mLocationText, mUrlText, mRelationText;
     private NetworkImageView mIconImage;
     private ImageView mlockMark;
@@ -127,16 +127,16 @@ public class UserDetailActivity extends FinishableActionbarActivity {
         }
     }
 
-    private void loadUserAndSetRelationship(String screenName) {
+    private void loadUserAndSetRelationship(final String screenName) {
         if (mLoadUserTask != null && mLoadUserTask.getStatus() == AsyncTask.Status.RUNNING) {
             return;
         }
-        mLoadUserTask = new ParallelTask<String, Void, User>() {
+        mLoadUserTask = new ParallelTask<Void, User>() {
 
             @Override
-            protected User doInBackground(String... params) {
+            protected User doInBackground() {
                 try {
-                    return mTwitter.showUser(params[0]);
+                    return mTwitter.showUser(screenName);
                 } catch (TwitterException e) {
                     e.printStackTrace();
                 }
@@ -156,7 +156,7 @@ public class UserDetailActivity extends FinishableActionbarActivity {
             }
 
         };
-        mLoadUserTask.executeParallel(screenName);
+        mLoadUserTask.executeParallel();
     }
 
     /**
@@ -308,11 +308,14 @@ public class UserDetailActivity extends FinishableActionbarActivity {
         if (mloadRelationTask != null && mloadRelationTask.getStatus() == AsyncTask.Status.RUNNING) {
             return;
         }
-        mloadRelationTask = new ParallelTask<Long, Void, Relationship>() {
+        final long currentUserId = TwitterUtils.getCurrentAccountId();
+        final long targetUserId = user.getId();
+
+        mloadRelationTask = new ParallelTask<Void, Relationship>() {
             @Override
-            protected Relationship doInBackground(Long... params) {
+            protected Relationship doInBackground() {
                 try {
-                    return mTwitter.showFriendship(params[0], params[1]);
+                    return mTwitter.showFriendship(currentUserId, targetUserId);
                 } catch (TwitterException e) {
                     e.printStackTrace();
                 }
@@ -329,8 +332,7 @@ public class UserDetailActivity extends FinishableActionbarActivity {
                 }
             }
         };
-        long currentUserId = TwitterUtils.getCurrentAccountId();
-        mloadRelationTask.executeParallel(currentUserId, user.getId());
+        mloadRelationTask.executeParallel();
     }
 
     private void setRelationship(Relationship relationShip) {
@@ -535,7 +537,7 @@ public class UserDetailActivity extends FinishableActionbarActivity {
         void end();
     }
 
-    private class RelationTask extends ParallelTask<Void, Void, User> {
+    private class RelationTask extends ParallelTask<Void, User> {
         RelationTaskListener listener;
 
         public RelationTask(RelationTaskListener listener) {
@@ -549,7 +551,7 @@ public class UserDetailActivity extends FinishableActionbarActivity {
         }
 
         @Override
-        protected User doInBackground(Void... params) {
+        protected User doInBackground() {
             try {
                 return listener.action();
             } catch (TwitterException e) {
@@ -587,7 +589,7 @@ public class UserDetailActivity extends FinishableActionbarActivity {
      * リストを読み込み．キャッシュとかしないから毎回読み込む．15回/15min.(API1.1)
      */
     void loadList() {
-        mLoadListTask = new ParallelTask<Void, Void, List<UserList>>() {
+        mLoadListTask = new ParallelTask<Void, List<UserList>>() {
             TwitterException te = null;
             ProgressDialogFragment pgDialog;
 
@@ -598,7 +600,7 @@ public class UserDetailActivity extends FinishableActionbarActivity {
             }
 
             @Override
-            protected List<UserList> doInBackground(Void... params) {
+            protected List<UserList> doInBackground() {
                 try {
                     return mTwitter.getUserLists(TwitterUtils.getCurrentAccountId());
                 } catch (IllegalStateException e) {

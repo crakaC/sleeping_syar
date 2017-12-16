@@ -334,14 +334,14 @@ public class MainActivity extends AppCompatActivity {
         final TextView userName = (TextView) v.findViewById(R.id.screenName);
         final BitmapImageView iv = (BitmapImageView) v.findViewById(R.id.user_icon);
         final BitmapImageView bv = (BitmapImageView) v.findViewById(R.id.background);
-        ParallelTask<Void, Void, twitter4j.User> pt = new ParallelTask<Void, Void, twitter4j.User>() {
+        ParallelTask<Void, twitter4j.User> pt = new ParallelTask<Void, twitter4j.User>() {
             @Override
             protected void onPreExecute() {
                 userName.setText("@" + TwitterUtils.getCurrentAccount().getScreenName());
             }
 
             @Override
-            protected twitter4j.User doInBackground(Void... params) {
+            protected twitter4j.User doInBackground() {
                 try {
                     return TwitterUtils.getTwitterInstance().showUser(TwitterUtils.getCurrentAccountId());
                 } catch (TwitterException e) {

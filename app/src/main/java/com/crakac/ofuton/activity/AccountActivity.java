@@ -73,12 +73,12 @@ public class AccountActivity extends FinishableActionbarActivity{
             AppUtil.showToast(R.string.canceled);
             return;
         }
-		String verifier = intent.getData().getQueryParameter("oauth_verifier");
+		final String verifier = intent.getData().getQueryParameter("oauth_verifier");
         if(verifier == null){
             AppUtil.showToast(R.string.something_wrong);
             return; //if authentication denied, query parameter is denied=hogehoge
         }
-		ParallelTask<String, Void, AccessToken> task = new ParallelTask<String, Void, AccessToken>(){
+		ParallelTask<Void, AccessToken> task = new ParallelTask<Void, AccessToken>(){
 
 			@Override
 			protected void onPreExecute() {
@@ -86,10 +86,10 @@ public class AccountActivity extends FinishableActionbarActivity{
 			}
 
 			@Override
-			protected AccessToken doInBackground(String... params) {
+			protected AccessToken doInBackground() {
 				try {
 					Twitter tw = TwitterUtils.getTwitterInstanceWithoutToken();
-					return tw.getOAuthAccessToken(mRequestToken, params[0]);
+					return tw.getOAuthAccessToken(mRequestToken, verifier);
 				} catch (TwitterException e) {
 					e.printStackTrace();
 				}
@@ -106,15 +106,15 @@ public class AccountActivity extends FinishableActionbarActivity{
 				}
 			}
 		};
-		task.executeParallel(verifier);
+		task.executeParallel();
 	}
 	/**
 	 * Store AccessToken and user infomation
 	 * @param accessToken
 	 *
 	 */
-	private void successOAuth(AccessToken accessToken){
-		ParallelTask<AccessToken, Void, Boolean> task = new ParallelTask<AccessToken, Void, Boolean>() {
+	private void successOAuth(final AccessToken accessToken){
+		ParallelTask<Void, Boolean> task = new ParallelTask<Void, Boolean>() {
 
 			@Override
 			protected void onPreExecute() {
@@ -122,8 +122,8 @@ public class AccountActivity extends FinishableActionbarActivity{
 			}
 
 			@Override
-			protected Boolean doInBackground(AccessToken... params) {
-				TwitterUtils.storeAccessToken(params[0]);
+			protected Boolean doInBackground() {
+				TwitterUtils.storeAccessToken(accessToken);
 				return TwitterUtils.addAccount();
 			}
 
@@ -137,11 +137,11 @@ public class AccountActivity extends FinishableActionbarActivity{
 				}
 			}
 		};
-		task.executeParallel(accessToken);
+		task.executeParallel();
 	}
 
 	public void onClickFooter() {
-		ParallelTask<Void, Void, String> task = new ParallelTask<Void, Void, String>(){
+		ParallelTask<Void, String> task = new ParallelTask<Void, String>(){
 
 			@Override
 			protected void onPreExecute() {
@@ -149,7 +149,7 @@ public class AccountActivity extends FinishableActionbarActivity{
 			}
 
 			@Override
-			protected String doInBackground(Void... params) {
+			protected String doInBackground() {
 				try {
 					Twitter tw = TwitterUtils.getTwitterInstanceWithoutToken();
 					mRequestToken = tw.getOAuthRequestToken(mCallbackURL);

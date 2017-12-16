@@ -16,7 +16,7 @@ import java.io.IOException;
  * Created by kosukeshirakashi on 2014/11/20.
  */
 
-public class ThumbnailTask extends ParallelTask<Void, Bitmap, Bitmap> {
+public class ThumbnailTask extends ParallelTask<Bitmap, Bitmap> {
 
     private static ImageLruCache mBitmapCache = new ImageLruCache();
     private ContentResolver mContentResolver;
@@ -43,7 +43,7 @@ public class ThumbnailTask extends ParallelTask<Void, Bitmap, Bitmap> {
     }
 
     @Override
-    protected Bitmap doInBackground(Void... params) {
+    protected Bitmap doInBackground() {
         int orientation = getOrientation(mImageFileName);
         return getThumbnail(MediaStore.Images.Thumbnails.MICRO_KIND, orientation);
     }

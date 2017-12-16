@@ -18,7 +18,6 @@ import android.widget.ImageView;
 
 import com.crakac.ofuton.C;
 import com.crakac.ofuton.R;
-import com.crakac.ofuton.fragment.dialog.TweetInfoDialogFragment;
 import com.crakac.ofuton.util.AppUtil;
 import com.crakac.ofuton.util.BitmapUtil;
 import com.crakac.ofuton.util.ParallelTask;
@@ -32,7 +31,6 @@ import java.io.IOException;
 
 import twitter4j.Status;
 import twitter4j.StatusUpdate;
-import twitter4j.TwitterAPIConfiguration;
 import twitter4j.TwitterException;
 import twitter4j.User;
 import twitter4j.UserMentionEntity;
@@ -299,20 +297,20 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
 
     private void updateStatus() {
         mIsUpdatingStatus = true;
-        StatusUpdate update = new StatusUpdate(mInputText.getText().toString());
+        final StatusUpdate update = new StatusUpdate(mInputText.getText().toString());
         if (mReplyId > 0) {
             update.setInReplyToStatusId(mReplyId);
         }
-        ParallelTask<StatusUpdate, Void, Status> task = new ParallelTask<StatusUpdate, Void, Status>() {
+        ParallelTask<Void, Status> task = new ParallelTask<Void, Status>() {
             @Override
-            protected twitter4j.Status doInBackground(StatusUpdate... params) {
+            protected twitter4j.Status doInBackground() {
                 try {
                     // 画像が指定されていたら添付
                     if (mAppendingFile != null) {
-                        params[0].media(mAppendingFile);
+                        update.media(mAppendingFile);
                     }
-                    TwitterUtils.checkUpdateName(params[0].getStatus());
-                    return TwitterUtils.getTwitterInstance().updateStatus(params[0]);
+                    TwitterUtils.checkUpdateName(update.getStatus());
+                    return TwitterUtils.getTwitterInstance().updateStatus(update);
                 } catch (TwitterException e) {
                     e.printStackTrace();
                 }
@@ -328,7 +326,7 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
                 mIsUpdatingStatus = false;
             }
         };
-        task.executeParallel(update);
+        task.executeParallel();
     }
 
     @Override

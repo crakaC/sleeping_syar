@@ -121,11 +121,10 @@ public class ComposeDmActivity extends FinishableActionbarActivity {
 
     private void sendDM() {
         final String text = mInputText.getText().toString();
-        ParallelTask<Void, Void, DirectMessage> task = new SendDmTask(mTwitter, screenName, text);
-        task.executeParallel();
+        new SendDmTask(mTwitter, screenName, text).executeParallel();
     }
 
-    static class SendDmTask extends ParallelTask<Void, Void, DirectMessage>{
+    static class SendDmTask extends ParallelTask<Void, DirectMessage>{
         private Twitter mTwitter;
         private String screenName;
         private String text;
@@ -136,7 +135,7 @@ public class ComposeDmActivity extends FinishableActionbarActivity {
         }
 
         @Override
-        protected DirectMessage doInBackground(Void... params) {
+        protected DirectMessage doInBackground() {
             try {
                 return mTwitter.sendDirectMessage(screenName, text);
             } catch (TwitterException e) {

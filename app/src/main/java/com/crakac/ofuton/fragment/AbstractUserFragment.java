@@ -20,7 +20,7 @@ import twitter4j.User;
 public abstract class AbstractUserFragment extends AbstractPtrFragment {
 
 	private UserAdapter mAdapter;
-	private ParallelTask<Void, Void, PagableResponseList<User>> mLoadTask;
+	private ParallelTask<Void, PagableResponseList<User>> mLoadTask;
 	private long mCursor;
 	private static final String TAG = AbstractUserFragment.class.getSimpleName();
 	protected Twitter mTwitter;
@@ -92,7 +92,7 @@ public abstract class AbstractUserFragment extends AbstractPtrFragment {
 	}
 
 	class FetchUsersTask extends
-			ParallelTask<Void, Void, PagableResponseList<User>> {
+			ParallelTask<Void, PagableResponseList<User>> {
 		@Override
 		protected void onPreExecute() {
 			super.onPreExecute();
@@ -105,7 +105,7 @@ public abstract class AbstractUserFragment extends AbstractPtrFragment {
 
 		@Override
 		protected PagableResponseList<User> doInBackground(
-				Void... params) {
+				) {
 			return fetchNextUser(mCursor);
 		}
 

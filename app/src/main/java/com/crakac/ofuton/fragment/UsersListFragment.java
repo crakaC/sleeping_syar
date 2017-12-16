@@ -35,7 +35,7 @@ public class UsersListFragment extends Fragment{
 	private static final String TAG = UsersListFragment.class.getSimpleName();
 	private UsersListAdapter mAdapter;
 	private TreeSet<Long> mCurrentListIdSet, mInitialListIdSet;
-	private ParallelTask<Void, Void, List<UserList>> mLoadListTask;
+	private ParallelTask<Void, List<UserList>> mLoadListTask;
 	private ProgressTextView mEmptyView;
 
 	@Override
@@ -66,7 +66,7 @@ public class UsersListFragment extends Fragment{
 		lv.setAdapter(mAdapter);
 		lv.setOnItemClickListener(new OnItemClickListener() {
 			ImageView checkMark;
-			ParallelTask<Void, Void, Boolean> addTask, removeTask;
+			ParallelTask<Void, Boolean> addTask, removeTask;
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int pos,
 					long id) {
@@ -91,9 +91,9 @@ public class UsersListFragment extends Fragment{
 				if(addTask != null && addTask.getStatus() == AsyncTask.Status.RUNNING){
 					return;
 				}
-				addTask = new ParallelTask<Void, Void, Boolean>() {
+				addTask = new ParallelTask<Void, Boolean>() {
 					@Override
-					protected Boolean doInBackground(Void... params) {
+					protected Boolean doInBackground() {
 						return TwitterUtils.addList(list);
 					}
 					@Override
@@ -114,9 +114,9 @@ public class UsersListFragment extends Fragment{
 				if(removeTask != null && removeTask.getStatus() == AsyncTask.Status.RUNNING){
 					return;
 				}
-				removeTask = new ParallelTask<Void, Void, Boolean>() {
+				removeTask = new ParallelTask<Void, Boolean>() {
 					@Override
-					protected Boolean doInBackground(Void... params) {
+					protected Boolean doInBackground() {
 						return TwitterUtils.removeList(list);
 					}
 					@Override
@@ -150,13 +150,13 @@ public class UsersListFragment extends Fragment{
 		if(mLoadListTask != null && mLoadListTask.getStatus() == AsyncTask.Status.RUNNING){
 			return;
 		}
-		mLoadListTask = new ParallelTask<Void, Void, List<UserList>>(){
+		mLoadListTask = new ParallelTask<Void, List<UserList>>(){
 		    @Override
 		    protected void onPreExecute() {
 		        mEmptyView.loading();
 		    }
 			@Override
-			protected List<UserList> doInBackground(Void... params) {
+			protected List<UserList> doInBackground() {
 				try {
 					return TwitterUtils.getTwitterInstance().getUserLists(TwitterUtils.getCurrentAccountId());
 				} catch (IllegalStateException e) {

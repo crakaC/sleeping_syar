@@ -114,14 +114,14 @@ public class AccountListFragment extends Fragment{
 
 			remove.setOnClickListener(new OnClickListener() {
 				public void onClick(View v) {
-					ParallelTask<Void, Void, Void> task = new ParallelTask<Void, Void, Void>() {
+					ParallelTask<Void, Void> task = new ParallelTask<Void, Void>() {
 						@Override
 						protected void onPreExecute() {
 							mDialogManager.showProgress("削除中");
 						}
 
 						@Override
-						protected Void doInBackground(Void... params) {
+						protected Void doInBackground() {
 							TwitterUtils.removeAccount(user);
 							return null;
 						}

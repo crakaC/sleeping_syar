@@ -269,10 +269,10 @@ public class TwitterUtils {
         if(Util.daysPast(fechedOn) == 0){
             return;
         }
-        new ParallelTask<Void, Void, TwitterAPIConfiguration>() {
+        new ParallelTask<Void, TwitterAPIConfiguration>() {
 
             @Override
-            protected TwitterAPIConfiguration doInBackground(Void... params) {
+            protected TwitterAPIConfiguration doInBackground() {
                 try {
                     return TwitterUtils.getTwitterInstance().getAPIConfiguration();
                 } catch (TwitterException e) {

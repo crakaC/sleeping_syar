@@ -193,7 +193,7 @@ public final class AppUtil {
     }
 
     public static void syar(final SyarListener listener) {
-        ParallelTask<Void, Void, twitter4j.Status> task = new ParallelTask<Void, Void, twitter4j.Status>() {
+        ParallelTask<Void, twitter4j.Status> task = new ParallelTask<Void, twitter4j.Status>() {
             String syar;
 
             private int getSyarCount() {
@@ -216,7 +216,7 @@ public final class AppUtil {
             }
 
             @Override
-            protected twitter4j.Status doInBackground(Void... arg) {
+            protected twitter4j.Status doInBackground() {
                 try {
                     return TwitterUtils.getTwitterInstance().updateStatus(syar);
                 } catch (TwitterException e) {

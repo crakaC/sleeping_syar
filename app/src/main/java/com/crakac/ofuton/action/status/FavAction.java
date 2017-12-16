@@ -32,9 +32,9 @@ public class FavAction extends ClickAction {
 
 	@Override
 	public void doAction() {
-		ParallelTask<Void, Void, twitter4j.Status>task = new ParallelTask<Void, Void, twitter4j.Status>() {
+		ParallelTask<Void, twitter4j.Status>task = new ParallelTask<Void, twitter4j.Status>() {
 			@Override
-			protected twitter4j.Status doInBackground(Void... params) {
+			protected twitter4j.Status doInBackground() {
 				Twitter mTwitter = TwitterUtils.getTwitterInstance();
 				try {
 					if (selectedStatus.isFavorited()) {

@@ -66,14 +66,14 @@ public class UserSearchFragment extends AbstractPtrFragment implements SearchAct
         searchUser();
     }
 
-    private class UserSearchTask extends ParallelTask<Void, Void, ResponseList<User>> {
+    private class UserSearchTask extends ParallelTask<Void, ResponseList<User>> {
         @Override
         protected void onPreExecute() {
             setEmptyViewLoading();
         }
 
         @Override
-        protected ResponseList<User> doInBackground(Void... params) {
+        protected ResponseList<User> doInBackground() {
             try {
                 return TwitterUtils.getTwitterInstance().searchUsers(mQuery, mPage);
             } catch (TwitterException e) {

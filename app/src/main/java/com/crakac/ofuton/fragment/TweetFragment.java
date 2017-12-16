@@ -17,7 +17,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -25,9 +24,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.crakac.ofuton.C;
@@ -294,17 +291,17 @@ public class TweetFragment extends Fragment implements View.OnClickListener {
     private void updateStatus() {
         mInputText.clearFocus();
         enableTweetButton(false);
-        StatusUpdate update = new StatusUpdate(mInputText.getText().toString());
-        ParallelTask<StatusUpdate, Void, Status> task = new ParallelTask<StatusUpdate, Void, Status>() {
+        final StatusUpdate update = new StatusUpdate(mInputText.getText().toString());
+        ParallelTask<Void, Status> task = new ParallelTask<Void, Status>() {
             @Override
-            protected twitter4j.Status doInBackground(StatusUpdate... params) {
+            protected twitter4j.Status doInBackground() {
                 try {
                     // 画像が指定されていたら添付
                     if (mAppendingFile != null) {
-                        params[0].media(mAppendingFile);
+                        update.media(mAppendingFile);
                     }
-                    TwitterUtils.checkUpdateName(params[0].getStatus());
-                    return TwitterUtils.getTwitterInstance().updateStatus(params[0]);
+                    TwitterUtils.checkUpdateName(update.getStatus());
+                    return TwitterUtils.getTwitterInstance().updateStatus(update);
                 } catch (TwitterException e) {
                     e.printStackTrace();
                 }
@@ -325,7 +322,7 @@ public class TweetFragment extends Fragment implements View.OnClickListener {
                 }
             }
         };
-        task.executeParallel(update);
+        task.executeParallel();
     }
 
     @Override

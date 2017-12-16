@@ -29,7 +29,7 @@ abstract public class AbstractDmFragment extends AbstractPtrFragment {
 	int mCount = 20;
 	private DmAdapter mAdapter;
 	protected Twitter mTwitter;
-	private ParallelTask<Void, Void, List<DirectMessage>> fetchNewTask,
+	private ParallelTask<Void, List<DirectMessage>> fetchNewTask,
 			fetchPreviousTask;
 	private static final String TAG = DmActivity.class.getSimpleName();
 
@@ -146,7 +146,7 @@ abstract public class AbstractDmFragment extends AbstractPtrFragment {
 		return task != null && task.getStatus() == AsyncTask.Status.RUNNING;
 	}
 
-	private class FetchDirectMessageTask extends ParallelTask<Void, Void, List<DirectMessage>>{
+	private class FetchDirectMessageTask extends ParallelTask<Void, List<DirectMessage>>{
 		@Override
 		protected void onPreExecute() {
 			setEmptyViewLoading();
@@ -154,7 +154,7 @@ abstract public class AbstractDmFragment extends AbstractPtrFragment {
 		}
 
 		@Override
-		protected List<DirectMessage> doInBackground(Void... params) {
+		protected List<DirectMessage> doInBackground() {
 			return fetchMessages(mMaxId, mCount);
 		}
 
@@ -186,10 +186,10 @@ abstract public class AbstractDmFragment extends AbstractPtrFragment {
 		}
 	}
 
-	private class FetchNewMessageTask extends ParallelTask<Void, Void, List<DirectMessage>> {
+	private class FetchNewMessageTask extends ParallelTask<Void, List<DirectMessage>> {
 
 		@Override
-		protected List<DirectMessage> doInBackground(Void... params) {
+		protected List<DirectMessage> doInBackground() {
 			return newMessages(mSinceId, mCount);
 		}
 

@@ -22,7 +22,7 @@ public abstract class AbstractTimelineFragment extends AbstractStatusFragment {
 
     protected long mSinceId, mMaxId;// ツイートを取得するときに使う．
     int mCount = 50;
-    private ParallelTask<Void, Void, List<twitter4j.Status>> mFetchStatusTask;
+    private ParallelTask<Void, List<twitter4j.Status>> mFetchStatusTask;
     private static final String TAG = AbstractTimelineFragment.class.getSimpleName();
     protected long mUserId;
 
@@ -117,7 +117,7 @@ public abstract class AbstractTimelineFragment extends AbstractStatusFragment {
         terminateTask(mFetchStatusTask);
     }
 
-    class FetchStatusTask extends ParallelTask<Void, Void, List<twitter4j.Status>> {
+    class FetchStatusTask extends ParallelTask<Void, List<twitter4j.Status>> {
         @Override
         protected void onPreExecute() {
             setEmptyViewLoading();
@@ -125,7 +125,7 @@ public abstract class AbstractTimelineFragment extends AbstractStatusFragment {
         }
 
         @Override
-        protected List<twitter4j.Status> doInBackground(Void... params) {
+        protected List<twitter4j.Status> doInBackground() {
             return previousStatuses(mMaxId, mCount);
         }
 
@@ -165,9 +165,9 @@ public abstract class AbstractTimelineFragment extends AbstractStatusFragment {
 
     ;
 
-    class FetchNewStatusTask extends ParallelTask<Void, Void, List<twitter4j.Status>> {
+    class FetchNewStatusTask extends ParallelTask<Void, List<twitter4j.Status>> {
         @Override
-        protected List<twitter4j.Status> doInBackground(Void... params) {
+        protected List<twitter4j.Status> doInBackground() {
             return newStatuses(mSinceId, 200);
         }
 
