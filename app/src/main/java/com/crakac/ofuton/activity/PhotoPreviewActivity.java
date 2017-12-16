@@ -7,7 +7,6 @@ import android.support.v4.content.Loader;
 import android.util.Log;
 
 import com.crakac.ofuton.C;
-import com.crakac.ofuton.activity.AbstractPreviewActivity;
 import com.crakac.ofuton.util.AsyncBitmapLoader;
 
 import java.io.File;

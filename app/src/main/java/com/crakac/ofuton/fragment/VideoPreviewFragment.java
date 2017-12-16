@@ -1,8 +1,5 @@
 package com.crakac.ofuton.fragment;
 
-import android.app.Activity;
-import android.content.Context;
-import android.graphics.Bitmap;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -11,18 +8,12 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.MediaController;
 import android.widget.ProgressBar;
 import android.widget.VideoView;
 
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.ImageLoader;
 import com.crakac.ofuton.C;
 import com.crakac.ofuton.R;
-import com.crakac.ofuton.util.AppUtil;
-import com.crakac.ofuton.util.NetUtil;
-import com.crakac.ofuton.util.NetworkImageListener;
 import com.crakac.ofuton.widget.Rotatable;
 import com.crakac.ofuton.widget.Rotator;
 

@@ -17,9 +17,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.crakac.ofuton.R;
-import com.crakac.ofuton.util.ReloadChecker;
 import com.crakac.ofuton.util.AppUtil;
 import com.crakac.ofuton.util.ParallelTask;
+import com.crakac.ofuton.util.ReloadChecker;
 import com.crakac.ofuton.util.TwitterList;
 import com.crakac.ofuton.util.TwitterUtils;
 import com.crakac.ofuton.widget.ProgressTextView;

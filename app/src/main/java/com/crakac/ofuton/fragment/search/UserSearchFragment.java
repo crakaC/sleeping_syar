@@ -6,14 +6,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.crakac.ofuton.activity.SearchActivity;
-import com.crakac.ofuton.fragment.AbstractPtrFragment;
 import com.crakac.ofuton.C;
 import com.crakac.ofuton.R;
+import com.crakac.ofuton.activity.SearchActivity;
 import com.crakac.ofuton.adapter.UserAdapter;
-import com.crakac.ofuton.util.UserListClickListener;
+import com.crakac.ofuton.fragment.AbstractPtrFragment;
 import com.crakac.ofuton.util.ParallelTask;
 import com.crakac.ofuton.util.TwitterUtils;
+import com.crakac.ofuton.util.UserListClickListener;
 
 import twitter4j.ResponseList;
 import twitter4j.TwitterException;

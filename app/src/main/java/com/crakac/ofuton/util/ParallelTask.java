@@ -1,10 +1,6 @@
 package com.crakac.ofuton.util;
 
-import android.annotation.SuppressLint;
 import android.os.AsyncTask;
-import android.os.Build;
-
-import java.util.concurrent.RejectedExecutionException;
 
 abstract public class ParallelTask<Progress, Result> extends AsyncTask< Class<Void>, Progress, Result> {
 

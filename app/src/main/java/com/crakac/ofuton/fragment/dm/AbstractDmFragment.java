@@ -9,11 +9,11 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.crakac.ofuton.C;
 import com.crakac.ofuton.activity.DmActivity;
 import com.crakac.ofuton.adapter.DmAdapter;
 import com.crakac.ofuton.fragment.AbstractPtrFragment;
 import com.crakac.ofuton.fragment.dialog.DmDialogFragment;
-import com.crakac.ofuton.C;
 import com.crakac.ofuton.util.AppUtil;
 import com.crakac.ofuton.util.ParallelTask;
 import com.crakac.ofuton.util.TwitterUtils;

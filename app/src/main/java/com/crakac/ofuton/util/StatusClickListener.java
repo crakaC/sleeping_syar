@@ -5,8 +5,8 @@ import android.view.View;
 import android.widget.AdapterView;
 
 import com.crakac.ofuton.C;
-import com.crakac.ofuton.fragment.dialog.StatusDialogFragment;
 import com.crakac.ofuton.fragment.AbstractStatusFragment;
+import com.crakac.ofuton.fragment.dialog.StatusDialogFragment;
 
 public class StatusClickListener implements AdapterView.OnItemClickListener {
     private AbstractStatusFragment mFragment;

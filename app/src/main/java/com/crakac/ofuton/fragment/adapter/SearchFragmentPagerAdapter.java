@@ -2,13 +2,7 @@ package com.crakac.ofuton.fragment.adapter;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
-
-import com.crakac.ofuton.fragment.search.TweetSearchFragment;
-import com.crakac.ofuton.fragment.search.UserSearchFragment;
-
-import java.util.List;
 
 /**
  * Created by kosukeshirakashi on 2014/10/03.

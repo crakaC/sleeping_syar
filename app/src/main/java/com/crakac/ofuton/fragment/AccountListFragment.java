@@ -19,15 +19,15 @@ import android.widget.TextView;
 
 import com.android.volley.toolbox.NetworkImageView;
 import com.crakac.ofuton.C;
-import com.crakac.ofuton.activity.MainActivity;
 import com.crakac.ofuton.R;
-import com.crakac.ofuton.util.ReloadChecker;
 import com.crakac.ofuton.activity.AccountActivity;
+import com.crakac.ofuton.activity.MainActivity;
 import com.crakac.ofuton.activity.UserDetailActivity;
 import com.crakac.ofuton.util.Account;
 import com.crakac.ofuton.util.DialogManager;
 import com.crakac.ofuton.util.NetUtil;
 import com.crakac.ofuton.util.ParallelTask;
+import com.crakac.ofuton.util.ReloadChecker;
 import com.crakac.ofuton.util.TwitterUtils;
 
 import java.util.ArrayList;

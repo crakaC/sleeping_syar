@@ -5,8 +5,8 @@ import android.content.Intent;
 
 import com.crakac.ofuton.C;
 import com.crakac.ofuton.R;
-import com.crakac.ofuton.activity.ComposeDmActivity;
 import com.crakac.ofuton.action.status.ClickAction;
+import com.crakac.ofuton.activity.ComposeDmActivity;
 
 public class DmReplyAction extends ClickAction {
 	private twitter4j.DirectMessage dm;

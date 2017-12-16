@@ -17,12 +17,12 @@ import android.widget.ListView;
 
 import com.crakac.ofuton.C;
 import com.crakac.ofuton.R;
-import com.crakac.ofuton.adapter.DmAdapter;
-import com.crakac.ofuton.action.dm.DmReplyAction;
 import com.crakac.ofuton.action.ClickActionAdapter;
+import com.crakac.ofuton.action.dm.DmReplyAction;
 import com.crakac.ofuton.action.status.ClickAction;
 import com.crakac.ofuton.action.status.LinkAction;
 import com.crakac.ofuton.action.status.UserDetailAction;
+import com.crakac.ofuton.adapter.DmAdapter;
 import com.crakac.ofuton.util.AppUtil;
 import com.crakac.ofuton.util.TwitterUtils;
 

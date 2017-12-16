@@ -21,8 +21,8 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 
 import com.crakac.ofuton.R;
-import com.crakac.ofuton.fragment.AbstractStatusFragment;
 import com.crakac.ofuton.adapter.TwitterListAdapter;
+import com.crakac.ofuton.fragment.AbstractStatusFragment;
 import com.crakac.ofuton.util.AppUtil;
 import com.crakac.ofuton.util.ParallelTask;
 import com.crakac.ofuton.util.TwitterList;

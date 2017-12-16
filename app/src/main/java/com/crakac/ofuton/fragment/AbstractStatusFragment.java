@@ -5,8 +5,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.crakac.ofuton.util.StatusClickListener;
 import com.crakac.ofuton.adapter.TweetStatusAdapter;
+import com.crakac.ofuton.util.StatusClickListener;
 import com.crakac.ofuton.util.TwitterUtils;
 
 import twitter4j.Status;

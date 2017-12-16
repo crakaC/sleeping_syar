@@ -13,7 +13,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.NotificationCompat;
@@ -40,7 +39,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import twitter4j.MediaEntity;
-import twitter4j.URLEntity;
 
 public class WebImagePreviewActivity extends FragmentActivity implements PreviewNavigation.NavigationListener, Rotator {
     private HackyViewPager mPager;

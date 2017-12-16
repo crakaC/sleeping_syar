@@ -9,9 +9,9 @@ import android.view.ViewGroup;
 
 import com.crakac.ofuton.C;
 import com.crakac.ofuton.adapter.UserAdapter;
-import com.crakac.ofuton.util.UserListClickListener;
 import com.crakac.ofuton.util.ParallelTask;
 import com.crakac.ofuton.util.TwitterUtils;
+import com.crakac.ofuton.util.UserListClickListener;
 
 import twitter4j.PagableResponseList;
 import twitter4j.Twitter;

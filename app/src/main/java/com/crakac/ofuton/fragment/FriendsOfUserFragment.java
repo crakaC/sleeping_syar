@@ -1,7 +1,5 @@
 package com.crakac.ofuton.fragment;
 
-import com.crakac.ofuton.fragment.AbstractUserFragment;
-
 import twitter4j.PagableResponseList;
 import twitter4j.TwitterException;
 import twitter4j.User;

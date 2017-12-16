@@ -1,21 +1,12 @@
 package com.crakac.ofuton.fragment.adapter;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 
 import com.crakac.ofuton.C;
 import com.crakac.ofuton.fragment.timeline.AbstractTimelineFragment;
-import com.crakac.ofuton.fragment.timeline.FavoriteTimelineFragment;
-import com.crakac.ofuton.fragment.timeline.HomeTimelineFragment;
 import com.crakac.ofuton.fragment.timeline.ListTimelineFragment;
-import com.crakac.ofuton.fragment.timeline.MentionsTimelineFragment;
-
-import java.util.ArrayList;
-import java.util.Stack;
 
 public class TimelineFragmentPagerAdapter extends SimpleFragmentPagerAdapter<AbstractTimelineFragment> {
 

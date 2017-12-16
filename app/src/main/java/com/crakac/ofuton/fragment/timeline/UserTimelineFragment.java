@@ -1,6 +1,5 @@
 package com.crakac.ofuton.fragment.timeline;
 
-import com.crakac.ofuton.fragment.timeline.AbstractTimelineFragment;
 import com.crakac.ofuton.util.AppUtil;
 
 import java.util.List;

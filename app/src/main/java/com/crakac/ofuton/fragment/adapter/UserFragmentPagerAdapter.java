@@ -2,11 +2,8 @@ package com.crakac.ofuton.fragment.adapter;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 
-import com.crakac.ofuton.fragment.AbstractStatusFragment;
-import com.crakac.ofuton.fragment.AbstractUserFragment;
 import com.crakac.ofuton.util.AppUtil;
 
 public class UserFragmentPagerAdapter extends SimpleFragmentPagerAdapter<Fragment> {
