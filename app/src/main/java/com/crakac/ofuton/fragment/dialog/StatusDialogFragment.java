@@ -109,7 +109,9 @@ public class StatusDialogFragment extends DialogFragment {
 				ListView lv = (ListView) parent;
 				ClickAction item = (ClickAction) lv
 						.getItemAtPosition(position);
-				mDialog.dismiss();
+				if(mDialog != null){
+					mDialog.dismiss();
+				}
 				item.doAction();
 			}
 		});
