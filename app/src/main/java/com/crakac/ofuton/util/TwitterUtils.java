@@ -312,7 +312,7 @@ public class TwitterUtils {
 
             @Override
             public int getShortURLLength() {
-                return 22;
+                return 23;
             }
 
             @Override
