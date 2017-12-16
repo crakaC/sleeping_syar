@@ -1,7 +1,4 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="horizontal">
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
 
     <LinearLayout
         android:id="@+id/left"
@@ -161,5 +158,4 @@
             android:visibility="visible" />
 
     </LinearLayout>
-
-</LinearLayout>
+</merge>

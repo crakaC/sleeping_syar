@@ -19,6 +19,7 @@ import com.crakac.ofuton.util.TwitterUtils;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import twitter4j.MediaEntity;
@@ -26,7 +27,7 @@ import twitter4j.MediaEntity;
 /**
  * Created by kosukeshirakashi on 2014/09/09.
  */
-public class MultipleImagePreview extends FrameLayout {
+public class MultipleImagePreview extends LinearLayout {
     private BitmapImageView imageL1, imageC1, imageR1, imageL2, imageC2, imageR2, imageL3, imageC3, imageR3;
     private ImageView videoIcon;
     private LinearLayout mLeft, mCenter, mRight;
@@ -37,13 +38,13 @@ public class MultipleImagePreview extends FrameLayout {
 
     public MultipleImagePreview(Context context, AttributeSet attrs) {
         super(context, attrs);
+        setGravity(LinearLayout.HORIZONTAL);
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View v = inflater.inflate(R.layout.appended_image_view, null);
-        addView(v);
-        videoIcon = (ImageView) v.findViewById(R.id.videoIcon);
-        mLeft = (LinearLayout) v.findViewById(R.id.left);
-        mRight = (LinearLayout) v.findViewById(R.id.right);
-        mCenter = (LinearLayout) v.findViewById(R.id.center);
+        View v = inflater.inflate(R.layout.appended_image_view, this);
+        videoIcon = v.findViewById(R.id.videoIcon);
+        mLeft = v.findViewById(R.id.left);
+        mRight = v.findViewById(R.id.right);
+        mCenter = v.findViewById(R.id.center);
         mBlocks = Arrays.asList(mLeft, mCenter, mRight);
         separatorL1 = v.findViewById(R.id.separatorL1);
         separatorC1 = v.findViewById(R.id.separatorC1);
@@ -54,15 +55,15 @@ public class MultipleImagePreview extends FrameLayout {
         virticalSeparatorLeft = v.findViewById(R.id.virticalSeparatorLeft);
         virticalSeparatorRight = v.findViewById(R.id.virticalSeparatorRight);
         mSeparators = Arrays.asList(separatorL1, separatorC1, separatorR1, separatorL2, separatorC2, separatorR2, virticalSeparatorLeft, virticalSeparatorRight);
-        imageL1 = (BitmapImageView) v.findViewById(R.id.imageL1);
-        imageC1 = (BitmapImageView) v.findViewById(R.id.imageC1);
-        imageR1 = (BitmapImageView) v.findViewById(R.id.imageR1);
-        imageL2 = (BitmapImageView) v.findViewById(R.id.imageL2);
-        imageC2 = (BitmapImageView) v.findViewById(R.id.imageC2);
-        imageR2 = (BitmapImageView) v.findViewById(R.id.imageR2);
-        imageL3 = (BitmapImageView) v.findViewById(R.id.imageL3);
-        imageC3 = (BitmapImageView) v.findViewById(R.id.imageC3);
-        imageR3 = (BitmapImageView) v.findViewById(R.id.imageR3);
+        imageL1 = v.findViewById(R.id.imageL1);
+        imageC1 = v.findViewById(R.id.imageC1);
+        imageR1 = v.findViewById(R.id.imageR1);
+        imageL2 = v.findViewById(R.id.imageL2);
+        imageC2 = v.findViewById(R.id.imageC2);
+        imageR2 = v.findViewById(R.id.imageR2);
+        imageL3 = v.findViewById(R.id.imageL3);
+        imageC3 = v.findViewById(R.id.imageC3);
+        imageR3 = v.findViewById(R.id.imageR3);
         mImageViews = Arrays.asList(imageL1, imageC1, imageR1, imageL2, imageC2, imageR2, imageL3, imageC3, imageR3);
         for (View iv : mImageViews) {
             iv.setOnTouchListener(new ColorOverlayOnTouch());
@@ -81,7 +82,7 @@ public class MultipleImagePreview extends FrameLayout {
             case 0:
                 return new ArrayList<>();
             case 1:
-                return Arrays.asList(imageL1);
+                return Collections.singletonList(imageL1);
             case 2:
                 return Arrays.asList(imageL1, imageR1);
             case 3:
