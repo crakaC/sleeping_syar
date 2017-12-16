@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentTransaction;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -310,4 +311,10 @@ public class StatusDialogFragment extends DialogFragment {
                     .getText()));
         }
 	}
+
+    @Override
+    public int show(FragmentTransaction transaction, String tag) {
+	    if (!isResumed()) return 0;
+        return super.show(transaction, tag);
+    }
 }
