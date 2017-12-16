@@ -216,40 +216,7 @@ public class WebImagePreviewActivity extends FragmentActivity implements Preview
     }
 
     public void saveImage(String url) {
-        new AsyncTask<String, Void, File>() {
-
-            int notificationId = 0;
-            @Override
-            protected File doInBackground(String... params) {
-                Log.d("DownloadImage", params[0]);
-                return NetUtil.download(WebImagePreviewActivity.this, params[0], notificationId);
-            }
-
-            @Override
-            protected void onPostExecute(File downloadedFile) {
-                if (downloadedFile != null) {
-                    Log.d("ImageDownloaded", downloadedFile.toString());
-                    Intent i = new Intent(Intent.ACTION_VIEW);
-                    Uri fileUri = FileProvider.getUriForFile(getApplicationContext(), "com.crakac.fileprovider", downloadedFile);
-                    Log.d("FileURI", fileUri.toString());
-                    i.setDataAndType(fileUri, "image/*");
-                    i.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                    PendingIntent pi = PendingIntent.getActivity(getApplicationContext(), 0, i, 0);
-                    NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext());
-                    Bitmap icon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher);
-                    builder.setLargeIcon(icon)
-                            .setSmallIcon(R.drawable.ic_file_download_white_18dp)
-                            .setTicker(getString(R.string.complete_download))
-                            .setAutoCancel(true).setContentTitle(getString(R.string.save_complete))
-                            .setContentText(getString(R.string.app_name)).setContentIntent(pi);
-                    NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-                    nm.cancel(notificationId);
-                    nm.notify(notificationId, builder.build());
-                } else {
-                    AppUtil.showToast(R.string.impossible);
-                }
-            }
-        }.execute(url);
+        NetUtil.download(this, url);
     }
 
     @Override

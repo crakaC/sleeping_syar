@@ -1,11 +1,9 @@
 package com.crakac.ofuton.util;
 
-import android.app.NotificationManager;
+import android.app.DownloadManager;
 import android.content.Context;
-import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Environment;
-import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
 import android.util.Log;
 import android.webkit.MimeTypeMap;
@@ -23,9 +21,7 @@ import com.android.volley.toolbox.ImageLoader.ImageContainer;
 import com.android.volley.toolbox.ImageLoader.ImageListener;
 import com.crakac.ofuton.R;
 
-import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -34,6 +30,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class NetUtil {
@@ -44,10 +41,11 @@ public class NetUtil {
     private static final String IMAGE_CACHE_DIR = "image";
     private static final int THREAD_POOL_SIZE_FOR_FETCHING_ICONS = 5;
     private static final int THREAD_POOL_SIZE_FOR_FETCHING_IMAGE = 5;
-    public static ImageLoader  PREVIEW_LOADER, INLINE_PREVIEW_LOADER, ICON_LOADER;
+    public static ImageLoader PREVIEW_LOADER, INLINE_PREVIEW_LOADER, ICON_LOADER;
     private static Cache sImageDiskCache;
 
-    private NetUtil(){}
+    private NetUtil() {
+    }
 
     private static Cache createDiskCache(Context context, String cacheRoot, int cacheSize) {
         File cacheDir = new File(context.getCacheDir(), cacheRoot);
@@ -127,7 +125,7 @@ public class NetUtil {
         Map headers = conn.getHeaderFields();
         Iterator<String> it = httpConn.getHeaderFields().keySet().iterator();
         StringBuilder sb = new StringBuilder();
-        while(it.hasNext()){
+        while (it.hasNext()) {
             String key = it.next();
             sb.append(key).append(":").append(headers.get(key).toString()).append("\n");
         }
@@ -163,7 +161,7 @@ public class NetUtil {
             case "instagr.am":
             case "www.instagram.com":
                 String query = uri.getQuery();
-                if(query != null && query.contains("size")) {
+                if (query != null && query.contains("size")) {
                     builder.clearQuery();
                     builder.appendQueryParameter("size", "l");
                 } else {
@@ -216,49 +214,22 @@ public class NetUtil {
         }
     }
 
-    public static File download(Context context, String url, int notificationId) {
-        NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context);
-        mBuilder.setContentTitle("ダウンロード中").setContentText("ダウンロード中").setSmallIcon(R.drawable.ic_file_download_white_18dp);
-        mBuilder.setProgress(0, 0, true);
-        manager.notify(notificationId, mBuilder.build());
-        byte[] buf = new byte[4096];
-        try {
-            String expandedUrl = NetUtil.expandUrlIfNecessary(url);
-            HttpURLConnection conn = (HttpURLConnection) new URL(expandedUrl).openConnection();
-            conn.setConnectTimeout(CONNECT_TIMEOUT);
-            conn.setReadTimeout(READ_TIMEOUT);
+    public static long download(Context context, String url) {
+        Uri uri = Uri.parse(url);
+        String fileName = uri.getLastPathSegment();
+        DownloadManager.Request request = new DownloadManager.Request(uri);
+        request.setTitle(createFileName(url))
+                .setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName)
+                .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+                .allowScanningByMediaScanner();
+        DownloadManager dm = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
+        return dm.enqueue(request);
 
-            //ファイル名を取得するために，先に開く．
-            BufferedInputStream is = new BufferedInputStream(conn.getInputStream());
-            File downloadedFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), createFileName(conn.getContentType()));
-            FileOutputStream os = new FileOutputStream(downloadedFile);
-            int length;
-            while ((length = is.read(buf)) != -1) {
-                os.write(buf, 0, length);
-            }
-            os.close();
-            is.close();
-            String[] path = {downloadedFile.getPath()};
-            String extension = MimeTypeMap.getFileExtensionFromUrl(downloadedFile.getAbsolutePath());
-            String mimetype = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
-            String[] mimetypes = {mimetype};
-            MediaScannerConnection.scanFile(context.getApplicationContext(), path, mimetypes, null);
-            mBuilder.setProgress(0, 0, false);
-            manager.notify(notificationId, mBuilder.build());
-
-            return downloadedFile;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        mBuilder.setProgress(0, 0, false);
-        manager.notify(notificationId, mBuilder.build());
-        return null;
     }
 
-    private static String createFileName(String contentType) {
-        String now = new SimpleDateFormat("yyyyMMddhhmmss.").format(new Date());
-        String extension = MimeTypeMap.getSingleton().getExtensionFromMimeType(contentType);
+    private static String createFileName(String url) {
+        String now = new SimpleDateFormat("yyyyMMddhhmmss.", Locale.getDefault()).format(new Date());
+        String extension = MimeTypeMap.getFileExtensionFromUrl(url);
         return now.concat(extension);
     }
 }

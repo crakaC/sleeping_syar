@@ -107,39 +107,8 @@ public class VideoPreviewActivity extends Activity {
         }
     }
 
-
     public void download(String url) {
-        new AsyncTask<String, Void, File>() {
-
-            int notificationId = 1;
-            @Override
-            protected File doInBackground(String... params) {
-                Log.d("DownloadImage", params[0]);
-                return NetUtil.download(VideoPreviewActivity.this, params[0], notificationId);
-            }
-
-            @Override
-            protected void onPostExecute(File downloadedFile) {
-                if (downloadedFile != null) {
-                    Log.d("ImageDownloaded", downloadedFile.toString());
-                    Intent i = new Intent(Intent.ACTION_VIEW);
-                    i.setDataAndType(Uri.fromFile(downloadedFile), "video/*");
-                    PendingIntent pi = PendingIntent.getActivity(getApplicationContext(), 0, i, 0);
-                    NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext());
-                    Bitmap icon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher);
-                    icon.setHasMipMap(true);
-                    builder.setLargeIcon(icon)
-                            .setSmallIcon(R.drawable.ic_file_download_white_18dp)
-                            .setTicker(getString(R.string.complete_download))
-                            .setAutoCancel(true).setContentTitle(getString(R.string.complete_download))
-                            .setContentText(getString(R.string.app_name)).setContentIntent(pi);
-                    NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-                    nm.notify(notificationId, builder.build());
-                } else {
-                    AppUtil.showToast(R.string.impossible);
-                }
-            }
-        }.execute(url);
+        NetUtil.download(this, url);
     }
 
     private void showProgress(boolean b){
