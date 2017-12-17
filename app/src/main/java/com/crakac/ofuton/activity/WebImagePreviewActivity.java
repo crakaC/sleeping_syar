@@ -2,23 +2,14 @@ package com.crakac.ofuton.activity;
 
 import android.Manifest;
 import android.annotation.TargetApi;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.content.FileProvider;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
+import android.util.SparseArray;
 import android.view.View;
 
 import com.crakac.ofuton.C;
@@ -26,14 +17,12 @@ import com.crakac.ofuton.R;
 import com.crakac.ofuton.fragment.ImagePreviewFragment;
 import com.crakac.ofuton.fragment.VideoPreviewFragment;
 import com.crakac.ofuton.fragment.adapter.SimpleFragmentPagerAdapter;
-import com.crakac.ofuton.util.AppUtil;
 import com.crakac.ofuton.util.NetUtil;
 import com.crakac.ofuton.widget.HackyViewPager;
 import com.crakac.ofuton.widget.PreviewNavigation;
 import com.crakac.ofuton.widget.Rotatable;
 import com.crakac.ofuton.widget.Rotator;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -45,7 +34,7 @@ public class WebImagePreviewActivity extends FragmentActivity implements Preview
     private SimpleFragmentPagerAdapter<Fragment> mAdapter;
     private PreviewNavigation mNav;
     private List<String> mUrls;
-    private HashMap<Integer, Rotatable> mRotatables;
+    private SparseArray<Rotatable> mRotatables;
 
     private static final int PERMISSION_REQUEST_STORAGE = 8686;
 
@@ -67,7 +56,7 @@ public class WebImagePreviewActivity extends FragmentActivity implements Preview
         mNav.setVisibility(View.VISIBLE);
 
         mAdapter = new SimpleFragmentPagerAdapter<>(this, mPager);
-        mRotatables = new HashMap<>();
+        mRotatables = new SparseArray<>();
 
         List<MediaEntity> mediaEntities = (List<MediaEntity>) getIntent().getSerializableExtra(C.MEDIA_ENTITY);
         Uri imageUri = getIntent().getData();
@@ -94,12 +83,7 @@ public class WebImagePreviewActivity extends FragmentActivity implements Preview
         mAdapter.notifyDataSetChanged();
         mNav.setImageNums(mUrls.size());
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            mPager.setPageTransformer(true, new DepthPageTransformer());
-        } else {
-            int pagerMargin = getResources().getDimensionPixelSize(R.dimen.preview_pager_margin);
-            mPager.setPageMargin(pagerMargin);
-        }
+        mPager.setPageTransformer(true, new DepthPageTransformer());
         if (savedInstanceState == null) {
             int position = getIntent().getIntExtra(C.POSITION, 0);
             mPager.setCurrentItem(position);
@@ -179,7 +163,6 @@ public class WebImagePreviewActivity extends FragmentActivity implements Preview
     private static class DepthPageTransformer implements ViewPager.PageTransformer {
         private static final float MIN_SCALE = 0.75f;
 
-        @TargetApi(Build.VERSION_CODES.HONEYCOMB)
         @Override
         public void transformPage(View view, float position) {
             int pageWidth = view.getWidth();
