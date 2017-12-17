@@ -1,7 +1,6 @@
 package com.crakac.ofuton.activity;
 
 import android.Manifest;
-import android.annotation.TargetApi;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
@@ -24,7 +23,6 @@ import com.crakac.ofuton.widget.Rotatable;
 import com.crakac.ofuton.widget.Rotator;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import twitter4j.MediaEntity;

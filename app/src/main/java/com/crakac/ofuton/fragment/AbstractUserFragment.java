@@ -66,7 +66,12 @@ public abstract class AbstractUserFragment extends AbstractPtrFragment {
         loadUser();
     }
 
-    private void loadUser() {
+	@Override
+	protected void onClickFooterView() {
+		loadUser();
+	}
+
+	private void loadUser() {
 		Log.d(TAG, "loadUser()");
 		if (mLoadTask != null
 				&& mLoadTask.getStatus() == AsyncTask.Status.RUNNING) {
