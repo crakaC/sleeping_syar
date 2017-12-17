@@ -1,6 +1,7 @@
 package com.crakac.ofuton.activity;
 
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
@@ -9,7 +10,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
-import com.astuetz.PagerSlidingTabStrip;
 import com.crakac.ofuton.C;
 import com.crakac.ofuton.R;
 import com.crakac.ofuton.fragment.adapter.SearchFragmentPagerAdapter;
@@ -24,7 +24,7 @@ import com.crakac.ofuton.util.RelativeTimeUpdater;
  */
 public class SearchActivity extends FinishableActionbarActivity {
 
-    private PagerSlidingTabStrip mTab;
+    private TabLayout mTab;
     private ViewPager mPager;
     private SearchFragmentPagerAdapter mAdapter;
     private SearchView mSearchView;
@@ -35,14 +35,13 @@ public class SearchActivity extends FinishableActionbarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_simple_tab);
         mQuery = getIntent().getStringExtra(C.QUERY);
-        mTab = (PagerSlidingTabStrip) findViewById(R.id.tab);
-        mTab.setTabPaddingLeftRight(AppUtil.dpToPx(8));
-        mPager = (ViewPager) findViewById(R.id.pager);
+        mTab = findViewById(R.id.tab);
+        mPager = findViewById(R.id.pager);
         mAdapter = new SearchFragmentPagerAdapter(this, mPager);
         setFragments();
         mPager.setOffscreenPageLimit(mAdapter.getCount());
-        mTab.setViewPager(mPager);
-        mTab.setOnPageChangeListener(new RelativeTimeUpdater(mAdapter));
+        mPager.addOnPageChangeListener(new RelativeTimeUpdater(mAdapter));
+        mTab.setupWithViewPager(mPager);
     }
 
     private Bundle createArgs(String query) {
