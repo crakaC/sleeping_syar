@@ -17,7 +17,8 @@
             android:layout_height="32dp"
             android:background="?attr/colorPrimary"
             app:tabGravity="fill"
-            app:tabMode="fixed" />
+            app:tabMode="fixed"
+            app:tabTextAppearance="@style/TablayoutTextAppearance" />
 
     </android.support.design.widget.AppBarLayout>
 

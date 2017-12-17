@@ -34,7 +34,8 @@
                 android:layout_height="32dp"
                 android:background="?attr/colorPrimary"
                 app:tabGravity="fill"
-                app:tabMode="scrollable" />
+                app:tabMode="scrollable"
+                app:tabTextAppearance="@style/TablayoutTextAppearance" />
 
         </android.support.design.widget.AppBarLayout>
 

@@ -80,6 +80,11 @@
         <item name="android:backgroundDimEnabled">false</item>
     </style>
 
+    <style name="TablayoutTextAppearance" parent="TextAppearance.Design.Tab">
+        <item name="textAllCaps">false</item>
+    </style>
+
+
     <style name="HoloTab">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">32dp</item>
