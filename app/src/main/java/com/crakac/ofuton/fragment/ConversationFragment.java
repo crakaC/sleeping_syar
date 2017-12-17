@@ -61,7 +61,11 @@ public class ConversationFragment extends AbstractStatusFragment {
         Status firstStatus = (Status) getArguments().getSerializable(C.STATUS);
         mAdapter.insert(firstStatus, 0);
         mReplyToStatusId = firstStatus.getInReplyToStatusId();
-        loadPrevious(mReplyToStatusId);
+        if(mReplyToStatusId <= 0) {
+            removeFooterView();
+        } else {
+            loadPrevious(mReplyToStatusId);
+        }
     }
 
     private void onFetchStatus(Status status) {
