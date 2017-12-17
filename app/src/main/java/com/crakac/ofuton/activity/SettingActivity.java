@@ -16,6 +16,7 @@ import android.preference.PreferenceScreen;
 import android.support.v7.app.AppCompatActivity;
 
 import com.crakac.ofuton.R;
+import com.crakac.ofuton.util.PrefUtil;
 import com.crakac.ofuton.util.ReloadChecker;
 
 public class SettingActivity extends AppCompatActivity {
@@ -43,6 +44,7 @@ public class SettingActivity extends AppCompatActivity {
             displayLicenseInfo();
             displayVersionInfo();
             requestSoftReloadOnClick(R.string.show_image_in_timeline, R.string.show_source, R.string.date_display_mode);
+            requestHardReloadOnChange(R.string.enable_fast_scroll, PrefUtil.getBoolean(R.string.enable_fast_scroll));
         }
 
         private void setInlinePreview() {
@@ -127,5 +129,14 @@ public class SettingActivity extends AppCompatActivity {
             }
         }
 
+        private void requestHardReloadOnChange(int id, final Object before){
+            findPreference(getString(id)).setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+                    ReloadChecker.requestHardReload(newValue != before);
+                    return true;
+                }
+            });
+        }
     }
 }

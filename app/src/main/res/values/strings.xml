@@ -59,6 +59,7 @@
     <string name="impossible">無理でした</string>
     <string name="syar">( ˘ω˘)ｽﾔｧ</string>
 
+    <!-- prefs -->
     <string name="streaming_and_notification">ストリーミング/通知</string>
     <string name="appearance">見た目</string>
     <string name="others">その他</string>
@@ -72,6 +73,7 @@
     <string name="streaming_mode">ストリーミングモード</string>
     <string name="always_awake">常にスクリーンをON</string>
     <string name="font_size">フォントサイズ</string>
+    <string name="enable_fast_scroll">高速スクロールを表示</string>
     <string name="enable_refresh_btn">右上にリロードボタンを表示</string>
     <string name="date_display_mode">時刻表記</string>
     <string name="relative">相対表記</string>

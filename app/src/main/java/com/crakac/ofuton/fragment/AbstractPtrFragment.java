@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.crakac.ofuton.R;
+import com.crakac.ofuton.util.PrefUtil;
 import com.crakac.ofuton.widget.ListViewEx;
 import com.crakac.ofuton.widget.ProgressTextView;
 
@@ -36,7 +37,7 @@ abstract public class AbstractPtrFragment extends Fragment implements SwipeRefre
         mListView = view
                 .findViewById(R.id.listView1);
         mListView.setOnLastItemVisibleListener(this);
-		mListView.setFastScrollEnabled(true);
+		mListView.setFastScrollEnabled(PrefUtil.getBoolean(R.string.enable_fast_scroll));
         mListView.setSmoothScrollbarEnabled(true);
 
 		mFooterView = new ProgressTextView(getActivity());
