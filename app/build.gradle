@@ -10,7 +10,7 @@ android {
     buildToolsVersion '26.0.3'
     defaultConfig {
         applicationId 'com.crakac.ofuton'
-        minSdkVersion 17
+        minSdkVersion 14
         targetSdkVersion 26
         versionCode 27
         versionName '2.0.0a'
