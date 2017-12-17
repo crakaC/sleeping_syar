@@ -5,6 +5,7 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
@@ -67,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
     private NavigationView mNavigationView;
     private ActionBarDrawerToggle mDrawerToggle;
     private TweetFragment mTweetFragment;
-    private PagerSlidingTabStrip mTab;
+    private TabLayout mTab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,23 +103,23 @@ public class MainActivity extends AppCompatActivity {
         });
 
         /* actionbar */
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionbar = getSupportActionBar();
         actionbar.setDisplayHomeAsUpEnabled(true);
         actionbar.setHomeButtonEnabled(true);
         createNavigationDrawer();
 
-        mTab = (PagerSlidingTabStrip) findViewById(R.id.pagerTabStrip);
-        mPager = (ViewPager) findViewById(R.id.pager);
+        mTab = findViewById(R.id.tab);
+        mPager = findViewById(R.id.pager);
         mAdapter = new TimelineFragmentPagerAdapter(this, mPager);
-        mTab.setOnPageChangeListener(new RelativeTimeUpdater(mAdapter));
+        mPager.addOnPageChangeListener(new RelativeTimeUpdater(mAdapter));
         setPages(mAdapter);
         if (savedInstanceState == null) {
             mPager.setCurrentItem(getFragmentPosition(TAB_ID_HOME));// HomeTimelineの位置に合わせる
         }
-        mPager.setOffscreenPageLimit(12);// 保持するFragmentの数を指定．全フラグメントを保持するのでぬるぬる動くがメモリを食う
-        mTab.setViewPager(mPager);// PagerSlidingTabStripにViewPagerをセット．
+        mPager.setOffscreenPageLimit(13);// 保持するFragmentの数を指定．全フラグメントを保持するのでぬるぬる動くがメモリを食う
+        mTab.setupWithViewPager(mPager);// PagerSlidingTabStripにViewPagerをセット．
     }
 
     @Override
@@ -149,8 +150,6 @@ public class MainActivity extends AppCompatActivity {
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         }
         AppUtil.closeSearchView(mSearchView);
-        mTab.notifyDataSetChanged();
-
     }
 
     @Override

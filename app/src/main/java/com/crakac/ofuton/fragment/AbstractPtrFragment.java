@@ -1,5 +1,6 @@
 package com.crakac.ofuton.fragment;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -57,10 +58,19 @@ abstract public class AbstractPtrFragment extends Fragment implements SwipeRefre
 		mListView.setEmptyView(mEmptyView);
 		mListView.addFooterView(mFooterView);
 		setEmptyViewStandby();
+		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+			mListView.setNestedScrollingEnabled(true);
+		}
 		return view;
 	}
 
-    public void setSwipeRefreshEnable(boolean enable){
+	@Override
+	public void onResume() {
+		super.onResume();
+		mFooterView.loading();
+	}
+
+	public void setSwipeRefreshEnable(boolean enable){
         mSwipeWidget.setEnabled(enable);
     }
 

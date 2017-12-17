@@ -1,6 +1,7 @@
 package com.crakac.ofuton.activity;
 
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 
 import com.astuetz.PagerSlidingTabStrip;
@@ -21,7 +22,7 @@ public class DmActivity extends FinishableActionbarActivity {
 		pagerAdapter.add(DmSentFragment.class, 1);
         pagerAdapter.notifyDataSetChanged();
 
-		PagerSlidingTabStrip tab = (PagerSlidingTabStrip)findViewById(R.id.tab);
-		tab.setViewPager(pager);
+		TabLayout tab = findViewById(R.id.tab);
+		tab.setupWithViewPager(pager);
 	}
 }
