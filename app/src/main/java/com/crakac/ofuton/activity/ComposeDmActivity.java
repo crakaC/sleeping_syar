@@ -32,7 +32,8 @@ public class ComposeDmActivity extends FinishableActionbarActivity {
     private String screenName;// リプライ先スクリーンネーム
     private DirectMessage replyDM;
     private ActionBar mActionbar;
-    private int MAX_TEXT_LENGTH = 1000;
+
+    private final int MAX_TEXT_LENGTH = TwitterUtils.getApiConfiguration().getDmTextCharacterLimit();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
