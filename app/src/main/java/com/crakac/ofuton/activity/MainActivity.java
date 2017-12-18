@@ -29,6 +29,7 @@ import android.widget.TextView;
 import com.crakac.ofuton.C;
 import com.crakac.ofuton.R;
 import com.crakac.ofuton.adapter.TweetStatusAdapter;
+import com.crakac.ofuton.fragment.AbstractPtrFragment;
 import com.crakac.ofuton.fragment.TweetFragment;
 import com.crakac.ofuton.fragment.adapter.TimelineFragmentPagerAdapter;
 import com.crakac.ofuton.fragment.timeline.AbstractTimelineFragment;
@@ -119,6 +120,23 @@ public class MainActivity extends AppCompatActivity {
         }
         mPager.setOffscreenPageLimit(13);// 保持するFragmentの数を指定．全フラグメントを保持するのでぬるぬる動くがメモリを食う
         mTab.setupWithViewPager(mPager);// PagerSlidingTabStripにViewPagerをセット．
+        mTab.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+                if(mAdapter == null || mPager == null)
+                    return;
+                AbstractTimelineFragment f = (AbstractTimelineFragment) mAdapter.instantiateItem(mPager, tab.getPosition());
+                f.scrollToTop();
+            }
+        });
     }
 
     @Override

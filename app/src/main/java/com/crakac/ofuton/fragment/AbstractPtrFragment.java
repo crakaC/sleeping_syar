@@ -119,6 +119,12 @@ abstract public class AbstractPtrFragment extends Fragment implements SwipeRefre
     public void onLastItemVisible() {}
 
     protected void onClickFooterView(){}
+    protected void onClickEmptyView(){}
 
-	protected void onClickEmptyView(){}
+    //一番上まで瞬間スクロールする
+	public void scrollToTop(){
+		if(!isAdded())
+			return;
+		mListView.setSelectionAfterHeaderView();
+	}
 }
