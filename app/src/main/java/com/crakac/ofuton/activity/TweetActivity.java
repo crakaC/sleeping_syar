@@ -347,7 +347,7 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
                 startActivityForResult(intent, REQUEST_SELECT_PICTURE);
                 break;
             case R.id.picFromCamera:
-                if(!Util.checkRuntimePermission(this, Manifest.permission.CAMERA, CAMERA_PERMISSION_REQUEST))
+                if(!Util.checkRuntimePermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA}, CAMERA_PERMISSION_REQUEST))
                     return;
 
                 String filename = System.currentTimeMillis() + ".jpg";
