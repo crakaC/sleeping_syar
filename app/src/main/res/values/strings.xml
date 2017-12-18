@@ -61,6 +61,14 @@
     <string name="tweet">Tweet!</string>
     <string name="send">送信</string>
 
+    <string name="drawer_account">アカウント</string>
+    <string name="drawer_home">ホーム</string>
+    <string name="drawer_mentions">メンション</string>
+    <string name="drawer_favs">お気に入り</string>
+    <string name="drawer_dms">ダイレクトメッセージ</string>
+    <string name="drawer_lists">リスト編集</string>
+    <string name="drawer_settings">詳細設定</string>
+
     <!-- prefs -->
     <string name="streaming_and_notification">ストリーミング/通知</string>
     <string name="appearance">見た目</string>
