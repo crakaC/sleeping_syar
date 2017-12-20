@@ -3,7 +3,6 @@ package com.crakac.ofuton.action.status;
 import android.content.Context;
 
 import com.crakac.ofuton.R;
-import com.crakac.ofuton.adapter.TweetStatusAdapter;
 import com.crakac.ofuton.util.AppUtil;
 import com.crakac.ofuton.util.ParallelTask;
 import com.crakac.ofuton.util.TwitterUtils;

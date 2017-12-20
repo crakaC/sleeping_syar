@@ -1,8 +1,8 @@
 package com.crakac.ofuton.fragment.adapter;
 
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatActivity;
 
 import com.crakac.ofuton.util.AppUtil;
 
@@ -10,7 +10,7 @@ public class UserFragmentPagerAdapter extends SimpleFragmentPagerAdapter<Fragmen
 
 	int tweets, friends, followers, favs;
 
-    public UserFragmentPagerAdapter(FragmentActivity context, ViewPager viewPager) {
+    public UserFragmentPagerAdapter(AppCompatActivity context, ViewPager viewPager) {
         super(context, viewPager);
     }
 

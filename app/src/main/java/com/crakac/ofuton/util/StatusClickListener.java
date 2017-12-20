@@ -1,7 +1,7 @@
 package com.crakac.ofuton.util;
 
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
 
@@ -15,15 +15,15 @@ import java.lang.ref.WeakReference;
  */
 
 public class StatusClickListener implements AdapterView.OnItemClickListener {
-    WeakReference<FragmentActivity> mActivityRef;
-    public StatusClickListener(FragmentActivity a){
+    WeakReference<AppCompatActivity> mActivityRef;
+    public StatusClickListener(AppCompatActivity a){
         mActivityRef = new WeakReference<>(a);
     }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position,
                             long id) {
-        FragmentActivity activity = mActivityRef.get();
+        AppCompatActivity            activity = mActivityRef.get();
         if(activity == null)
             return;
 

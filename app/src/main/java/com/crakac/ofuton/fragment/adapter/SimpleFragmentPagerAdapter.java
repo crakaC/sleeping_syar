@@ -4,10 +4,10 @@ package com.crakac.ofuton.fragment.adapter;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatActivity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,7 +21,7 @@ public class SimpleFragmentPagerAdapter<T extends Fragment> extends FragmentPage
     private final HashMap<Integer, T> mFragments = new HashMap<>();
     private final FragmentManager mFragmentManager;
 
-    public SimpleFragmentPagerAdapter(FragmentActivity context, ViewPager viewPager) {
+    public SimpleFragmentPagerAdapter(AppCompatActivity context, ViewPager viewPager) {
         super(context.getSupportFragmentManager());
         mFragmentManager = context.getSupportFragmentManager();
         viewPager.setAdapter(this);

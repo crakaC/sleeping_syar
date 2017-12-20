@@ -2,7 +2,7 @@ package com.crakac.ofuton.activity;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -11,7 +11,7 @@ import com.crakac.ofuton.util.AppUtil;
 import com.github.chrisbanes.photoview.OnViewTapListener;
 import com.github.chrisbanes.photoview.PhotoViewAttacher;
 
-abstract public class AbstractPreviewActivity extends FragmentActivity {
+abstract public class AbstractPreviewActivity extends AppCompatActivity {
 
     protected ImageView mImageView;
     private PhotoViewAttacher mAttacher;

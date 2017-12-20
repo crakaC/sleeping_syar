@@ -4,7 +4,6 @@ import android.content.Context;
 import android.util.Log;
 
 import com.crakac.ofuton.R;
-import com.crakac.ofuton.adapter.TweetStatusAdapter;
 import com.crakac.ofuton.util.AppUtil;
 import com.crakac.ofuton.util.ParallelTask;
 import com.crakac.ofuton.util.TwitterUtils;

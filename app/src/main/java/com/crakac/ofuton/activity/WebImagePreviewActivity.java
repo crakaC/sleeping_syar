@@ -6,8 +6,8 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatActivity;
 import android.util.SparseArray;
 import android.view.View;
 
@@ -27,7 +27,7 @@ import java.util.List;
 
 import twitter4j.MediaEntity;
 
-public class WebImagePreviewActivity extends FragmentActivity implements PreviewNavigation.NavigationListener, Rotator {
+public class WebImagePreviewActivity extends AppCompatActivity implements PreviewNavigation.NavigationListener, Rotator {
     private HackyViewPager mPager;
     private SimpleFragmentPagerAdapter<Fragment> mAdapter;
     private PreviewNavigation mNav;

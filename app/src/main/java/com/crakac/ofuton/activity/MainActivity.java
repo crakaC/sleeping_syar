@@ -29,7 +29,6 @@ import android.widget.TextView;
 import com.crakac.ofuton.C;
 import com.crakac.ofuton.R;
 import com.crakac.ofuton.adapter.TweetStatusAdapter;
-import com.crakac.ofuton.fragment.AbstractPtrFragment;
 import com.crakac.ofuton.fragment.TweetFragment;
 import com.crakac.ofuton.fragment.adapter.TimelineFragmentPagerAdapter;
 import com.crakac.ofuton.fragment.timeline.AbstractTimelineFragment;

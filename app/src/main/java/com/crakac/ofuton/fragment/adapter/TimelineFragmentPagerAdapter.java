@@ -1,8 +1,8 @@
 package com.crakac.ofuton.fragment.adapter;
 
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatActivity;
 
 import com.crakac.ofuton.C;
 import com.crakac.ofuton.fragment.timeline.AbstractTimelineFragment;
@@ -10,7 +10,7 @@ import com.crakac.ofuton.fragment.timeline.ListTimelineFragment;
 
 public class TimelineFragmentPagerAdapter extends SimpleFragmentPagerAdapter<AbstractTimelineFragment> {
 
-    public TimelineFragmentPagerAdapter(FragmentActivity context, ViewPager viewPager) {
+    public TimelineFragmentPagerAdapter(AppCompatActivity context, ViewPager viewPager) {
         super(context, viewPager);
     }
 
