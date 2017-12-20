@@ -34,6 +34,7 @@
     <string name="unretweet">リツイートを取り消し</string>
     <string name="favorite">お気に入りに追加</string>
     <string name="unfavorite">お気に入りから削除</string>
+    <string name="fav_and_retweet">お気に入りに追加してリツイート</string>
     <string name="send_dm">DMを送る</string>
     <string name="send_mention">メンションを送る</string>
     <string name="tofu">TofuBuster</string>
