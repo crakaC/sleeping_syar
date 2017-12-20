@@ -43,7 +43,7 @@ abstract public class AbstractPtrFragment extends Fragment implements SwipeRefre
 		mFooterView = new ProgressTextView(getActivity());
 		mFooterView.setText(R.string.read_more);
 		mFooterView.setBackgroundResource(R.color.clickable_background);
-		mEmptyView = (ProgressTextView) view.findViewById(R.id.emptyView);
+		mEmptyView = view.findViewById(R.id.emptyView);
 		mFooterView.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {

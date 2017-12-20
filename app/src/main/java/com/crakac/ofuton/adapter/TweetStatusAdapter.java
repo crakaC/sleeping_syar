@@ -3,7 +3,7 @@ package com.crakac.ofuton.adapter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.preference.PreferenceManager;
+import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -20,11 +20,13 @@ import com.crakac.ofuton.util.Account;
 import com.crakac.ofuton.util.AppUtil;
 import com.crakac.ofuton.util.NetUtil;
 import com.crakac.ofuton.util.PrefUtil;
+import com.crakac.ofuton.util.StatusClickListener;
 import com.crakac.ofuton.util.StatusPool;
 import com.crakac.ofuton.util.TwitterUtils;
 import com.crakac.ofuton.widget.ColorOverlayOnTouch;
 import com.crakac.ofuton.widget.MultipleImagePreview;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import twitter4j.MediaEntity;
@@ -32,11 +34,12 @@ import twitter4j.Status;
 import twitter4j.UserMentionEntity;
 
 public class TweetStatusAdapter extends ArrayAdapter<Status> {
-    private static Context sContext;
+    private static ArrayList<TweetStatusAdapter> sAdapters = new ArrayList<>(3);//fav, mention, home
     private static LayoutInflater sInflater;
     private static Account sUserAccount;
     private static boolean shouldShowPreview = false;
     private boolean mShouldPool = true;
+    private StatusClickListener mListener;
     private static final String TAG = TweetStatusAdapter.class.getSimpleName();
 
     private static class ViewHolder {
@@ -73,16 +76,17 @@ public class TweetStatusAdapter extends ArrayAdapter<Status> {
 
     public TweetStatusAdapter(Context context) {
         super(context, android.R.layout.simple_list_item_1);
-        sContext = context;
         sInflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
-
         sUserAccount = TwitterUtils.getCurrentAccount();
+        sAdapters.add(this);
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        Status item = getItem(position);
-        return createView(item, convertView);
+    public View getView(final int position, final View convertView, final ViewGroup parent) {
+        final Status item = getItem(position);
+        View v = createView(item, convertView);
+
+        return v;
     }
 
     public void updateDisplayTime(int position, View view) {
@@ -90,13 +94,6 @@ public class TweetStatusAdapter extends ArrayAdapter<Status> {
             return;// フッタービューは弾く．
         }
         setPostedAtTime((ViewHolder) view.getTag(), getItem(position));
-    }
-
-    public void updateFontSize(View view) {
-        if (view.getTag() == null) {
-            return;
-        }
-        optimizeFontSize((ViewHolder) view.getTag());
     }
 
     public static View createView(final Status item, View convertView) {
@@ -124,9 +121,10 @@ public class TweetStatusAdapter extends ArrayAdapter<Status> {
         holder.icon.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(sContext, UserDetailActivity.class);
+                Context context = v.getContext();
+                Intent intent = new Intent(context, UserDetailActivity.class);
                 intent.putExtra(C.USER, (item.isRetweet()) ? item.getRetweetedStatus().getUser() : item.getUser());
-                sContext.startActivity(intent);
+                context.startActivity(intent);
             }
         });
 
@@ -195,34 +193,58 @@ public class TweetStatusAdapter extends ArrayAdapter<Status> {
     private static void setColors(ViewHolder holder, Status status) {
         if (status.isRetweet()) {
             // スクリーンネームの色
-            holder.name.setTextColor(getColor(R.color.droid_green));
-            holder.screenName.setTextColor(getColor(R.color.droid_green));
+            holder.name.setTextColor(AppUtil.getColor(R.color.droid_green));
+            holder.screenName.setTextColor(AppUtil.getColor(R.color.droid_green));
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP)
+                holder.base.setBackgroundResource(R.color.retweet_background);
+            else {
+                holder.base.setBackgroundColor(AppUtil.getColor(R.color.gray_green));
+            }
+
         } else if (isMention(status)) {
             // mention
-            holder.name.setTextColor(getColor(R.color.droid_red));
-            holder.screenName.setTextColor(getColor(R.color.droid_red));
+            holder.name.setTextColor(AppUtil.getColor(R.color.droid_red));
+            holder.screenName.setTextColor(AppUtil.getColor(R.color.droid_red));
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+                holder.base.setBackgroundResource(R.color.retweet_background);
+            } else {
+                holder.base.setBackgroundColor(AppUtil.getColor(R.color.gray_red));
+            }
         } else {
             // others' tweet
-            holder.name.setTextColor(getColor(R.color.twitter_blue));
-            holder.screenName.setTextColor(getColor(R.color.twitter_blue));
+            holder.name.setTextColor(AppUtil.getColor(R.color.twitter_blue));
+            holder.screenName.setTextColor(AppUtil.getColor(R.color.twitter_blue));
+            if (status.getUser().getId() == sUserAccount.getUserId()) {
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+                    holder.base.setBackgroundResource(R.color.mytweet_background);
+                } else {
+                    holder.base.setBackgroundColor(AppUtil.getColor(R.color.gray_blue));
+                }
+            } else {
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+                    holder.base.setBackgroundResource(R.color.clickable_background);
+                } else {
+                    holder.base.setBackgroundResource(R.color.gray);
+                }
+            }
         }
     }
 
     private static void setViewHolder(final ViewHolder holder, View convertView) {
         holder.base = convertView;
-        holder.name = (TextView) convertView.findViewById(R.id.name);
-        holder.screenName = (TextView) convertView.findViewById(R.id.screenName);
-        holder.text = (TextView) convertView.findViewById(R.id.text);
-        holder.postedAt = (TextView) convertView.findViewById(R.id.postedAt);
-        holder.via = (TextView) convertView.findViewById(R.id.via);
-        holder.icon = (NetworkImageView) convertView.findViewById(R.id.icon);
+        holder.name = convertView.findViewById(R.id.name);
+        holder.screenName = convertView.findViewById(R.id.screenName);
+        holder.text = convertView.findViewById(R.id.text);
+        holder.postedAt = convertView.findViewById(R.id.postedAt);
+        holder.via = convertView.findViewById(R.id.via);
+        holder.icon = convertView.findViewById(R.id.icon);
         holder.icon.setOnTouchListener(new ColorOverlayOnTouch());
         holder.retweeterInfo = convertView.findViewById(R.id.retweeterInfo);
-        holder.smallIcon = (NetworkImageView) convertView.findViewById(R.id.smallIcon);
-        holder.retweetedBy = (TextView) convertView.findViewById(R.id.retweeted_by);
-        holder.imagePreview = (MultipleImagePreview) convertView.findViewById(R.id.inline_preview);
-        holder.favicon = (ImageView) convertView.findViewById(R.id.favedStar);
-        holder.lockedIcon = (ImageView) convertView.findViewById(R.id.lockedIcon);
+        holder.smallIcon = convertView.findViewById(R.id.smallIcon);
+        holder.retweetedBy = convertView.findViewById(R.id.retweeted_by);
+        holder.imagePreview = convertView.findViewById(R.id.inline_preview);
+        holder.favicon = convertView.findViewById(R.id.favedStar);
+        holder.lockedIcon = convertView.findViewById(R.id.lockedIcon);
     }
 
     private static void setRetweetView(ViewHolder holder, Status origStatus) {
@@ -243,7 +265,7 @@ public class TweetStatusAdapter extends ArrayAdapter<Status> {
     private static void setNormalTweetView(ViewHolder holder, Status status) {
         // 不要な部分を非表示に
         holder.retweeterInfo.setVisibility(View.GONE);
-        if(PrefUtil.getBoolean(R.string.show_source, true)){
+        if (PrefUtil.getBoolean(R.string.show_source, true)) {
             holder.via.setVisibility(View.VISIBLE);
         } else {
             holder.via.setVisibility(View.GONE);
@@ -258,12 +280,12 @@ public class TweetStatusAdapter extends ArrayAdapter<Status> {
     }
 
     private static void setPostedAtTime(ViewHolder holder, Status status) {
+
         // 日付の設定
         if (status.isRetweet())
             status = status.getRetweetedStatus();
-        String timeMode = PreferenceManager.getDefaultSharedPreferences(sContext).getString(
-                sContext.getString(R.string.date_display_mode), sContext.getString(R.string.relative));
-        String time = (timeMode.equals(sContext.getString(R.string.relative))) ? AppUtil.dateToRelativeTime(status
+        String timeMode = PrefUtil.getString(R.string.date_display_mode, R.string.relative);
+        String time = (timeMode.equals(AppUtil.getString(R.string.relative))) ? AppUtil.dateToRelativeTime(status
                 .getCreatedAt()) : AppUtil.dateToAbsoluteTime(status.getCreatedAt());
         holder.postedAt.setText(time);
     }
@@ -304,10 +326,6 @@ public class TweetStatusAdapter extends ArrayAdapter<Status> {
         }
     }
 
-    private static int getColor(int id) {
-        return sContext.getResources().getColor(id);
-    }
-
     public static void shouldShowInlinePreview(boolean showPreview) {
         shouldShowPreview = showPreview;
     }
@@ -316,4 +334,11 @@ public class TweetStatusAdapter extends ArrayAdapter<Status> {
         mShouldPool = shouldPool;
     }
 
+    public void destroy(){
+        sAdapters.remove(this);
+    }
+
+    public static List<TweetStatusAdapter> getAdapters(){
+        return sAdapters;
+    }
 }

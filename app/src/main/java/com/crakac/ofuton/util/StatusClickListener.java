@@ -1,29 +1,38 @@
 package com.crakac.ofuton.util;
 
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.widget.AdapterView;
 
 import com.crakac.ofuton.C;
-import com.crakac.ofuton.fragment.AbstractStatusFragment;
 import com.crakac.ofuton.fragment.dialog.StatusDialogFragment;
 
-public class StatusClickListener implements AdapterView.OnItemClickListener {
-    private AbstractStatusFragment mFragment;
+import java.lang.ref.WeakReference;
 
-    public StatusClickListener(AbstractStatusFragment f) {
-        mFragment = f;
+/**
+ * Created by Kosuke on 2017/12/20.
+ */
+
+public class StatusClickListener implements AdapterView.OnItemClickListener {
+    WeakReference<FragmentActivity> mActivityRef;
+    public StatusClickListener(FragmentActivity a){
+        mActivityRef = new WeakReference<>(a);
     }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position,
-            long id) {
+                            long id) {
+        FragmentActivity activity = mActivityRef.get();
+        if(activity == null)
+            return;
+
         twitter4j.Status status = (twitter4j.Status) parent
                 .getItemAtPosition(position);
-        StatusDialogFragment dialog = new StatusDialogFragment(mFragment);
+        StatusDialogFragment dialog = new StatusDialogFragment();
         Bundle b = new Bundle();
         b.putSerializable(C.STATUS, status);
         dialog.setArguments(b);
-        dialog.show(mFragment.getFragmentManager(), "dialog");
+        dialog.show(activity.getSupportFragmentManager(), "dialog");
     }
 }

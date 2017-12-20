@@ -12,11 +12,9 @@ import twitter4j.Twitter;
 import twitter4j.TwitterException;
 
 public class DestroyStatusAction extends ClickAction {
-	private TweetStatusAdapter statusAdapter;
 	twitter4j.Status selectedStatus;
-	public DestroyStatusAction(Context context, TweetStatusAdapter adapter, twitter4j.Status status) {
+	public DestroyStatusAction(Context context, twitter4j.Status status) {
 		super(context, R.string.destroy_status, R.drawable.ic_delete_white_36dp);
-		statusAdapter = adapter;
 		selectedStatus = status;
 	}
 	@Override
@@ -43,7 +41,13 @@ public class DestroyStatusAction extends ClickAction {
 					AppUtil.showToast("無理でした");
 				} else {
 					AppUtil.showToast("ツイートを削除しました");
-					statusAdapter.remove(result);
+					for (TweetStatusAdapter adapter : TweetStatusAdapter.getAdapters()){
+						int pos = adapter.getPosition(selectedStatus);
+						if(pos < 0)
+							continue;
+						adapter.remove(selectedStatus);
+						adapter.notifyDataSetChanged();
+					}
 				}
 			}
 		};

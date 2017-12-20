@@ -1,21 +1,21 @@
-<RelativeLayout
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     style="@style/timeline"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    android:foreground="?selectableItemBackground">
 
     <com.crakac.ofuton.widget.BitmapImageView
         android:id="@+id/icon"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"/>
+        android:layout_alignParentTop="true" />
 
     <LinearLayout
         android:id="@+id/nameAndLock"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_marginLeft="8dp"
         android:layout_marginBottom="2dp"
+        android:layout_marginLeft="8dp"
         android:layout_toLeftOf="@+id/postedAt"
         android:layout_toRightOf="@+id/icon"
         android:gravity="left"
@@ -35,7 +35,7 @@
                 android:maxLines="1"
                 android:text="@string/dummy"
                 android:textColor="@color/twitter_blue"
-                android:textStyle="bold"/>
+                android:textStyle="bold" />
 
             <ImageView
                 android:id="@+id/lockedIcon"
@@ -43,7 +43,7 @@
                 android:layout_height="16dp"
                 android:padding="2dp"
                 android:src="@drawable/ic_lock_grey600_18dp"
-                android:visibility="visible"/>
+                android:visibility="visible" />
         </LinearLayout>
 
         <TextView
@@ -52,7 +52,7 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="1"
-            android:text="@string/dummy"/>
+            android:text="@string/dummy" />
     </LinearLayout>
 
     <TextView
@@ -63,7 +63,7 @@
         android:layout_alignParentTop="true"
         android:gravity="right"
         android:text="@string/dummy"
-        android:textColor="@color/sub_text"/>
+        android:textColor="@color/sub_text" />
 
     <RelativeLayout
         android:id="@+id/content"
@@ -83,8 +83,8 @@
             android:layout_toLeftOf="@+id/favedStar"
             android:gravity="left|top"
             android:text="@string/dummy"
-            android:textColorLink="@color/twitter_blue"
-            android:textColor="@color/text"/>
+            android:textColor="@color/text"
+            android:textColorLink="@color/twitter_blue" />
 
         <ImageView
             android:id="@+id/favedStar"
@@ -94,7 +94,7 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="4dp"
             android:src="@drawable/ic_star_white_16dp"
-            android:visibility="visible"/>
+            android:visibility="visible" />
     </RelativeLayout>
 
     <com.crakac.ofuton.widget.MultipleImagePreview
@@ -105,7 +105,7 @@
         android:layout_below="@+id/content"
         android:layout_marginBottom="4dp"
         android:layout_marginTop="4dp"
-        android:visibility="visible"/>
+        android:visibility="visible" />
 
     <!-- retweeted area -->
 
@@ -115,14 +115,14 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/content"
         android:layout_below="@+id/inline_preview"
-        android:gravity="left|center_vertical"
         android:layout_marginTop="4dp"
+        android:gravity="left|center_vertical"
         android:orientation="horizontal">
 
         <com.crakac.ofuton.widget.BitmapImageView
             android:id="@+id/smallIcon"
             android:layout_width="16dp"
-            android:layout_height="16dp"/>
+            android:layout_height="16dp" />
 
         <TextView
             android:id="@+id/retweeted_by"
@@ -132,19 +132,19 @@
             android:ellipsize="end"
             android:maxLines="1"
             android:text="@string/dummy"
-            android:textColor="@color/sub_text"/>
+            android:textColor="@color/sub_text" />
     </LinearLayout>
 
     <TextView
         android:id="@+id/via"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
         android:layout_alignParentRight="true"
         android:layout_below="@+id/inline_preview"
+        android:layout_marginTop="4dp"
         android:ellipsize="end"
         android:maxLines="1"
         android:text="@string/dummy"
-        android:textColor="@color/sub_text"/>
+        android:textColor="@color/sub_text" />
 
 </RelativeLayout>

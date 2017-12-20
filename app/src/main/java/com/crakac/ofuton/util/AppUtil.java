@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
@@ -362,11 +363,15 @@ public final class AppUtil {
         }
     }
 
+    public static int getColor(int colorId){
+        return sContext.getResources().getColor(colorId);
+    }
+
     public static boolean existsTofuBuster(){
         return PrefUtil.getBoolean(R.string.pref_tofu);
     }
 
-    public static interface SyarListener {
+    public interface SyarListener {
 
         void preSyar();
 

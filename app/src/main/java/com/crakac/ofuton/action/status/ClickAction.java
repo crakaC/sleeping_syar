@@ -2,7 +2,7 @@ package com.crakac.ofuton.action.status;
 
 import android.content.Context;
 
-public class ClickAction{
+abstract public class ClickAction{
 	protected Context mContext;
 	protected int stringId, iconId;
 	public ClickAction(Context context, int stringId, int iconId){
@@ -19,6 +19,5 @@ public class ClickAction{
 		return iconId;
 	}
 
-	public void doAction() {
-	}
+	public abstract void doAction();
 }

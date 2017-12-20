@@ -114,9 +114,9 @@ public class UserDetailActivity extends FinishableActionbarActivity {
         }
         mTwitter = TwitterUtils.getTwitterInstance();
 
-        mPager = (ViewPager) findViewById(R.id.pager);
+        mPager =  findViewById(R.id.pager);
         mPagerAdapter = new UserFragmentPagerAdapter(this, mPager);
-        mTab = (PagerSlidingTabStrip) findViewById(R.id.tab);
+        mTab = findViewById(R.id.tab);
 
         findAndInitViews();
 

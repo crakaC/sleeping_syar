@@ -163,14 +163,12 @@ public class StatusDialogFragment extends DialogFragment {
 	}
 
 	private void setActions(){
-		AbstractStatusFragment targetFragment = (AbstractStatusFragment) getTargetFragment();
-		TweetStatusAdapter statusAdapter = targetFragment.getAdapter();
 		// 自分のツイートならdestroyアクションを追加
 		if (isMyTweet(mSelectedStatus)
 				&& !mSelectedStatus.isRetweet()
 				|| (mSelectedStatus.isRetweet() && isMyTweet(mSelectedStatus
 						.getRetweetedStatus()))) {
-			mActionAdapter.add(new DestroyStatusAction(getActivity(),statusAdapter,mSelectedStatus));
+			mActionAdapter.add(new DestroyStatusAction(getActivity(),mSelectedStatus));
 		}
 
 		// reply
@@ -191,7 +189,7 @@ public class StatusDialogFragment extends DialogFragment {
 			mActionAdapter.add(new ReplyAllAction(getActivity(),mSelectedStatus));
 		}
 		// favorite
-		mActionAdapter.add(new FavAction(getActivity(), statusAdapter,mSelectedStatus));
+		mActionAdapter.add(new FavAction(getActivity(), mSelectedStatus));
 
 		//cancel Retweet
 		// 自分がリツイートしたやつはリツイートを取り消せる
@@ -199,7 +197,7 @@ public class StatusDialogFragment extends DialogFragment {
 				&& mSelectedStatus.getUser().getId() == TwitterUtils
 						.getCurrentAccountId()) {
 			mActionAdapter.add(new CancelRetweetAction(getActivity()
-					.getApplicationContext(), statusAdapter,mSelectedStatus));
+					.getApplicationContext(),mSelectedStatus));
 		}
 		// retweet 自分のツイートでなく，他人が自分のツイートをリツイートしたものでないときはリツイートできる
 		else if (!isMyTweet(mSelectedStatus)//自分のツイートでなく
@@ -207,7 +205,7 @@ public class StatusDialogFragment extends DialogFragment {
 				&& !(mSelectedStatus.getUser().isProtected() && !mSelectedStatus.isRetweet())//鍵垢のツイート(RT除く)でない
 				){
 			mActionAdapter.add(new RetweetAction(getActivity()
-					.getApplicationContext(), statusAdapter,mSelectedStatus));
+					.getApplicationContext(),mSelectedStatus));
 		}
 
 		// conversation　

@@ -1,10 +1,15 @@
 <resources>
+    <color name="white_ripple_color">#88FEFEFE</color>
     <color name="tab_text">#DADADA</color>
     <color name="light_gray">#A0A0A0</color>
     <color name="gray">#303030</color>
-    <color name="dark_gray">#212121</color>
+    <color name="dark_gray">#202020</color>
     <color name="dark_gray_transparent">#D01A1A1A</color>
-    <color name="tab_background">#181a1a</color>
+    <color name="super_gray">#101010</color>
+    <color name="gray_blue">#303540</color>
+    <color name="gray_green">#304035</color>
+    <color name="gray_red">#453030</color>
+    <color name="dark_orange">#403530</color>
     <color name="transparent_black">#20000000</color>
     <color name="image_overlay">#40808080</color>
     <color name="sub_text">#707070</color>

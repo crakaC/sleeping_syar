@@ -13,59 +13,61 @@ import twitter4j.TwitterException;
 
 public class FavAction extends ClickAction {
 
-	private TweetStatusAdapter statusAdapter;
-	private twitter4j.Status selectedStatus;
+    private twitter4j.Status selectedStatus;
 
-	public FavAction(Context context, TweetStatusAdapter adapter, twitter4j.Status status) {
-		super(context, R.string.favorite, R.drawable.ic_star_white_36dp);
-		mContext = context;
-		statusAdapter = adapter;
-		selectedStatus = status;
-		if (selectedStatus.isFavorited()) {
-			stringId = R.string.unfavorite;
+    public FavAction(Context context, twitter4j.Status status) {
+        super(context, R.string.favorite, R.drawable.ic_star_white_36dp);
+        mContext = context;
+        selectedStatus = status;
+        if (selectedStatus.isFavorited()) {
+            stringId = R.string.unfavorite;
             iconId = R.drawable.ic_star_outline_white_36dp;
         } else {
-			stringId = R.string.favorite;
+            stringId = R.string.favorite;
             iconId = R.drawable.ic_star_white_36dp;
-		}
-	}
+        }
+    }
 
-	@Override
-	public void doAction() {
-		ParallelTask<Void, twitter4j.Status>task = new ParallelTask<Void, twitter4j.Status>() {
-			@Override
-			protected twitter4j.Status doInBackground() {
-				Twitter mTwitter = TwitterUtils.getTwitterInstance();
-				try {
-					if (selectedStatus.isFavorited()) {
-						return mTwitter.destroyFavorite(selectedStatus.getId());
-					} else {
-						return mTwitter.createFavorite(selectedStatus.getId());
-					}
-				} catch (TwitterException e) {
-					e.printStackTrace();
-				}
-				return null;
-			}
+    @Override
+    public void doAction() {
+        ParallelTask<Void, twitter4j.Status> task = new ParallelTask<Void, twitter4j.Status>() {
+            @Override
+            protected twitter4j.Status doInBackground() {
+                Twitter mTwitter = TwitterUtils.getTwitterInstance();
+                try {
+                    if (selectedStatus.isFavorited()) {
+                        return mTwitter.destroyFavorite(selectedStatus.getId());
+                    } else {
+                        return mTwitter.createFavorite(selectedStatus.getId());
+                    }
+                } catch (TwitterException e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
 
-			@Override
-			protected void onPostExecute(twitter4j.Status result) {
-				if (result != null) {
-					if (selectedStatus.isFavorited()) {
-						AppUtil.showToast("お気に入りから削除しました");
-					} else {
-						AppUtil.showToast("お気に入りに追加しました");
-					}
-					int pos = statusAdapter.getPosition(selectedStatus);
-					statusAdapter.remove(selectedStatus);
-					statusAdapter.insert(result, pos);
-					statusAdapter.notifyDataSetChanged();
-				} else {
-					AppUtil.showToast(mContext
-							.getString(R.string.something_wrong));
-				}
-			}
-		};
-		task.executeParallel();
-	}
+            @Override
+            protected void onPostExecute(twitter4j.Status result) {
+                if (result != null) {
+                    if (selectedStatus.isFavorited()) {
+                        AppUtil.showToast("お気に入りから削除しました");
+                    } else {
+                        AppUtil.showToast("お気に入りに追加しました");
+                    }
+                    for (TweetStatusAdapter adapter : TweetStatusAdapter.getAdapters()){
+                        int pos = adapter.getPosition(selectedStatus);
+                        if(pos < 0)
+                            continue;
+                        adapter.remove(selectedStatus);
+                        adapter.insert(result, pos);
+                        adapter.notifyDataSetChanged();
+                    }
+                } else {
+                    AppUtil.showToast(mContext
+                            .getString(R.string.something_wrong));
+                }
+            }
+        };
+        task.executeParallel();
+    }
 }

@@ -42,12 +42,12 @@ public class UserAdapter extends ArrayAdapter<twitter4j.User> {
         if (convertView == null) {
             convertView = mInflater.inflate(R.layout.list_item_user, null);
             holder = new ViewHolder();
-            holder.name = (TextView) convertView.findViewById(R.id.name);
-            holder.screenName = (TextView) convertView.findViewById(R.id.screenName);
-            holder.text = (TextView) convertView.findViewById(R.id.text);
-            holder.info = (TextView) convertView.findViewById(R.id.info);
-            holder.icon = (NetworkImageView) convertView.findViewById(R.id.icon);
-            holder.lockedIcon = (ImageView) convertView.findViewById(R.id.lockedIcon);
+            holder.name = convertView.findViewById(R.id.name);
+            holder.screenName = convertView.findViewById(R.id.screenName);
+            holder.text = convertView.findViewById(R.id.text);
+            holder.info = convertView.findViewById(R.id.info);
+            holder.icon = convertView.findViewById(R.id.icon);
+            holder.lockedIcon = convertView.findViewById(R.id.lockedIcon);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();

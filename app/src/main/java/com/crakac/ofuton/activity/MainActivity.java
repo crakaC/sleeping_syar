@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
         setTitle(R.string.app_name);
         setContentView(R.layout.activity_main);
         mTweetFragment = (TweetFragment) getSupportFragmentManager().findFragmentById(R.id.quick_tweet);
-        mTweetBtn = (FloatingActionButton) findViewById(R.id.tweetEveryWhere);// 右下のツイートボタン
+        mTweetBtn = findViewById(R.id.tweetEveryWhere);// 右下のツイートボタン
         mTweetBtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {

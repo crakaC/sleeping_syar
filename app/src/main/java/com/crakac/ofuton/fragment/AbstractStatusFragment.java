@@ -33,7 +33,7 @@ public abstract class AbstractStatusFragment extends AbstractPtrFragment {
 			Bundle savedInstanceState) {
 		View v = super.onCreateView(inflater, container, savedInstanceState);
 		mListView.setAdapter(mAdapter);
-        mListView.setOnItemClickListener(new StatusClickListener(this));
+		mListView.setOnItemClickListener(new StatusClickListener(getActivity()));
 		return v;
 	}
 
@@ -64,6 +64,12 @@ public abstract class AbstractStatusFragment extends AbstractPtrFragment {
         mAdapter.insert(status, 0);
         mAdapter.notifyDataSetChanged();
         restorePosition();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mAdapter.destroy();
     }
 
     protected boolean isFirstItemVisible() {

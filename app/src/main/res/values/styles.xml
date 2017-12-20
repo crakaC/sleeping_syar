@@ -29,7 +29,7 @@
     </style>
 
     <style name="timeline" parent="wideItem">
-        <item name="android:background">@color/clickable_background</item>
+        <item name="android:colorControlHighlight">@color/dark_orange</item>
         <item name="android:padding">8dp</item>
     </style>
 
