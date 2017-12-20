@@ -34,8 +34,6 @@ public class AccountActivity extends FinishableActionbarActivity{
 		}
 		mFragment = new AccountListFragment();
 		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-
-
 		ft.add(R.id.accountList, mFragment);
 		ft.commit();
 	}

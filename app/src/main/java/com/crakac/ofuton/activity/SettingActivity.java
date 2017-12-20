@@ -19,7 +19,7 @@ import com.crakac.ofuton.R;
 import com.crakac.ofuton.util.PrefUtil;
 import com.crakac.ofuton.util.ReloadChecker;
 
-public class SettingActivity extends AppCompatActivity {
+public class SettingActivity extends FinishableActionbarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

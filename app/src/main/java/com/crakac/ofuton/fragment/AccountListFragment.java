@@ -46,7 +46,7 @@ public class AccountListFragment extends Fragment{
 		mDialogManager = new DialogManager(getActivity().getSupportFragmentManager());
 		View view = inflater.inflate(R.layout.base_listfragment, container, false);
 		mAdapter = new AccountAdapter(getActivity());
-		ListView lv = (ListView)view.findViewById(R.id.listView);
+		ListView lv = view.findViewById(R.id.listView);
 		View footerView = inflater.inflate(R.layout.account_footer, null);
 		footerView.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
