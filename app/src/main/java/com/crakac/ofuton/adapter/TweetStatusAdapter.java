@@ -206,7 +206,7 @@ public class TweetStatusAdapter extends ArrayAdapter<Status> {
             holder.name.setTextColor(AppUtil.getColor(R.color.droid_red));
             holder.screenName.setTextColor(AppUtil.getColor(R.color.droid_red));
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-                holder.base.setBackgroundResource(R.color.retweet_background);
+                holder.base.setBackgroundResource(R.color.mention_background);
             } else {
                 holder.base.setBackgroundColor(AppUtil.getColor(R.color.gray_red));
             }
@@ -238,6 +238,7 @@ public class TweetStatusAdapter extends ArrayAdapter<Status> {
         holder.postedAt = convertView.findViewById(R.id.postedAt);
         holder.via = convertView.findViewById(R.id.via);
         holder.icon = convertView.findViewById(R.id.icon);
+
         holder.icon.setOnTouchListener(new ColorOverlayOnTouch());
         holder.retweeterInfo = convertView.findViewById(R.id.retweeterInfo);
         holder.smallIcon = convertView.findViewById(R.id.smallIcon);
