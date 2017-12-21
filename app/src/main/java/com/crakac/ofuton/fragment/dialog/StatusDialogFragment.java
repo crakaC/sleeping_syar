@@ -36,7 +36,6 @@ import com.crakac.ofuton.action.status.RetweetAction;
 import com.crakac.ofuton.action.status.TofuBusterAction;
 import com.crakac.ofuton.action.status.UserDetailAction;
 import com.crakac.ofuton.adapter.TweetStatusAdapter;
-import com.crakac.ofuton.fragment.AbstractStatusFragment;
 import com.crakac.ofuton.util.AppUtil;
 import com.crakac.ofuton.util.PrefUtil;
 import com.crakac.ofuton.util.TwitterUtils;
@@ -115,10 +114,11 @@ public class StatusDialogFragment extends DialogFragment {
     }
 
     private boolean isMyTweet(Status status) {
-        if (status.getUser().getId() == TwitterUtils.getCurrentAccountId()) {
-            return true;
-        }
-        return false;
+        return status != null && status.getUser().getId() == TwitterUtils.getCurrentAccountId();
+    }
+
+    private boolean isLockedAccountTweet(Status status) {
+        return status.getUser().isProtected();
     }
 
     @Override
@@ -159,11 +159,10 @@ public class StatusDialogFragment extends DialogFragment {
     }
 
     private void setActions() {
+
+        Status retweetedStatus = mSelectedStatus.getRetweetedStatus();
         // 自分のツイートならdestroyアクションを追加
-        if (isMyTweet(mSelectedStatus)
-                && !mSelectedStatus.isRetweet()
-                || (mSelectedStatus.isRetweet() && isMyTweet(mSelectedStatus
-                .getRetweetedStatus()))) {
+        if (isMyTweet(mSelectedStatus) || isMyTweet(retweetedStatus)) {
             mActionAdapter.add(new DestroyStatusAction(getActivity(), mSelectedStatus));
         }
 
@@ -175,41 +174,36 @@ public class StatusDialogFragment extends DialogFragment {
                 mSelectedStatus.getRetweetedStatus().getUserMentionEntities() :
                 mSelectedStatus.getUserMentionEntities();
 
-        if ((!isMyTweet(mSelectedStatus) && entities.length != 0)//自分のツイートでなく，誰かしらへリプライを飛ばしている
-                && (!(entities.length == 1 && (
-                entities[0].getId() == TwitterUtils.getCurrentAccountId() || //自分だけへのリプライではない
-                        entities[0].getId() == (mSelectedStatus.isRetweet() ? mSelectedStatus.getRetweetedStatus().getUser().getId() : mSelectedStatus.getUser().getId())
-        )))
-                ) {
+        if ((!isMyTweet(mSelectedStatus) && entities.length > 0)//自分のツイートでなく，誰かしらへリプライを飛ばしている
+                && (!(entities.length == 1 && (entities[0].getId() == TwitterUtils.getCurrentAccountId() //自分だけへのリプライではない
+                    || entities[0].getId() == (mSelectedStatus.isRetweet() ? mSelectedStatus.getRetweetedStatus().getUser().getId() : mSelectedStatus.getUser().getId())
+        )))) {
             mActionAdapter.add(new ReplyAllAction(getActivity(), mSelectedStatus));
         }
+
         // favorite
         mActionAdapter.add(new FavAction(getActivity(), mSelectedStatus));
 
         //cancel Retweet
         // 自分がリツイートしたやつはリツイートを取り消せる
-        if (mSelectedStatus.isRetweet()
-                && mSelectedStatus.getUser().getId() == TwitterUtils
-                .getCurrentAccountId()) {
+        if (mSelectedStatus.isRetweeted() ||
+                (mSelectedStatus.isRetweet() && retweetedStatus.isRetweeted())) {
             mActionAdapter.add(new CancelRetweetAction(getActivity(), mSelectedStatus));
         }
-        // retweet 自分のツイートでなく，他人が自分のツイートをリツイートしたものでないときはリツイートできる
-        else if (!isMyTweet(mSelectedStatus)//自分のツイートでなく
-                && !(mSelectedStatus.isRetweet() && isMyTweet(mSelectedStatus.getRetweetedStatus()))//自分のツイートをリツイートしたものでもなく
-                && !(mSelectedStatus.getUser().isProtected() && !mSelectedStatus.isRetweet())//鍵垢のツイート(RT除く)でない
+        // retweet
+        else if (!(isLockedAccountTweet(mSelectedStatus) && !mSelectedStatus.isRetweet())//鍵垢のツイート(RT除く)でない
                 ) {
             mActionAdapter.add(new RetweetAction(getActivity(), mSelectedStatus));
         }
 
         // Fav & Retweet
-        if (!mSelectedStatus.isRetweetedByMe() && !mSelectedStatus.isFavorited()) {
+        if (!mSelectedStatus.isRetweeted() && !mSelectedStatus.isFavorited()) {
             mActionAdapter.add(new FavAndRetweeAction(getContext(), mSelectedStatus));
         }
 
-        // conversation　
-        if ((mSelectedStatus.isRetweet() && (mSelectedStatus.getRetweetedStatus()
-                .getInReplyToScreenName() != null))
-                || mSelectedStatus.getInReplyToScreenName() != null) {
+        // conversation
+        if ((mSelectedStatus.isRetweet() && (retweetedStatus.getInReplyToScreenName() != null))
+                || mSelectedStatus.getInReplyToStatusId() > 0) {
             mActionAdapter.add(new ConversationAction(getActivity(), mSelectedStatus));
         }
 

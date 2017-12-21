@@ -32,54 +32,57 @@ public class FavAndRetweeAction extends ClickAction {
             public void run() {
                 Twitter twitter = TwitterUtils.getTwitterInstance();
                 Status result = null;
-
-                boolean isFavoriteSuccess = false, isRetweetSuccess = false;
+                Status original = null;
                 try {
-                    result = twitter.createFavorite(selectedStatus.getId());
-                    isFavoriteSuccess = true;
+                    twitter.createFavorite(selectedStatus.getId());
                 } catch (TwitterException e) {
                     AppUtil.showToast(R.string.something_wrong);
+                    return;
                 }
 
                 try {
                     twitter.retweetStatus(selectedStatus.getId());
-                    isRetweetSuccess = true;
+                } catch (TwitterException e) {
+                    AppUtil.showToast(R.string.something_wrong);
+                    return;
+                }
+
+                try {
+                    result = twitter.showStatus(selectedStatus.getId());
                 } catch (TwitterException e) {
                     AppUtil.showToast(R.string.something_wrong);
                 }
 
-                handler.post(new OnActionResult(result, isFavoriteSuccess, isRetweetSuccess));
+                handler.post(new OnActionResult(result));
             }
         }).start();
     }
 
     class OnActionResult implements Runnable {
         boolean isFavouriteSuccess, isRetweetSuccess;
-        Status status;
+        Status result;
 
-        OnActionResult(Status result, boolean isFavouriteSuccess, boolean isRetweetSuccess) {
-            status = result;
-            this.isFavouriteSuccess = isFavouriteSuccess;
-            this.isRetweetSuccess = isRetweetSuccess;
+        OnActionResult(Status result) {
+            this.result = result;
         }
 
         @Override
         public void run() {
-            if (!isFavouriteSuccess || !isRetweetSuccess) {
+            if (result == null){
                 AppUtil.showToast(R.string.something_wrong);
-            }
-            if (status == null)
                 return;
+            }
+
             for (TweetStatusAdapter adapter : TweetStatusAdapter.getAdapters()) {
                 int pos = adapter.getPosition(selectedStatus);
                 if (pos < 0)
                     continue;
                 adapter.remove(selectedStatus);
-                adapter.insert(status, pos);
+                adapter.insert(result, pos);
                 adapter.notifyDataSetChanged();
             }
 
-            if(isFavouriteSuccess && isRetweetSuccess){
+            if (isFavouriteSuccess && isRetweetSuccess) {
                 AppUtil.showToast(R.string.fav_and_retweet_succeess);
             }
         }
