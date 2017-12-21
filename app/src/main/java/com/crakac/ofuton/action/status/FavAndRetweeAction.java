@@ -59,7 +59,6 @@ public class FavAndRetweeAction extends ClickAction {
     }
 
     class OnActionResult implements Runnable {
-        boolean isFavouriteSuccess, isRetweetSuccess;
         Status result;
 
         OnActionResult(Status result) {
@@ -81,10 +80,7 @@ public class FavAndRetweeAction extends ClickAction {
                 adapter.insert(result, pos);
                 adapter.notifyDataSetChanged();
             }
-
-            if (isFavouriteSuccess && isRetweetSuccess) {
-                AppUtil.showToast(R.string.fav_and_retweet_succeess);
-            }
+            AppUtil.showToast(R.string.fav_and_retweet_succeess);
         }
     }
 }
