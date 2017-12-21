@@ -57,7 +57,7 @@ public class PrefUtil {
      * @return
      */
     public static int getFontSize() {
-        return Integer.valueOf(getString(FONT_SIZE_KEY, "12"));// ListPreferenceは値をStringで保存すると思われるのでこうする
+        return Integer.valueOf(getString(FONT_SIZE_KEY, "13"));// ListPreferenceは値をStringで保存すると思われるのでこうする
     }
 
     /**

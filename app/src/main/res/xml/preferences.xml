@@ -53,7 +53,7 @@
 
     <PreferenceCategory android:title="@string/appearance">
         <CheckBoxPreference
-            android:defaultValue="true"
+            android:defaultValue="false"
             android:key="@string/enable_fast_scroll"
             android:title="@string/enable_fast_scroll" />
         <CheckBoxPreference
@@ -63,7 +63,7 @@
             android:title="@string/enable_refresh_btn" />
 
         <ListPreference
-            android:defaultValue="12"
+            android:defaultValue="13"
             android:dialogTitle="@string/font_size"
             android:entries="@array/entries_font_size"
             android:entryValues="@array/entryvalues_font_size"
@@ -78,15 +78,15 @@
             android:title="@string/date_display_mode" />
 
         <CheckBoxPreference
-            android:defaultValue="true"
+            android:defaultValue="false"
             android:key="@string/show_source"
-            android:summary="via名を表示する"
+            android:summary="投稿したクライアント名が表示されます"
             android:title="@string/show_source" />
 
         <CheckBoxPreference
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:key="@string/use_bigger_icon"
-            android:summary="画面が大きい端末の人向け"
+            android:summary="ギガが気になる人はオフにするといいかも"
             android:title="@string/use_bigger_icon" />
 
         <CheckBoxPreference
