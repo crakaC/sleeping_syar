@@ -1,6 +1,5 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/timeline"
-    android:foreground="?selectableItemBackground">
+    style="@style/timeline">
 
     <com.crakac.ofuton.widget.BitmapImageView
         android:id="@+id/icon"

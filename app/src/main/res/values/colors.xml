@@ -3,7 +3,8 @@
     <color name="tab_text">#DADADA</color>
     <color name="light_gray">#A0A0A0</color>
     <color name="gray">#303030</color>
-    <color name="dark_gray">#202020</color>
+    <!-- gray 900 -->
+    <color name="dark_gray">#212121</color>
     <color name="dark_gray_transparent">#D01A1A1A</color>
     <color name="super_gray">#101010</color>
     <color name="gray_blue">#303540</color>
@@ -12,7 +13,7 @@
     <color name="dark_orange">#403530</color>
     <color name="transparent_black">#20000000</color>
     <color name="image_overlay">#40808080</color>
-    <color name="sub_text">#707070</color>
+    <color name="sub_text">#A0A0A0</color>
     <color name="text">#D0D0D0</color>
     <color name="twitter_blue">#55acee</color>
     <color name="twitter_blue_bright">#7ac8ff</color>

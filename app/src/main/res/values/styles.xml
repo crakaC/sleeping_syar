@@ -29,7 +29,7 @@
     </style>
 
     <style name="timeline" parent="wideItem">
-        <item name="android:colorControlHighlight">@color/dark_orange</item>
+        <item name="android:background">@color/clickable_background</item>
         <item name="android:padding">8dp</item>
     </style>
 
@@ -70,8 +70,7 @@
     <style name="imageButton">
         <item name="android:layout_width">48dp</item>
         <item name="android:layout_height">48dp</item>
-        <item name="android:background">?selectableItemBackground</item>
-        <item name="android:padding">12dp</item>
+        <item name="android:padding">8dp</item>
     </style>
 
     <style name="TweetButton" parent="Theme.AppCompat">

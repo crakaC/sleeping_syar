@@ -11,7 +11,7 @@
             android:id="@+id/listView1"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:dividerHeight="0.875dp"
+            android:dividerHeight="@dimen/divider_height"
             android:divider="@drawable/divider"
             android:fadingEdge="none"
             android:clipToPadding="false"
