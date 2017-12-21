@@ -71,6 +71,9 @@
     <string name="drawer_lists">リスト編集</string>
     <string name="drawer_settings">詳細設定</string>
 
+    <string name="confirm_delete_account">このアカウントをログアウトしますか？</string>
+    <string name="ok">OK</string>
+
     <!-- prefs -->
     <string name="streaming_and_notification">ストリーミング/通知</string>
     <string name="appearance">見た目</string>

@@ -1,7 +1,9 @@
 package com.crakac.ofuton.fragment;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -114,29 +116,42 @@ public class AccountListFragment extends Fragment{
 
 			remove.setOnClickListener(new OnClickListener() {
 				public void onClick(View v) {
-					ParallelTask<Void, Void> task = new ParallelTask<Void, Void>() {
-						@Override
-						protected void onPreExecute() {
-							mDialogManager.showProgress("削除中");
-						}
-
-						@Override
-						protected Void doInBackground() {
-							TwitterUtils.removeAccount(user);
-							return null;
-						}
-
-						@Override
-						protected void onPostExecute(Void result) {
-							mDialogManager.dismissProgress();
-							mAdapter.remove(user);
-						}
-					};
-					task.executeParallel();
+					AlertDialog.Builder ab = new AlertDialog.Builder(getContext());
+					ab.setTitle(R.string.confirm_delete_account)
+							.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+								@Override
+								public void onClick(DialogInterface dialog, int which) {
+									removeAccount(user);
+								}
+							})
+							.setNegativeButton(R.string.cancel, null).create().show();
 				}
 			});
 			return convertView;
 		}
+
+		private void removeAccount(final Account account){
+			ParallelTask<Void, Void> task = new ParallelTask<Void, Void>() {
+				@Override
+				protected void onPreExecute() {
+					mDialogManager.showProgress("削除中");
+				}
+
+				@Override
+				protected Void doInBackground() {
+					TwitterUtils.removeAccount(account);
+					return null;
+				}
+
+				@Override
+				protected void onPostExecute(Void result) {
+					mDialogManager.dismissProgress();
+					mAdapter.remove(account);
+				}
+			};
+			task.executeParallel();
+		}
+
 
 		@Override
 		public int getCount() {
