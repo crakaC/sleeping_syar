@@ -5,6 +5,7 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBar;
@@ -22,6 +23,7 @@ import com.crakac.ofuton.R;
 import com.crakac.ofuton.util.AppUtil;
 import com.crakac.ofuton.util.BitmapUtil;
 import com.crakac.ofuton.util.ParallelTask;
+import com.crakac.ofuton.util.PrefUtil;
 import com.crakac.ofuton.util.SimpleTextChangeListener;
 import com.crakac.ofuton.util.TwitterUtils;
 import com.crakac.ofuton.util.Util;
@@ -73,18 +75,22 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
         // レイアウトを読み込み
         setContentView(R.layout.activity_tweet);
 
-        mInputText = (EditText) findViewById(R.id.input_text);// 入力欄
+        mInputText = findViewById(R.id.input_text);// 入力欄
         mTweetBtn = findViewById(R.id.action_tweet);// ツイートボタン
         mAppendPicBtn = findViewById(R.id.appendPic);// 画像添付ボダン
         mCameraBtn = findViewById(R.id.picFromCamera);// 撮影して添付するボタン
         mInfoBtn = findViewById(R.id.tweetInfoBtn);// リプライ先表示ボタン
-        mAppendedImageView = (ImageView) findViewById(R.id.appendedImage);
+        mAppendedImageView = findViewById(R.id.appendedImage);
+
+        mInputText.setTextSize(PrefUtil.getFontSize() * 1.2f);
 
         for (View clickable : new View[]{mTweetBtn, mAppendPicBtn, mCameraBtn, mInfoBtn, mAppendedImageView}) {
             clickable.setOnClickListener(this);
         }
 
-        mAppendedImageView.setOnTouchListener(new ColorOverlayOnTouch());
+        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP){
+            mAppendedImageView.setOnTouchListener(new ColorOverlayOnTouch());
+        }
 
         // 文章に変更があったら残り文字数を変化させる
         mInputText.addTextChangedListener(new SimpleTextChangeListener() {

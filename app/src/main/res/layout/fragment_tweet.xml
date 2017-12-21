@@ -1,18 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/dark_gray"
-    android:visibility="invisible"
-    app:elevation="5dp">
+    android:visibility="invisible">
 
     <EditText
         android:id="@+id/input_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:minHeight="40dp"
         android:layout_centerVertical="true"
-        android:layout_toLeftOf="@+id/navs"
+        android:layout_toLeftOf="@id/navs"
         android:inputType="textMultiLine"
         android:padding="4dp"
         android:textSize="13sp" />
@@ -21,7 +20,9 @@
         android:id="@+id/remainingText"
         style="@style/remainingText"
         android:layout_alignRight="@+id/input_text"
-        android:layout_centerVertical="true"
+        android:layout_alignBottom="@id/input_text"
+        android:layout_marginRight="4dp"
+        android:layout_marginBottom="8dp"
         android:text="@string/dummy" />
 
     <LinearLayout
@@ -29,24 +30,24 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
+        android:layout_alignTop="@id/input_text"
+        android:layout_alignBottom="@id/input_text"
         android:layout_centerVertical="true"
-        android:gravity="right"
         android:orientation="horizontal">
 
         <ImageView
             android:id="@+id/appendedImage"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:clickable="true"
             android:cropToPadding="true"
-            android:padding="4dp"
             android:scaleType="centerCrop"
             android:visibility="gone" />
 
         <ImageView
             android:id="@+id/appendPic"
             android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_height="match_parent"
+            android:minHeight="40dp"
             android:background="@color/transparent_clickable"
             android:padding="8dp"
             android:src="@drawable/ic_attach_file_white_36dp" />
@@ -54,9 +55,10 @@
         <ImageView
             android:id="@+id/action_tweet"
             android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:background="@color/transparent_clickable"
+            android:minHeight="40dp"
+            android:layout_height="match_parent"
             android:padding="8dp"
+            android:background="@color/quick_tweet_background"
             android:src="@drawable/ic_send_white_36dp" />
     </LinearLayout>
 

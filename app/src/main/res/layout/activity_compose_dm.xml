@@ -9,7 +9,6 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_above="@+id/navs"
-        android:ems="10"
         android:gravity="left|top"
         android:inputType="textMultiLine"
         android:textSize="13sp" >
