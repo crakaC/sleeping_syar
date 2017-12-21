@@ -89,7 +89,7 @@
 
     <drawable name="translucent_background">#A0000000</drawable>
 
-    <style name="Theme.MyTrans" parent="AppTheme">
+    <style name="Theme.MyTrans" parent="ToolbarTheme">
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowBackground">@drawable/translucent_background</item>
         <item name="android:windowContentOverlay">@null</item>
