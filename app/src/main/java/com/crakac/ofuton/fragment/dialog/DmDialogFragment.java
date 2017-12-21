@@ -55,7 +55,7 @@ public class DmDialogFragment extends DialogFragment {
 		// 各種アクションをアダプタに追加して表示
 		mActionAdapter = new ClickActionAdapter(getActivity());
 
-		ListView lvActions = (ListView) view
+		ListView lvActions = view
 				.findViewById(R.id.action_list);
 
 		// DM表示部分を作成
@@ -99,7 +99,7 @@ public class DmDialogFragment extends DialogFragment {
 		DisplayMetrics metrics = getResources().getDisplayMetrics();
 
 		// 縦幅はwrap contentで，横幅は92%で．
-        int dialogWidth = (int) Math.min((metrics.widthPixels * 0.92), AppUtil.dpToPx(480));
+        int dialogWidth = (int) Math.min((metrics.widthPixels * 0.85), AppUtil.dpToPx(480));
         int dialogHeight = WindowManager.LayoutParams.WRAP_CONTENT;
 
 		lp.width = dialogWidth;
@@ -135,7 +135,7 @@ public class DmDialogFragment extends DialogFragment {
 		if(dm.getSenderId() != dm.getRecipientId()){
 			mActionAdapter.add(new UserDetailAction(getActivity(), dm.getRecipient()));
 		}
-		TreeSet<Long> mentionedUserIds = new TreeSet<Long>();
+		TreeSet<Long> mentionedUserIds = new TreeSet<>();
 		mentionedUserIds.add(dm.getSenderId());
 		mentionedUserIds.add(dm.getRecipientId());
 

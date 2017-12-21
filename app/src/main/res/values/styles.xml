@@ -1,8 +1,6 @@
-<resources
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <style name="AppBaseTheme" parent="Theme.AppCompat">
-    </style>
+    <style name="AppBaseTheme" parent="Theme.AppCompat"></style>
 
     <!-- Application theme. -->
     <style name="AppTheme" parent="AppBaseTheme">
@@ -38,7 +36,7 @@
         <item name="android:orientation">horizontal</item>
     </style>
 
-    <style name="account" parent="timeline"/>
+    <style name="account" parent="timeline" />
 
     <style name="userDetail">
         <item name="android:textSize">12sp</item>
@@ -73,9 +71,20 @@
         <item name="android:padding">8dp</item>
     </style>
 
+    <style name="action_image">
+        <item name="android:layout_width">36dp</item>
+        <item name="android:layout_height">36dp</item>
+        <item name="android:padding">4dp</item>
+    </style>
+
     <style name="TweetButton" parent="Theme.AppCompat">
         <item name="colorButtonNormal">@color/twitter_blue</item>
         <item name="colorControlHighlight">@color/twitter_blue_bright</item>
+    </style>
+
+    <style name="dialog_action">
+        <item name="android:background">@color/status_action_list</item>
+        <item name="android:padding">8dp</item>
     </style>
 
     <drawable name="translucent_background">#A0000000</drawable>

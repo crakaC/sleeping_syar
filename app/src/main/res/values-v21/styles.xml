@@ -13,4 +13,9 @@
         <item name="android:padding">8dp</item>
     </style>
 
+    <style name="dialog_action">
+        <item name="android:background">@color/transparent_black</item>
+        <item name="android:padding">8dp</item>
+    </style>
+
 </resources>
