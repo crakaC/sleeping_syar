@@ -35,6 +35,7 @@
     <string name="favorite">お気に入りに追加</string>
     <string name="unfavorite">お気に入りから削除</string>
     <string name="fav_and_retweet">お気に入りに追加してリツイート</string>
+    <string name="fav_and_retweet_succeess">お気に入り＆リツイートしました</string>
     <string name="send_dm">DMを送る</string>
     <string name="send_mention">メンションを送る</string>
     <string name="tofu">TofuBuster</string>
@@ -96,7 +97,7 @@
     <string name="show_image_in_timeline">タイムラインに画像を表示</string>
     <string name="add_animation">TweetをTween</string>
     <string name="goto_webpage">作者HP</string>
-    <string name="homepage">http://crakac.com</string>
+    <string name="homepage">https://crakac.com</string>
 
     <string name="complete">完了</string>
     <string name="save_complete">画像を保存しました</string>

@@ -78,6 +78,10 @@ public class FavAndRetweeAction extends ClickAction {
                 adapter.insert(status, pos);
                 adapter.notifyDataSetChanged();
             }
+
+            if(isFavouriteSuccess && isRetweetSuccess){
+                AppUtil.showToast(R.string.fav_and_retweet_succeess);
+            }
         }
     }
 }
