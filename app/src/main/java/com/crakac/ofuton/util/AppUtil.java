@@ -6,7 +6,10 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
@@ -21,6 +24,7 @@ import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -47,7 +51,9 @@ import twitter4j.URLEntity;
 public final class AppUtil {
     private static Context sContext;
 
-    private AppUtil(){}
+    private AppUtil() {
+    }
+
     public static void init(Context context) {
         sContext = context.getApplicationContext();
     }
@@ -127,7 +133,7 @@ public final class AppUtil {
             return diff / MINUTE + "m";
         } else if (diff < DAY) {
             long minites = diff % HOUR / MINUTE;
-            if(minites == 0){
+            if (minites == 0) {
                 return (diff / HOUR) + "h";
             } else {
                 return (diff / HOUR) + "h" + (diff % HOUR / MINUTE) + "m";
@@ -333,13 +339,13 @@ public final class AppUtil {
     }
 
     public static void closeSearchView(SearchView searchView) {
-        if(searchView == null)
+        if (searchView == null)
             return;
         searchView.setQuery(null, false);
         searchView.setIconified(true);
     }
 
-    public static File convertUriToFile(Context context, Uri uri){
+    public static File convertUriToFile(Context context, Uri uri) {
         File imageFile = null;
         if (uri.getScheme().equals("file")) {
             try {
@@ -357,18 +363,18 @@ public final class AppUtil {
     }
 
     public static void checkTofuBuster() {
-        if(existsPackage(getString(R.string.tofubuster_package))){
+        if (existsPackage(getString(R.string.tofubuster_package))) {
             PrefUtil.put(R.string.pref_tofu, true);
         } else {
             PrefUtil.put(R.string.pref_tofu, false);
         }
     }
 
-    public static int getColor(int colorId){
+    public static int getColor(int colorId) {
         return sContext.getResources().getColor(colorId);
     }
 
-    public static boolean existsTofuBuster(){
+    public static boolean existsTofuBuster() {
         return PrefUtil.getBoolean(R.string.pref_tofu);
     }
 
@@ -377,6 +383,25 @@ public final class AppUtil {
         void preSyar();
 
         void postSyar();
+    }
+
+    public static void setImageViewEnabled(boolean enabled, ImageView item, int iconResId) {
+        if (item.isEnabled() == enabled) return;
+
+        item.setEnabled(enabled);
+        Drawable originalIcon = sContext.getResources().getDrawable(iconResId);
+        Drawable icon = enabled ? originalIcon : convertDrawableToGrayScale(originalIcon);
+        item.setImageDrawable(icon);
+
+    }
+
+    private static Drawable convertDrawableToGrayScale(Drawable drawable) {
+        if (drawable == null)
+            return null;
+
+        Drawable d = drawable.mutate();
+        d.setColorFilter(Color.GRAY, PorterDuff.Mode.SRC_IN);
+        return d;
     }
 
 }

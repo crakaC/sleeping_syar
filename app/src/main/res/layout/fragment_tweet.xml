@@ -21,7 +21,7 @@
         style="@style/remainingText"
         android:layout_alignBottom="@id/input_text"
         android:layout_alignRight="@+id/input_text"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="12dp"
         android:layout_marginRight="4dp"
         android:text="@string/dummy" />
 
@@ -37,27 +37,25 @@
 
         <ImageView
             android:id="@+id/appendedImage"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:cropToPadding="true"
             android:scaleType="centerCrop"
             android:visibility="gone" />
 
         <ImageView
             android:id="@+id/appendPic"
-            android:layout_width="40dp"
+            android:layout_width="48dp"
             android:layout_height="match_parent"
-            android:minHeight="40dp"
-            android:background="@color/transparent_clickable"
-            android:padding="8dp"
+            android:background="?attr/selectableItemBackground"
+            android:padding="12dp"
             android:src="@drawable/ic_attach_file_white_36dp" />
 
         <ImageView
             android:id="@+id/action_tweet"
-            android:layout_width="40dp"
-            android:minHeight="40dp"
+            android:layout_width="48dp"
             android:layout_height="match_parent"
-            android:padding="8dp"
+            android:padding="12dp"
             android:background="@color/quick_tweet_background"
             android:src="@drawable/ic_send_white_36dp" />
     </LinearLayout>

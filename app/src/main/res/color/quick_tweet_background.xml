@@ -7,7 +7,7 @@
         android:state_enabled="true"
         />
     <item
-        android:drawable="@color/material_grey_600"
+        android:drawable="@color/twitter_blue_dark"
         android:state_pressed="false"
         android:state_selected="false"/>
     <item

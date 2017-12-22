@@ -4,12 +4,12 @@
     android:padding="8dp">
 
     <EditText
-        android:gravity="top"
         android:id="@+id/input_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@id/navs"
         android:layout_alignParentTop="true"
+        android:gravity="top"
         android:inputType="textMultiLine">
 
         <requestFocus />
@@ -37,17 +37,20 @@
         <ImageView
             android:id="@+id/tweetInfoBtn"
             style="@style/imageButton"
+            android:layout_marginRight="8dp"
             android:src="@drawable/ic_question_answer_white_48dp"
             android:visibility="gone" />
 
         <ImageView
             android:id="@+id/appendPic"
             style="@style/imageButton"
+            android:layout_marginRight="8dp"
             android:src="@drawable/ic_insert_photo_white_48dp" />
 
         <ImageView
             android:id="@+id/picFromCamera"
             style="@style/imageButton"
+            android:layout_marginRight="8dp"
             android:src="@drawable/ic_camera_alt_white_48dp" />
 
         <Button

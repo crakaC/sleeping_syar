@@ -64,7 +64,7 @@ public class TweetFragment extends Fragment implements View.OnClickListener {
     private EditText mInputText;
     private File mAppendingFile; // 画像のアップロードに使用
     private TextView mRemainingText;// 残り文字数を表示
-    private View mTweetBtn, mAppendBtn;// つぶやくボタン，画像追加ボタン，リプライ元情報ボタン
+    private ImageView mTweetBtn, mAppendBtn;// つぶやくボタン，画像追加ボタン，リプライ元情報ボタン
     private ImageView mAppendedImageView;
     private Uri mImageUri;// カメラ画像添付用
     private View mRootView;
@@ -255,7 +255,7 @@ public class TweetFragment extends Fragment implements View.OnClickListener {
     }
 
     private void enableTweetButton(boolean enabled) {
-        mTweetBtn.setEnabled(enabled);
+        AppUtil.setImageViewEnabled(enabled, mTweetBtn, R.drawable.ic_send_white_48dp);
     }
 
     private void appendPicture(Uri uri) {
