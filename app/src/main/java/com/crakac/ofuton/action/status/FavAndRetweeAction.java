@@ -71,15 +71,7 @@ public class FavAndRetweeAction extends ClickAction {
                 AppUtil.showToast(R.string.something_wrong);
                 return;
             }
-
-            for (TweetStatusAdapter adapter : TweetStatusAdapter.getAdapters()) {
-                int pos = adapter.getPosition(selectedStatus);
-                if (pos < 0)
-                    continue;
-                adapter.remove(selectedStatus);
-                adapter.insert(result, pos);
-                adapter.notifyDataSetChanged();
-            }
+            TweetStatusAdapter.updateItem(selectedStatus, result);
             AppUtil.showToast(R.string.fav_and_retweet_succeess);
         }
     }

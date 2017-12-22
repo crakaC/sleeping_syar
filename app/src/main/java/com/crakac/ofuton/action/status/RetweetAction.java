@@ -35,14 +35,12 @@ public class RetweetAction extends ClickAction {
     public void doAction() {
 
         ParallelTask<Void, twitter4j.Status> task = new ParallelTask<Void, Status>() {
-            private twitter4j.Status afterOriginal;
             @Override
             protected twitter4j.Status doInBackground() {
                 Twitter mTwitter = TwitterUtils.getTwitterInstance();
                 try {
-                    twitter4j.Status result =  mTwitter.retweetStatus(selectedStatus.getId());
-                    afterOriginal = mTwitter.showStatus(selectedStatus.getId());
-                    return result;
+                    mTwitter.retweetStatus(selectedStatus.getId());
+                    return mTwitter.showStatus(selectedStatus.getId());
                 } catch (TwitterException e) {
                     e.printStackTrace();
                 }
@@ -56,16 +54,7 @@ public class RetweetAction extends ClickAction {
                     return;
                 }
                 AppUtil.showToast("リツイートしました");
-
-                for (TweetStatusAdapter adapter : TweetStatusAdapter.getAdapters()){
-                    int pos = adapter.getPosition(selectedStatus);
-                    if (pos < 0)
-                        continue;
-                    adapter.remove(selectedStatus);
-                    adapter.insert(result, pos);
-                    adapter.notifyDataSetChanged(); //
-                }
-
+                TweetStatusAdapter.updateItem(selectedStatus, result);
             }
         };
         task.executeParallel();

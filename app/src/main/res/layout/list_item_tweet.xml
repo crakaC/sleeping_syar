@@ -79,19 +79,18 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:layout_toLeftOf="@+id/favedStar"
+            android:layout_toLeftOf="@+id/fav_and_rt_icon"
             android:gravity="left|top"
             android:text="@string/dummy"
             android:textColor="@color/text"
             android:textColorLink="@color/twitter_blue" />
 
         <ImageView
-            android:id="@+id/favedStar"
+            android:id="@+id/fav_and_rt_icon"
             android:layout_width="16dp"
             android:layout_height="16dp"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="4dp"
             android:src="@drawable/ic_star_white_16dp"
             android:visibility="visible" />
     </RelativeLayout>

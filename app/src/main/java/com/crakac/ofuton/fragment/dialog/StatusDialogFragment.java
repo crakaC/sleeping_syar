@@ -60,6 +60,7 @@ public class StatusDialogFragment extends DialogFragment {
     private ClickActionAdapter mActionAdapter;
     private Dialog mDialog;
     private Status mSelectedStatus;
+    private boolean isEnablePreview;
 
     public StatusDialogFragment() {
     }
@@ -109,6 +110,9 @@ public class StatusDialogFragment extends DialogFragment {
                 item.doAction();
             }
         });
+
+        isEnablePreview = PrefUtil.getBoolean(R.string.show_image_in_timeline);
+
         return view;
     }
 
@@ -118,6 +122,10 @@ public class StatusDialogFragment extends DialogFragment {
 
     private boolean isLockedAccountTweet(Status status) {
         return status.getUser().isProtected();
+    }
+
+    private boolean isRetweetable(Status status){
+        return (!isLockedAccountTweet(status) || status.isRetweet()) && !status.isRetweeted();
     }
 
     @Override
@@ -161,7 +169,7 @@ public class StatusDialogFragment extends DialogFragment {
 
         Status retweetedStatus = mSelectedStatus.getRetweetedStatus();
         // 自分のツイートならdestroyアクションを追加
-        if (isMyTweet(mSelectedStatus) || isMyTweet(retweetedStatus)) {
+        if ((isMyTweet(mSelectedStatus) && !mSelectedStatus.isRetweet()) || isMyTweet(retweetedStatus)) {
             mActionAdapter.add(new DestroyStatusAction(getActivity(), mSelectedStatus));
         }
 
@@ -170,12 +178,12 @@ public class StatusDialogFragment extends DialogFragment {
 
         // reply all
         UserMentionEntity[] entities = mSelectedStatus.isRetweet() ?
-                mSelectedStatus.getRetweetedStatus().getUserMentionEntities() :
+                retweetedStatus.getUserMentionEntities() :
                 mSelectedStatus.getUserMentionEntities();
 
         if ((!isMyTweet(mSelectedStatus) && entities.length > 0)//自分のツイートでなく，誰かしらへリプライを飛ばしている
                 && (!(entities.length == 1 && (entities[0].getId() == TwitterUtils.getCurrentAccountId() //自分だけへのリプライではない
-                    || entities[0].getId() == (mSelectedStatus.isRetweet() ? mSelectedStatus.getRetweetedStatus().getUser().getId() : mSelectedStatus.getUser().getId())
+                    || entities[0].getId() == (mSelectedStatus.isRetweet() ? retweetedStatus.getUser().getId() : mSelectedStatus.getUser().getId())
         )))) {
             mActionAdapter.add(new ReplyAllAction(getActivity(), mSelectedStatus));
         }
@@ -189,14 +197,13 @@ public class StatusDialogFragment extends DialogFragment {
                 (mSelectedStatus.isRetweet() && retweetedStatus.isRetweeted())) {
             mActionAdapter.add(new CancelRetweetAction(getActivity(), mSelectedStatus));
         }
-        // retweet
-        else if (!(isLockedAccountTweet(mSelectedStatus) && !mSelectedStatus.isRetweet())//鍵垢のツイート(RT除く)でない
-                ) {
+        // retweet //鍵垢のツイートでない(鍵垢のRTは元のツイートをRT出来る)
+        else if ( isRetweetable(mSelectedStatus)) {
             mActionAdapter.add(new RetweetAction(getActivity(), mSelectedStatus));
         }
 
         // Fav & Retweet
-        if (!mSelectedStatus.isRetweeted() && !mSelectedStatus.isFavorited()) {
+        if ( isRetweetable(mSelectedStatus) && !mSelectedStatus.isFavorited()) {
             mActionAdapter.add(new FavAndRetweeAction(getContext(), mSelectedStatus));
         }
 
@@ -213,7 +220,9 @@ public class StatusDialogFragment extends DialogFragment {
 
         setUserEntities(mSelectedStatus);
         setUrlEntities(mSelectedStatus);
-        if (!PrefUtil.getBoolean(R.string.show_image_in_timeline)) {
+
+        // インラインプレビューOFFのときは、ダイアログにURLを表示する
+        if (!isEnablePreview) {
             setMediaEntities(mSelectedStatus);
         }
         setHashtagEntities(mSelectedStatus);

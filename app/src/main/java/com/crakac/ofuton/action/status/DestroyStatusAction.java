@@ -41,13 +41,7 @@ public class DestroyStatusAction extends ClickAction {
 					AppUtil.showToast("無理でした");
 				} else {
 					AppUtil.showToast("ツイートを削除しました");
-					for (TweetStatusAdapter adapter : TweetStatusAdapter.getAdapters()){
-						int pos = adapter.getPosition(selectedStatus);
-						if(pos < 0)
-							continue;
-						adapter.remove(selectedStatus);
-						adapter.notifyDataSetChanged();
-					}
+					TweetStatusAdapter.removeItem(selectedStatus);
 				}
 			}
 		};

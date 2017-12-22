@@ -54,7 +54,7 @@ public class TweetStatusAdapter extends ArrayAdapter<Status> {
         TextView retweetedBy;
         NetworkImageView icon;
         NetworkImageView smallIcon;
-        ImageView favicon;
+        ImageView favedAndRetweetedIcon;
         MultipleImagePreview imagePreview;
         ImageView lockedIcon;
     }
@@ -107,7 +107,7 @@ public class TweetStatusAdapter extends ArrayAdapter<Status> {
             convertView.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
-                    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                         v.getForeground().setHotspot(event.getX(), event.getY());
                     }
                     return false;
@@ -171,7 +171,7 @@ public class TweetStatusAdapter extends ArrayAdapter<Status> {
         // 鍵アイコン
         setLockIcon(holder.lockedIcon, status);
         // ☆
-        setFavIcon(holder.favicon, status);
+        setIcons(holder.favedAndRetweetedIcon, status);
 
         // inline preview
         if (text.length() == 0) {
@@ -253,7 +253,7 @@ public class TweetStatusAdapter extends ArrayAdapter<Status> {
         holder.smallIcon = convertView.findViewById(R.id.smallIcon);
         holder.retweetedBy = convertView.findViewById(R.id.retweeted_by);
         holder.imagePreview = convertView.findViewById(R.id.inline_preview);
-        holder.favicon = convertView.findViewById(R.id.favedStar);
+        holder.favedAndRetweetedIcon = convertView.findViewById(R.id.fav_and_rt_icon);
         holder.lockedIcon = convertView.findViewById(R.id.lockedIcon);
     }
 
@@ -327,12 +327,16 @@ public class TweetStatusAdapter extends ArrayAdapter<Status> {
         }
     }
 
-    private static void setFavIcon(ImageView favIcon, Status item) {
-        // 星マーク
-        if (item.isFavorited()) {
-            favIcon.setVisibility(View.VISIBLE);
+    private static void setIcons(ImageView icon, Status item) {
+        icon.setVisibility(View.VISIBLE);
+        if (item.isFavorited() && item.isRetweeted()) {
+            icon.setImageResource(R.drawable.ic_fav_and_retweet);
+        } else if (item.isFavorited()) {
+            icon.setImageResource(R.drawable.ic_star_white_16dp);
+        } else if (item.isRetweeted()) {
+            icon.setImageResource(R.drawable.ic_repeat_white_18dp);
         } else {
-            favIcon.setVisibility(View.GONE);
+            icon.setVisibility(View.GONE);
         }
     }
 
@@ -344,11 +348,28 @@ public class TweetStatusAdapter extends ArrayAdapter<Status> {
         mShouldPool = shouldPool;
     }
 
-    public void destroy(){
+    public void destroy() {
         sAdapters.remove(this);
     }
 
-    public static List<TweetStatusAdapter> getAdapters(){
-        return sAdapters;
+    public static void updateItem(Status oldStatus, Status newStatus) {
+        if (sAdapters == null) return;
+        for (TweetStatusAdapter adapter : sAdapters) {
+            int pos = adapter.getPosition(oldStatus);
+            if (pos < 0)
+                continue;
+            adapter.remove(oldStatus);
+            adapter.insert(newStatus, pos);
+            adapter.notifyDataSetChanged();
+        }
+    }
+
+    public static void removeItem(Status status) {
+        if (sAdapters == null) return;
+        for (TweetStatusAdapter adapter : sAdapters) {
+            if (adapter.getPosition(status) < 0) continue;
+            adapter.remove(status);
+            adapter.notifyDataSetChanged();
+        }
     }
 }
