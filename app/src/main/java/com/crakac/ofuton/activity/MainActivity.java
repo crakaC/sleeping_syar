@@ -127,13 +127,13 @@ public class MainActivity extends AppCompatActivity {
             CoordinatorLayout.LayoutParams lp = (CoordinatorLayout.LayoutParams) mTweetBtn.getLayoutParams();
             switch(buttonPosition){
                 case Right:
-                    lp.gravity = Gravity.BOTTOM | GravityCompat.START;
+                    lp.gravity = Gravity.BOTTOM | Gravity.RIGHT;
                     break;
                 case Center:
                     lp.gravity = Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL;
                     break;
                 case Left:
-                    lp.gravity = Gravity.BOTTOM | GravityCompat.END;
+                    lp.gravity = Gravity.BOTTOM | Gravity.LEFT;
                     break;
             }
             mTweetBtn.setLayoutParams(lp);
