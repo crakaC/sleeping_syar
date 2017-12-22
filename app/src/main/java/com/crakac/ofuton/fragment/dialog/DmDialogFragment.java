@@ -51,7 +51,7 @@ public class DmDialogFragment extends DialogFragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		View view = inflater.inflate(R.layout.dm_dialog, container);
+		View view = inflater.inflate(R.layout.dialog_actions, container);
 		// 各種アクションをアダプタに追加して表示
 		mActionAdapter = new ClickActionAdapter(getActivity());
 

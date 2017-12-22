@@ -73,14 +73,13 @@ public class StatusDialogFragment extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.status_dialog, container);
+        View view = inflater.inflate(R.layout.dialog_actions, container);
         // 各種アクションをアダプタに追加して表示
         mActionAdapter = new ClickActionAdapter(getActivity());
 
         // リストビューを作成
         // ツイートが縦に長いと全画面分の領域を使ってしまい，アクションを選択できなくなる
-        ListView lvActions = (ListView) view
-                .findViewById(R.id.status_action_list);
+        ListView lvActions = view.findViewById(R.id.action_list);
 
         // ステータス表示部分を作成．タイムライン中と同じレイアウトなのでTweetStatusAdapter内の処理を使いまわす．
         View statusView = TweetStatusAdapter.createView(

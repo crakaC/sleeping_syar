@@ -6,7 +6,6 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,7 +21,6 @@ import android.widget.ProgressBar;
 
 import com.crakac.ofuton.R;
 import com.crakac.ofuton.adapter.TwitterListAdapter;
-import com.crakac.ofuton.fragment.AbstractStatusFragment;
 import com.crakac.ofuton.util.AppUtil;
 import com.crakac.ofuton.util.ParallelTask;
 import com.crakac.ofuton.util.TwitterList;
@@ -40,13 +38,8 @@ public class ListSelectDialogFragment extends DialogFragment {
 	private Dialog dialog;
 	private long userId;
 	private ListView listView;
-	//private View footerView;
 
 	public ListSelectDialogFragment() {
-	}
-
-	public ListSelectDialogFragment(AbstractStatusFragment targetFragment) {
-		setTargetFragment((Fragment) targetFragment, 0);
 	}
 
 	@Override
@@ -58,12 +51,10 @@ public class ListSelectDialogFragment extends DialogFragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		View view = inflater.inflate(R.layout.list_dialog, container, false);
-		//footerView = inflater.inflate(R.layout.list_item_empty, null);
+		View view = inflater.inflate(R.layout.dialog_actions, container, false);
 		mTwitter = TwitterUtils.getTwitterInstance();
 		userId = getArguments().getLong("userId");
-		listView = (ListView)view.findViewById(R.id.lists);
-		//listView.addFooterView(footerView);
+		listView = view.findViewById(R.id.action_list);
 		listView.setAdapter(mAdapter);
 		listView.setOnItemClickListener(new OnItemClickListener() {
 			TwitterList list;
@@ -74,8 +65,8 @@ public class ListSelectDialogFragment extends DialogFragment {
 					long id) {
 				ListView lv = (ListView)parent;
 				list = (TwitterList)lv.getItemAtPosition(pos);
-				checkMark = (ImageView)view.findViewById(R.id.checkMark);
-				pBar = (ProgressBar)view.findViewById(R.id.progressBar);
+				checkMark = view.findViewById(R.id.checkMark);
+				pBar = view.findViewById(R.id.progressBar);
 				if(!pBar.isShown()){
 					if(checkMark.isShown()){
 						removeList(list.getListId(), pBar, checkMark);
@@ -151,8 +142,8 @@ public class ListSelectDialogFragment extends DialogFragment {
 
 		DisplayMetrics metrics = getResources().getDisplayMetrics();
 
-		// 縦幅はwrap contentで，横幅は92%で．
-		int dialogWidth = (int) (metrics.widthPixels * 0.92);
+		// 縦幅はwrap contentで，横幅は85%
+		int dialogWidth = (int) (metrics.widthPixels * 0.85);
 		int dialogHeight = WindowManager.LayoutParams.WRAP_CONTENT;
 
 		lp.width = dialogWidth;

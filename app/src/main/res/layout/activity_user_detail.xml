@@ -21,36 +21,30 @@
                 android:layout_height="match_parent"
                 android:padding="4dp" >
 
-                <FrameLayout
-                    android:id="@+id/iconFrame"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                <com.crakac.ofuton.widget.BitmapImageView
+                    android:layout_margin="8dp"
+                    android:id="@+id/icon"
                     android:layout_alignParentTop="true"
                     android:layout_centerHorizontal="true"
-                    android:padding="4dp" >
-
-                    <com.crakac.ofuton.widget.BitmapImageView
-                        android:id="@+id/icon"
-                        android:layout_width="108dp"
-                        android:layout_height="108dp"
-                        android:cropToPadding="true"
-                        android:scaleType="centerCrop" />
-                </FrameLayout>
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:cropToPadding="true"
+                    android:scaleType="centerCrop" />
 
                 <ImageView
                     android:id="@+id/lockedIcon"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:layout_alignBottom="@+id/iconFrame"
-                    android:layout_alignRight="@+id/iconFrame"
+                    android:layout_alignBottom="@+id/icon"
+                    android:layout_alignRight="@+id/icon"
                     android:src="@drawable/ic_lock_grey600_48dp"
                     android:visibility="visible" />
 
-                <RelativeLayout
+                <FrameLayout
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_alignParentBottom="true"
-                    android:layout_below="@+id/iconFrame"
+                    android:layout_below="@+id/icon"
                     android:layout_centerHorizontal="true"
                     android:layout_marginBottom="4dp"
                     android:layout_marginTop="4dp"
@@ -62,13 +56,13 @@
                         android:id="@+id/relationText"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_centerInParent="true"
+                        android:layout_gravity="center"
                         android:maxLines="1"
                         android:gravity="center"
                         android:text="@string/dummy"
                         android:textColor="@color/droid_darkblue"
                         android:textSize="12sp" />
-                </RelativeLayout>
+                </FrameLayout>
             </RelativeLayout>
 
             <ScrollView
@@ -160,7 +154,7 @@
         android:layout_above="@+id/pager"
         android:layout_width="32dp"
         android:layout_height="32dp"
-        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
         android:background="@color/collapse_and_expand"
         android:src="@drawable/ic_expand_less_white_36dp" />
 
