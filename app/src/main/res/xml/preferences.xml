@@ -52,6 +52,14 @@
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/appearance">
+        <ListPreference
+            android:title="@string/tweet_button_position"
+            android:dialogTitle="@string/tweet_button_position"
+            android:defaultValue="Right"
+            android:summary="@string/position_right"
+            android:entries="@array/tweet_button_position_selectable"
+            android:entryValues="@array/tweet_button_position"
+            android:key="@string/tweet_button_position"/>
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="@string/enable_fast_scroll"

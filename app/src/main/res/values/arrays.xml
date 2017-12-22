@@ -53,4 +53,14 @@
         <item >@string/relative</item>
         <item >@string/absolute</item>
     </string-array>
+    <string-array name="tweet_button_position_selectable">
+        <item>@string/position_right</item>
+        <item>@string/position_center</item>
+        <item>@string/position_left</item>
+    </string-array>
+    <string-array name="tweet_button_position">
+        <item>Right</item>
+        <item>Center</item>
+        <item>Left</item>
+    </string-array>
 </resources>

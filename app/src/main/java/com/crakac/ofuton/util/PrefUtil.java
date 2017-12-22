@@ -47,6 +47,10 @@ public class PrefUtil {
         return getSharedPreference().getString(sContext.getResources().getString(keyResId), sContext.getResources().getString(defResId));
     }
 
+    public static String getString(int keyResId){
+        return getSharedPreference().getString(sContext.getResources().getString(keyResId), null);
+    }
+
     public static void put(int prefKeyResid, boolean value){
         getSharedPreference().edit().putBoolean(sContext.getString(prefKeyResid), value).apply();
     }

@@ -13,11 +13,11 @@ import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceScreen;
-import android.support.v7.app.AppCompatActivity;
 
 import com.crakac.ofuton.R;
 import com.crakac.ofuton.util.PrefUtil;
 import com.crakac.ofuton.util.ReloadChecker;
+import com.crakac.ofuton.util.TweetButtonPosition;
 
 public class SettingActivity extends FinishableActionbarActivity {
 
@@ -38,6 +38,7 @@ public class SettingActivity extends FinishableActionbarActivity {
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.preferences);
+            setButtonPpistion();
             setFontSize();
             setDateDisplayMode();
             setInlinePreview();
@@ -45,6 +46,25 @@ public class SettingActivity extends FinishableActionbarActivity {
             displayVersionInfo();
             requestSoftReloadOnClick(R.string.show_image_in_timeline, R.string.show_source, R.string.date_display_mode);
             requestHardReloadOnChange(R.string.enable_fast_scroll, PrefUtil.getBoolean(R.string.enable_fast_scroll));
+        }
+
+        private void setButtonPpistion() {
+            ListPreference positionPref;
+            final String[] displayStrings = getResources().getStringArray(R.array.tweet_button_position_selectable);
+            positionPref = (ListPreference) findPreference(getString(R.string.tweet_button_position));
+            TweetButtonPosition buttonPosition = TweetButtonPosition.strToEnum(positionPref.getValue());
+            if(buttonPosition == TweetButtonPosition.Unknown){
+                buttonPosition = TweetButtonPosition.Right;
+            }
+            positionPref.setSummary(displayStrings[buttonPosition.toInt()]);
+            positionPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+                    preference.setSummary(displayStrings[TweetButtonPosition.strToEnum((String)newValue).toInt()]);
+                    ReloadChecker.requestHardReload(true);
+                    return true;
+                }
+            });
         }
 
         private void setInlinePreview() {

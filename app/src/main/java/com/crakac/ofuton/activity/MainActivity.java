@@ -2,7 +2,9 @@ package com.crakac.ofuton.activity;
 
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
@@ -17,6 +19,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -24,6 +27,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.WindowManager;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.crakac.ofuton.C;
@@ -41,6 +45,7 @@ import com.crakac.ofuton.util.ParallelTask;
 import com.crakac.ofuton.util.PrefUtil;
 import com.crakac.ofuton.util.RelativeTimeUpdater;
 import com.crakac.ofuton.util.ReloadChecker;
+import com.crakac.ofuton.util.TweetButtonPosition;
 import com.crakac.ofuton.util.TwitterList;
 import com.crakac.ofuton.util.TwitterUtils;
 import com.crakac.ofuton.widget.BitmapImageView;
@@ -100,6 +105,39 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
+
+
+        TweetButtonPosition buttonPosition = TweetButtonPosition.current();
+        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP){
+            RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) mTweetBtn.getLayoutParams();
+            lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+            switch(buttonPosition){
+                case Right:
+                    lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+                    break;
+                case Center:
+                    lp.addRule(RelativeLayout.CENTER_HORIZONTAL);
+                    break;
+                case Left:
+                    lp.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+                    break;
+            }
+            mTweetBtn.setLayoutParams(lp);
+        } else {
+            CoordinatorLayout.LayoutParams lp = (CoordinatorLayout.LayoutParams) mTweetBtn.getLayoutParams();
+            switch(buttonPosition){
+                case Right:
+                    lp.gravity = Gravity.BOTTOM | GravityCompat.START;
+                    break;
+                case Center:
+                    lp.gravity = Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL;
+                    break;
+                case Left:
+                    lp.gravity = Gravity.BOTTOM | GravityCompat.END;
+                    break;
+            }
+            mTweetBtn.setLayoutParams(lp);
+        }
 
         /* actionbar */
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -346,9 +384,9 @@ public class MainActivity extends AppCompatActivity {
         });
 
         View v = mNavigationView.getHeaderView(0);
-        final TextView userName = (TextView) v.findViewById(R.id.screenName);
-        final BitmapImageView iv = (BitmapImageView) v.findViewById(R.id.user_icon);
-        final BitmapImageView bv = (BitmapImageView) v.findViewById(R.id.background);
+        final TextView userName = v.findViewById(R.id.screenName);
+        final BitmapImageView iv = v.findViewById(R.id.user_icon);
+        final BitmapImageView bv = v.findViewById(R.id.background);
         ParallelTask<Void, twitter4j.User> pt = new ParallelTask<Void, twitter4j.User>() {
             @Override
             protected void onPreExecute() {

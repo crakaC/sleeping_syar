@@ -87,6 +87,10 @@
     <string name="dm_notification">DM</string>
     <string name="streaming_mode">ストリーミングモード</string>
     <string name="always_awake">常にスクリーンをON</string>
+    <string name="tweet_button_position">ツイートボタン表示位置</string>
+    <string name="position_right">右</string>
+    <string name="position_center">中央</string>
+    <string name="position_left">左</string>
     <string name="font_size">フォントサイズ</string>
     <string name="enable_fast_scroll">高速スクロールを表示</string>
     <string name="enable_refresh_btn">右上にリロードボタンを表示</string>
