@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -103,6 +104,16 @@ public class TweetStatusAdapter extends ArrayAdapter<Status> {
             convertView = sInflater.inflate(R.layout.list_item_tweet, null);
             setViewHolder(holder, convertView);
             convertView.setTag(holder);
+            convertView.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        v.getForeground().setHotspot(event.getX(), event.getY());
+                    }
+                    return false;
+                }
+            });
+
         } else {
             holder = (ViewHolder) convertView.getTag();
         }

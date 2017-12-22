@@ -1,7 +1,9 @@
 package com.crakac.ofuton.adapter;
 
 import android.content.Context;
+import android.os.Build;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -43,14 +45,23 @@ public class DmAdapter extends ArrayAdapter<DirectMessage> {
             if (convertView == null) {
                 convertView = mInflater.inflate(R.layout.list_item_dm, null);
                 holder = new ViewHolder();
-                holder.name = (TextView) convertView.findViewById(R.id.name);
-                holder.text = (TextView) convertView.findViewById(R.id.text);
-                holder.sentTo = (TextView) convertView.findViewById(R.id.sentTo);
-                holder.postedAt = (TextView) convertView.findViewById(R.id.postedAt);
-                holder.icon = (NetworkImageView) convertView.findViewById(R.id.icon);
-                holder.smallIcon = (NetworkImageView) convertView.findViewById(R.id.smallIcon);
-                holder.lockedIcon = (ImageView) convertView.findViewById(R.id.lockedIcon);
+                holder.name = convertView.findViewById(R.id.name);
+                holder.text = convertView.findViewById(R.id.text);
+                holder.sentTo = convertView.findViewById(R.id.sentTo);
+                holder.postedAt = convertView.findViewById(R.id.postedAt);
+                holder.icon = convertView.findViewById(R.id.icon);
+                holder.smallIcon = convertView.findViewById(R.id.smallIcon);
+                holder.lockedIcon = convertView.findViewById(R.id.lockedIcon);
                 convertView.setTag(holder);
+                convertView.setOnTouchListener(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+                        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                            v.getForeground().setHotspot(event.getX(), event.getY());
+                        }
+                        return false;
+                    }
+                });
             } else {
                 holder = (ViewHolder) convertView.getTag();
             }

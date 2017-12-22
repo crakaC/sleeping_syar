@@ -2,7 +2,9 @@ package com.crakac.ofuton.adapter;
 
 import android.app.Activity;
 import android.content.Context;
+import android.os.Build;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -49,6 +51,15 @@ public class UserAdapter extends ArrayAdapter<twitter4j.User> {
             holder.icon = convertView.findViewById(R.id.icon);
             holder.lockedIcon = convertView.findViewById(R.id.lockedIcon);
             convertView.setTag(holder);
+            convertView.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        v.getForeground().setHotspot(event.getX(), event.getY());
+                    }
+                    return false;
+                }
+            });
         } else {
             holder = (ViewHolder) convertView.getTag();
         }

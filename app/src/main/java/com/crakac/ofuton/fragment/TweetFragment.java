@@ -83,11 +83,11 @@ public class TweetFragment extends Fragment implements View.OnClickListener {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mRootView = inflater.inflate(R.layout.fragment_tweet, null);
         mRootView.setOnClickListener(this);
-        mInputText = (EditText) mRootView.findViewById(R.id.input_text);// 入力欄
+        mInputText = mRootView.findViewById(R.id.input_text);// 入力欄
         mTweetBtn = mRootView.findViewById(R.id.action_tweet);// ツイートボタン
         mAppendBtn = mRootView.findViewById(R.id.appendPic);// 画像添付ボダン
-        mRemainingText = (TextView) mRootView.findViewById(R.id.remainingText);// 残り文字数
-        mAppendedImageView = (ImageView) mRootView.findViewById(R.id.appendedImage);
+        mRemainingText = mRootView.findViewById(R.id.remainingText);// 残り文字数
+        mAppendedImageView = mRootView.findViewById(R.id.appendedImage);
 
         // 画像添付ボタンタップの動作
         mAppendBtn.setOnClickListener(this);

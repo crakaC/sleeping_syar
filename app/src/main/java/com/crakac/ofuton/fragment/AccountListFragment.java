@@ -5,10 +5,12 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -77,7 +79,7 @@ public class AccountListFragment extends Fragment{
 	private class AccountAdapter extends BaseAdapter{
 		LayoutInflater mInflater;
 		ArrayList<Account> mAccountList;
-		public AccountAdapter(Context context) {
+		AccountAdapter(Context context) {
 			mInflater = (LayoutInflater) context
 			.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
 			mAccountList = new ArrayList<>();
@@ -87,11 +89,20 @@ public class AccountListFragment extends Fragment{
 		public View getView(int position, View convertView, ViewGroup parent) {
 		    if(convertView == null){
 		        convertView = mInflater.inflate(R.layout.account_listitem, parent, false);
-		    }
-			NetworkImageView icon = (NetworkImageView) convertView.findViewById(R.id.accountIcon);
-			ImageView check = (ImageView) convertView.findViewById(R.id.checkMark);
-			ImageView remove = (ImageView) convertView.findViewById(R.id.remove);
-			TextView screenName = (TextView) convertView.findViewById(R.id.accountName);
+				convertView.setOnTouchListener(new View.OnTouchListener() {
+					@Override
+					public boolean onTouch(View v, MotionEvent event) {
+						if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+							v.getForeground().setHotspot(event.getX(), event.getY());
+						}
+						return false;
+					}
+				});
+			}
+			NetworkImageView icon = convertView.findViewById(R.id.accountIcon);
+			ImageView check =  convertView.findViewById(R.id.checkMark);
+			ImageView remove =  convertView.findViewById(R.id.remove);
+			TextView screenName =  convertView.findViewById(R.id.accountName);
 
 			final Account user = (Account) getItem(position);
 			icon.setImageUrl(user.getIconUrl(), NetUtil.ICON_LOADER);
