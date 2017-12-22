@@ -49,6 +49,8 @@ import twitter4j.Status;
 import twitter4j.URLEntity;
 import twitter4j.UserMentionEntity;
 
+import static com.crakac.ofuton.util.TwitterUtils.isMyTweet;
+
 /**
  * ツイートをタップした時に出てくるダイアログ
  *
@@ -114,10 +116,6 @@ public class StatusDialogFragment extends DialogFragment {
         isEnablePreview = PrefUtil.getBoolean(R.string.show_image_in_timeline);
 
         return view;
-    }
-
-    private boolean isMyTweet(Status status) {
-        return status != null && status.getUser().getId() == TwitterUtils.getCurrentAccountId();
     }
 
     private boolean isLockedAccountTweet(Status status) {

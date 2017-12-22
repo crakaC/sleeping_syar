@@ -12,6 +12,8 @@ import android.util.Log;
 
 import com.crakac.ofuton.BuildConfig;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -33,240 +35,241 @@ import twitter4j.conf.Configuration;
 import twitter4j.conf.ConfigurationBuilder;
 
 public class TwitterUtils {
-	//private static final String TAG = TwitterUtils.class.getSimpleName();
+    //private static final String TAG = TwitterUtils.class.getSimpleName();
     public static final int HTTP_CONNECTION_TIMEOUT_MS = 10000;
     public static final int HTTP_READ_TIMEOUT_MS = 30000;
-	private static final String TOKEN = "token";
-	private static final String TOKEN_SECRET = "tokenSecret";
-	private static final String PREF_NAME = "accessToken";
+    private static final String TOKEN = "token";
+    private static final String TOKEN_SECRET = "tokenSecret";
+    private static final String PREF_NAME = "accessToken";
     private static final String API_CONFIG_PREF = "api_config";
-	private static Context sContext;
-	private static Account sAccount;
-	private static final String CONSUMER_KEY = BuildConfig.TWITTER_API_KEY;
-	private static final String CONSUMER_SECRET = BuildConfig.TWITTER_API_SECRET;
+    private static Context sContext;
+    private static Account sAccount;
+    private static final String CONSUMER_KEY = BuildConfig.TWITTER_API_KEY;
+    private static final String CONSUMER_SECRET = BuildConfig.TWITTER_API_SECRET;
 
-	private TwitterUtils(){}
+    private TwitterUtils() {
+    }
 
-	public static void init(Context context) {
-		sContext = context;
-		sAccount = getCurrentAccount();
-	}
+    public static void init(Context context) {
+        sContext = context;
+        sAccount = getCurrentAccount();
+    }
 
     private static ConfigurationBuilder baseConfiguratoinBuilder() {
         ConfigurationBuilder cb = new ConfigurationBuilder();
         cb.setOAuthConsumerKey(CONSUMER_KEY)
-        .setOAuthConsumerSecret(CONSUMER_SECRET)
-        .setHttpConnectionTimeout(HTTP_CONNECTION_TIMEOUT_MS)
-        .setHttpReadTimeout(HTTP_READ_TIMEOUT_MS)
-		.setTweetModeExtended(true);
+                .setOAuthConsumerSecret(CONSUMER_SECRET)
+                .setHttpConnectionTimeout(HTTP_CONNECTION_TIMEOUT_MS)
+                .setHttpReadTimeout(HTTP_READ_TIMEOUT_MS)
+                .setTweetModeExtended(true);
         return cb;
     }
 
     /**
-	 * Return Twitter instance without request token
-	 *
-	 * @return
-	 */
-	public static Twitter getTwitterInstanceWithoutToken() {
-		Configuration conf = baseConfiguratoinBuilder().build();
-		TwitterFactory factory = new TwitterFactory(conf);
-		return factory.getInstance();
-	}
+     * Return Twitter instance without request token
+     *
+     * @return
+     */
+    public static Twitter getTwitterInstanceWithoutToken() {
+        Configuration conf = baseConfiguratoinBuilder().build();
+        TwitterFactory factory = new TwitterFactory(conf);
+        return factory.getInstance();
+    }
 
-	/**
-	 * Twitter instance
-	 *
-	 * @return
-	 */
-	public static Twitter getTwitterInstance() {
-		Twitter twitter = getTwitterInstanceWithoutToken();
-		if (existsCurrentAccount()) {
-			Account currentUser = getCurrentAccount();
-			twitter.setOAuthAccessToken(new AccessToken(currentUser.getToken(),
-					currentUser.getTokenSecret()));
-		}
-		return twitter;
-	}
+    /**
+     * Twitter instance
+     *
+     * @return
+     */
+    public static Twitter getTwitterInstance() {
+        Twitter twitter = getTwitterInstanceWithoutToken();
+        if (existsCurrentAccount()) {
+            Account currentUser = getCurrentAccount();
+            twitter.setOAuthAccessToken(new AccessToken(currentUser.getToken(),
+                    currentUser.getTokenSecret()));
+        }
+        return twitter;
+    }
 
-	public static TwitterStream getTwitterStreamInstance() {
-		TwitterStreamFactory factory = new TwitterStreamFactory(baseConfiguratoinBuilder().build());
-		TwitterStream twitter = factory.getInstance();
+    public static TwitterStream getTwitterStreamInstance() {
+        TwitterStreamFactory factory = new TwitterStreamFactory(baseConfiguratoinBuilder().build());
+        TwitterStream twitter = factory.getInstance();
 
-		if (existsCurrentAccount()) {
-			Account currentUser = getCurrentAccount();
-			twitter.setOAuthAccessToken(new AccessToken(currentUser.getToken(),
-					currentUser.getTokenSecret()));
-		}
-		return twitter;
-	}
+        if (existsCurrentAccount()) {
+            Account currentUser = getCurrentAccount();
+            twitter.setOAuthAccessToken(new AccessToken(currentUser.getToken(),
+                    currentUser.getTokenSecret()));
+        }
+        return twitter;
+    }
 
-	/**
-	 * Store access_token to preference.
-	 *
-	 * @param accessToken
-	 */
-	public static void storeAccessToken(AccessToken accessToken) {
-		SharedPreferences preferences = sContext.getSharedPreferences(
-				PREF_NAME, Context.MODE_PRIVATE);
-		Editor editor = preferences.edit();
-		editor.putString(TOKEN, accessToken.getToken());
-		editor.putString(TOKEN_SECRET, accessToken.getTokenSecret());
-		editor.apply();
-	}
+    /**
+     * Store access_token to preference.
+     *
+     * @param accessToken
+     */
+    public static void storeAccessToken(AccessToken accessToken) {
+        SharedPreferences preferences = sContext.getSharedPreferences(
+                PREF_NAME, Context.MODE_PRIVATE);
+        Editor editor = preferences.edit();
+        editor.putString(TOKEN, accessToken.getToken());
+        editor.putString(TOKEN_SECRET, accessToken.getTokenSecret());
+        editor.apply();
+    }
 
-	/**
-	 * load access token from preference
-	 *
-	 * @return
-	 */
-	public static AccessToken loadAccessToken() {
-		SharedPreferences preferences = sContext.getSharedPreferences(
-				PREF_NAME, Context.MODE_PRIVATE);
-		String token = preferences.getString(TOKEN, null);
-		String tokenSecret = preferences.getString(TOKEN_SECRET, null);
-		if (token != null && tokenSecret != null) {
-			return new AccessToken(token, tokenSecret);
-		} else {
-			return null;
-		}
-	}
+    /**
+     * load access token from preference
+     *
+     * @return
+     */
+    public static AccessToken loadAccessToken() {
+        SharedPreferences preferences = sContext.getSharedPreferences(
+                PREF_NAME, Context.MODE_PRIVATE);
+        String token = preferences.getString(TOKEN, null);
+        String tokenSecret = preferences.getString(TOKEN_SECRET, null);
+        if (token != null && tokenSecret != null) {
+            return new AccessToken(token, tokenSecret);
+        } else {
+            return null;
+        }
+    }
 
-	/**
-	 * return current user's twitter id
-	 *
-	 * @return user id
-	 */
-	public static long getCurrentAccountId() {
-		if (sAccount != null) {
-			return sAccount.getUserId();
-		} else {
-			return -1;
-		}
-	}
+    /**
+     * return current user's twitter id
+     *
+     * @return user id
+     */
+    public static long getCurrentAccountId() {
+        if (sAccount != null) {
+            return sAccount.getUserId();
+        } else {
+            return -1;
+        }
+    }
 
-	public static void removeAccount(Account account) {
-		AccountDBAdapter dbAdapter = new AccountDBAdapter(sContext);
-		dbAdapter.open();
-		dbAdapter.deleteAccount(account.getUserId());
-		dbAdapter.close();
-	}
+    public static void removeAccount(Account account) {
+        AccountDBAdapter dbAdapter = new AccountDBAdapter(sContext);
+        dbAdapter.open();
+        dbAdapter.deleteAccount(account.getUserId());
+        dbAdapter.close();
+    }
 
-	public static boolean addAccount() {
-		boolean result = false;
-		Twitter tw = getTwitterInstanceWithoutToken();
-		tw.setOAuthAccessToken(loadAccessToken());
-		AccountDBAdapter dbAdapter = new AccountDBAdapter(sContext);
-		dbAdapter.open();
-		twitter4j.User user;
-		try {
-			user = tw.showUser(tw.getId());
-			if (dbAdapter.accountExists(user.getId())) {
-				return false;
-			}
-			dbAdapter.saveAccount(new Account(user.getId(), user.getScreenName(),
-					user.getProfileImageURL(), loadAccessToken().getToken(),
-					loadAccessToken().getTokenSecret(), false));
-			result = true;
-		} catch (IllegalStateException e) {
-			e.printStackTrace();
-		} catch (TwitterException e) {
-			e.printStackTrace();
-		}
-		dbAdapter.close();
-		return result;
-	}
+    public static boolean addAccount() {
+        boolean result = false;
+        Twitter tw = getTwitterInstanceWithoutToken();
+        tw.setOAuthAccessToken(loadAccessToken());
+        AccountDBAdapter dbAdapter = new AccountDBAdapter(sContext);
+        dbAdapter.open();
+        twitter4j.User user;
+        try {
+            user = tw.showUser(tw.getId());
+            if (dbAdapter.accountExists(user.getId())) {
+                return false;
+            }
+            dbAdapter.saveAccount(new Account(user.getId(), user.getScreenName(),
+                    user.getProfileImageURL(), loadAccessToken().getToken(),
+                    loadAccessToken().getTokenSecret(), false));
+            result = true;
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        } catch (TwitterException e) {
+            e.printStackTrace();
+        }
+        dbAdapter.close();
+        return result;
+    }
 
-	public static void setCurrentAccount(Account account) {
-		// DB上に情報を保存
-		AccountDBAdapter dbAdapter = new AccountDBAdapter(sContext);
-		dbAdapter.open();
-		dbAdapter.setCurrentAccount(account);
-		dbAdapter.close();
-		sAccount = account;
-	}
+    public static void setCurrentAccount(Account account) {
+        // DB上に情報を保存
+        AccountDBAdapter dbAdapter = new AccountDBAdapter(sContext);
+        dbAdapter.open();
+        dbAdapter.setCurrentAccount(account);
+        dbAdapter.close();
+        sAccount = account;
+    }
 
-	public static Account getCurrentAccount() {
-		// すでにcurrentUserが存在する場合
-		if (sAccount != null) {
-			return sAccount;
-		}
-		AccountDBAdapter dbAdapter = new AccountDBAdapter(sContext);
-		dbAdapter.open();
-		Cursor c = dbAdapter.getCurrentAccount();
-		if (c.moveToFirst()) {
-			sAccount = new Account(
-					c.getLong(c.getColumnIndex(AccountDBAdapter.COL_USERID)),
-					c.getString(c.getColumnIndex(AccountDBAdapter.COL_SCREEN_NAME)),
-					c.getString(c.getColumnIndex(AccountDBAdapter.COL_ICON_URL)),
-					c.getString(c.getColumnIndex(AccountDBAdapter.COL_TOKEN)),
-					c.getString(c.getColumnIndex(AccountDBAdapter.COL_TOKEN_SECRET)),
-					c.getInt(c.getColumnIndex(AccountDBAdapter.COL_IS_CURRENT)) > 0);
-		}
-		dbAdapter.close();
-		return sAccount;
-	}
+    public static Account getCurrentAccount() {
+        // すでにcurrentUserが存在する場合
+        if (sAccount != null) {
+            return sAccount;
+        }
+        AccountDBAdapter dbAdapter = new AccountDBAdapter(sContext);
+        dbAdapter.open();
+        Cursor c = dbAdapter.getCurrentAccount();
+        if (c.moveToFirst()) {
+            sAccount = new Account(
+                    c.getLong(c.getColumnIndex(AccountDBAdapter.COL_USERID)),
+                    c.getString(c.getColumnIndex(AccountDBAdapter.COL_SCREEN_NAME)),
+                    c.getString(c.getColumnIndex(AccountDBAdapter.COL_ICON_URL)),
+                    c.getString(c.getColumnIndex(AccountDBAdapter.COL_TOKEN)),
+                    c.getString(c.getColumnIndex(AccountDBAdapter.COL_TOKEN_SECRET)),
+                    c.getInt(c.getColumnIndex(AccountDBAdapter.COL_IS_CURRENT)) > 0);
+        }
+        dbAdapter.close();
+        return sAccount;
+    }
 
-	public static boolean existsCurrentAccount() {
-		return sAccount != null;
-	}
+    public static boolean existsCurrentAccount() {
+        return sAccount != null;
+    }
 
-	public static List<Account> getAccounts() {
-		List<Account> users = new ArrayList<Account>();
-		AccountDBAdapter dbAdapter = new AccountDBAdapter(sContext);
-		dbAdapter.open();
-		Cursor c = dbAdapter.getAllAccounts();
-		while (c.moveToNext()) {
-			users.add(new Account(
-					c.getLong(c.getColumnIndex(AccountDBAdapter.COL_USERID)),
-					c.getString(c.getColumnIndex(AccountDBAdapter.COL_SCREEN_NAME)),
-					c.getString(c.getColumnIndex(AccountDBAdapter.COL_ICON_URL)),
-					c.getString(c.getColumnIndex(AccountDBAdapter.COL_TOKEN)),
-					c.getString(c.getColumnIndex(AccountDBAdapter.COL_TOKEN_SECRET)),
-					c.getInt(c.getColumnIndex(AccountDBAdapter.COL_IS_CURRENT)) > 0));
-		}
-		dbAdapter.close();
-		return users;
-	}
+    public static List<Account> getAccounts() {
+        List<Account> users = new ArrayList<Account>();
+        AccountDBAdapter dbAdapter = new AccountDBAdapter(sContext);
+        dbAdapter.open();
+        Cursor c = dbAdapter.getAllAccounts();
+        while (c.moveToNext()) {
+            users.add(new Account(
+                    c.getLong(c.getColumnIndex(AccountDBAdapter.COL_USERID)),
+                    c.getString(c.getColumnIndex(AccountDBAdapter.COL_SCREEN_NAME)),
+                    c.getString(c.getColumnIndex(AccountDBAdapter.COL_ICON_URL)),
+                    c.getString(c.getColumnIndex(AccountDBAdapter.COL_TOKEN)),
+                    c.getString(c.getColumnIndex(AccountDBAdapter.COL_TOKEN_SECRET)),
+                    c.getInt(c.getColumnIndex(AccountDBAdapter.COL_IS_CURRENT)) > 0));
+        }
+        dbAdapter.close();
+        return users;
+    }
 
-	public static boolean addList(TwitterList list) {
-		boolean result;
-		AccountDBAdapter dbAdapter = new AccountDBAdapter(sContext);
-		dbAdapter.open();
-		result = dbAdapter.saveList(list);
-		dbAdapter.close();
-		return result;
-	}
+    public static boolean addList(TwitterList list) {
+        boolean result;
+        AccountDBAdapter dbAdapter = new AccountDBAdapter(sContext);
+        dbAdapter.open();
+        result = dbAdapter.saveList(list);
+        dbAdapter.close();
+        return result;
+    }
 
-	public static boolean removeList(TwitterList list) {
-		boolean result;
-		AccountDBAdapter dbAdapter = new AccountDBAdapter(sContext);
-		dbAdapter.open();
-		result = dbAdapter.deleteList(list);
-		dbAdapter.close();
-		return result;
-	}
+    public static boolean removeList(TwitterList list) {
+        boolean result;
+        AccountDBAdapter dbAdapter = new AccountDBAdapter(sContext);
+        dbAdapter.open();
+        result = dbAdapter.deleteList(list);
+        dbAdapter.close();
+        return result;
+    }
 
-	public static List<TwitterList> getListsOfCurrentAccount() {
-		List<TwitterList> list = new ArrayList<TwitterList>();
-		AccountDBAdapter dbAdapter = new AccountDBAdapter(sContext);
-		dbAdapter.open();
-		Cursor c = dbAdapter.getLists(getCurrentAccount().getUserId());
-		while (c.moveToNext()) {
-			list.add(new TwitterList(
+    public static List<TwitterList> getListsOfCurrentAccount() {
+        List<TwitterList> list = new ArrayList<TwitterList>();
+        AccountDBAdapter dbAdapter = new AccountDBAdapter(sContext);
+        dbAdapter.open();
+        Cursor c = dbAdapter.getLists(getCurrentAccount().getUserId());
+        while (c.moveToNext()) {
+            list.add(new TwitterList(
                     c.getLong(c.getColumnIndex(AccountDBAdapter.COL_USERID)),
                     c.getLong(c.getColumnIndex(AccountDBAdapter.COL_LIST_ID)),
                     c.getString(c.getColumnIndex(AccountDBAdapter.COL_LIST_NAME)),
                     c.getString(c.getColumnIndex(AccountDBAdapter.COL_LIST_LONGNAME))));
-		}
-		dbAdapter.close();// cursorを使用するより先にcloseするとinvalid statement in
-							// fillWindow()とかいうエラーが出る
-		return list;
-	}
+        }
+        dbAdapter.close();// cursorを使用するより先にcloseするとinvalid statement in
+        // fillWindow()とかいうエラーが出る
+        return list;
+    }
 
-    public static void fetchApiConfigurationAsync(final Context context){
+    public static void fetchApiConfigurationAsync(final Context context) {
         SharedPreferences pref = PrefUtil.getSharedPreference(API_CONFIG_PREF);
         long fechedOn = pref.getLong("fetched_on", 0);
-        if(Util.daysPast(fechedOn) == 0){
+        if (Util.daysPast(fechedOn) == 0) {
             return;
         }
         new ParallelTask<Void, TwitterAPIConfiguration>() {
@@ -295,13 +298,14 @@ public class TwitterUtils {
         }.executeParallel();
     }
 
-	private static TwitterAPIConfiguration sConfiguration;
-    public static TwitterAPIConfiguration getApiConfiguration(){
-		if(sConfiguration != null){
-			return sConfiguration;
-		}
-		sConfiguration = Util.restoreFile(sContext, API_CONFIG_PREF);
-        if(sConfiguration != null){
+    private static TwitterAPIConfiguration sConfiguration;
+
+    public static TwitterAPIConfiguration getApiConfiguration() {
+        if (sConfiguration != null) {
+            return sConfiguration;
+        }
+        sConfiguration = Util.restoreFile(sContext, API_CONFIG_PREF);
+        if (sConfiguration != null) {
             return sConfiguration;
         }
         return new TwitterAPIConfiguration() {
@@ -325,12 +329,12 @@ public class TwitterUtils {
                 return 23;
             }
 
-			@Override
-			public int getDmTextCharacterLimit() {
-				return 1000;
-			}
+            @Override
+            public int getDmTextCharacterLimit() {
+                return 1000;
+            }
 
-			@Override
+            @Override
             public Map<Integer, MediaEntity.Size> getPhotoSizes() {
                 return null;
             }
@@ -361,7 +365,7 @@ public class TwitterUtils {
         MediaEntity[] mediaEntities = status.getMediaEntities();
         List<MediaEntity> guessedEntities = guessMediaEntities(status);
         Collections.addAll(guessedEntities, mediaEntities);
-        Collections.sort(guessedEntities,sMediaEntityComparator);
+        Collections.sort(guessedEntities, sMediaEntityComparator);
         return guessedEntities;
     }
 
@@ -391,21 +395,27 @@ public class TwitterUtils {
         return urlList;
     }
 
-	/**
-	 * update_nameで始まるツイートの場合、名前を更新する。
-	 * @param text
+    /**
+     * update_nameで始まるツイートの場合、名前を更新する。
+     *
+     * @param text
      */
-	public static void checkUpdateName(String text)
-	{
-		if(!text.toLowerCase().startsWith("update_name")){
-			return;
-		}
-		String next = text.replaceFirst("(?i)update_name\\s+", "");
-        if(next.isEmpty()) return;
-		try {
+    public static void checkUpdateName(String text) {
+        if (!text.toLowerCase().startsWith("update_name")) {
+            return;
+        }
+        String next = text.replaceFirst("(?i)update_name\\s+", "");
+        if (next.isEmpty()) return;
+        try {
             TwitterUtils.getTwitterInstance().updateProfile(next, null, null, null);
-		} catch (TwitterException e) {
-			e.printStackTrace();
-		}
-	}
+        } catch (TwitterException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static boolean isMyTweet(@NotNull Status status) {
+        return status.getUser().getId() == TwitterUtils.getCurrentAccountId();
+    }
+
+
 }
