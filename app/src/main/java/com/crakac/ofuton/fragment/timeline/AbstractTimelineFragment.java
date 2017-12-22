@@ -135,14 +135,16 @@ public abstract class AbstractTimelineFragment extends AbstractStatusFragment {
                         mAdapter.add(status);
                     }
                 }
-                if (result.size() > 0) {
+                // 1画面分以上読み込めたらFooter到達時に読み込めるようにする。
+                if (result.size() > 10) {
                     mMaxId = Math.min(mMaxId, result.listIterator(result.size()).previous().getId());
                     mSinceId = Math.max(mSinceId, result.iterator().next().getId());
-                    mAdapter.notifyDataSetChanged();
                 } else {
+                    // 10以下の場合はおそらくもう読み込めないのでFooterを消す。
                     removeFooterView();
                     mListView.setOnLastItemVisibleListener(null);
                 }
+                mAdapter.notifyDataSetChanged();
             } else {
                 failToGetStatuses();
                 Log.d(TAG + getTimelineName(), "fail to get Tilmeline");
