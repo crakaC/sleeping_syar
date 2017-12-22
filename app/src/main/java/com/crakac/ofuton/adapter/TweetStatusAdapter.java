@@ -84,9 +84,7 @@ public class TweetStatusAdapter extends ArrayAdapter<Status> {
     @Override
     public View getView(final int position, final View convertView, final ViewGroup parent) {
         final Status item = getItem(position);
-        View v = createView(item, convertView);
-
-        return v;
+        return createView(item, convertView);
     }
 
     public void updateDisplayTime(int position, View view) {
