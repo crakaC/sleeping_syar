@@ -333,6 +333,8 @@ public final class AppUtil {
     }
 
     public static void closeSearchView(SearchView searchView) {
+        if(searchView == null)
+            return;
         searchView.setQuery(null, false);
         searchView.setIconified(true);
     }
