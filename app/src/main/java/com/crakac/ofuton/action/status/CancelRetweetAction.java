@@ -59,8 +59,9 @@ public class CancelRetweetAction extends ClickAction {
                 AppUtil.showToast("リツイートを取り消しました");
                 if (TwitterUtils.isMyTweet(selectedStatus)) {
                     TweetStatusAdapter.removeItem(selectedStatus);
-                } else {
+                } else if(selectedStatus.isRetweet() && result.isRetweet()){
                     TweetStatusAdapter.updateItem(selectedStatus, result);
+                    TweetStatusAdapter.updateItem(selectedStatus.getRetweetedStatus(), result.getRetweetedStatus());
                 }
             }
         };

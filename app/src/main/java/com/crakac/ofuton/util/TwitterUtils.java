@@ -12,7 +12,7 @@ import android.util.Log;
 
 import com.crakac.ofuton.BuildConfig;
 
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -413,9 +413,7 @@ public class TwitterUtils {
         }
     }
 
-    public static boolean isMyTweet(@NotNull Status status) {
-        return status.getUser().getId() == TwitterUtils.getCurrentAccountId();
+    public static boolean isMyTweet(@Nullable Status status) {
+        return status != null && status.getUser().getId() == TwitterUtils.getCurrentAccountId();
     }
-
-
 }

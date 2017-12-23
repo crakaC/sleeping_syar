@@ -9,7 +9,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -34,7 +34,7 @@ import twitter4j.MediaEntity;
 import twitter4j.Status;
 import twitter4j.UserMentionEntity;
 
-public class TweetStatusAdapter extends ArrayAdapter<Status> {
+public class TweetStatusAdapter extends BaseAdapter {
     private static ArrayList<TweetStatusAdapter> sAdapters = new ArrayList<>(3);//fav, mention, home
     private static LayoutInflater sInflater;
     private static Account sUserAccount;
@@ -42,6 +42,8 @@ public class TweetStatusAdapter extends ArrayAdapter<Status> {
     private boolean mShouldPool = true;
     private StatusClickListener mListener;
     private static final String TAG = TweetStatusAdapter.class.getSimpleName();
+
+    private ArrayList<Status> items = new ArrayList<>(50);
 
     private static class ViewHolder {
         View base;
@@ -59,27 +61,69 @@ public class TweetStatusAdapter extends ArrayAdapter<Status> {
         ImageView lockedIcon;
     }
 
-    @Override
     public void add(Status status) {
-        super.add(status);
+        items.add(status);
         if (mShouldPool) {
             StatusPool.put(status.getId(), status);
         }
     }
 
-    @Override
     public void insert(Status status, int index) {
-        super.insert(status, index);
+        items.add(index, status);
         if (mShouldPool) {
             StatusPool.put(status.getId(), status);
         }
     }
 
     public TweetStatusAdapter(Context context) {
-        super(context, android.R.layout.simple_list_item_1);
         sInflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
         sUserAccount = TwitterUtils.getCurrentAccount();
         sAdapters.add(this);
+    }
+
+    @Override
+    public int getCount() {
+        return items.size();
+    }
+
+    @Override
+    public Status getItem(int position) {
+        return items.get(position);
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return getItem(position).getId();
+    }
+
+    public void remove(Status item) {
+        items.remove(item);
+    }
+
+    public int getPosition(Status item) {
+        return items.indexOf(item);
+    }
+
+    public void clear(){
+        items.clear();
+    }
+
+    public Status getItemById(long id){
+        for (Status status: items) {
+            if(status.getId() == id){
+                return status;
+            }
+        }
+        return null;
+    }
+
+    public int getPositionById(long id) {
+        for(int i = 0; i < items.size(); i++){
+            if(getItem(i).getId() == id){
+                return i;
+            }
+        }
+        return -1;
     }
 
     @Override
@@ -355,7 +399,7 @@ public class TweetStatusAdapter extends ArrayAdapter<Status> {
     public static void updateItem(Status oldStatus, Status newStatus) {
         if (sAdapters == null) return;
         for (TweetStatusAdapter adapter : sAdapters) {
-            int pos = adapter.getPosition(oldStatus);
+            int pos = adapter.getPositionById(oldStatus.getId());
             if (pos < 0)
                 continue;
             adapter.remove(oldStatus);
@@ -367,7 +411,7 @@ public class TweetStatusAdapter extends ArrayAdapter<Status> {
     public static void removeItem(Status status) {
         if (sAdapters == null) return;
         for (TweetStatusAdapter adapter : sAdapters) {
-            if (adapter.getPosition(status) < 0) continue;
+            if (adapter.getPositionById(status.getId()) < 0) continue;
             adapter.remove(status);
             adapter.notifyDataSetChanged();
         }

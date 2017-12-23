@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.crakac.ofuton.R;
 import com.crakac.ofuton.adapter.TweetStatusAdapter;
-import com.crakac.ofuton.fragment.timeline.FavoriteTimelineFragment;
 import com.crakac.ofuton.util.AppUtil;
 import com.crakac.ofuton.util.ParallelTask;
 import com.crakac.ofuton.util.TwitterUtils;
@@ -56,6 +55,9 @@ public class FavAction extends ClickAction {
                         AppUtil.showToast("お気に入りに追加しました");
                     }
                     TweetStatusAdapter.updateItem(selectedStatus, result);
+                    if(selectedStatus.isRetweet() && result.isRetweet()){
+                        TweetStatusAdapter.updateItem(selectedStatus.getRetweetedStatus(), result.getRetweetedStatus());
+                    }
                 } else {
                     AppUtil.showToast(mContext
                             .getString(R.string.something_wrong));
