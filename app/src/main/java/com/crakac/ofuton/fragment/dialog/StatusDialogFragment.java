@@ -71,6 +71,7 @@ public class StatusDialogFragment extends DialogFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mSelectedStatus = (Status) getArguments().getSerializable(C.STATUS);
+        isEnablePreview = PrefUtil.getBoolean(R.string.show_image_in_timeline, true);
     }
 
     @Override
@@ -112,9 +113,6 @@ public class StatusDialogFragment extends DialogFragment {
                 item.doAction();
             }
         });
-
-        isEnablePreview = PrefUtil.getBoolean(R.string.show_image_in_timeline);
-
         return view;
     }
 
