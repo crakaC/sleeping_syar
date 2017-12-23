@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -24,6 +25,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -315,10 +317,7 @@ public class TweetFragment extends Fragment implements View.OnClickListener {
             protected void onPostExecute(twitter4j.Status result) {
                 if (result != null) {
                     AppUtil.showToast("つぶやきました");
-                    mInputText.setText("");
-                    if (mAppendingFile != null) {
-                        removeAppendedImage();
-                    }
+                    clear();
                 } else {
                     AppUtil.showToast(R.string.impossible);
                     enableTweetButton(true);
@@ -411,11 +410,30 @@ public class TweetFragment extends Fragment implements View.OnClickListener {
     public void show() {
         if (mRootView == null) return;
         mRootView.setVisibility(View.VISIBLE);
+        mInputText.requestFocus();
+        showKeyboard();
+    }
+
+    private void showKeyboard(){
+        InputMethodManager inputMethodManager =
+                (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputMethodManager.toggleSoftInputFromWindow(
+                mInputText.getApplicationWindowToken(),
+                InputMethodManager.SHOW_FORCED, 0);
     }
 
     public void hide() {
         if (mRootView == null) return;
         mRootView.setVisibility(View.GONE);
+        clear();
 
+    }
+
+    public void clear() {
+        mInputText.setText("");
+        if (mAppendingFile != null) {
+            removeAppendedImage();
+
+        }
     }
 }
