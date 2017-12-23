@@ -58,7 +58,7 @@
         </activity>
         <activity
             android:name=".activity.SettingTweetDetailActivity"
-            android:label="@string/tweet_detail_setting"
+            android:label="@string/activity_setting_tweet_detail"
             android:launchMode="singleTask"
             android:parentActivityName=".activity.SettingActivity">
             <meta-data
