@@ -322,6 +322,7 @@ public class TweetFragment extends Fragment implements View.OnClickListener {
                     AppUtil.showToast(R.string.impossible);
                     enableTweetButton(true);
                 }
+                mInputText.requestFocus();
             }
         };
         task.executeParallel();
@@ -433,7 +434,6 @@ public class TweetFragment extends Fragment implements View.OnClickListener {
         mInputText.setText("");
         if (mAppendingFile != null) {
             removeAppendedImage();
-
         }
     }
 }
