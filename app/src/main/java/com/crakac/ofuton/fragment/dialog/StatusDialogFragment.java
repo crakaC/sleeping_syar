@@ -194,13 +194,13 @@ public class StatusDialogFragment extends DialogFragment {
         }
 
         // favorite
-        if(PrefUtil.getBoolean(R.string.show_favorite, true)){
+        if(PrefUtil.getBoolean(R.string.show_favorite_key, true)){
             mActionAdapter.add(new FavAction(getActivity(), mSelectedStatus));
         }
 
         //cancel Retweet
         // 自分がリツイートしたやつはリツイートを取り消せる
-        if (PrefUtil.getBoolean(R.string.show_retweet, true)) {
+        if (PrefUtil.getBoolean(R.string.show_retweet_key, true)) {
             if (mSelectedStatus.isRetweeted() ||
                     (mSelectedStatus.isRetweet() && retweetedStatus.isRetweeted())) {
                 mActionAdapter.add(new CancelRetweetAction(getActivity(), mSelectedStatus));

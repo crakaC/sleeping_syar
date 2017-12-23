@@ -15,11 +15,11 @@
             android:title="@string/show_reply_all" />
         <CheckBoxPreference
             android:defaultValue="true"
-            android:key="@string/show_favorite"
+            android:key="@string/show_favorite_key"
             android:title="@string/show_favorite" />
         <CheckBoxPreference
             android:defaultValue="true"
-            android:key="@string/show_retweet"
+            android:key="@string/show_retweet_key"
             android:title="@string/show_retweet" />
         <CheckBoxPreference
             android:defaultValue="true"

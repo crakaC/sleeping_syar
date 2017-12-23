@@ -114,6 +114,8 @@
     <string name="show_reply_all">全員に返信</string>
     <string name="show_favorite">お気に入り</string>
     <string name="show_retweet">リツイート</string>
+    <string name="show_favorite_key">show_fav</string>
+    <string name="show_retweet_key">show_rt</string>
     <string name="show_fav_and_retweet">お気に入りしてリツイート</string>
     <string name="show_accounts_in_tweet">言及されているユーザー</string>
     <string name="show_hashtag">ハッシュタグ</string>
