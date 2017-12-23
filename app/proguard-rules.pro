@@ -19,18 +19,4 @@
 -dontwarn twitter4j.**
 -keep class twitter4j.** { *; }
 
--keepattributes SourceFile,LineNumberTable
-
 -keep class android.support.v7.widget.SearchView { *; }
-
--keep class butterknife.** { *; }
--dontwarn butterknife.internal.**
--keep class **$$ViewBinder { *; }
-
--keepclasseswithmembernames class * {
-    @butterknife.* <fields>;
-}
-
--keepclasseswithmembernames class * {
-    @butterknife.* <methods>;
-}
