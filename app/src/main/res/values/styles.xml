@@ -78,9 +78,7 @@
         <item name="colorControlHighlight">@color/twitter_blue_bright</item>
     </style>
 
-    <style name="dialog_action">
-        <item name="android:background">@color/status_action_list</item>
-    </style>
+    <style name="dialog_action"/>
 
     <style name="dialog_action_item">
         <item name="android:padding">8dp</item>
