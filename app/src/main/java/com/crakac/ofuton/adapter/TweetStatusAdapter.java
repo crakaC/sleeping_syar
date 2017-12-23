@@ -66,6 +66,7 @@ public class TweetStatusAdapter extends BaseAdapter {
         if (mShouldPool) {
             StatusPool.put(status.getId(), status);
         }
+        notifyDataSetChanged();
     }
 
     public void insert(Status status, int index) {
@@ -73,6 +74,7 @@ public class TweetStatusAdapter extends BaseAdapter {
         if (mShouldPool) {
             StatusPool.put(status.getId(), status);
         }
+        notifyDataSetChanged();
     }
 
     public TweetStatusAdapter(Context context) {
