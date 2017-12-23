@@ -46,6 +46,14 @@ public class SettingActivity extends FinishableActionbarActivity {
             displayVersionInfo();
             requestSoftReloadOnClick(R.string.show_image_in_timeline, R.string.show_source, R.string.date_display_mode);
             requestHardReloadOnChange(R.string.enable_fast_scroll, PrefUtil.getBoolean(R.string.enable_fast_scroll));
+            Preference tweetDetailPreference = findPreference(getString(R.string.tweet_detail_setting));
+            tweetDetailPreference.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    startActivity(new Intent(getActivity(), SettingTweetDetailActivity.class));
+                    return true;
+                }
+            });
         }
 
         private void setButtonPpistion() {

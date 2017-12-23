@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="@string/tweet_detail_settings">
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="@string/show_destroy"
+            android:title="@string/show_destroy" />
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="@string/show_reply"
+            android:title="@string/show_reply" />
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="@string/show_reply_all"
+            android:title="@string/show_reply_all" />
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="@string/show_favorite"
+            android:title="@string/show_favorite" />
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="@string/show_retweet"
+            android:title="@string/show_retweet" />
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="@string/show_fav_and_retweet"
+            android:title="@string/show_fav_and_retweet" />
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="@string/show_accounts_in_tweet"
+            android:title="@string/show_accounts_in_tweet" />
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="@string/show_hashtag"
+            android:title="@string/show_hashtag" />
+    </PreferenceCategory>
+
+</PreferenceScreen>

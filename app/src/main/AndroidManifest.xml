@@ -57,6 +57,15 @@
                 android:value=".activity.MainActivity" />
         </activity>
         <activity
+            android:name=".activity.SettingTweetDetailActivity"
+            android:label="@string/tweet_detail_setting"
+            android:launchMode="singleTask"
+            android:parentActivityName=".activity.SettingActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activity.SettingActivity" />
+        </activity>
+        <activity
             android:name=".activity.DmActivity"
             android:label="@string/activity_dm"
             android:launchMode="singleTask" />

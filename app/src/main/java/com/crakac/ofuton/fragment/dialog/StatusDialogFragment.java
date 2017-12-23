@@ -120,7 +120,7 @@ public class StatusDialogFragment extends DialogFragment {
         return status.getUser().isProtected();
     }
 
-    private boolean isRetweetable(Status status){
+    private boolean isRetweetable(Status status) {
         return (!isLockedAccountTweet(status) || status.isRetweet()) && !status.isRetweeted();
     }
 
@@ -165,48 +165,55 @@ public class StatusDialogFragment extends DialogFragment {
 
         Status retweetedStatus = mSelectedStatus.getRetweetedStatus();
         // 自分のツイートならdestroyアクションを追加
-        if ((isMyTweet(mSelectedStatus) && !mSelectedStatus.isRetweet()) || isMyTweet(retweetedStatus)) {
+        if (PrefUtil.getBoolean(R.string.show_destroy, true) &&
+                ((isMyTweet(mSelectedStatus) && !mSelectedStatus.isRetweet()) || isMyTweet(retweetedStatus))) {
             mActionAdapter.add(new DestroyStatusAction(getActivity(), mSelectedStatus));
         }
 
         // reply
-        mActionAdapter.add(new ReplyAction(getActivity(), mSelectedStatus));
+        if (PrefUtil.getBoolean(R.string.show_reply, true)) {
+            mActionAdapter.add(new ReplyAction(getActivity(), mSelectedStatus));
+        }
 
         // reply all
-        UserMentionEntity[] entities = mSelectedStatus.isRetweet() ?
-                retweetedStatus.getUserMentionEntities() :
-                mSelectedStatus.getUserMentionEntities();
+        if (PrefUtil.getBoolean(R.string.show_reply_all, true)) {
+            UserMentionEntity[] entities = mSelectedStatus.isRetweet() ? retweetedStatus.getUserMentionEntities() : mSelectedStatus.getUserMentionEntities();
 
-        if ((!isMyTweet(mSelectedStatus) && entities.length > 0)//自分のツイートでなく，誰かしらへリプライを飛ばしている
-                && (!(entities.length == 1 && (entities[0].getId() == TwitterUtils.getCurrentAccountId() //自分だけへのリプライではない
+            if ((!isMyTweet(mSelectedStatus) && entities.length > 0)//自分のツイートでなく，誰かしらへリプライを飛ばしている
+                    && (!(entities.length == 1 && (entities[0].getId() == TwitterUtils.getCurrentAccountId() //自分だけへのリプライではない
                     || entities[0].getId() == (mSelectedStatus.isRetweet() ? retweetedStatus.getUser().getId() : mSelectedStatus.getUser().getId())
-        )))) {
-            mActionAdapter.add(new ReplyAllAction(getActivity(), mSelectedStatus));
-        }
-
-        // favorite
-        mActionAdapter.add(new FavAction(getActivity(), mSelectedStatus));
-
-        //cancel Retweet
-        // 自分がリツイートしたやつはリツイートを取り消せる
-        if (mSelectedStatus.isRetweeted() ||
-                (mSelectedStatus.isRetweet() && retweetedStatus.isRetweeted())) {
-            mActionAdapter.add(new CancelRetweetAction(getActivity(), mSelectedStatus));
-        }
-        // retweet //鍵垢のツイートでない(鍵垢のRTは元のツイートをRT出来る)
-        else if ( isRetweetable(mSelectedStatus)) {
-            mActionAdapter.add(new RetweetAction(getActivity(), mSelectedStatus));
-        }
-
-        // Fav & Retweet
-        if ( isRetweetable(mSelectedStatus) && !mSelectedStatus.isFavorited()) {
-            mActionAdapter.add(new FavAndRetweeAction(getContext(), mSelectedStatus));
+            )))) {
+                mActionAdapter.add(new ReplyAllAction(getActivity(), mSelectedStatus));
+            }
         }
 
         // conversation
         if ((mSelectedStatus.isRetweet() && (retweetedStatus.getInReplyToScreenName() != null))
                 || mSelectedStatus.getInReplyToStatusId() > 0) {
             mActionAdapter.add(new ConversationAction(getActivity(), mSelectedStatus));
+        }
+
+        // favorite
+        if(PrefUtil.getBoolean(R.string.show_favorite, true)){
+            mActionAdapter.add(new FavAction(getActivity(), mSelectedStatus));
+        }
+
+        //cancel Retweet
+        // 自分がリツイートしたやつはリツイートを取り消せる
+        if (PrefUtil.getBoolean(R.string.show_retweet, true)) {
+            if (mSelectedStatus.isRetweeted() ||
+                    (mSelectedStatus.isRetweet() && retweetedStatus.isRetweeted())) {
+                mActionAdapter.add(new CancelRetweetAction(getActivity(), mSelectedStatus));
+            }
+            // retweet //鍵垢のツイートでない(鍵垢のRTは元のツイートをRT出来る)
+            else if (isRetweetable(mSelectedStatus)) {
+                mActionAdapter.add(new RetweetAction(getActivity(), mSelectedStatus));
+            }
+        }
+
+        // Fav & Retweet
+        if (PrefUtil.getBoolean(R.string.show_fav_and_retweet, true) && isRetweetable(mSelectedStatus) && !mSelectedStatus.isFavorited()) {
+            mActionAdapter.add(new FavAndRetweeAction(getContext(), mSelectedStatus));
         }
 
         //TofuBuster
@@ -221,32 +228,40 @@ public class StatusDialogFragment extends DialogFragment {
         if (!isEnablePreview) {
             setMediaEntities(mSelectedStatus);
         }
-        setHashtagEntities(mSelectedStatus);
+
+        if(PrefUtil.getBoolean(R.string.show_hashtag, true)){
+            setHashtagEntities(mSelectedStatus);
+        }
 
         mActionAdapter.notifyDataSetChanged();
     }
 
     private void setUserEntities(Status status) {
         List<String> users = new ArrayList<>();// statusに関係あるscreenNameをかたっぱしから突っ込む(@抜き)
-        UserMentionEntity[] userMentionEntities = status.getUserMentionEntities();
-        for (UserMentionEntity user : userMentionEntities) {
-            if (!users.contains(user.getScreenName())) {
-                users.add(user.getScreenName());
-            }
-        }
 
-        // リツイートの場合，オリジナルの方でないと省略される可能性があるのでretweetedStatusからも引っ張ってくる
-        if (status.isRetweet()) {
-            Status rtStatus = status.getRetweetedStatus();
-            UserMentionEntity[] umEntities = rtStatus.getUserMentionEntities();
-            for (UserMentionEntity user : umEntities) {
-                if (!users.contains(user.getScreenName()))
+        if(PrefUtil.getBoolean(R.string.show_accounts_in_tweet, true)) {
+            UserMentionEntity[] userMentionEntities = status.getUserMentionEntities();
+            for (UserMentionEntity user : userMentionEntities) {
+                if (!users.contains(user.getScreenName())) {
                     users.add(user.getScreenName());
+                }
             }
-        }
-        if (users.contains(status.getUser().getScreenName())) {
-            // リツイート内でリツイートしたユーザーのスクリーンネームが含まれていた場合呼ばれる
-            users.remove(status.getUser().getScreenName());
+
+            // リツイートの場合，オリジナルの方でないと省略される可能性があるのでretweetedStatusからも引っ張ってくる
+            if (status.isRetweet()) {
+                Status rtStatus = status.getRetweetedStatus();
+                UserMentionEntity[] umEntities = rtStatus.getUserMentionEntities();
+                for (UserMentionEntity user : umEntities) {
+                    if (!users.contains(user.getScreenName()))
+                        users.add(user.getScreenName());
+                }
+            }
+            if (users.contains(status.getUser().getScreenName())) {
+                // リツイート内でリツイートしたユーザーのスクリーンネームが含まれていた場合呼ばれる
+                users.remove(status.getUser().getScreenName());
+            }
+        } else if(status.isRetweet()){
+            users.add(status.getRetweetedStatus().getUser().getScreenName());
         }
         users.add(status.getUser().getScreenName());// ツイートまたはリツイートした人は一番下に置きたい
 
@@ -261,15 +276,14 @@ public class StatusDialogFragment extends DialogFragment {
 
     private void setUrlEntities(Status status) {
         URLEntity[] urlEntities;
-        ArrayList<String> urls = new ArrayList<String>();
+        ArrayList<String> urls = new ArrayList<>();
         if (status.isRetweet()) {
             urlEntities = status.getRetweetedStatus().getURLEntities();
         } else {
             urlEntities = status.getURLEntities();
         }
-        boolean showImageInTimeline = PrefUtil.getBoolean(R.string.show_image_in_timeline);
         for (URLEntity url : urlEntities) {
-            if (showImageInTimeline && url.getDisplayURL().startsWith("pic.twitter.com/")) {
+            if (isEnablePreview && url.getDisplayURL().startsWith("pic.twitter.com/")) {
                 continue;
             }
             mActionAdapter.add(new LinkAction(getActivity(), url
