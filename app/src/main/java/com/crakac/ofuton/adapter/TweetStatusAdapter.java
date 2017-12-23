@@ -251,7 +251,7 @@ public class TweetStatusAdapter extends BaseAdapter {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP)
                 holder.base.setBackgroundResource(R.color.retweet_background);
             else {
-                holder.base.setBackgroundColor(AppUtil.getColor(R.color.gray_green));
+                holder.base.setBackgroundColor(AppUtil.getColor(R.color.dark_green));
             }
 
         } else if (isMention(status)) {
@@ -261,7 +261,7 @@ public class TweetStatusAdapter extends BaseAdapter {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
                 holder.base.setBackgroundResource(R.color.mention_background);
             } else {
-                holder.base.setBackgroundColor(AppUtil.getColor(R.color.gray_red));
+                holder.base.setBackgroundColor(AppUtil.getColor(R.color.dark_red));
             }
         } else {
             // others' tweet
@@ -271,7 +271,7 @@ public class TweetStatusAdapter extends BaseAdapter {
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
                     holder.base.setBackgroundResource(R.color.mytweet_background);
                 } else {
-                    holder.base.setBackgroundColor(AppUtil.getColor(R.color.gray_blue));
+                    holder.base.setBackgroundColor(AppUtil.getColor(R.color.dark_blue));
                 }
             } else {
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {

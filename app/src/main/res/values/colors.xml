@@ -8,9 +8,12 @@
     <color name="dark_gray">#212121</color>
     <color name="dark_gray_transparent">#D01A1A1A</color>
     <color name="super_gray">#101010</color>
-    <color name="gray_blue">#303540</color>
-    <color name="gray_green">#304035</color>
-    <color name="gray_red">#453030</color>
+
+    <!--hsv(color, 20%, 20%)-->
+    <color name="dark_red">#332928</color>
+    <color name="dark_green">#283329</color>
+    <color name="dark_blue">#282e33</color>
+
     <color name="dark_orange">#403530</color>
     <color name="transparent_black">#20000000</color>
     <color name="image_overlay">#40808080</color>
@@ -19,14 +22,17 @@
     <color name="twitter_blue_dark">#376e99</color>
     <color name="twitter_blue">#55acee</color>
     <color name="twitter_blue_bright">#7ac8ff</color>
-    <color name="droid_blue">#33B5E5</color>
-    <color name="droid_darkblue">#0099CC</color>
-    <color name="droid_green">#99CC00</color>
-    <color name="droid_darkgreen">#669900</color>
-    <color name="droid_yellow">#FFBB33</color>
-    <color name="droid_darkyellow">#FF8800</color>
-    <color name="droid_red">#FF4444</color>
-    <color name="droid_darkred">#CC0000</color>
+
+    <!-- material color 500, 800 -->
+    <color name="droid_blue">#2196F3</color>
+    <color name="droid_darkblue">#1565C0</color>
+    <color name="droid_green">#8BC34A</color>
+    <color name="droid_darkgreen">#558B2F</color>
+    <color name="droid_yellow">#FFC107</color>
+    <color name="droid_darkyellow">#FF8F00</color>
+    <color name="droid_red">#F44336</color>
+    <color name="droid_darkred">#C62828</color>
+
     <color name="refresh1">#007AB7</color>
     <color name="refresh2">#A4C520</color>
     <color name="refresh3">#EDAD0B</color>
