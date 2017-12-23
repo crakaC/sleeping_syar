@@ -8,8 +8,11 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.text.method.MovementMethod;
@@ -23,7 +26,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.android.volley.toolbox.NetworkImageView;
-import com.astuetz.PagerSlidingTabStrip;
 import com.crakac.ofuton.C;
 import com.crakac.ofuton.R;
 import com.crakac.ofuton.adapter.TwitterListAdapter;
@@ -40,7 +42,9 @@ import com.crakac.ofuton.util.ProgressDialogFragment;
 import com.crakac.ofuton.util.RelativeTimeUpdater;
 import com.crakac.ofuton.util.TwitterList;
 import com.crakac.ofuton.util.TwitterUtils;
+import com.crakac.ofuton.util.Util;
 import com.crakac.ofuton.widget.ColorOverlayOnTouch;
+import com.crakac.ofuton.widget.TapToScrollTopListener;
 
 import java.util.List;
 
@@ -51,7 +55,7 @@ import twitter4j.URLEntity;
 import twitter4j.User;
 import twitter4j.UserList;
 
-public class UserDetailActivity extends FinishableActionbarActivity {
+public class UserDetailActivity extends AppCompatActivity {
     enum Relation {
         NotLoaded, Mutal, Following, Followed, Blocking, Unrelated, Myself,
     }
@@ -59,7 +63,7 @@ public class UserDetailActivity extends FinishableActionbarActivity {
     protected static final String TAG = UserDetailActivity.class.getSimpleName();
     private ViewPager mPager;
     private View mProfileContentView, mProfileView;
-    private PagerSlidingTabStrip mTab;
+    private TabLayout mTab;
     private UserFragmentPagerAdapter mPagerAdapter;
     private ImageView mCollapseMark;
     private ParallelTask<Void, Relationship> mloadRelationTask;
@@ -102,8 +106,11 @@ public class UserDetailActivity extends FinishableActionbarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_detail);
+        Toolbar tb = findViewById(R.id.toolbar);
+        setSupportActionBar(tb);
         mActionbar = getSupportActionBar();
-        mActionbar.setDisplayShowHomeEnabled(false);
+        mActionbar.setDisplayHomeAsUpEnabled(true);
+        mActionbar.setHomeButtonEnabled(true);
 
         mTargetUser = (User) getIntent().getSerializableExtra(C.USER);
         mRelation = Relation.NotLoaded;
@@ -174,18 +181,20 @@ public class UserDetailActivity extends FinishableActionbarActivity {
     }
 
     private void findAndInitViews() {
-        mProfileView = (View) findViewById(R.id.profile);
-        mProfileContentView = (View) findViewById(R.id.profile_contents);
+        mProfileView = findViewById(R.id.profile);
+        mProfileContentView = findViewById(R.id.profile_contents);
         mProfileContentView.setVisibility(View.INVISIBLE);
-        mRelationText = (TextView) findViewById(R.id.relationText);
-        mIconImage = (NetworkImageView) findViewById(R.id.icon);
-        mIconImage.setOnTouchListener(new ColorOverlayOnTouch());
-        mlockMark = (ImageView) findViewById(R.id.lockedIcon);
-        mBioText = (TextView) findViewById(R.id.bioText);
-        mLocationText = (TextView) findViewById(R.id.locationText);
-        mUrlText = (TextView) findViewById(R.id.urlText);
+        mRelationText = findViewById(R.id.relationText);
+        mIconImage = findViewById(R.id.icon);
+        if(Util.isPreLollipop()) {
+            mIconImage.setOnTouchListener(new ColorOverlayOnTouch());
+        }
+        mlockMark = findViewById(R.id.lockedIcon);
+        mBioText = findViewById(R.id.bioText);
+        mLocationText = findViewById(R.id.locationText);
+        mUrlText = findViewById(R.id.urlText);
 
-        mloadingSpinner = (ProgressBar) findViewById(R.id.loading_spinner);
+        mloadingSpinner = findViewById(R.id.loading_spinner);
         mloadingSpinner.setVisibility(View.VISIBLE);
 
         mRelationText.setText("読み込み中");
@@ -194,20 +203,20 @@ public class UserDetailActivity extends FinishableActionbarActivity {
         mLocationText.setText("");
         mUrlText.setText("");
         // 折りたたみボタン
-        mCollapseMark = (ImageView) findViewById(R.id.collapse);
-        mCollapseMark.setOnClickListener(new OnClickListener() {
-            public void onClick(View v) {
-                if (mProfileView.getVisibility() == View.VISIBLE) {
-                    mProfileView.setVisibility(View.GONE);
-                    mProfileContentView.setVisibility(View.GONE);
-                    mCollapseMark.setImageResource(R.drawable.ic_expand_more_white_36dp);
-                } else {
-                    mProfileView.setVisibility(View.VISIBLE);
-                    mProfileContentView.setVisibility(View.VISIBLE);
-                    mCollapseMark.setImageResource(R.drawable.ic_expand_less_white_36dp);
-                }
-            }
-        });
+//        mCollapseMark =  findViewById(R.id.collapse);
+//        mCollapseMark.setOnClickListener(new OnClickListener() {
+//            public void onClick(View v) {
+//                if (mProfileView.getVisibility() == View.VISIBLE) {
+//                    mProfileView.setVisibility(View.GONE);
+//                    mProfileContentView.setVisibility(View.GONE);
+//                    mCollapseMark.setImageResource(R.drawable.ic_expand_more_white_36dp);
+//                } else {
+//                    mProfileView.setVisibility(View.VISIBLE);
+//                    mProfileContentView.setVisibility(View.VISIBLE);
+//                    mCollapseMark.setImageResource(R.drawable.ic_expand_less_white_36dp);
+//                }
+//            }
+//        });
     }
 
     private void cancelTask(AsyncTask<?, ?, ?> task) {
@@ -267,11 +276,10 @@ public class UserDetailActivity extends FinishableActionbarActivity {
             mPagerAdapter.add(FavoriteTimelineFragment.class, args, 3);
             mPagerAdapter.notifyDataSetChanged();
         }
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1){
-            mPager.setOffscreenPageLimit(mPagerAdapter.getCount());// 全Fragmentを保持（onCreateViewが複数呼ばれるのを抑止）
-        }
-        mTab.setOnPageChangeListener(new RelativeTimeUpdater(mPagerAdapter));
-        mTab.setViewPager(mPager);
+        mPager.setOffscreenPageLimit(mPagerAdapter.getCount());// 全Fragmentを保持（onCreateViewが複数呼ばれるのを抑止）
+        mPager.addOnPageChangeListener(new RelativeTimeUpdater(mPagerAdapter));
+        mTab.setupWithViewPager(mPager);
+        mTab.addOnTabSelectedListener(new TapToScrollTopListener(mPagerAdapter, mPager));
     }
 
     private Bundle createArgs() {
@@ -441,6 +449,9 @@ public class UserDetailActivity extends FinishableActionbarActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         Intent i;
         switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                break;
         case R.id.menu_list:
             addToList();
             break;
@@ -485,6 +496,10 @@ public class UserDetailActivity extends FinishableActionbarActivity {
     }
 
     private void blockUser() {
+        if(mTargetUser.getId() == TwitterUtils.getCurrentAccountId()){
+            AppUtil.showToast(R.string.impossible);
+            return;
+        }
         RelationTaskListener listner = new RelationTaskListener() {
             @Override
             public void end() {

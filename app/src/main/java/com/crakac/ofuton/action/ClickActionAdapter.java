@@ -38,9 +38,9 @@ public class ClickActionAdapter extends ArrayAdapter<ClickAction> {
 		if (convertView == null) {
 			convertView = mInflater.inflate(R.layout.status_action_item, null);
 			holder = new ViewHolder();
-			holder.actionName = (TextView) convertView
+			holder.actionName = convertView
 					.findViewById(R.id.action_name);
-			holder.icon = (ImageView) convertView
+			holder.icon = convertView
 					.findViewById(R.id.action_icon);
 			convertView.setTag(holder);
 		} else {

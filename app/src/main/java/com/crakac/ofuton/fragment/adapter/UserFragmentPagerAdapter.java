@@ -18,13 +18,13 @@ public class UserFragmentPagerAdapter extends SimpleFragmentPagerAdapter<Fragmen
 	public CharSequence getPageTitle(int position) {
 		switch (position) {
 		case 0:
-			return AppUtil.shapingNums(tweets) + " ツイート";
+			return AppUtil.shapingNums(tweets) + "\nツイート";
 		case 1:
-			return AppUtil.shapingNums(friends) + " フォロー";
+			return AppUtil.shapingNums(friends) + "\nフォロー";
 		case 2:
-			return AppUtil.shapingNums(followers) + " フォロワー";
+			return AppUtil.shapingNums(followers) + "\nフォロワー";
 		case 3:
-			return AppUtil.shapingNums(favs) + " お気に入り";
+			return AppUtil.shapingNums(favs) + "\nお気に入り";
 		}
 		return null;
 	}

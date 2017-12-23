@@ -49,6 +49,7 @@ import com.crakac.ofuton.util.TweetButtonPosition;
 import com.crakac.ofuton.util.TwitterList;
 import com.crakac.ofuton.util.TwitterUtils;
 import com.crakac.ofuton.widget.BitmapImageView;
+import com.crakac.ofuton.widget.TapToScrollTopListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -157,23 +158,7 @@ public class MainActivity extends AppCompatActivity {
         }
         mPager.setOffscreenPageLimit(13);// 保持するFragmentの数を指定．全フラグメントを保持するのでぬるぬる動くがメモリを食う
         mTab.setupWithViewPager(mPager);// PagerSlidingTabStripにViewPagerをセット．
-        mTab.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-                if(mAdapter == null || mPager == null)
-                    return;
-                AbstractTimelineFragment f = (AbstractTimelineFragment) mAdapter.instantiateItem(mPager, tab.getPosition());
-                f.scrollToTop();
-            }
-        });
+        mTab.addOnTabSelectedListener(new TapToScrollTopListener(mAdapter, mPager));
     }
 
     @Override

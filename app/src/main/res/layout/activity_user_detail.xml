@@ -1,33 +1,42 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_alignParentTop="true"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/dark_gray"
+        android:elevation="4dp"
+        app:popupTheme="@style/ThemeOverlay.AppCompat" />
 
     <FrameLayout
         android:id="@+id/profile"
         android:layout_width="match_parent"
         android:layout_height="160dp"
-        android:layout_alignParentTop="true"
-        android:background="@color/dark_gray" >
+        android:layout_below="@id/toolbar"
+        android:background="@color/dark_gray">
 
         <LinearLayout
             android:id="@+id/profile_contents"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="horizontal" >
+            android:orientation="horizontal">
 
             <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:padding="4dp" >
+                android:padding="4dp">
 
                 <com.crakac.ofuton.widget.BitmapImageView
-                    android:layout_margin="8dp"
                     android:id="@+id/icon"
-                    android:layout_alignParentTop="true"
-                    android:layout_centerHorizontal="true"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_margin="8dp"
                     android:cropToPadding="true"
                     android:scaleType="centerCrop" />
 
@@ -48,17 +57,17 @@
                     android:layout_centerHorizontal="true"
                     android:layout_marginBottom="4dp"
                     android:layout_marginTop="4dp"
+                    android:background="@android:color/white"
                     android:paddingLeft="4dp"
-                    android:paddingRight="4dp"
-                    android:background="@android:color/white" >
+                    android:paddingRight="4dp">
 
                     <TextView
                         android:id="@+id/relationText"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:maxLines="1"
                         android:gravity="center"
+                        android:maxLines="1"
                         android:text="@string/dummy"
                         android:textColor="@color/droid_darkblue"
                         android:textSize="12sp" />
@@ -69,14 +78,14 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1.0"
-                android:fadingEdge="none" >
+                android:fadingEdge="none">
 
                 <LinearLayout
                     android:id="@+id/userProfile"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="6dp" >
+                    android:padding="6dp">
 
                     <TextView
                         android:id="@+id/location"
@@ -106,8 +115,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="3dp"
                         android:text="@string/dummy"
-                        android:textColorLink="@color/twitter_blue"
-                        android:textAppearance="@style/userDetailText" />
+                        android:textAppearance="@style/userDetailText"
+                        android:textColorLink="@color/twitter_blue" />
 
                     <TextView
                         android:id="@+id/url"
@@ -122,8 +131,8 @@
                         android:layout_height="wrap_content"
                         android:autoLink="web"
                         android:text="@string/dummy"
-                        android:textColorLink="@color/twitter_blue"
-                        android:textAppearance="@style/userDetailText" />
+                        android:textAppearance="@style/userDetailText"
+                        android:textColorLink="@color/twitter_blue" />
                 </LinearLayout>
             </ScrollView>
         </LinearLayout>
@@ -136,27 +145,21 @@
             android:layout_gravity="center" />
     </FrameLayout>
 
-    <com.astuetz.PagerSlidingTabStrip
+    <android.support.design.widget.TabLayout
         android:id="@+id/tab"
-        style="@style/HoloTab"
+        android:layout_width="match_parent"
+        android:minHeight="32dp"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/profile"
-        android:layout_toLeftOf="@+id/collapse"
-        app:pstsShouldExpand="true" />
+        android:background="?attr/colorPrimary"
+        app:tabGravity="fill"
+        app:tabMode="fixed"
+        app:tabTextAppearance="@style/TablayoutTextAppearance" />
 
     <android.support.v4.view.ViewPager
         android:id="@+id/pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/tab" />
-
-    <ImageView
-        android:id="@+id/collapse"
-        android:layout_above="@+id/pager"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_alignParentRight="true"
-        android:background="@color/collapse_and_expand"
-        android:src="@drawable/ic_expand_less_white_36dp" />
-
 
 </RelativeLayout>

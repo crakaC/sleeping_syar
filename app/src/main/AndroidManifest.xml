@@ -166,6 +166,7 @@
             android:label="@string/activity_conversation" />
         <activity
             android:name=".activity.UserDetailActivity"
+            android:theme="@style/ToolbarTheme"
             android:label="@string/activity_user_detail" />
         <activity
             android:name=".activity.AccountActivity"

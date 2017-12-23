@@ -101,16 +101,4 @@
         <item name="textAllCaps">false</item>
     </style>
 
-    <style name="HoloTab">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">32dp</item>
-        <item name="android:background">?attr/colorPrimary</item>
-        <item name="pstsTabTextColor">@color/tab_text</item>
-        <item name="pstsTabTextSize">13sp</item>
-        <item name="pstsDividerColor">@android:color/transparent</item>
-        <item name="pstsIndicatorHeight">2dp</item>
-        <item name="pstsIndicatorColor">?attr/colorAccent</item>
-        <item name="pstsUnderlineHeight">0dp</item>
-    </style>
-
 </resources>

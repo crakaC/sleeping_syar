@@ -1,33 +1,33 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-     xmlns:sps="http://schemas.android.com/apk/res-auto" >
+     xmlns:app="http://schemas.android.com/apk/res-auto" >
 
     <item
         android:id="@+id/menu_relation"
-        sps:showAsAction="never"
+        app:showAsAction="never"
         android:title="@string/dummy"/>
     <item
         android:id="@+id/menu_mention"
-        sps:showAsAction="never"
+        app:showAsAction="never"
         android:title="@string/send_mention">
     </item>
     <item
         android:id="@+id/menu_dm"
-        sps:showAsAction="never"
+        app:showAsAction="never"
         android:title="@string/send_dm">
     </item>
     <item
         android:id="@+id/menu_block"
-        sps:showAsAction="never"
+        app:showAsAction="never"
         android:title="@string/list">
     </item>
     <item
         android:id="@+id/menu_list"
-        sps:showAsAction="never"
+        app:showAsAction="never"
         android:title="@string/list">
     </item>
     <item
         android:id="@+id/menu_r4s"
-        sps:showAsAction="never"
+        app:showAsAction="never"
         android:title="@string/r4s">
     </item>
 
