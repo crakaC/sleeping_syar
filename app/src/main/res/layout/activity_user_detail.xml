@@ -43,6 +43,7 @@
                     android:layout_height="100dp"
                     android:layout_alignParentTop="true"
                     android:layout_centerHorizontal="true"
+                    android:foreground="@drawable/image_ripple"
                     android:layout_margin="8dp"
                     android:cropToPadding="true"
                     android:scaleType="centerCrop" />

@@ -24,6 +24,7 @@ import com.crakac.ofuton.util.PrefUtil;
 import com.crakac.ofuton.util.StatusClickListener;
 import com.crakac.ofuton.util.StatusPool;
 import com.crakac.ofuton.util.TwitterUtils;
+import com.crakac.ofuton.util.Util;
 import com.crakac.ofuton.widget.ColorOverlayOnTouch;
 import com.crakac.ofuton.widget.MultipleImagePreview;
 
@@ -293,8 +294,9 @@ public class TweetStatusAdapter extends BaseAdapter {
         holder.postedAt = convertView.findViewById(R.id.postedAt);
         holder.via = convertView.findViewById(R.id.via);
         holder.icon = convertView.findViewById(R.id.icon);
-
-        holder.icon.setOnTouchListener(new ColorOverlayOnTouch());
+        if(Util.isPreLollipop()){
+            holder.icon.setOnTouchListener(new ColorOverlayOnTouch());
+        }
         holder.retweeterInfo = convertView.findViewById(R.id.retweeterInfo);
         holder.smallIcon = convertView.findViewById(R.id.smallIcon);
         holder.retweetedBy = convertView.findViewById(R.id.retweeted_by);
