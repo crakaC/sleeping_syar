@@ -17,24 +17,28 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.crakac.ofuton.C;
 import com.crakac.ofuton.R;
+import com.crakac.ofuton.service.StatusUpdateService;
 import com.crakac.ofuton.util.AppUtil;
 import com.crakac.ofuton.util.BitmapUtil;
-import com.crakac.ofuton.util.ParallelTask;
 import com.crakac.ofuton.util.PrefUtil;
 import com.crakac.ofuton.util.SimpleTextChangeListener;
 import com.crakac.ofuton.util.TwitterUtils;
 import com.crakac.ofuton.util.Util;
 import com.crakac.ofuton.widget.ColorOverlayOnTouch;
+import com.esafirm.imagepicker.features.ImagePicker;
+import com.esafirm.imagepicker.model.Image;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import twitter4j.Status;
 import twitter4j.StatusUpdate;
-import twitter4j.TwitterException;
 import twitter4j.User;
 import twitter4j.UserMentionEntity;
 
@@ -60,13 +64,16 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
     private EditText mInputText;
     private File mAppendingFile; // 画像のアップロードに使用
     private View mTweetBtn, mAppendPicBtn, mCameraBtn, mInfoBtn;// つぶやくボタン，画像追加ボタン，リプライ元情報ボタン
+    private LinearLayout mAppendedImagesRoot;
     private ImageView mAppendedImageView;
-    private Uri mImageUri;// カメラ画像添付用
+    private Uri mCameraUri;// カメラ画像添付用
     private long mReplyId;// reply先ID
     private String mReplyName;// リプライ先スクリーンネーム
     private String mHashTag;// ハッシュタグ
     private User mMentionUser;
     private boolean mIsUpdatingStatus = false;//ツイート中かどうか。onDestroyで添付ファイルを削除する際の判定に使う。
+
+    private ArrayList<Image> mAppendedImages = new ArrayList<>(4);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +88,7 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
         mCameraBtn = findViewById(R.id.picFromCamera);// 撮影して添付するボタン
         mInfoBtn = findViewById(R.id.tweetInfoBtn);// リプライ先表示ボタン
         mAppendedImageView = findViewById(R.id.appendedImage);
+        mAppendedImagesRoot = findViewById(R.id.image_attachments_root);
 
         mInputText.setTextSize(PrefUtil.getFontSize() * 1.2f);
 
@@ -88,7 +96,7 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
             clickable.setOnClickListener(this);
         }
 
-        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP){
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             mAppendedImageView.setOnTouchListener(new ColorOverlayOnTouch());
         }
 
@@ -220,14 +228,13 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelable(IMAGE_URI, mImageUri);
+        outState.putParcelable(IMAGE_URI, mCameraUri);
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        mImageUri = savedInstanceState.getParcelable(IMAGE_URI);
-        Log.d(TAG, "onRestore");
+        mCameraUri = savedInstanceState.getParcelable(IMAGE_URI);
     }
 
     @Override
@@ -247,9 +254,6 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
     private void setRemainLength() {
         String text = mInputText.getEditableText().toString();
         int remainLength = MAX_TWEET_LENGTH - Util.getActualTextLength(text);
-        if (mAppendingFile != null) {
-            remainLength -= TwitterUtils.getApiConfiguration().getCharactersReservedPerMedia();
-        }
         if (remainLength < 0 || (remainLength == MAX_TWEET_LENGTH && mAppendingFile == null)) {
             enableTweetButton(false);
         } else {
@@ -262,18 +266,18 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         Log.d(TAG, "onActivityResult");
-        if (resultCode == RESULT_OK) {
-            Uri uri = null;
+        if (resultCode != RESULT_OK) {
+            if (requestCode == REQUEST_CAMERA) {
+                // ContentResolverでファイルを登録してあるので削除する。しないとゴミが出る。
+                getContentResolver().delete(mCameraUri, null, null);
+            }
+            return;
+        }
+
+        if (requestCode == REQUEST_SELECT_PICTURE) {
             if (data != null) {
-                uri = data.getData();
+                mAppendedImages = (ArrayList<Image>) ImagePicker.getImages(data);
             }
-            if (uri == null) {
-                uri = mImageUri;
-            }
-            appendPicture(uri);
-        } else if (requestCode == REQUEST_CAMERA) {
-            // ContentResolverでファイルを登録してあるので削除する。しないとゴミが出る。
-            getContentResolver().delete(mImageUri, null, null);
         }
     }
 
@@ -298,6 +302,10 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
         }
     }
 
+    private void appendImages(List<Image> images) {
+
+    }
+
     private void setAppendingImagePreview(File appendingFile) {
         final int BITMAP_EDGE_LENGTH = 128;
         Bitmap bm = BitmapUtil.getResizedBitmap(appendingFile, BITMAP_EDGE_LENGTH);
@@ -308,52 +316,35 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
     private void updateStatus() {
         mIsUpdatingStatus = true;
         final StatusUpdate update = new StatusUpdate(mInputText.getText().toString());
+        Intent i = new Intent(this, StatusUpdateService.class);
+        i.putExtra(C.TEXT, mInputText.getText().toString());
         if (mReplyId > 0) {
-            update.setInReplyToStatusId(mReplyId);
+            i.putExtra(C.IN_REPLY_TO, mReplyId);
         }
-        ParallelTask<Void, Status> task = new ParallelTask<Void, Status>() {
-            @Override
-            protected twitter4j.Status doInBackground() {
-                try {
-                    // 画像が指定されていたら添付
-                    if (mAppendingFile != null) {
-                        update.media(mAppendingFile);
-                    }
-                    TwitterUtils.checkUpdateName(update.getStatus());
-                    return TwitterUtils.getTwitterInstance().updateStatus(update);
-                } catch (TwitterException e) {
-                    e.printStackTrace();
-                }
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(twitter4j.Status result) {
-                AppUtil.showToast(result != null ? "つぶやきました" : "ツイート失敗");
-                if (mAppendingFile != null) {
-                    mAppendingFile.delete();
-                }
-                mIsUpdatingStatus = false;
-            }
-        };
-        task.executeParallel();
+        i.putExtra(C.ATTACHMENTS, mAppendedImages);
+        startService(i);
     }
 
     @Override
     public void onClick(View v) {
-        Intent intent = null;
+        Intent intent;
         switch (v.getId()) {
             case R.id.appendPic:
                 // 画像添付ボタン押下時の動作
                 // 画像を選びに行く．画像を選んだらonActivityResultが呼ばれる
-                if(!Util.checkRuntimePermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE, EXTERNAL_STORAGE_PERMISSION_REQUEST))
+                if (!Util.checkRuntimePermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE, EXTERNAL_STORAGE_PERMISSION_REQUEST))
                     return;
-                intent = new Intent(Intent.ACTION_PICK);
-                intent.setType("image/*");
-                startActivityForResult(intent, REQUEST_SELECT_PICTURE);
+                ImagePicker.create(this)
+                        .folderMode(true)
+                        .folderTitle("画像を選択")
+                        .limit(4)
+                        .showCamera(false)
+                        .theme(R.style.ImagePicker)
+                        .origin(mAppendedImages)
+                        .start(REQUEST_SELECT_PICTURE);
                 break;
             case R.id.picFromCamera:
-                if(!Util.checkRuntimePermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA}, CAMERA_PERMISSION_REQUEST))
+                if (!Util.checkRuntimePermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA}, CAMERA_PERMISSION_REQUEST))
                     return;
 
                 String filename = System.currentTimeMillis() + ".jpg";
@@ -361,11 +352,11 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
                 ContentValues values = new ContentValues();
                 values.put(MediaStore.Images.Media.TITLE, filename);
                 values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
-                mImageUri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+                mCameraUri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
 
                 intent = new Intent();
                 intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
-                intent.putExtra(MediaStore.EXTRA_OUTPUT, mImageUri);
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, mCameraUri);
                 startActivityForResult(intent, REQUEST_CAMERA);
                 break;
 

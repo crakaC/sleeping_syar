@@ -32,6 +32,8 @@
             </intent-filter>
         </service>
 
+        <service android:name=".service.StatusUpdateService" />
+
         <activity
             android:name=".activity.MainActivity"
             android:label="@string/syar"
@@ -123,7 +125,7 @@
         </activity>
         <activity
             android:name=".activity.PhotoPreviewActivity"
-            android:theme="@style/Theme.MyTrans"/>
+            android:theme="@style/Theme.MyTrans" />
         <activity
             android:name=".activity.WebImagePreviewActivity"
             android:exported="true"
@@ -166,8 +168,8 @@
             android:label="@string/activity_conversation" />
         <activity
             android:name=".activity.UserDetailActivity"
-            android:theme="@style/ToolbarTheme"
-            android:label="@string/activity_user_detail" />
+            android:label="@string/activity_user_detail"
+            android:theme="@style/ToolbarTheme" />
         <activity
             android:name=".activity.AccountActivity"
             android:label="@string/app_name"
@@ -195,11 +197,10 @@
             android:name=".activity.ImagePickActivity"
             android:label="ImagePick"
             android:launchMode="singleTask"
-            android:uiOptions="splitActionBarWhenNarrow">
-        </activity>
+            android:uiOptions="splitActionBarWhenNarrow"></activity>
         <activity
             android:name=".activity.VideoPreviewActivity"
-            android:label="@string/activity_video_preview"/>
+            android:label="@string/activity_video_preview" />
 
     </application>
 

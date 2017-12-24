@@ -101,4 +101,11 @@
         <item name="textAllCaps">false</item>
     </style>
 
+    <style name="ImagePicker" parent="ef_BaseTheme">
+        <item name="android:colorBackground">@color/background_material_dark</item>
+        <item name="colorPrimary">@color/gray</item>
+        <item name="colorPrimaryDark">@color/dark_gray</item>
+        <item name="colorAccent">@color/twitter_blue_bright</item>
+    </style>
+
 </resources>

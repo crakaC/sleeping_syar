@@ -1,7 +1,9 @@
 package com.crakac.ofuton;
 
 public class C {
-	public static final boolean IS_PRODUCT = true;
+	public static final String TEXT = "text";
+	public static final String IN_REPLY_TO = "in_reply_to";
+	public static final String ATTACHMENTS = "attachments";
 	public static final String FILE = "file";
 	public static final String URL = "url";
 	public static final String STATUS = "STATUS";
