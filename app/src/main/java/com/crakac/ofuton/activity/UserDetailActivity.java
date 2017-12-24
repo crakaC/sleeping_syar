@@ -94,14 +94,6 @@ public class UserDetailActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        // t4jRelationShip = (Relationship)
-        // savedInstanceState.getSerializable("relation");
-        // targetUser = (User) savedInstanceState.getSerializable(C.USER);
-    }
-
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_detail);
@@ -206,7 +198,6 @@ public class UserDetailActivity extends AppCompatActivity {
     private void cancelTask(AsyncTask<?, ?, ?> task) {
         if (task != null && task.getStatus() == AsyncTask.Status.RUNNING) {
             task.cancel(true);
-            task = null;
         }
     }
 
@@ -275,22 +266,17 @@ public class UserDetailActivity extends AppCompatActivity {
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR1)
     private void crossFade() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR1) {
-            mProfileContentView.setAlpha(0f);
-            mProfileContentView.setVisibility(View.VISIBLE);
-            mShortAnimeDuration = getResources().getInteger(android.R.integer.config_shortAnimTime);
-            mProfileContentView.animate().alpha(1f).setDuration(mShortAnimeDuration).setListener(null);
-            mloadingSpinner.animate().alpha(0f).setDuration(mShortAnimeDuration)
-                    .setListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            mloadingSpinner.setVisibility(View.GONE);
-                        }
-                    });
-        } else {
-            mProfileContentView.setVisibility(View.VISIBLE);
-            mloadingSpinner.setVisibility(View.GONE);
-        }
+        mProfileContentView.setAlpha(0f);
+        mProfileContentView.setVisibility(View.VISIBLE);
+        mShortAnimeDuration = getResources().getInteger(android.R.integer.config_shortAnimTime);
+        mProfileContentView.animate().alpha(1f).setDuration(mShortAnimeDuration).setListener(null);
+        mloadingSpinner.animate().alpha(0f).setDuration(mShortAnimeDuration)
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        mloadingSpinner.setVisibility(View.GONE);
+                    }
+                });
     }
 
     private void loadRelationship(User user) {
@@ -639,7 +625,7 @@ public class UserDetailActivity extends AppCompatActivity {
         mLoadListTask.executeParallel();
     }
 
-    private void switchProfileExpansion(MenuItem menuItem){
+    private void switchProfileExpansion(MenuItem menuItem) {
         if (mProfileView.getVisibility() == View.VISIBLE) {
             mProfileView.setVisibility(View.GONE);
             mProfileContentView.setVisibility(View.GONE);
