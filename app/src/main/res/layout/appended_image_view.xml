@@ -22,9 +22,11 @@
             <ImageView
                 android:id="@+id/videoIcon"
                 android:layout_width="48dp"
-                android:layout_height="48dp"
+                android:layout_height="36dp"
+                android:padding="4dp"
                 android:layout_gravity="center"
-                android:src="@drawable/ic_play_circle_filled_white_48dp" />
+                android:background="@drawable/play_button_background"
+                android:src="@drawable/ic_play_arrow_white_36dp" />
         </FrameLayout>
 
         <View
