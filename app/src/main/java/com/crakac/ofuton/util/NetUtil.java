@@ -69,7 +69,7 @@ public class NetUtil {
     }
 
     public static void init(Context context) {
-        RequestQueue iconQueue = newRequestQueue(context, ICON_CACHE_DIR, 50 * 1024 * 1024, THREAD_POOL_SIZE_FOR_FETCHING_ICONS);
+        RequestQueue iconQueue = newRequestQueue(context, ICON_CACHE_DIR, 5 * 1024 * 1024, THREAD_POOL_SIZE_FOR_FETCHING_ICONS);
         ICON_LOADER = new ImageLoader(iconQueue, new ImageLruCache());
         sImageDiskCache = createDiskCache(context, IMAGE_CACHE_DIR, 50 * 1024 * 1024);
         RequestQueue imageQueue = newRequestQueue(context, sImageDiskCache, THREAD_POOL_SIZE_FOR_FETCHING_IMAGE);
