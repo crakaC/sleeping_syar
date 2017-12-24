@@ -16,6 +16,7 @@
                 android:id="@+id/imageL1"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:foreground="@drawable/image_ripple"
                 android:scaleType="centerCrop"
                 android:visibility="visible" />
 
@@ -40,6 +41,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:foreground="@drawable/image_ripple"
             android:scaleType="centerCrop"
             android:visibility="visible" />
 
@@ -54,6 +56,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:foreground="@drawable/image_ripple"
             android:scaleType="centerCrop"
             android:visibility="visible" />
 
@@ -77,6 +80,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:foreground="@drawable/image_ripple"
             android:scaleType="centerCrop"
             android:visibility="visible" />
 
@@ -91,6 +95,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:foreground="@drawable/image_ripple"
             android:scaleType="centerCrop"
             android:visibility="visible" />
 
@@ -105,6 +110,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:foreground="@drawable/image_ripple"
             android:scaleType="centerCrop"
             android:visibility="visible" />
 
@@ -128,6 +134,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:foreground="@drawable/image_ripple"
             android:scaleType="centerCrop"
             android:visibility="visible" />
 
@@ -142,6 +149,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:foreground="@drawable/image_ripple"
             android:scaleType="centerCrop"
             android:visibility="visible" />
 
@@ -156,6 +164,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:foreground="@drawable/image_ripple"
             android:scaleType="centerCrop"
             android:visibility="visible" />
 

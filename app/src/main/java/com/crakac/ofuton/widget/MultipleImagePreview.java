@@ -14,6 +14,7 @@ import com.crakac.ofuton.activity.VideoPreviewActivity;
 import com.crakac.ofuton.activity.WebImagePreviewActivity;
 import com.crakac.ofuton.util.NetUtil;
 import com.crakac.ofuton.util.TwitterUtils;
+import com.crakac.ofuton.util.Util;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -64,8 +65,10 @@ public class MultipleImagePreview extends LinearLayout {
         imageC3 = v.findViewById(R.id.imageC3);
         imageR3 = v.findViewById(R.id.imageR3);
         mImageViews = Arrays.asList(imageL1, imageC1, imageR1, imageL2, imageC2, imageR2, imageL3, imageC3, imageR3);
-        for (View iv : mImageViews) {
-            iv.setOnTouchListener(new ColorOverlayOnTouch());
+        if(Util.isPreLollipop()) {
+            for (View iv : mImageViews) {
+                iv.setOnTouchListener(new ColorOverlayOnTouch());
+            }
         }
     }
 
