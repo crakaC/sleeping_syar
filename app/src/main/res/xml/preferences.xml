@@ -86,7 +86,7 @@
             android:title="@string/date_display_mode" />
 
         <CheckBoxPreference
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:key="@string/show_source"
             android:summary="投稿したクライアント名が表示されます"
             android:title="@string/show_source" />
