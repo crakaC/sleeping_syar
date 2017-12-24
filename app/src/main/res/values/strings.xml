@@ -58,6 +58,9 @@
     <string name="remove">リムーブする</string>
     <string name="block">ブロックする</string>
     <string name="unblock">ブロックを解除する</string>
+    <string name="less_expand">プロフィールを折りたたむ</string>
+    <string name="more_expand">プロフィールを表示する</string>
+
     <string name="something_wrong">何かがおかしいよ</string>
     <string name="impossible">無理でした</string>
     <string name="syar">( ˘ω˘)ｽﾔｧ</string>

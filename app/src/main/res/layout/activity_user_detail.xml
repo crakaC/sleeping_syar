@@ -10,7 +10,23 @@
         android:layout_height="?attr/actionBarSize"
         android:background="@color/dark_gray"
         android:elevation="4dp"
-        app:popupTheme="@style/ThemeOverlay.AppCompat" />
+        app:popupTheme="@style/ThemeOverlay.AppCompat"
+        >
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/collapse"
+                android:layout_alignParentRight="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:alpha="0.8"
+                android:src="@drawable/ic_expand_less_white_36dp"
+                />
+
+        </RelativeLayout>
+    </android.support.v7.widget.Toolbar>
 
     <FrameLayout
         android:id="@+id/profile"

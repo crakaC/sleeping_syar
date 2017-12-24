@@ -1,6 +1,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
      xmlns:app="http://schemas.android.com/apk/res-auto" >
 
+    <item android:id="@+id/collapse"
+        app:showAsAction="always"
+        android:title="@string/less_expand"
+        android:icon="@drawable/ic_expand_less_white_36dp"/>
+
     <item
         android:id="@+id/menu_relation"
         app:showAsAction="never"

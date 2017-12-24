@@ -65,7 +65,6 @@ public class UserDetailActivity extends AppCompatActivity {
     private View mProfileContentView, mProfileView;
     private TabLayout mTab;
     private UserFragmentPagerAdapter mPagerAdapter;
-    private ImageView mCollapseMark;
     private ParallelTask<Void, Relationship> mloadRelationTask;
     private ParallelTask<Void, User> mLoadUserTask;
     private static ProgressDialogFragment mDialog;
@@ -121,7 +120,7 @@ public class UserDetailActivity extends AppCompatActivity {
         }
         mTwitter = TwitterUtils.getTwitterInstance();
 
-        mPager =  findViewById(R.id.pager);
+        mPager = findViewById(R.id.pager);
         mPagerAdapter = new UserFragmentPagerAdapter(this, mPager);
         mTab = findViewById(R.id.tab);
 
@@ -186,7 +185,7 @@ public class UserDetailActivity extends AppCompatActivity {
         mProfileContentView.setVisibility(View.INVISIBLE);
         mRelationText = findViewById(R.id.relationText);
         mIconImage = findViewById(R.id.icon);
-        if(Util.isPreLollipop()) {
+        if (Util.isPreLollipop()) {
             mIconImage.setOnTouchListener(new ColorOverlayOnTouch());
         }
         mlockMark = findViewById(R.id.lockedIcon);
@@ -202,21 +201,6 @@ public class UserDetailActivity extends AppCompatActivity {
         mBioText.setText("");
         mLocationText.setText("");
         mUrlText.setText("");
-        // 折りたたみボタン
-//        mCollapseMark =  findViewById(R.id.collapse);
-//        mCollapseMark.setOnClickListener(new OnClickListener() {
-//            public void onClick(View v) {
-//                if (mProfileView.getVisibility() == View.VISIBLE) {
-//                    mProfileView.setVisibility(View.GONE);
-//                    mProfileContentView.setVisibility(View.GONE);
-//                    mCollapseMark.setImageResource(R.drawable.ic_expand_more_white_36dp);
-//                } else {
-//                    mProfileView.setVisibility(View.VISIBLE);
-//                    mProfileContentView.setVisibility(View.VISIBLE);
-//                    mCollapseMark.setImageResource(R.drawable.ic_expand_less_white_36dp);
-//                }
-//            }
-//        });
     }
 
     private void cancelTask(AsyncTask<?, ?, ?> task) {
@@ -268,7 +252,7 @@ public class UserDetailActivity extends AppCompatActivity {
         int followers = user.getFollowersCount();
         int favs = user.getFavouritesCount();
         mPagerAdapter.setCounts(statusCounts, friends, followers, favs);
-        if(mPagerAdapter.isEmpty()) {
+        if (mPagerAdapter.isEmpty()) {
             Bundle args = createArgs();
             mPagerAdapter.add(UserTimelineFragment.class, args, 0);
             mPagerAdapter.add(FriendsOfUserFragment.class, args, 1);
@@ -366,27 +350,27 @@ public class UserDetailActivity extends AppCompatActivity {
 
     private void setRelationText(Relation r) {
         switch (r) {
-        case Blocking:
-            mRelationText.setText("ブロック中");
-            break;
-        case Mutal:
-            mRelationText.setText("相互フォロー");
-            break;
-        case Followed:
-            mRelationText.setText("ファン");
-            break;
-        case Following:
-            mRelationText.setText("片思い");
-            break;
-        case Unrelated:
-            mRelationText.setText("無関心");
-            break;
-        case Myself:
-            mRelationText.setText("あなたです！");
-            break;
-        default:
-            mRelationText.setText("何かおかしいよ");
-            break;
+            case Blocking:
+                mRelationText.setText("ブロック中");
+                break;
+            case Mutal:
+                mRelationText.setText("相互フォロー");
+                break;
+            case Followed:
+                mRelationText.setText("ファン");
+                break;
+            case Following:
+                mRelationText.setText("片思い");
+                break;
+            case Unrelated:
+                mRelationText.setText("無関心");
+                break;
+            case Myself:
+                mRelationText.setText("あなたです！");
+                break;
+            default:
+                mRelationText.setText("何かおかしいよ");
+                break;
         }
     }
 
@@ -400,28 +384,29 @@ public class UserDetailActivity extends AppCompatActivity {
     public boolean onPrepareOptionsMenu(Menu menu) {
         MenuItem changeRelationMenu = menu.findItem(R.id.menu_relation);
         switch (mRelation) {
-        case Myself:
-            changeRelationMenu.setVisible(false);
-        case NotLoaded:
-            changeRelationMenu.setEnabled(false);
-            changeRelationMenu.setTitle(R.string.now_loading);
-            break;
-        case Blocking:
-            changeRelationMenu.setEnabled(false);
-            changeRelationMenu.setTitle("ブロック中");
-            break;
-        case Following:
-        case Mutal:
-            changeRelationMenu.setEnabled(true);
-            changeRelationMenu.setTitle(R.string.remove);
-            break;
-        case Followed:
-        case Unrelated:
-            changeRelationMenu.setEnabled(true);
-            changeRelationMenu.setTitle(R.string.follow);
-            break;
-        default:
-            break;
+            case Myself:
+                changeRelationMenu.setVisible(false);
+                break;
+            case NotLoaded:
+                changeRelationMenu.setEnabled(false);
+                changeRelationMenu.setTitle(R.string.now_loading);
+                break;
+            case Blocking:
+                changeRelationMenu.setEnabled(false);
+                changeRelationMenu.setTitle("ブロック中");
+                break;
+            case Following:
+            case Mutal:
+                changeRelationMenu.setEnabled(true);
+                changeRelationMenu.setTitle(R.string.remove);
+                break;
+            case Followed:
+            case Unrelated:
+                changeRelationMenu.setEnabled(true);
+                changeRelationMenu.setTitle(R.string.follow);
+                break;
+            default:
+                break;
         }
 
         MenuItem blockMenu = menu.findItem(R.id.menu_block);
@@ -433,14 +418,14 @@ public class UserDetailActivity extends AppCompatActivity {
 
         MenuItem dmMenu = menu.findItem(R.id.menu_dm);
         switch (mRelation) {
-        case Followed:
-        case Mutal:
-        case Myself:
-            dmMenu.setEnabled(true);
-            break;
-        default:
-            dmMenu.setEnabled(false);
-            break;
+            case Followed:
+            case Mutal:
+            case Myself:
+                dmMenu.setEnabled(true);
+                break;
+            default:
+                dmMenu.setEnabled(false);
+                break;
         }
         return true;
     }
@@ -452,29 +437,32 @@ public class UserDetailActivity extends AppCompatActivity {
             case android.R.id.home:
                 finish();
                 break;
-        case R.id.menu_list:
-            addToList();
-            break;
-        case R.id.menu_relation:
-            changeRelation();
-            break;
-        case R.id.menu_block:
-            blockUser();
-            break;
-        case R.id.menu_r4s:
-            reportUser();
-            break;
-        case R.id.menu_mention:
-            i = new Intent(this, TweetActivity.class);
-            i.putExtra(C.SCREEN_NAME, mScreenName);
-            i.putExtra(C.USER, mTargetUser);
-            startActivity(i);
-            break;
-        case R.id.menu_dm:
-            i = new Intent(this, ComposeDmActivity.class);
-            i.putExtra(C.USER, mTargetUser);
-            startActivity(i);
-            break;
+            case R.id.menu_list:
+                addToList();
+                break;
+            case R.id.menu_relation:
+                changeRelation();
+                break;
+            case R.id.menu_block:
+                blockUser();
+                break;
+            case R.id.menu_r4s:
+                reportUser();
+                break;
+            case R.id.menu_mention:
+                i = new Intent(this, TweetActivity.class);
+                i.putExtra(C.SCREEN_NAME, mScreenName);
+                i.putExtra(C.USER, mTargetUser);
+                startActivity(i);
+                break;
+            case R.id.menu_dm:
+                i = new Intent(this, ComposeDmActivity.class);
+                i.putExtra(C.USER, mTargetUser);
+                startActivity(i);
+                break;
+            case R.id.collapse:
+                switchProfileExpansion(item);
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -496,7 +484,7 @@ public class UserDetailActivity extends AppCompatActivity {
     }
 
     private void blockUser() {
-        if(mTargetUser.getId() == TwitterUtils.getCurrentAccountId()){
+        if (mTargetUser.getId() == TwitterUtils.getCurrentAccountId()) {
             AppUtil.showToast(R.string.impossible);
             return;
         }
@@ -649,5 +637,17 @@ public class UserDetailActivity extends AppCompatActivity {
             }
         };
         mLoadListTask.executeParallel();
+    }
+
+    private void switchProfileExpansion(MenuItem menuItem){
+        if (mProfileView.getVisibility() == View.VISIBLE) {
+            mProfileView.setVisibility(View.GONE);
+            mProfileContentView.setVisibility(View.GONE);
+            menuItem.setIcon(R.drawable.ic_expand_more_white_36dp);
+        } else {
+            mProfileView.setVisibility(View.VISIBLE);
+            mProfileContentView.setVisibility(View.VISIBLE);
+            menuItem.setIcon(R.drawable.ic_expand_less_white_36dp);
+        }
     }
 }
