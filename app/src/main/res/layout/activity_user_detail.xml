@@ -46,6 +46,7 @@
                     android:foreground="@drawable/image_ripple"
                     android:layout_margin="8dp"
                     android:cropToPadding="true"
+                    android:src="@color/transparent_black"
                     android:scaleType="centerCrop" />
 
                 <ImageView
