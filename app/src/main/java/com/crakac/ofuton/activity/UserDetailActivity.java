@@ -67,7 +67,7 @@ public class UserDetailActivity extends AppCompatActivity {
     private UserFragmentPagerAdapter mPagerAdapter;
     private ParallelTask<Void, Relationship> mloadRelationTask;
     private ParallelTask<Void, User> mLoadUserTask;
-    private static ProgressDialogFragment mDialog;
+    private ProgressDialogFragment mDialog;
     private Twitter mTwitter;
     private User mTargetUser;
     private Relation mRelation;
@@ -77,7 +77,7 @@ public class UserDetailActivity extends AppCompatActivity {
     private TwitterListAdapter mTwitterListAdapter;
     private ParallelTask<Void, List<UserList>> mLoadListTask;
     private TextView mBioText, mLocationText, mUrlText, mRelationText;
-    private NetworkImageView mIconImage;
+    private NetworkImageView mIconImage, mHeaderImage;
     private ImageView mlockMark;
     private ProgressBar mloadingSpinner;
     private int mShortAnimeDuration;
@@ -180,6 +180,7 @@ public class UserDetailActivity extends AppCompatActivity {
         if (Util.isPreLollipop()) {
             mIconImage.setOnTouchListener(new ColorOverlayOnTouch());
         }
+        mHeaderImage = findViewById(R.id.header_image);
         mlockMark = findViewById(R.id.lockedIcon);
         mBioText = findViewById(R.id.bioText);
         mLocationText = findViewById(R.id.locationText);
@@ -215,6 +216,7 @@ public class UserDetailActivity extends AppCompatActivity {
                 overridePendingTransition(R.anim.fade_in, 0);
             }
         });
+        mHeaderImage.setImageUrl(user.getProfileBannerURL(), NetUtil.INLINE_PREVIEW_LOADER);
         if (user.isProtected()) {
             mlockMark.setVisibility(View.VISIBLE);
         } else {
@@ -264,7 +266,6 @@ public class UserDetailActivity extends AppCompatActivity {
         return args;
     }
 
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR1)
     private void crossFade() {
         mProfileContentView.setAlpha(0f);
         mProfileContentView.setVisibility(View.VISIBLE);
@@ -628,11 +629,9 @@ public class UserDetailActivity extends AppCompatActivity {
     private void switchProfileExpansion(MenuItem menuItem) {
         if (mProfileView.getVisibility() == View.VISIBLE) {
             mProfileView.setVisibility(View.GONE);
-            mProfileContentView.setVisibility(View.GONE);
             menuItem.setIcon(R.drawable.ic_expand_more_white_36dp);
         } else {
             mProfileView.setVisibility(View.VISIBLE);
-            mProfileContentView.setVisibility(View.VISIBLE);
             menuItem.setIcon(R.drawable.ic_expand_less_white_36dp);
         }
     }

@@ -19,7 +19,13 @@
         android:layout_height="160dp"
         android:layout_below="@id/toolbar"
         android:background="@color/dark_gray">
-
+        <com.crakac.ofuton.widget.BitmapImageView
+            android:alpha="0.2"
+            android:id="@+id/header_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:src="@null" />
         <LinearLayout
             android:id="@+id/profile_contents"
             android:layout_width="match_parent"
@@ -70,16 +76,17 @@
                         android:gravity="center"
                         android:maxLines="1"
                         android:text="@string/dummy"
-                        android:textColor="@color/droid_darkblue"
+                        android:textColor="@color/twitter_blue"
+                        android:textStyle="bold"
                         android:textSize="12sp" />
                 </FrameLayout>
             </RelativeLayout>
 
             <ScrollView
                 android:layout_width="0dp"
+                android:fadingEdge="none"
                 android:layout_height="match_parent"
-                android:layout_weight="1.0"
-                android:fadingEdge="none">
+                android:layout_weight="1.0">
 
                 <LinearLayout
                     android:id="@+id/userProfile"
