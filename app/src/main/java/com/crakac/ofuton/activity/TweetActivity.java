@@ -221,7 +221,6 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
 
     private void removeAppendedImage() {
         mAppendedImageView.setVisibility(View.GONE);
-        clearTemporaryImageFile();
         setRemainLength();
     }
 
@@ -235,15 +234,6 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         mCameraUri = savedInstanceState.getParcelable(IMAGE_URI);
-    }
-
-    @Override
-    protected void onDestroy() {
-        //ツイートボタン押下時にfinishする仕様だとツイート終了前にonDestroyが走るのでフラグで判定する
-        if (!mIsUpdatingStatus) {
-            clearTemporaryImageFile();
-        }
-        super.onDestroy();
     }
 
     /**
@@ -286,7 +276,6 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
     }
 
     private void appendPicture(Uri uri) {
-        clearTemporaryImageFile();
         File imageFile = AppUtil.convertUriToFile(this, uri);
         try {
             mAppendingFile = BitmapUtil.createTemporaryResizedImage(imageFile, MAX_APPEND_PICTURE_EDGE_LENGTH);
@@ -314,7 +303,6 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
     }
 
     private void updateStatus() {
-        mIsUpdatingStatus = true;
         final StatusUpdate update = new StatusUpdate(mInputText.getText().toString());
         Intent i = new Intent(this, StatusUpdateService.class);
         i.putExtra(C.TEXT, mInputText.getText().toString());
@@ -387,15 +375,5 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
      */
     private Status getTargetStatus() {
         return (Status) getIntent().getSerializableExtra(C.STATUS);
-    }
-
-    /**
-     * 画像添付用に縮小画像を生成するので、添付し直し時、アクティビティ終了時にファイルを削除する。
-     */
-    private void clearTemporaryImageFile() {
-        if (mAppendingFile != null && mAppendingFile.exists()) {
-            mAppendingFile.delete();
-            mAppendingFile = null;
-        }
     }
 }
