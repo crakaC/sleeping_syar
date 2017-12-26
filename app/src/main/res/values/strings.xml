@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <string name="file_provider_authority">com.crakac.ofuton.fileprovider</string>
     <string name="app_name">Sleeping( ˘ω˘)Syar</string>
     <string name="activity_setting">Settings</string>
     <string name="activity_tweet">Compose Tweet</string>

@@ -1,6 +1,7 @@
 package com.crakac.ofuton;
 
 public class C {
+	public static final int MAX_APPEND_PICTURE_EDGE_LENGTH = 1920;
 	public static final String TEXT = "text";
 	public static final String IN_REPLY_TO = "in_reply_to";
 	public static final String ATTACHMENTS = "attachments";

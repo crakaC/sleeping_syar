@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
@@ -26,7 +27,7 @@ public class Util {
 
     private Util(){}
 
-    static void closeQuietly(Closeable c) {
+    public static void closeQuietly(@Nullable Closeable c) {
         if(c == null) return;
         try {
             c.close();

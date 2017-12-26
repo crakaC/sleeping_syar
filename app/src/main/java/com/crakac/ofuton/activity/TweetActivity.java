@@ -1,19 +1,20 @@
 package com.crakac.ofuton.activity;
 
 import android.Manifest;
-import android.content.ContentValues;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.Parcelable;
 import android.provider.MediaStore;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.ActionBar;
 import android.text.Editable;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
@@ -35,8 +36,11 @@ import com.esafirm.imagepicker.model.Image;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import twitter4j.Status;
 import twitter4j.User;
@@ -58,13 +62,11 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
     private static final int CAMERA_PERMISSION_REQUEST = 12;
 
     private static final int MAX_TWEET_LENGTH = 140;
-    private static final int MAX_APPEND_PICTURE_EDGE_LENGTH = 1920;
     private static final String IMAGE_URI = "IMAGE_URI";
     private static final int MAX_APPEND_FILES = 4;
     private static final int THUMBNAIL_SIZE = 120;//(dp)
 
     private EditText mInputText;
-    private File mAppendingFile; // 画像のアップロードに使用
     private View mTweetBtn, mAppendPicBtn, mCameraBtn, mInfoBtn;// つぶやくボタン，画像追加ボタン，リプライ元情報ボタン
     private Uri mCameraUri;// カメラ画像添付用
     private long mReplyId;// reply先ID
@@ -73,9 +75,11 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
     private User mMentionUser;
 
     private LinearLayout mAppendedImageRoot;
-    private ArrayList<Image> mAppendedImages = new ArrayList<>(MAX_APPEND_FILES);
+    private ArrayList<Parcelable> mAppendedImages = new ArrayList<>(MAX_APPEND_FILES);
     private ArrayList<ImageView> mAppendedImageViews = new ArrayList(MAX_APPEND_FILES);
     private ImageView mLastTappedView;
+
+    private String mPhotoPath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,7 +105,7 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
         mInputText.addTextChangedListener(new SimpleTextChangeListener() {
             @Override
             public void afterTextChanged(Editable s) {
-                setRemainLength();
+                updateState();
             }
         });
 
@@ -115,7 +119,24 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
         }
 
         // アクティビティ開始時の残り文字数をセットする．リプライ時やハッシュタグ時のときも140字にならないために．
-        setRemainLength();
+        updateState();
+    }
+
+    private File createImageFile() {
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
+        String imageFileName = "IMG_" + timeStamp;
+        try {
+            File image = File.createTempFile(
+                    imageFileName,
+                    ".jpg",
+                    Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
+            );
+            mPhotoPath = image.getAbsolutePath();
+            return image;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     private void handleSendIntent(Intent intent) {
@@ -192,7 +213,7 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
             menu.setHeaderTitle(R.string.appended_image);
             menu.add(0, PREVIEW_APPENDED_IMAGE, 0, R.string.preview);
             menu.add(0, REMOVE_APPENDED_IMAGE, 0, R.string.delete);
-            mLastTappedView = (ImageView)v;
+            mLastTappedView = (ImageView) v;
         }
     }
 
@@ -217,8 +238,8 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
     }
 
     private void removeAppendedImage(ImageView v) {
-        mLastTappedView.setImageBitmap(null);
-        mLastTappedView.setVisibility(View.GONE);
+        mAppendedImageRoot.removeView(v);
+        mAppendedImages.remove(v.getTag());
     }
 
     @Override
@@ -233,15 +254,10 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
         mCameraUri = savedInstanceState.getParcelable(IMAGE_URI);
     }
 
-    /**
-     * ツイートの残り文字数を求め，テキストビューに反映する
-     * <p/>
-     * 編集中のEditText
-     */
-    private void setRemainLength() {
+    private void updateState() {
         String text = mInputText.getEditableText().toString();
         int remainLength = MAX_TWEET_LENGTH - Util.getActualTextLength(text);
-        if (remainLength < 0 || (remainLength == MAX_TWEET_LENGTH && mAppendingFile == null)) {
+        if (remainLength < 0 || (text.isEmpty() && mAppendedImages.isEmpty())) {
             enableTweetButton(false);
         } else {
             enableTweetButton(true);
@@ -254,17 +270,21 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
         super.onActivityResult(requestCode, resultCode, data);
         Log.d(TAG, "onActivityResult");
         if (resultCode != RESULT_OK) {
-            if (requestCode == REQUEST_CAMERA) {
-                // ContentResolverでファイルを登録してあるので削除する。しないとゴミが出る。
-                getContentResolver().delete(mCameraUri, null, null);
-            }
             return;
         }
 
-        if (requestCode == REQUEST_SELECT_PICTURE) {
-            if (data != null) {
-                setUpThumbnails(ImagePicker.getImages(data));
-            }
+        switch (requestCode) {
+            case REQUEST_CAMERA:
+                Intent i = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+                i.setData(mCameraUri);
+                this.sendBroadcast(i);
+                appendPicture(mCameraUri);
+                break;
+            case REQUEST_SELECT_PICTURE:
+                if (data != null) {
+                    setUpThumbnails(ImagePicker.getImages(data));
+                }
+                break;
         }
     }
 
@@ -273,31 +293,22 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
     }
 
     private void appendPicture(Uri uri) {
-        File imageFile = AppUtil.convertUriToFile(this, uri);
-        try {
-            mAppendingFile = BitmapUtil.createTemporaryResizedImage(imageFile, MAX_APPEND_PICTURE_EDGE_LENGTH);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        if (mAppendingFile == null) {
-            AppUtil.showToast("ファイルの読み込みに失敗しました");
-        } else {
-            enableTweetButton(true);
-            setRemainLength();
-        }
+        setUpThumbnail(uri);
+        mAppendedImages.add(uri);
+        updateState();
     }
 
     private void setUpThumbnails(List<Image> images) {
-        mAppendedImages.clear();
-        for(Image image : images){
+        for (Image image : images) {
             setUpThumbnail(image);
+            mAppendedImages.add(image);
         }
     }
 
-    private ImageView inflateThumbnail(){
-        ImageView iv = (ImageView)getLayoutInflater().inflate(R.layout.appended_image_view, null);
+    private ImageView inflateThumbnail() {
+        ImageView iv = (ImageView) getLayoutInflater().inflate(R.layout.appended_image_view, null);
         mAppendedImageRoot.addView(iv);
-        LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams)iv.getLayoutParams();
+        LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) iv.getLayoutParams();
         lp.width = AppUtil.dpToPx(THUMBNAIL_SIZE);
         lp.height = AppUtil.dpToPx(THUMBNAIL_SIZE);
         iv.setLayoutParams(lp);
@@ -315,15 +326,19 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
         return iv;
     }
 
-    private void setUpThumbnail(Image image){
+    private void setUpThumbnail(Parcelable image) {
         ImageView iv = inflateThumbnail();
-        mAppendedImageViews.add(iv);
-
         // set thumbnail
-        File file = new File(image.getPath());
-        Bitmap thumbnail = BitmapUtil.getResizedBitmap(file, AppUtil.dpToPx(THUMBNAIL_SIZE));
+        Bitmap thumbnail;
+        if (image instanceof Image) {
+            File file = new File(((Image) image).getPath());
+            thumbnail = BitmapUtil.getResizedBitmap(file, AppUtil.dpToPx(THUMBNAIL_SIZE));
+        } else if (image instanceof Uri) {
+            thumbnail = BitmapUtil.getResizedBitmap(getContentResolver(), (Uri) image, AppUtil.dpToPx(THUMBNAIL_SIZE));
+        } else throw new IllegalArgumentException("Wrong class");
         iv.setImageBitmap(thumbnail);
         iv.setVisibility(View.VISIBLE);
+        mAppendedImageViews.add(iv);
     }
 
     private void updateStatus() {
@@ -357,16 +372,12 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
             case R.id.picFromCamera:
                 if (!Util.checkRuntimePermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA}, CAMERA_PERMISSION_REQUEST))
                     return;
-
-                String filename = System.currentTimeMillis() + ".jpg";
-                // コンテントプロバイダを使用し,ギャラリーに画像を保存. 保存したUriを取得.
-                ContentValues values = new ContentValues();
-                values.put(MediaStore.Images.Media.TITLE, filename);
-                values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
-                mCameraUri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
-
-                intent = new Intent();
-                intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
+                intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                if (intent.resolveActivity(getPackageManager()) == null) {
+                    return;
+                }
+                File photoFile = createImageFile();
+                mCameraUri = FileProvider.getUriForFile(this, getString(R.string.file_provider_authority), photoFile);
                 intent.putExtra(MediaStore.EXTRA_OUTPUT, mCameraUri);
                 startActivityForResult(intent, REQUEST_CAMERA);
                 break;

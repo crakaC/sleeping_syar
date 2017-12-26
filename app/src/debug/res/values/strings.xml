@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="file_provider_authority">com.crakac.ofuton.debug.fileprovider</string>
     <string name="app_name">DebugBuild</string>
     <string name="syar">( ˘ω˘)debug...</string>
 </resources>

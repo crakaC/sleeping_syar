@@ -4,6 +4,8 @@ import android.app.IntentService
 import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
+import android.os.Parcelable
 import android.support.v4.app.NotificationCompat
 import com.crakac.ofuton.C
 import com.crakac.ofuton.R
@@ -22,7 +24,7 @@ class StatusUpdateService : IntentService("StatusUpdateService") {
 
         val text = intent.getStringExtra(C.TEXT)
         val inReplyTo: Long = intent.getLongExtra(C.IN_REPLY_TO, -1)
-        val appendedImages = intent.getSerializableExtra(C.ATTACHMENTS) as ArrayList<Image>
+        val appendedImages = intent.getSerializableExtra(C.ATTACHMENTS) as ArrayList<Parcelable>
 
         val twitter = TwitterUtils.getTwitterInstance()
 
@@ -33,7 +35,12 @@ class StatusUpdateService : IntentService("StatusUpdateService") {
         startForeground(1, builder.build())
         try {
             for (i in 0 until appendedImageCount) {
-                val media = BitmapUtil.createTemporaryResizedImage(File(appendedImages[i].path), 1920)
+                val appending = appendedImages[i];
+                val media = when (appending) {
+                    is Image -> BitmapUtil.createTemporaryResizedImage(contentResolver, Uri.fromFile(File(appending.path)), C.MAX_APPEND_PICTURE_EDGE_LENGTH)
+                    is Uri -> BitmapUtil.createTemporaryResizedImage(contentResolver, appending, C.MAX_APPEND_PICTURE_EDGE_LENGTH)
+                    else -> null
+                }
                 val m = twitter.uploadMedia(media)
                 ids[i] = m.mediaId
             }

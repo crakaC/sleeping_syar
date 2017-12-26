@@ -24,7 +24,7 @@ public class AsyncBitmapLoader extends AsyncTaskLoader<Bitmap> {
         try {
             is = new FileInputStream(mPath);
             bitmap = BitmapFactory.decodeStream(is);
-            bitmap = BitmapUtil.rotateImage(bitmap, mPath.toString());
+            bitmap = BitmapUtil.rotateBitmap(bitmap, mPath.toString());
         } catch (IOException e) {
             e.printStackTrace();
         } finally {

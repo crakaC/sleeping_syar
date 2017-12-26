@@ -42,7 +42,6 @@ import com.crakac.ofuton.util.Util;
 import com.crakac.ofuton.widget.ColorOverlayOnTouch;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -262,20 +261,7 @@ public class TweetFragment extends Fragment implements View.OnClickListener {
 
     private void appendPicture(Uri uri) {
         clearTemporaryImageFile();
-        ContentResolver cr = getActivity().getContentResolver();
-        String[] columns = {MediaStore.Images.Media.DATA};
-        Cursor c = cr.query(uri, columns, null, null, null);
-        if(c == null){
-            AppUtil.showToast(getString(R.string.impossible));
-            return;
-        }
-        c.moveToFirst();
-        File imageFile = new File(c.getString(0));
-        try {
-            mAppendingFile = BitmapUtil.createTemporaryResizedImage(imageFile, MAX_APPEND_PICTURE_EDGE_LENGTH);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        mAppendingFile = BitmapUtil.createTemporaryResizedImage(getContext().getContentResolver(), uri, MAX_APPEND_PICTURE_EDGE_LENGTH);
         if (mAppendingFile == null) {
             AppUtil.showToast("ファイルの読み込みに失敗しました");
         } else {
@@ -283,13 +269,12 @@ public class TweetFragment extends Fragment implements View.OnClickListener {
             enableTweetButton(true);
             setRemainLength();
         }
-        c.close();
     }
 
     private void setAppendingImageDrawable(File appendingFile) {
         final int BITMAP_EDGE_LENGTH = 96;
         Bitmap bm = BitmapUtil.getResizedBitmap(appendingFile, BITMAP_EDGE_LENGTH);
-        mAppendedImageView.setImageBitmap(BitmapUtil.rotateImage(bm, appendingFile.toString()));
+        mAppendedImageView.setImageBitmap(BitmapUtil.rotateBitmap(bm, appendingFile.toString()));
         mAppendedImageView.setVisibility(View.VISIBLE);
     }
 
@@ -415,9 +400,9 @@ public class TweetFragment extends Fragment implements View.OnClickListener {
         showKeyboard();
     }
 
-    private void showKeyboard(){
+    private void showKeyboard() {
         InputMethodManager inputMethodManager =
-                (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         inputMethodManager.toggleSoftInputFromWindow(
                 mInputText.getApplicationWindowToken(),
                 InputMethodManager.SHOW_FORCED, 0);
