@@ -13,6 +13,7 @@ import android.text.Editable;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
@@ -38,7 +39,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import twitter4j.Status;
-import twitter4j.StatusUpdate;
 import twitter4j.User;
 import twitter4j.UserMentionEntity;
 
@@ -60,20 +60,22 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
     private static final int MAX_TWEET_LENGTH = 140;
     private static final int MAX_APPEND_PICTURE_EDGE_LENGTH = 1920;
     private static final String IMAGE_URI = "IMAGE_URI";
+    private static final int MAX_APPEND_FILES = 4;
+    private static final int THUMBNAIL_SIZE = 120;//(dp)
 
     private EditText mInputText;
     private File mAppendingFile; // 画像のアップロードに使用
     private View mTweetBtn, mAppendPicBtn, mCameraBtn, mInfoBtn;// つぶやくボタン，画像追加ボタン，リプライ元情報ボタン
-    private LinearLayout mAppendedImagesRoot;
-    private ImageView mAppendedImageView;
     private Uri mCameraUri;// カメラ画像添付用
     private long mReplyId;// reply先ID
     private String mReplyName;// リプライ先スクリーンネーム
     private String mHashTag;// ハッシュタグ
     private User mMentionUser;
-    private boolean mIsUpdatingStatus = false;//ツイート中かどうか。onDestroyで添付ファイルを削除する際の判定に使う。
 
-    private ArrayList<Image> mAppendedImages = new ArrayList<>(4);
+    private LinearLayout mAppendedImageRoot;
+    private ArrayList<Image> mAppendedImages = new ArrayList<>(MAX_APPEND_FILES);
+    private ArrayList<ImageView> mAppendedImageViews = new ArrayList(MAX_APPEND_FILES);
+    private ImageView mLastTappedView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,17 +89,12 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
         mAppendPicBtn = findViewById(R.id.appendPic);// 画像添付ボダン
         mCameraBtn = findViewById(R.id.picFromCamera);// 撮影して添付するボタン
         mInfoBtn = findViewById(R.id.tweetInfoBtn);// リプライ先表示ボタン
-        mAppendedImageView = findViewById(R.id.appendedImage);
-        mAppendedImagesRoot = findViewById(R.id.image_attachments_root);
+        mAppendedImageRoot = findViewById(R.id.image_attachments_root);
 
         mInputText.setTextSize(PrefUtil.getFontSize() * 1.2f);
 
-        for (View clickable : new View[]{mTweetBtn, mAppendPicBtn, mCameraBtn, mInfoBtn, mAppendedImageView}) {
+        for (View clickable : new View[]{mTweetBtn, mAppendPicBtn, mCameraBtn, mInfoBtn}) {
             clickable.setOnClickListener(this);
-        }
-
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            mAppendedImageView.setOnTouchListener(new ColorOverlayOnTouch());
         }
 
         // 文章に変更があったら残り文字数を変化させる
@@ -191,11 +188,11 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
-        switch (v.getId()) {
-            case R.id.appendedImage:
-                menu.setHeaderTitle("添付画像");
-                menu.add(0, PREVIEW_APPENDED_IMAGE, 0, getString(R.string.preview));
-                menu.add(0, REMOVE_APPENDED_IMAGE, 0, getString(R.string.delete));
+        if (mAppendedImageViews.contains(v)) {
+            menu.setHeaderTitle(R.string.appended_image);
+            menu.add(0, PREVIEW_APPENDED_IMAGE, 0, R.string.preview);
+            menu.add(0, REMOVE_APPENDED_IMAGE, 0, R.string.delete);
+            mLastTappedView = (ImageView)v;
         }
     }
 
@@ -203,25 +200,25 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
     public boolean onContextItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case PREVIEW_APPENDED_IMAGE:
-                previewAppendedImage();
+                previewAppendedImage((ImageView) item.getActionView());
                 return true;
             case REMOVE_APPENDED_IMAGE:
-                removeAppendedImage();
+                removeAppendedImage(mLastTappedView);
                 return true;
             default:
                 return false;
         }
     }
 
-    private void previewAppendedImage() {
-        Intent i = new Intent(this, PhotoPreviewActivity.class);
-        i.putExtra(C.FILE, mAppendingFile);
-        startActivity(i);
+    private void previewAppendedImage(ImageView v) {
+//        Intent i = new Intent(this, PhotoPreviewActivity.class);
+//        i.putExtra(C.FILE, mAppendingFile);
+//        startActivity(i);
     }
 
-    private void removeAppendedImage() {
-        mAppendedImageView.setVisibility(View.GONE);
-        setRemainLength();
+    private void removeAppendedImage(ImageView v) {
+        mLastTappedView.setImageBitmap(null);
+        mLastTappedView.setVisibility(View.GONE);
     }
 
     @Override
@@ -266,7 +263,7 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
 
         if (requestCode == REQUEST_SELECT_PICTURE) {
             if (data != null) {
-                mAppendedImages = (ArrayList<Image>) ImagePicker.getImages(data);
+                setUpThumbnails(ImagePicker.getImages(data));
             }
         }
     }
@@ -285,25 +282,51 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
         if (mAppendingFile == null) {
             AppUtil.showToast("ファイルの読み込みに失敗しました");
         } else {
-            setAppendingImagePreview(mAppendingFile);
             enableTweetButton(true);
             setRemainLength();
         }
     }
 
-    private void appendImages(List<Image> images) {
-
+    private void setUpThumbnails(List<Image> images) {
+        mAppendedImages.clear();
+        for(Image image : images){
+            setUpThumbnail(image);
+        }
     }
 
-    private void setAppendingImagePreview(File appendingFile) {
-        final int BITMAP_EDGE_LENGTH = 128;
-        Bitmap bm = BitmapUtil.getResizedBitmap(appendingFile, BITMAP_EDGE_LENGTH);
-        mAppendedImageView.setImageBitmap(BitmapUtil.rotateImage(bm, appendingFile.toString()));
-        mAppendedImageView.setVisibility(View.VISIBLE);
+    private ImageView inflateThumbnail(){
+        ImageView iv = (ImageView)getLayoutInflater().inflate(R.layout.appended_image_view, null);
+        mAppendedImageRoot.addView(iv);
+        LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams)iv.getLayoutParams();
+        lp.width = AppUtil.dpToPx(THUMBNAIL_SIZE);
+        lp.height = AppUtil.dpToPx(THUMBNAIL_SIZE);
+        iv.setLayoutParams(lp);
+        iv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                registerForContextMenu(v);
+                openContextMenu(v);
+                unregisterForContextMenu(v);
+            }
+        });
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            iv.setOnTouchListener(new ColorOverlayOnTouch());
+        }
+        return iv;
+    }
+
+    private void setUpThumbnail(Image image){
+        ImageView iv = inflateThumbnail();
+        mAppendedImageViews.add(iv);
+
+        // set thumbnail
+        File file = new File(image.getPath());
+        Bitmap thumbnail = BitmapUtil.getResizedBitmap(file, AppUtil.dpToPx(THUMBNAIL_SIZE));
+        iv.setImageBitmap(thumbnail);
+        iv.setVisibility(View.VISIBLE);
     }
 
     private void updateStatus() {
-        final StatusUpdate update = new StatusUpdate(mInputText.getText().toString());
         Intent i = new Intent(this, StatusUpdateService.class);
         i.putExtra(C.TEXT, mInputText.getText().toString());
         if (mReplyId > 0) {
@@ -316,7 +339,8 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
     @Override
     public void onClick(View v) {
         Intent intent;
-        switch (v.getId()) {
+        int clickedId = v.getId();
+        switch (clickedId) {
             case R.id.appendPic:
                 // 画像添付ボタン押下時の動作
                 // 画像を選びに行く．画像を選んだらonActivityResultが呼ばれる
@@ -325,10 +349,9 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
                 ImagePicker.create(this)
                         .folderMode(true)
                         .folderTitle("画像を選択")
-                        .limit(4)
+                        .limit(MAX_APPEND_FILES - mAppendedImages.size())
                         .showCamera(false)
                         .theme(R.style.ImagePicker)
-                        .origin(mAppendedImages)
                         .start(REQUEST_SELECT_PICTURE);
                 break;
             case R.id.picFromCamera:
@@ -361,9 +384,9 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
                 break;
 
             case R.id.appendedImage:
-                registerForContextMenu(mAppendedImageView);
+                registerForContextMenu(v);
                 openContextMenu(v);
-                unregisterForContextMenu(mAppendedImageView);
+                unregisterForContextMenu(v);
                 break;
         }
     }

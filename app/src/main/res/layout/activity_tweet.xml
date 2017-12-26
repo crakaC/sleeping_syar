@@ -1,13 +1,14 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:clipToPadding="false"
     android:padding="8dp">
 
     <EditText
         android:id="@+id/input_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@id/navs"
+        android:layout_above="@id/appended_scrollview"
         android:layout_alignParentTop="true"
         android:gravity="top"
         android:inputType="textMultiLine">
@@ -16,15 +17,20 @@
     </EditText>
 
     <HorizontalScrollView
-        android:layout_below="@id/input_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:id="@+id/appended_scrollview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/navs"
+        android:layout_marginLeft="-8dp"
+        android:layout_marginRight="-8dp">
 
         <LinearLayout
             android:id="@+id/image_attachments_root"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal" />
+            android:clipToPadding="true"
+            android:orientation="horizontal">
+        </LinearLayout>
     </HorizontalScrollView>
 
 
@@ -34,18 +40,9 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="8dp"
         android:gravity="right|center_vertical"
         android:orientation="horizontal">
-
-        <ImageView
-            android:id="@+id/appendedImage"
-            style="@style/appendedImage"
-            android:layout_marginRight="8dp"
-            android:cropToPadding="true"
-            android:foreground="?attr/selectableItemBackground"
-            android:scaleType="centerCrop"
-            android:visibility="gone" />
 
         <ImageView
             android:id="@+id/tweetInfoBtn"

@@ -40,7 +40,7 @@ public class MultipleImagePreview extends LinearLayout {
         super(context, attrs);
         setGravity(LinearLayout.HORIZONTAL);
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View v = inflater.inflate(R.layout.appended_image_view, this);
+        View v = inflater.inflate(R.layout.inline_preview_layout, this);
         videoIcon = v.findViewById(R.id.videoIcon);
         mLeft = v.findViewById(R.id.left);
         mRight = v.findViewById(R.id.right);
