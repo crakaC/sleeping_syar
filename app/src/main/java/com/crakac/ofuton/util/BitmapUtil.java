@@ -141,7 +141,11 @@ public class BitmapUtil {
 
         try {
             // Rotate the bitmap
-            resultBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+            Bitmap bm = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+            if(!bitmap.equals(bm)){
+                bitmap.recycle();
+            }
+            return bm;
         } catch (Exception exception) {
             Log.d(TAG, "Could not rotate the image");
         }

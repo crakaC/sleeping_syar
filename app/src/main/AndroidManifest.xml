@@ -127,7 +127,7 @@
             android:name=".activity.PhotoPreviewActivity"
             android:theme="@style/Theme.MyTrans" />
         <activity
-            android:name=".activity.WebImagePreviewActivity"
+            android:name=".activity.ImagePreviewActivity"
             android:exported="true"
             android:multiprocess="true"
             android:theme="@style/Theme.MyTrans">

@@ -6,7 +6,6 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.ActionBar;
@@ -35,12 +34,8 @@ import com.esafirm.imagepicker.features.ImagePicker;
 import com.esafirm.imagepicker.model.Image;
 
 import java.io.File;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import twitter4j.Status;
 import twitter4j.User;
@@ -119,22 +114,6 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
 
         // アクティビティ開始時の残り文字数をセットする．リプライ時やハッシュタグ時のときも140字にならないために．
         updateState();
-    }
-
-    private File createImageFile() {
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
-        String imageFileName = "IMG_" + timeStamp;
-        try {
-            File image = File.createTempFile(
-                    imageFileName,
-                    ".jpg",
-                    Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
-            );
-            return image;
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 
     private void handleSendIntent(Intent intent) {
@@ -312,7 +291,7 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
             }
             @Override
             public void onClickThumbnail() {
-                Intent i = new Intent(TweetActivity.this, WebImagePreviewActivity.class);
+                Intent i = new Intent(TweetActivity.this, ImagePreviewActivity.class);
                 i.putExtra(C.POSITION, mAppendedImages.indexOf(image));
                 i.putExtra(C.ATTACHMENTS, mAppendedImages);
                 startActivity(i);
@@ -357,7 +336,7 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
                     AppUtil.showToast(R.string.no_camera);
                     return;
                 }
-                File photoFile = createImageFile();
+                File photoFile = Util.createImageFile();
                 mCameraUri = FileProvider.getUriForFile(this, getString(R.string.file_provider_authority), photoFile);
                 intent.putExtra(MediaStore.EXTRA_OUTPUT, mCameraUri);
                 startActivityForResult(intent, REQUEST_CAMERA);

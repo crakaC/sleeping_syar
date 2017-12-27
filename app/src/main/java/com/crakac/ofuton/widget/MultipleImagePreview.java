@@ -10,8 +10,8 @@ import android.widget.LinearLayout;
 
 import com.crakac.ofuton.C;
 import com.crakac.ofuton.R;
+import com.crakac.ofuton.activity.ImagePreviewActivity;
 import com.crakac.ofuton.activity.VideoPreviewActivity;
-import com.crakac.ofuton.activity.WebImagePreviewActivity;
 import com.crakac.ofuton.util.NetUtil;
 import com.crakac.ofuton.util.TwitterUtils;
 import com.crakac.ofuton.util.Util;
@@ -204,7 +204,7 @@ public class MultipleImagePreview extends LinearLayout {
                     @Override
                     public void onClick(View v) {
                         Context context = getContext();
-                        Intent intent = new Intent(context, WebImagePreviewActivity.class);
+                        Intent intent = new Intent(context, ImagePreviewActivity.class);
                         intent.putExtra(C.MEDIA_ENTITY, (Serializable) mediaEntities);
                         intent.putExtra(C.POSITION, position);
                         context.startActivity(intent);

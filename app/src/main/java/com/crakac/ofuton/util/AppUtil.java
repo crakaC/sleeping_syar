@@ -404,8 +404,12 @@ public final class AppUtil {
         return d;
     }
 
+    public static Uri fileToContentUri(File file){
+        return FileProvider.getUriForFile(sContext, sContext.getString(R.string.file_provider_authority), file);
+    }
+
     public static Uri filePathToContentUri(String filePath){
         File file = new File(filePath);
-        return FileProvider.getUriForFile(sContext, sContext.getString(R.string.file_provider_authority), file);
+        return fileToContentUri(file);
     }
 }

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -18,32 +19,36 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 
 import twitter4j.MediaEntity;
 import twitter4j.TwitterAPIConfiguration;
 
 public class Util {
 
-    private Util(){}
+    private Util() {
+    }
 
     public static void closeQuietly(@Nullable Closeable c) {
-        if(c == null) return;
+        if (c == null) return;
         try {
             c.close();
         } catch (Exception e) {
         }
     }
 
-    static <T extends Serializable> T restoreFile(Context context, String fileName){
+    static <T extends Serializable> T restoreFile(Context context, String fileName) {
         FileInputStream fis = null;
         ObjectInputStream ois = null;
         T obj = null;
-        try{
+        try {
             fis = context.openFileInput(fileName);
             ois = new ObjectInputStream(fis);
-            obj = (T)ois.readObject();
-        } catch (ClassNotFoundException|IOException ioe){
+            obj = (T) ois.readObject();
+        } catch (ClassNotFoundException | IOException ioe) {
             ioe.printStackTrace();
         } finally {
             closeQuietly(fis);
@@ -52,7 +57,7 @@ public class Util {
         return obj;
     }
 
-    static<T extends Serializable> void saveFile(Context context, T file, String fileName){
+    static <T extends Serializable> void saveFile(Context context, T file, String fileName) {
         FileOutputStream fos = null;
         ObjectOutputStream oos = null;
         try {
@@ -67,7 +72,7 @@ public class Util {
         }
     }
 
-    static int daysPast(long fromMs){
+    static int daysPast(long fromMs) {
         int days = (int) ((System.currentTimeMillis() - fromMs) / (1000 * 60 * 60 * 24));
         Log.d("Days Past", days + "days past from " + fromMs);
         return days;
@@ -76,23 +81,23 @@ public class Util {
     static final String MATCH_URL_HTTPS = "(https)(:\\/\\/[-_.!~*\\'()a-zA-Z0-9;\\/?:\\@&=+\\$,%#]+)";
     static final String MATCH_URL_HTTP = "(http)(:\\/\\/[-_.!~*\\'()a-zA-Z0-9;\\/?:\\@&=+\\$,%#]+)";
 
-    private static String blanks(int n){
+    private static String blanks(int n) {
         StringBuilder sb = new StringBuilder(n);
-        for(int i = 0; i < n; i++){
+        for (int i = 0; i < n; i++) {
             sb.append(' ');
         }
         return sb.toString();
     }
 
-    public static int getActualTextLength(String text){
+    public static int getActualTextLength(String text) {
         TwitterAPIConfiguration conf = TwitterUtils.getApiConfiguration();
         text = text.replaceAll(MATCH_URL_HTTP, Util.blanks(conf.getShortURLLength()));
         text = text.replaceAll(MATCH_URL_HTTPS, Util.blanks(conf.getShortURLLengthHttps()));
         return text.length();
     }
 
-    public static boolean checkRuntimePermission(Activity activity, String permission, int requestId){
-        if (ContextCompat.checkSelfPermission(activity, permission) != PackageManager.PERMISSION_GRANTED){
+    public static boolean checkRuntimePermission(Activity activity, String permission, int requestId) {
+        if (ContextCompat.checkSelfPermission(activity, permission) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(activity,
                     new String[]{permission},
                     requestId);
@@ -101,14 +106,14 @@ public class Util {
         return true;
     }
 
-    public static boolean checkRuntimePermissions(Activity activity, String[] permissions, int requestId){
+    public static boolean checkRuntimePermissions(Activity activity, String[] permissions, int requestId) {
         ArrayList<String> notGrantedPermissions = new ArrayList<>();
-        for(String permission: permissions){
-            if(ContextCompat.checkSelfPermission(activity, permission) != PackageManager.PERMISSION_GRANTED){
+        for (String permission : permissions) {
+            if (ContextCompat.checkSelfPermission(activity, permission) != PackageManager.PERMISSION_GRANTED) {
                 notGrantedPermissions.add(permission);
             }
         }
-        if (notGrantedPermissions.isEmpty()){
+        if (notGrantedPermissions.isEmpty()) {
             return true;
         } else {
             ActivityCompat.requestPermissions(activity,
@@ -120,7 +125,7 @@ public class Util {
     }
 
 
-    public static String parseSharedText(Uri data){
+    public static String parseSharedText(Uri data) {
         StringBuilder sb = new StringBuilder();
         boolean isFirstItem = true;
         boolean setLink = false;
@@ -154,23 +159,38 @@ public class Util {
         return text != null;
     }
 
-    public static boolean clearFile(File file){
-        if(file != null && file.exists()){
+    public static boolean clearFile(File file) {
+        if (file != null && file.exists()) {
             return file.delete();
         }
         return false;
     }
 
-    public static String getValidVideoUrl(MediaEntity e){
-        for(MediaEntity.Variant v : e.getVideoVariants()){
-            if(v.getContentType().contains("mp4")){
+    public static String getValidVideoUrl(MediaEntity e) {
+        for (MediaEntity.Variant v : e.getVideoVariants()) {
+            if (v.getContentType().contains("mp4")) {
                 return v.getUrl();
             }
         }
         return "";
     }
 
-    public static boolean isPreLollipop(){
+    public static boolean isPreLollipop() {
         return Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP;
     }
+
+    public static File createImageFile() {
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
+        String imageFileName = "IMG_" + timeStamp;
+        try {
+            return File.createTempFile(
+                    imageFileName,
+                    ".jpg",
+                    Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 }

@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.net.Uri;
 
 import com.crakac.ofuton.R;
-import com.crakac.ofuton.activity.WebImagePreviewActivity;
+import com.crakac.ofuton.activity.ImagePreviewActivity;
 
 public class MediaAction extends ClickAction {
 	private String mDispUrl, mMediaUrl;
@@ -23,7 +23,7 @@ public class MediaAction extends ClickAction {
 
 	@Override
 	public void doAction() {
-		Intent intent = new Intent(mContext, WebImagePreviewActivity.class);
+		Intent intent = new Intent(mContext, ImagePreviewActivity.class);
 		intent.setData(Uri.parse(mMediaUrl));
 		mContext.startActivity(intent);
 		((Activity)mContext).overridePendingTransition(R.anim.fade_in, 0);

@@ -208,7 +208,7 @@ public class UserDetailActivity extends AppCompatActivity {
         mIconImage.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(UserDetailActivity.this, WebImagePreviewActivity.class);
+                Intent i = new Intent(UserDetailActivity.this, ImagePreviewActivity.class);
                 i.setData(Uri.parse(user.getOriginalProfileImageURL()));
                 startActivity(i);
                 overridePendingTransition(R.anim.fade_in, 0);

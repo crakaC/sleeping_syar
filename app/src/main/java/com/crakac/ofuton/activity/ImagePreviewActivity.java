@@ -25,7 +25,7 @@ import java.util.List;
 
 import twitter4j.MediaEntity;
 
-public class WebImagePreviewActivity extends AppCompatActivity implements PreviewNavigation.NavigationListener {
+public class ImagePreviewActivity extends AppCompatActivity implements PreviewNavigation.NavigationListener {
     private HackyViewPager mPager;
     private SimpleFragmentPagerAdapter<Fragment> mAdapter;
     private PreviewNavigation mNav;

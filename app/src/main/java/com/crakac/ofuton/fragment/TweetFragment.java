@@ -3,7 +3,6 @@ package com.crakac.ofuton.fragment;
 import android.Manifest;
 import android.app.Activity;
 import android.content.ComponentName;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -30,7 +29,7 @@ import android.widget.TextView;
 
 import com.crakac.ofuton.C;
 import com.crakac.ofuton.R;
-import com.crakac.ofuton.activity.PhotoPreviewActivity;
+import com.crakac.ofuton.activity.ImagePreviewActivity;
 import com.crakac.ofuton.fragment.dialog.TweetInfoDialogFragment;
 import com.crakac.ofuton.util.AppUtil;
 import com.crakac.ofuton.util.BitmapUtil;
@@ -177,14 +176,13 @@ public class TweetFragment extends Fragment implements View.OnClickListener {
     }
 
     private void previewAppendedImage() {
-        Intent i = new Intent(getActivity(), PhotoPreviewActivity.class);
-        i.putExtra(C.FILE, mAppendingFile);
+        Intent i = new Intent(getActivity(), ImagePreviewActivity.class);
+        i.putExtra(C.ATTACHMENTS, new ArrayList<Uri>(){{add(Uri.fromFile(mAppendingFile));}});
         startActivity(i);
     }
 
     private void removeAppendedImage() {
         mAppendedImageView.setVisibility(View.GONE);
-        clearTemporaryImageFile();
         setRemainLength();
     }
 
@@ -194,13 +192,6 @@ public class TweetFragment extends Fragment implements View.OnClickListener {
         outState.putParcelable(IMAGE_URI, mImageUri);
         outState.putSerializable(APPENDED_FILE, mAppendingFile);
     }
-
-    @Override
-    public void onDestroy() {
-        Log.d(TAG, "onDestroy");
-        super.onDestroy();
-    }
-
 
     /**
      * ツイートの残り文字数を求め，テキストビューに反映する
@@ -225,32 +216,16 @@ public class TweetFragment extends Fragment implements View.OnClickListener {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         Log.d(TAG, "onActivityResult");
-        if (requestCode == SELECT_PICTURE) {
-            boolean isCamera = false;
-            if (resultCode == Activity.RESULT_OK) {
-                Uri uri = null;
-                if (data != null) {
-                    uri = data.getData();
-                    String action = data.getAction();
-                    if (action != null) {
-                        isCamera = action.equals(MediaStore.ACTION_IMAGE_CAPTURE);
-                    }
-                } else {
-                    isCamera = true;
-                }
-                if (uri == null) {
-                    uri = mImageUri;
-                }
-                appendPicture(uri);
-
-                if (!isCamera) {
-                    // ContentResolverでファイルを登録してあるので削除する。しないとゴミが出る。
-                    getActivity().getContentResolver().delete(mImageUri, null, null);
-                }
-            } else {
-                getActivity().getContentResolver().delete(mImageUri, null, null);
-            }
+        if (resultCode != Activity.RESULT_OK || requestCode != SELECT_PICTURE) {
+            getActivity().getContentResolver().delete(mImageUri, null, null);
+            return;
         }
+
+        Uri uri = data.getData();
+        if (uri == null) {
+            uri = mImageUri;
+        }
+        appendPicture(uri);
     }
 
     private void enableTweetButton(boolean enabled) {
@@ -258,7 +233,6 @@ public class TweetFragment extends Fragment implements View.OnClickListener {
     }
 
     private void appendPicture(Uri uri) {
-        clearTemporaryImageFile();
         mAppendingFile = BitmapUtil.createTemporaryResizedImage(getContext().getContentResolver(), uri, MAX_APPEND_PICTURE_EDGE_LENGTH);
         if (mAppendingFile == null) {
             AppUtil.showToast("ファイルの読み込みに失敗しました");
@@ -343,12 +317,8 @@ public class TweetFragment extends Fragment implements View.OnClickListener {
             return;
 
         //take picture intent
-        String filename = System.currentTimeMillis() + ".jpg";
-        // コンテントプロバイダを使用し,ギャラリーに画像を保存. 保存したUriを取得.
-        ContentValues values = new ContentValues();
-        values.put(MediaStore.Images.Media.TITLE, filename);
-        values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
-        mImageUri = getActivity().getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+        File imageFile = Util.createImageFile();
+        mImageUri = AppUtil.fileToContentUri(imageFile);
         final List<Intent> cameraIntents = new ArrayList<>();
         final Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         final PackageManager pm = getActivity().getPackageManager();
@@ -379,16 +349,6 @@ public class TweetFragment extends Fragment implements View.OnClickListener {
      */
     private Status getTargetStatus() {
         return (Status) getArguments().getSerializable(C.STATUS);
-    }
-
-    /**
-     * 添付画像用の一時ファイルをクリア．
-     */
-    private void clearTemporaryImageFile() {
-        if (mAppendingFile != null && mAppendingFile.exists()) {
-            mAppendingFile.delete();
-        }
-        mAppendingFile = null;
     }
 
     public void show() {
