@@ -301,7 +301,7 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
                     return;
                 ImagePicker.create(this)
                         .folderMode(true)
-                        .folderTitle("画像を選択")
+                        .folderTitle(getString(R.string.select_image))
                         .limit(MAX_APPEND_FILES - mAppendedImages.size())
                         .showCamera(false)
                         .theme(R.style.ImagePicker)

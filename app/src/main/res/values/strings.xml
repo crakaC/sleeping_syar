@@ -14,6 +14,7 @@
     <string name="activity_search">Search</string>
     <string name="activity_video_preview">Preview</string>
     <string name="activity_setting_tweet_detail">Tweet Detail</string>
+    <string name="select_image">Select image</string>
     <string name="setting">設定</string>
     <string name="auth">認証</string>
     <string name="account">アカウント</string>
