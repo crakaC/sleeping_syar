@@ -51,6 +51,7 @@ import com.crakac.ofuton.util.TwitterUtils;
 import com.crakac.ofuton.widget.BitmapImageView;
 import com.crakac.ofuton.widget.TapToScrollTopListener;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -109,10 +110,10 @@ public class MainActivity extends AppCompatActivity {
 
 
         TweetButtonPosition buttonPosition = TweetButtonPosition.current();
-        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP){
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) mTweetBtn.getLayoutParams();
             lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-            switch(buttonPosition){
+            switch (buttonPosition) {
                 case Right:
                     lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
                     break;
@@ -126,7 +127,7 @@ public class MainActivity extends AppCompatActivity {
             mTweetBtn.setLayoutParams(lp);
         } else {
             CoordinatorLayout.LayoutParams lp = (CoordinatorLayout.LayoutParams) mTweetBtn.getLayoutParams();
-            switch(buttonPosition){
+            switch (buttonPosition) {
                 case Right:
                     lp.gravity = Gravity.BOTTOM | Gravity.RIGHT;
                     break;
@@ -262,6 +263,12 @@ public class MainActivity extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        AppUtil.clearCache();
     }
 
     /**
