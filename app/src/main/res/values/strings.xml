@@ -63,10 +63,12 @@
     <string name="more_expand">プロフィールを表示する</string>
 
     <string name="appended_image">添付画像</string>
+    <string name="no_camera">カメラアプリがありません</string>
 
     <string name="something_wrong">何かがおかしいよ</string>
     <string name="impossible">無理でした</string>
     <string name="syar">( ˘ω˘)ｽﾔｧ</string>
+    <string name="reply_format">\@%s\ </string>
     <string name="tweet">Tweet!</string>
     <string name="send">送信</string>
 

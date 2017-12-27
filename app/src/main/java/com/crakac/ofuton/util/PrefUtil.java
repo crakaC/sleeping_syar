@@ -3,6 +3,7 @@ package com.crakac.ofuton.util;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.support.v4.math.MathUtils;
 
 import com.crakac.ofuton.R;
 
@@ -62,6 +63,10 @@ public class PrefUtil {
      */
     public static int getFontSize() {
         return Integer.valueOf(getString(FONT_SIZE_KEY, "13"));// ListPreferenceは値をStringで保存すると思われるのでこうする
+    }
+
+    public static float getLargeFontSize(){
+        return (float)Math.ceil(getFontSize() * 1.2);
     }
 
     /**

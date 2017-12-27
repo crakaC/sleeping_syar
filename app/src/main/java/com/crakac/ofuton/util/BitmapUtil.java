@@ -58,7 +58,6 @@ public class BitmapUtil {
             return BitmapFactory.decodeFile(file.toString(), opt);
     }
 
-
     public static File createTemporaryResizedImage(ContentResolver cr, Uri contentUri, int longEdge) {
         Bitmap bm = getResizedBitmap(cr, contentUri, longEdge);
         float scaleW = (float) longEdge / bm.getWidth();

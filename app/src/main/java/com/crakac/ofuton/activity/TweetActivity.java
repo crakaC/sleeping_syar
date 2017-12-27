@@ -17,6 +17,7 @@ import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -67,7 +68,8 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
     private static final int THUMBNAIL_SIZE = 120;//(dp)
 
     private EditText mInputText;
-    private View mTweetBtn, mAppendPicBtn, mCameraBtn, mInfoBtn;// つぶやくボタン，画像追加ボタン，リプライ元情報ボタン
+    private ImageView mAppendPicBtn, mCameraBtn, mInfoBtn;// つぶやくボタン，画像追加ボタン，リプライ元情報ボタン
+    private Button mTweetBtn;
     private Uri mCameraUri;// カメラ画像添付用
     private long mReplyId;// reply先ID
     private String mReplyName;// リプライ先スクリーンネーム
@@ -95,7 +97,7 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
         mInfoBtn = findViewById(R.id.tweetInfoBtn);// リプライ先表示ボタン
         mAppendedImageRoot = findViewById(R.id.image_attachments_root);
 
-        mInputText.setTextSize(PrefUtil.getFontSize() * 1.2f);
+        mInputText.setTextSize(PrefUtil.getLargeFontSize());
 
         for (View clickable : new View[]{mTweetBtn, mAppendPicBtn, mCameraBtn, mInfoBtn}) {
             clickable.setOnClickListener(this);
@@ -176,7 +178,7 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
 
         // リプライ時は@screen_nameを事前に打ち込んでおき，リプライ先表示ボタンを有効にする
         if (mReplyName != null) {
-            mInputText.setText("@" + mReplyName + " ");
+            mInputText.setText(String.format(getString(R.string.reply_format), mReplyName));
             // カーソルの位置を@~の後に
             mInputText.setSelection(mInputText.getText().toString().length());
             Status targetStatus = getTargetStatus();
@@ -240,6 +242,7 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
     private void removeAppendedImage(ImageView v) {
         mAppendedImageRoot.removeView(v);
         mAppendedImages.remove(v.getTag());
+        updateState();
     }
 
     @Override
@@ -257,12 +260,14 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
     private void updateState() {
         String text = mInputText.getEditableText().toString();
         int remainLength = MAX_TWEET_LENGTH - Util.getActualTextLength(text);
-        if (remainLength < 0 || (text.isEmpty() && mAppendedImages.isEmpty())) {
-            enableTweetButton(false);
-        } else {
-            enableTweetButton(true);
-        }
         getSupportActionBar().setSubtitle(String.valueOf(remainLength));
+
+        boolean hasValidContent = remainLength < 0 || (text.isEmpty() && mAppendedImages.isEmpty());
+        mTweetBtn.setEnabled(hasValidContent);
+
+        boolean canAppend = mAppendedImages.size() < MAX_APPEND_FILES;
+        AppUtil.setImageViewEnabled(canAppend, mAppendPicBtn, R.drawable.ic_insert_photo_white_48dp);
+        AppUtil.setImageViewEnabled(canAppend, mCameraBtn, R.drawable.ic_camera_alt_white_48dp);
     }
 
     @Override
@@ -279,17 +284,15 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
                 i.setData(mCameraUri);
                 this.sendBroadcast(i);
                 appendPicture(mCameraUri);
+                updateState();
                 break;
             case REQUEST_SELECT_PICTURE:
                 if (data != null) {
                     setUpThumbnails(ImagePicker.getImages(data));
                 }
+                updateState();
                 break;
         }
-    }
-
-    private void enableTweetButton(boolean enabled) {
-        mTweetBtn.setEnabled(enabled);
     }
 
     private void appendPicture(Uri uri) {
@@ -338,6 +341,7 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
         } else throw new IllegalArgumentException("Wrong class");
         iv.setImageBitmap(thumbnail);
         iv.setVisibility(View.VISIBLE);
+        iv.setTag(image);
         mAppendedImageViews.add(iv);
     }
 
@@ -374,6 +378,7 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
                     return;
                 intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 if (intent.resolveActivity(getPackageManager()) == null) {
+                    AppUtil.showToast(R.string.no_camera);
                     return;
                 }
                 File photoFile = createImageFile();
