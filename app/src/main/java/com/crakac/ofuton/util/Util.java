@@ -179,18 +179,4 @@ public class Util {
         return Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP;
     }
 
-    public static File createImageFile() {
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
-        String imageFileName = "IMG_" + timeStamp;
-        try {
-            return File.createTempFile(
-                    imageFileName,
-                    ".jpg",
-                    Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
 }

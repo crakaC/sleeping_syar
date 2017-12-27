@@ -11,7 +11,7 @@ abstract public class ParallelTask<Progress, Result> extends AsyncTask< Class<Vo
 
     abstract protected Result doInBackground();
 
-    public final ParallelTask<Progress, Result> executeParallel(){
+    public ParallelTask<Progress, Result> executeParallel(){
         return (ParallelTask<Progress, Result>) executeOnExecutor(THREAD_POOL_EXECUTOR);
 	}
 }

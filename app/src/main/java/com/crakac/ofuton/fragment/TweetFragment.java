@@ -53,7 +53,6 @@ public class TweetFragment extends Fragment implements View.OnClickListener {
     private static final String TAG = TweetFragment.class.getSimpleName();
 
     private static final int SELECT_PICTURE = 1;
-
     private static final int MAX_TWEET_LENGTH = 140;
     private static final int MAX_APPEND_PICTURE_EDGE_LENGTH = 1920;
     private static final String IMAGE_URI = "IMAGE_URI";
@@ -91,7 +90,10 @@ public class TweetFragment extends Fragment implements View.OnClickListener {
         mAppendBtn.setOnClickListener(this);
         // 添付画像ミニプレビュータップの動作
         mAppendedImageView.setOnClickListener(this);
-        mAppendedImageView.setOnTouchListener(new ColorOverlayOnTouch());
+
+        if(Util.isPreLollipop()) {
+            mAppendedImageView.setOnTouchListener(new ColorOverlayOnTouch());
+        }
 
         // tweetボタンの動作
         mTweetBtn.setOnClickListener(this);
@@ -177,12 +179,13 @@ public class TweetFragment extends Fragment implements View.OnClickListener {
 
     private void previewAppendedImage() {
         Intent i = new Intent(getActivity(), ImagePreviewActivity.class);
-        i.putExtra(C.ATTACHMENTS, new ArrayList<Uri>(){{add(Uri.fromFile(mAppendingFile));}});
+        i.putExtra(C.ATTACHMENTS, new ArrayList<Uri>(){{add(AppUtil.fileToContentUri(mAppendingFile));}});
         startActivity(i);
     }
 
     private void removeAppendedImage() {
         mAppendedImageView.setVisibility(View.GONE);
+        mAppendingFile = null;
         setRemainLength();
     }
 
@@ -317,7 +320,7 @@ public class TweetFragment extends Fragment implements View.OnClickListener {
             return;
 
         //take picture intent
-        File imageFile = Util.createImageFile();
+        File imageFile = AppUtil.createImageFile();
         mImageUri = AppUtil.fileToContentUri(imageFile);
         final List<Intent> cameraIntents = new ArrayList<>();
         final Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -378,5 +381,6 @@ public class TweetFragment extends Fragment implements View.OnClickListener {
         if (mAppendingFile != null) {
             removeAppendedImage();
         }
+        setRemainLength();
     }
 }

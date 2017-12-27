@@ -2,17 +2,15 @@ package com.crakac.ofuton.activity;
 
 import android.Manifest;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.ActionBar;
 import android.text.Editable;
 import android.util.Log;
-import android.view.ContextMenu;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -23,7 +21,7 @@ import com.crakac.ofuton.C;
 import com.crakac.ofuton.R;
 import com.crakac.ofuton.service.StatusUpdateService;
 import com.crakac.ofuton.util.AppUtil;
-import com.crakac.ofuton.util.BitmapUtil;
+import com.crakac.ofuton.util.AsyncLoadBitmapTask;
 import com.crakac.ofuton.util.PrefUtil;
 import com.crakac.ofuton.util.SimpleTextChangeListener;
 import com.crakac.ofuton.util.TwitterUtils;
@@ -46,7 +44,7 @@ import twitter4j.UserMentionEntity;
  *
  * @author Kosuke
  */
-public class TweetActivity extends FinishableActionbarActivity implements View.OnClickListener {
+public class TweetActivity extends FinishableActionbarActivity implements View.OnClickListener{
 
     private static final String TAG = TweetActivity.class.getSimpleName();
 
@@ -73,7 +71,8 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
     private LinearLayout mAppendedImageRoot;
     private ArrayList<Uri> mAppendedImages = new ArrayList<>(MAX_APPEND_FILES);
     private ArrayList<AppendedImageView> mAppendedImageViews = new ArrayList<>(MAX_APPEND_FILES);
-    private AppendedImageView mLastTappedView;
+
+    private Handler mHandler = new Handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -181,19 +180,6 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
 
     }
 
-    private final static int PREVIEW_APPENDED_IMAGE = 1;
-    private final static int REMOVE_APPENDED_IMAGE = 2;
-
-    @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
-        if (mAppendedImageViews.contains(v)) {
-            menu.setHeaderTitle(R.string.appended_image);
-            menu.add(0, PREVIEW_APPENDED_IMAGE, 0, R.string.preview);
-            menu.add(0, REMOVE_APPENDED_IMAGE, 0, R.string.delete);
-            mLastTappedView = (AppendedImageView) v;
-        }
-    }
-
     private void removeAppendedImage(AppendedImageView v) {
         mAppendedImageRoot.removeView(v);
         mAppendedImages.remove(v.getTag());
@@ -235,10 +221,8 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
 
         switch (requestCode) {
             case REQUEST_CAMERA:
-                Intent i = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-                i.setData(mCameraUri);
-                this.sendBroadcast(i);
                 appendPicture(mCameraUri);
+                AppUtil.sendMediaScanBroadcast(mCameraUri);
                 updateState();
                 break;
             case REQUEST_SELECT_PICTURE:
@@ -280,9 +264,6 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
     private void setUpThumbnail(final Uri image) {
         final AppendedImageView view = inflateThumbnail();
         // set thumbnail
-        Bitmap thumbnail;
-        thumbnail = BitmapUtil.getResizedBitmap(getContentResolver(), image, AppUtil.dpToPx(THUMBNAIL_SIZE));
-        view.setImageBitmap(thumbnail);
         view.setTag(image);
         view.setOnAppendedImageListener(new AppendedImageView.OnAppendedImageClickListener() {
             @Override
@@ -298,6 +279,7 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
             }
         });
         mAppendedImageViews.add(view);
+        new AsyncLoadBitmapTask(this, image, view.getImageView(), AppUtil.dpToPx(THUMBNAIL_SIZE)).executeParallel();
     }
 
     private void updateStatus() {
@@ -336,7 +318,7 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
                     AppUtil.showToast(R.string.no_camera);
                     return;
                 }
-                File photoFile = Util.createImageFile();
+                File photoFile = AppUtil.createImageFile();
                 mCameraUri = FileProvider.getUriForFile(this, getString(R.string.file_provider_authority), photoFile);
                 intent.putExtra(MediaStore.EXTRA_OUTPUT, mCameraUri);
                 startActivityForResult(intent, REQUEST_CAMERA);
@@ -352,12 +334,6 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
             case R.id.action_tweet:
                 updateStatus();
                 finish();
-                break;
-
-            case R.id.appendedImage:
-                registerForContextMenu(v);
-                openContextMenu(v);
-                unregisterForContextMenu(v);
                 break;
         }
     }

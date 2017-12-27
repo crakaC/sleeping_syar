@@ -3,6 +3,7 @@ package com.crakac.ofuton.util;
 import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -33,6 +34,7 @@ import com.crakac.ofuton.R;
 import com.crakac.ofuton.adapter.TweetStatusAdapter;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.NumberFormat;
@@ -40,6 +42,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Locale;
 import java.util.Random;
 
 import twitter4j.EntitySupport;
@@ -404,12 +407,40 @@ public final class AppUtil {
         return d;
     }
 
-    public static Uri fileToContentUri(File file){
+    public static File createImageFile() {
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
+        String imageFileName = "IMG_" + timeStamp;
+        try {
+            return File.createTempFile(
+                    imageFileName,
+                    ".jpg",
+                    sContext.getCacheDir());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static void clearCache() {
+        for (File cache : sContext.getCacheDir().listFiles()) {
+            if (cache.isFile()) {
+                cache.delete();
+            }
+        }
+    }
+
+    public static Uri fileToContentUri(File file) {
         return FileProvider.getUriForFile(sContext, sContext.getString(R.string.file_provider_authority), file);
     }
 
-    public static Uri filePathToContentUri(String filePath){
+    public static Uri filePathToContentUri(String filePath) {
         File file = new File(filePath);
         return fileToContentUri(file);
+    }
+
+    public static void sendMediaScanBroadcast(Uri uri) {
+        Intent i = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+        i.setData(uri);
+        sContext.sendBroadcast(i);
     }
 }
