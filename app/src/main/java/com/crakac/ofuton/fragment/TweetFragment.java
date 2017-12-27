@@ -132,7 +132,9 @@ public class TweetFragment extends Fragment implements View.OnClickListener {
 
         if (savedInstanceState != null) {
             mImageUri = savedInstanceState.getParcelable(IMAGE_URI);
-            appendPicture(mImageUri);
+            if(mImageUri != null) {
+                appendPicture(mImageUri);
+            }
         }
 
         setRemainLength();
