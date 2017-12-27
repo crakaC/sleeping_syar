@@ -1,14 +1,18 @@
 <h2>Twitter4J</h2>
 Copyright 2007 Yusuke Yamamoto
+Apache License 2.0
 
 <h2>Volley</h2>
 Copyright (C) 2011 The Android Open Source Project
-
-<h2>PagerSlidingTabStrip</h2>
-Copyright 2013 Andreas Stuetz
+Apache License 2.0
 
 <h2>PhotoView</h2>
 Copyright 2011, 2012 Chris Banes
+Apache License 2.0
+
+<h2>android-image-picker</h2>
+Copyright (c) 2016 Esa Firman
+MIT License
 
 <h2>Apache License, Version 2.0</h2>
 Apache License
