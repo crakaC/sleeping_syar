@@ -31,6 +31,7 @@ import com.crakac.ofuton.util.PrefUtil;
 import com.crakac.ofuton.util.SimpleTextChangeListener;
 import com.crakac.ofuton.util.TwitterUtils;
 import com.crakac.ofuton.util.Util;
+import com.crakac.ofuton.widget.AppendedImageView;
 import com.crakac.ofuton.widget.ColorOverlayOnTouch;
 import com.esafirm.imagepicker.features.ImagePicker;
 import com.esafirm.imagepicker.model.Image;
@@ -78,8 +79,8 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
 
     private LinearLayout mAppendedImageRoot;
     private ArrayList<Parcelable> mAppendedImages = new ArrayList<>(MAX_APPEND_FILES);
-    private ArrayList<ImageView> mAppendedImageViews = new ArrayList(MAX_APPEND_FILES);
-    private ImageView mLastTappedView;
+    private ArrayList<AppendedImageView> mAppendedImageViews = new ArrayList(MAX_APPEND_FILES);
+    private AppendedImageView mLastTappedView;
 
     private String mPhotoPath;
 
@@ -215,7 +216,7 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
             menu.setHeaderTitle(R.string.appended_image);
             menu.add(0, PREVIEW_APPENDED_IMAGE, 0, R.string.preview);
             menu.add(0, REMOVE_APPENDED_IMAGE, 0, R.string.delete);
-            mLastTappedView = (ImageView) v;
+            mLastTappedView = (AppendedImageView) v;
         }
     }
 
@@ -239,7 +240,7 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
 //        startActivity(i);
     }
 
-    private void removeAppendedImage(ImageView v) {
+    private void removeAppendedImage(AppendedImageView v) {
         mAppendedImageRoot.removeView(v);
         mAppendedImages.remove(v.getTag());
         updateState();
@@ -262,7 +263,7 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
         int remainLength = MAX_TWEET_LENGTH - Util.getActualTextLength(text);
         getSupportActionBar().setSubtitle(String.valueOf(remainLength));
 
-        boolean hasValidContent = remainLength < 0 || (text.isEmpty() && mAppendedImages.isEmpty());
+        boolean hasValidContent = !(remainLength < 0 || (text.isEmpty() && mAppendedImages.isEmpty()));
         mTweetBtn.setEnabled(hasValidContent);
 
         boolean canAppend = mAppendedImages.size() < MAX_APPEND_FILES;
@@ -308,29 +309,22 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
         }
     }
 
-    private ImageView inflateThumbnail() {
-        ImageView iv = (ImageView) getLayoutInflater().inflate(R.layout.appended_image_view, null);
+    private AppendedImageView inflateThumbnail() {
+        final AppendedImageView iv = new AppendedImageView(this);
         mAppendedImageRoot.addView(iv);
         LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) iv.getLayoutParams();
         lp.width = AppUtil.dpToPx(THUMBNAIL_SIZE);
         lp.height = AppUtil.dpToPx(THUMBNAIL_SIZE);
         iv.setLayoutParams(lp);
-        iv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                registerForContextMenu(v);
-                openContextMenu(v);
-                unregisterForContextMenu(v);
-            }
-        });
+
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            iv.setOnTouchListener(new ColorOverlayOnTouch());
+            iv.getImageView().setOnTouchListener(new ColorOverlayOnTouch());
         }
         return iv;
     }
 
     private void setUpThumbnail(Parcelable image) {
-        ImageView iv = inflateThumbnail();
+        final AppendedImageView view = inflateThumbnail();
         // set thumbnail
         Bitmap thumbnail;
         if (image instanceof Image) {
@@ -339,10 +333,20 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
         } else if (image instanceof Uri) {
             thumbnail = BitmapUtil.getResizedBitmap(getContentResolver(), (Uri) image, AppUtil.dpToPx(THUMBNAIL_SIZE));
         } else throw new IllegalArgumentException("Wrong class");
-        iv.setImageBitmap(thumbnail);
-        iv.setVisibility(View.VISIBLE);
-        iv.setTag(image);
-        mAppendedImageViews.add(iv);
+        view.setImageBitmap(thumbnail);
+        view.setTag(image);
+        view.setOnAppendedImageListener(new AppendedImageView.OnAppendedImageClickListener() {
+            @Override
+            public void onClickCancel() {
+                removeAppendedImage(view);
+            }
+
+            @Override
+            public void onClickThumbnail() {
+                //TODO Preview attachments
+            }
+        });
+        mAppendedImageViews.add(view);
     }
 
     private void updateStatus() {

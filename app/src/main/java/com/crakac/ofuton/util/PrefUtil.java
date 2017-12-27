@@ -3,7 +3,6 @@ package com.crakac.ofuton.util;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.support.v4.math.MathUtils;
 
 import com.crakac.ofuton.R;
 

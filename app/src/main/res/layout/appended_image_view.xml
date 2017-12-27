@@ -1,5 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ImageView xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/appendedImage"
-    android:foreground="@drawable/image_ripple"
-    android:visibility="gone" />
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/appendedImage">
+
+    <ImageView
+        android:id="@+id/thumbnail"
+        style="@style/appendedImage"
+        android:foreground="@drawable/image_ripple"
+        android:scaleType="centerCrop" />
+
+    <ImageView
+        android:background="@drawable/bg_dark_oval"
+        android:id="@+id/cancel_icon"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_gravity="top|right"
+        android:foreground="?attr/selectableItemBackgroundBorderless"
+        android:src="@drawable/ic_cancel_white_48dp" />
+</merge>
