@@ -32,6 +32,7 @@ import com.crakac.ofuton.R;
 import com.crakac.ofuton.activity.ImagePreviewActivity;
 import com.crakac.ofuton.fragment.dialog.TweetInfoDialogFragment;
 import com.crakac.ofuton.util.AppUtil;
+import com.crakac.ofuton.util.AsyncLoadBitmapTask;
 import com.crakac.ofuton.util.BitmapUtil;
 import com.crakac.ofuton.util.ParallelTask;
 import com.crakac.ofuton.util.TwitterUtils;
@@ -56,25 +57,15 @@ public class TweetFragment extends Fragment implements View.OnClickListener {
     private static final int MAX_TWEET_LENGTH = 140;
     private static final int MAX_APPEND_PICTURE_EDGE_LENGTH = 1920;
     private static final String IMAGE_URI = "IMAGE_URI";
-    public static final String APPENDED_FILE = "APPENDED_FILE";
 
     private EditText mInputText;
-    private File mAppendingFile; // 画像のアップロードに使用
     private TextView mRemainingText;// 残り文字数を表示
     private ImageView mTweetBtn, mAppendBtn;// つぶやくボタン，画像追加ボタン，リプライ元情報ボタン
     private ImageView mAppendedImageView;
-    private Uri mImageUri;// カメラ画像添付用
+    private Uri mImageUri;// 画像添付用
     private View mRootView;
 
     private static final String[] REQUIRED_PERMISSIONS = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA};
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (savedInstanceState != null) {
-            mImageUri = savedInstanceState.getParcelable(IMAGE_URI);
-        }
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -140,10 +131,8 @@ public class TweetFragment extends Fragment implements View.OnClickListener {
         });
 
         if (savedInstanceState != null) {
-            mAppendingFile = (File) savedInstanceState.getSerializable(APPENDED_FILE);
-        }
-        if (mAppendingFile != null) {
-            setAppendingImageDrawable(mAppendingFile);
+            mImageUri = savedInstanceState.getParcelable(IMAGE_URI);
+            appendPicture(mImageUri);
         }
 
         setRemainLength();
@@ -179,13 +168,13 @@ public class TweetFragment extends Fragment implements View.OnClickListener {
 
     private void previewAppendedImage() {
         Intent i = new Intent(getActivity(), ImagePreviewActivity.class);
-        i.putExtra(C.ATTACHMENTS, new ArrayList<Uri>(){{add(AppUtil.fileToContentUri(mAppendingFile));}});
+        i.putExtra(C.ATTACHMENTS, new ArrayList<Uri>(){{add(mImageUri);}});
         startActivity(i);
     }
 
     private void removeAppendedImage() {
         mAppendedImageView.setVisibility(View.GONE);
-        mAppendingFile = null;
+        mImageUri = null;
         setRemainLength();
     }
 
@@ -193,7 +182,6 @@ public class TweetFragment extends Fragment implements View.OnClickListener {
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelable(IMAGE_URI, mImageUri);
-        outState.putSerializable(APPENDED_FILE, mAppendingFile);
     }
 
     /**
@@ -204,14 +192,8 @@ public class TweetFragment extends Fragment implements View.OnClickListener {
     private void setRemainLength() {
         String text = mInputText.getEditableText().toString();
         int remainLength = MAX_TWEET_LENGTH - Util.getActualTextLength(text);
-        if (mAppendingFile != null) {
-            remainLength -= TwitterUtils.getApiConfiguration().getCharactersReservedPerMedia();
-        }
-        if (remainLength < 0 || (remainLength == MAX_TWEET_LENGTH && mAppendingFile == null)) {
-            enableTweetButton(false);
-        } else {
-            enableTweetButton(true);
-        }
+        boolean hasValidContent = !(remainLength < 0 || text.isEmpty() && mImageUri == null);
+        enableTweetButton(hasValidContent);
         mRemainingText.setText(String.valueOf(remainLength));
     }
 
@@ -227,6 +209,8 @@ public class TweetFragment extends Fragment implements View.OnClickListener {
         Uri uri = data.getData();
         if (uri == null) {
             uri = mImageUri;
+        } else {
+            mImageUri = uri;
         }
         appendPicture(uri);
     }
@@ -236,20 +220,15 @@ public class TweetFragment extends Fragment implements View.OnClickListener {
     }
 
     private void appendPicture(Uri uri) {
-        mAppendingFile = BitmapUtil.createTemporaryResizedImage(getContext().getContentResolver(), uri, MAX_APPEND_PICTURE_EDGE_LENGTH);
-        if (mAppendingFile == null) {
-            AppUtil.showToast("ファイルの読み込みに失敗しました");
-        } else {
-            setAppendingImageDrawable(mAppendingFile);
-            enableTweetButton(true);
-            setRemainLength();
-        }
-    }
-
-    private void setAppendingImageDrawable(File appendingFile) {
-        final int BITMAP_EDGE_LENGTH = 96;
-        Bitmap bm = BitmapUtil.getResizedBitmap(appendingFile, BITMAP_EDGE_LENGTH);
-        mAppendedImageView.setImageBitmap(BitmapUtil.rotateBitmap(bm, appendingFile.toString()));
+        AsyncLoadBitmapTask task = new AsyncLoadBitmapTask(getActivity(), uri, mAppendedImageView, AppUtil.dpToPx(96));
+        task.setOnLoadFinishedListener(new AsyncLoadBitmapTask.OnLoadFinishedListener() {
+            @Override
+            public void onLoadFinished(Bitmap bitmap) {
+                enableTweetButton(true);
+                setRemainLength();
+            }
+        });
+        task.executeParallel();
         mAppendedImageView.setVisibility(View.VISIBLE);
     }
 
@@ -262,10 +241,9 @@ public class TweetFragment extends Fragment implements View.OnClickListener {
             protected twitter4j.Status doInBackground() {
                 try {
                     // 画像が指定されていたら添付
-                    if (mAppendingFile != null) {
-                        update.media(mAppendingFile);
+                    if (mImageUri != null) {
+                        update.media(BitmapUtil.createTemporaryResizedImage(getContext().getContentResolver(), mImageUri, MAX_APPEND_PICTURE_EDGE_LENGTH));
                     }
-                    TwitterUtils.checkUpdateName(update.getStatus());
                     return TwitterUtils.getTwitterInstance().updateStatus(update);
                 } catch (TwitterException e) {
                     e.printStackTrace();
@@ -378,9 +356,7 @@ public class TweetFragment extends Fragment implements View.OnClickListener {
 
     public void clear() {
         mInputText.setText("");
-        if (mAppendingFile != null) {
-            removeAppendedImage();
-        }
+        removeAppendedImage();
         setRemainLength();
     }
 }

@@ -43,7 +43,8 @@ public class AsyncLoadBitmapTask extends ParallelTask<Void, Bitmap> {
 
     @Override
     protected Bitmap doInBackground() {
-        return BitmapUtil.getResizedBitmap(mContentResolver, mUri, mLongEdge);
+        Bitmap bitmap = BitmapUtil.getResizedBitmap(mContentResolver, mUri, mLongEdge);
+        return BitmapUtil.rotateBitmap(mContentResolver, mUri, bitmap);
     }
 
     @Override

@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.ActionBar;
@@ -44,7 +43,7 @@ import twitter4j.UserMentionEntity;
  *
  * @author Kosuke
  */
-public class TweetActivity extends FinishableActionbarActivity implements View.OnClickListener{
+public class TweetActivity extends FinishableActionbarActivity implements View.OnClickListener {
 
     private static final String TAG = TweetActivity.class.getSimpleName();
 
@@ -71,8 +70,6 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
     private LinearLayout mAppendedImageRoot;
     private ArrayList<Uri> mAppendedImages = new ArrayList<>(MAX_APPEND_FILES);
     private ArrayList<AppendedImageView> mAppendedImageViews = new ArrayList<>(MAX_APPEND_FILES);
-
-    private Handler mHandler = new Handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -222,7 +219,6 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
         switch (requestCode) {
             case REQUEST_CAMERA:
                 appendPicture(mCameraUri);
-                AppUtil.sendMediaScanBroadcast(mCameraUri);
                 updateState();
                 break;
             case REQUEST_SELECT_PICTURE:
@@ -270,6 +266,7 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
             public void onClickCancel() {
                 removeAppendedImage(view);
             }
+
             @Override
             public void onClickThumbnail() {
                 Intent i = new Intent(TweetActivity.this, ImagePreviewActivity.class);
