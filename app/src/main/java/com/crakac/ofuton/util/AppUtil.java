@@ -14,6 +14,7 @@ import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
 import android.provider.MediaStore;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.SearchView;
 import android.text.Html;
@@ -403,4 +404,8 @@ public final class AppUtil {
         return d;
     }
 
+    public static Uri filePathToContentUri(String filePath){
+        File file = new File(filePath);
+        return FileProvider.getUriForFile(sContext, sContext.getString(R.string.file_provider_authority), file);
+    }
 }

@@ -14,26 +14,18 @@ import android.widget.VideoView;
 
 import com.crakac.ofuton.C;
 import com.crakac.ofuton.R;
-import com.crakac.ofuton.widget.Rotatable;
-import com.crakac.ofuton.widget.Rotator;
 
 import twitter4j.MediaEntity;
 
-public class VideoPreviewFragment extends Fragment implements Rotatable{
+public class VideoPreviewFragment extends Fragment{
     private VideoView mVideoView;
     private ProgressBar mProgressBar;
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        int index = getArguments().getInt(C.INDEX, 0);
-        ((Rotator) getActivity()).setRotatable(index, this);
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_video_preview, null);
-        mVideoView = (VideoView) root.findViewById(R.id.videoView);
-        mProgressBar = (ProgressBar) root.findViewById(R.id.progress);
+        mVideoView = root.findViewById(R.id.videoView);
+        mProgressBar = root.findViewById(R.id.progress);
         showProgress(true);
 
         String url = getArguments().getString(C.URL);
@@ -67,10 +59,4 @@ public class VideoPreviewFragment extends Fragment implements Rotatable{
     private void showProgress(boolean b) {
         mProgressBar.setVisibility(b ? View.VISIBLE : View.GONE);
     }
-
-    @Override
-    public void rotate(float degrees) {
-//        mVideoView.setRotation(mVideoView.getRotation() + degrees);
-    }
-
 }

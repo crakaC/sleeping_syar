@@ -2,9 +2,12 @@ package com.crakac.ofuton.fragment;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,10 +19,10 @@ import com.android.volley.toolbox.ImageLoader.ImageContainer;
 import com.crakac.ofuton.C;
 import com.crakac.ofuton.R;
 import com.crakac.ofuton.util.AppUtil;
+import com.crakac.ofuton.util.AsyncBitmapPreviewLoader;
 import com.crakac.ofuton.util.NetUtil;
 import com.crakac.ofuton.util.NetworkImageListener;
 import com.crakac.ofuton.widget.Rotatable;
-import com.crakac.ofuton.widget.Rotator;
 import com.github.chrisbanes.photoview.OnViewTapListener;
 import com.github.chrisbanes.photoview.PhotoViewAttacher;
 
@@ -28,19 +31,15 @@ import twitter4j.MediaEntity;
 /**
  * Created by kosukeshirakashi on 2014/09/24.
  */
-public class ImagePreviewFragment extends Fragment implements Rotatable {
+public class ImagePreviewFragment extends Fragment implements Rotatable, LoaderManager.LoaderCallbacks<Bitmap> {
 
     protected ImageView mImageView;
     private PhotoViewAttacher mAttacher;
     private ImageContainer mImageContainer;
     private ProgressBar mProgressBar;
+    private Uri mUri;
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        int index = getArguments().getInt(C.INDEX, 0);
-        ((Rotator) getActivity()).setRotatable(index, this);
-    }
+    private static int sLoaderCounter = 0;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -57,6 +56,13 @@ public class ImagePreviewFragment extends Fragment implements Rotatable {
 
         showProgress(true);
 
+        Uri uri = getArguments().getParcelable(C.URI);
+        if (uri != null) {
+            mUri = uri;
+            getActivity().getSupportLoaderManager().initLoader(sLoaderCounter++, null, this).forceLoad();
+            return root;
+        }
+
         String url = getArguments().getString(C.URL);
         if (url == null) {
             MediaEntity e = (MediaEntity) getArguments().getSerializable(C.MEDIA_ENTITY);
@@ -65,6 +71,21 @@ public class ImagePreviewFragment extends Fragment implements Rotatable {
 
         retrieveImage(NetUtil.convertToImageFileUrl(url));
         return root;
+    }
+
+    @Override
+    public Loader<Bitmap> onCreateLoader(int id, Bundle args) {
+        return new AsyncBitmapPreviewLoader(getActivity(), mUri);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Bitmap> loader, Bitmap data) {
+        mImageView.setImageBitmap(data);
+        updatePhotoViewAttacher();
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Bitmap> loader) {
     }
 
     @Override
@@ -120,4 +141,6 @@ public class ImagePreviewFragment extends Fragment implements Rotatable {
         activity.finish();
         activity.overridePendingTransition(0, R.anim.fade_out);
     }
+
+
 }

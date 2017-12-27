@@ -17,7 +17,6 @@ import java.util.Map;
 public class SimpleFragmentPagerAdapter<T extends Fragment> extends FragmentPagerAdapter {
     private final Context mContext;
     private final ArrayList<TabInfo> mTabs = new ArrayList<>();
-    private final ViewPager mViewPager;
     private final HashMap<Integer, T> mFragments = new HashMap<>();
     private final FragmentManager mFragmentManager;
 
@@ -26,7 +25,10 @@ public class SimpleFragmentPagerAdapter<T extends Fragment> extends FragmentPage
         mFragmentManager = context.getSupportFragmentManager();
         viewPager.setAdapter(this);
         mContext = context;
-        mViewPager = viewPager;
+    }
+
+    public T get(int position){
+        return mFragments.get(position);
     }
 
     @Override

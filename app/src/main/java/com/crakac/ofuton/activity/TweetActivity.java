@@ -7,7 +7,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.ActionBar;
@@ -15,7 +14,6 @@ import android.text.Editable;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -78,11 +76,9 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
     private User mMentionUser;
 
     private LinearLayout mAppendedImageRoot;
-    private ArrayList<Parcelable> mAppendedImages = new ArrayList<>(MAX_APPEND_FILES);
-    private ArrayList<AppendedImageView> mAppendedImageViews = new ArrayList(MAX_APPEND_FILES);
+    private ArrayList<Uri> mAppendedImages = new ArrayList<>(MAX_APPEND_FILES);
+    private ArrayList<AppendedImageView> mAppendedImageViews = new ArrayList<>(MAX_APPEND_FILES);
     private AppendedImageView mLastTappedView;
-
-    private String mPhotoPath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -134,7 +130,6 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
                     ".jpg",
                     Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
             );
-            mPhotoPath = image.getAbsolutePath();
             return image;
         } catch (IOException e) {
             e.printStackTrace();
@@ -220,26 +215,6 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
         }
     }
 
-    @Override
-    public boolean onContextItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case PREVIEW_APPENDED_IMAGE:
-                previewAppendedImage((ImageView) item.getActionView());
-                return true;
-            case REMOVE_APPENDED_IMAGE:
-                removeAppendedImage(mLastTappedView);
-                return true;
-            default:
-                return false;
-        }
-    }
-
-    private void previewAppendedImage(ImageView v) {
-//        Intent i = new Intent(this, PhotoPreviewActivity.class);
-//        i.putExtra(C.FILE, mAppendingFile);
-//        startActivity(i);
-    }
-
     private void removeAppendedImage(AppendedImageView v) {
         mAppendedImageRoot.removeView(v);
         mAppendedImages.remove(v.getTag());
@@ -304,8 +279,8 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
 
     private void setUpThumbnails(List<Image> images) {
         for (Image image : images) {
-            setUpThumbnail(image);
-            mAppendedImages.add(image);
+            setUpThumbnail(AppUtil.filePathToContentUri(image.getPath()));
+            mAppendedImages.add(AppUtil.filePathToContentUri(image.getPath()));
         }
     }
 
@@ -323,16 +298,11 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
         return iv;
     }
 
-    private void setUpThumbnail(Parcelable image) {
+    private void setUpThumbnail(final Uri image) {
         final AppendedImageView view = inflateThumbnail();
         // set thumbnail
         Bitmap thumbnail;
-        if (image instanceof Image) {
-            File file = new File(((Image) image).getPath());
-            thumbnail = BitmapUtil.getResizedBitmap(file, AppUtil.dpToPx(THUMBNAIL_SIZE));
-        } else if (image instanceof Uri) {
-            thumbnail = BitmapUtil.getResizedBitmap(getContentResolver(), (Uri) image, AppUtil.dpToPx(THUMBNAIL_SIZE));
-        } else throw new IllegalArgumentException("Wrong class");
+        thumbnail = BitmapUtil.getResizedBitmap(getContentResolver(), image, AppUtil.dpToPx(THUMBNAIL_SIZE));
         view.setImageBitmap(thumbnail);
         view.setTag(image);
         view.setOnAppendedImageListener(new AppendedImageView.OnAppendedImageClickListener() {
@@ -340,10 +310,12 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
             public void onClickCancel() {
                 removeAppendedImage(view);
             }
-
             @Override
             public void onClickThumbnail() {
-                //TODO Preview attachments
+                Intent i = new Intent(TweetActivity.this, WebImagePreviewActivity.class);
+                i.putExtra(C.POSITION, mAppendedImages.indexOf(image));
+                i.putExtra(C.ATTACHMENTS, mAppendedImages);
+                startActivity(i);
             }
         });
         mAppendedImageViews.add(view);

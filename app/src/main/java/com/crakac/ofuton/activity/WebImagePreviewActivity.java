@@ -3,12 +3,10 @@ package com.crakac.ofuton.activity;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.util.SparseArray;
 import android.view.View;
 
 import com.crakac.ofuton.C;
@@ -17,23 +15,21 @@ import com.crakac.ofuton.fragment.ImagePreviewFragment;
 import com.crakac.ofuton.fragment.VideoPreviewFragment;
 import com.crakac.ofuton.fragment.adapter.SimpleFragmentPagerAdapter;
 import com.crakac.ofuton.util.NetUtil;
+import com.crakac.ofuton.util.Util;
 import com.crakac.ofuton.widget.HackyViewPager;
 import com.crakac.ofuton.widget.PreviewNavigation;
 import com.crakac.ofuton.widget.Rotatable;
-import com.crakac.ofuton.widget.Rotator;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import twitter4j.MediaEntity;
 
-public class WebImagePreviewActivity extends AppCompatActivity implements PreviewNavigation.NavigationListener, Rotator {
+public class WebImagePreviewActivity extends AppCompatActivity implements PreviewNavigation.NavigationListener {
     private HackyViewPager mPager;
     private SimpleFragmentPagerAdapter<Fragment> mAdapter;
     private PreviewNavigation mNav;
     private List<String> mUrls;
-    private SparseArray<Rotatable> mRotatables;
-
     private static final int PERMISSION_REQUEST_STORAGE = 8686;
 
     @Override
@@ -42,21 +38,21 @@ public class WebImagePreviewActivity extends AppCompatActivity implements Previe
 
         setContentView(R.layout.actvity_image_preview);
 
-        mPager = (HackyViewPager) findViewById(R.id.pager);
-        mPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener(){
+        mPager = findViewById(R.id.pager);
+        mPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {
                 mNav.setImageIndex(position);
             }
         });
-        mNav = (PreviewNavigation) findViewById(R.id.preview_nav);
+        mNav = findViewById(R.id.preview_nav);
         mNav.setNavigationListener(this);
         mNav.setVisibility(View.VISIBLE);
 
         mAdapter = new SimpleFragmentPagerAdapter<>(this, mPager);
-        mRotatables = new SparseArray<>();
 
         List<MediaEntity> mediaEntities = (List<MediaEntity>) getIntent().getSerializableExtra(C.MEDIA_ENTITY);
+        List<Uri> attachedMedias = getIntent().getParcelableArrayListExtra(C.ATTACHMENTS);
         Uri imageUri = getIntent().getData();
         if (imageUri != null) {
             mAdapter.add(ImagePreviewFragment.class, createArgs(imageUri.toString(), 0), 0);
@@ -66,20 +62,26 @@ public class WebImagePreviewActivity extends AppCompatActivity implements Previe
             for (int i = 0; i < mediaEntities.size(); i++) {
                 MediaEntity e = mediaEntities.get(i);
                 boolean hasValidVideo = false;
-                for(MediaEntity.Variant v : e.getVideoVariants()){
-                    if(v.getContentType().contains("mp4")) {
+                for (MediaEntity.Variant v : e.getVideoVariants()) {
+                    if (v.getContentType().contains("mp4")) {
                         mAdapter.add(VideoPreviewFragment.class, createArgs(e, i), i);
                         hasValidVideo = true;
                     }
                 }
-                if(!hasValidVideo){
+                if (!hasValidVideo) {
                     mAdapter.add(ImagePreviewFragment.class, createArgs(e, i), i);
                 }
             }
             mUrls = extractUrl(mediaEntities);
+            mNav.setImageNums(mUrls.size());
+        } else if (attachedMedias != null) {
+            for (int i = 0; i < attachedMedias.size(); i++) {
+                mAdapter.add(ImagePreviewFragment.class, createArgs(attachedMedias.get(i), i), i);
+            }
+            mNav.setDownloadEnabled(false);
+            mNav.setImageNums(attachedMedias.size());
         }
         mAdapter.notifyDataSetChanged();
-        mNav.setImageNums(mUrls.size());
 
         mPager.setPageTransformer(true, new DepthPageTransformer());
         if (savedInstanceState == null) {
@@ -88,28 +90,22 @@ public class WebImagePreviewActivity extends AppCompatActivity implements Previe
         }
     }
 
-    private List<String> extractUrl(List<MediaEntity> entities){
+    private List<String> extractUrl(List<MediaEntity> entities) {
         List<String> ret = new ArrayList<>();
-        for(MediaEntity e : entities){
+        for (MediaEntity e : entities) {
             boolean hasValidUrl = false;
-            for(MediaEntity.Variant v :  e.getVideoVariants()){
-                if(v.getContentType().contains("mp4")){
+            for (MediaEntity.Variant v : e.getVideoVariants()) {
+                if (v.getContentType().contains("mp4")) {
                     ret.add(v.getUrl());
                     hasValidUrl = true;
                     break;
                 }
             }
-            if(!hasValidUrl) {
+            if (!hasValidUrl) {
                 ret.add(e.getMediaURLHttps());
             }
         }
         return ret;
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        mRotatables.clear();
     }
 
     private Bundle createArgs(String url, int index) {
@@ -126,23 +122,26 @@ public class WebImagePreviewActivity extends AppCompatActivity implements Previe
         return b;
     }
 
+    private Bundle createArgs(Uri uri, int index) {
+        Bundle b = new Bundle(2);
+        b.putParcelable(C.URI, uri);
+        b.putInt(C.INDEX, index);
+        return b;
+    }
+
     @Override
     public void onDownloadClick() {
         String url = mUrls.get(mPager.getCurrentItem());
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if(checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_REQUEST_STORAGE);
-                return;
-            }
-        }
+        if (!Util.checkRuntimePermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE, PERMISSION_REQUEST_STORAGE))
+            return;
         saveImage(NetUtil.convertToImageFileUrl(url));
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        switch(requestCode){
+        switch (requestCode) {
             case PERMISSION_REQUEST_STORAGE:
-                if(grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     onDownloadClick();
                 }
         }
@@ -150,12 +149,12 @@ public class WebImagePreviewActivity extends AppCompatActivity implements Previe
 
     @Override
     public void onRotateLeftClick() {
-        mRotatables.get(mPager.getCurrentItem()).rotate(-90f);
+        ((Rotatable) mAdapter.get(mPager.getCurrentItem())).rotate(-90f);
     }
 
     @Override
     public void onRotateRightClick() {
-        mRotatables.get(mPager.getCurrentItem()).rotate(90f);
+        ((Rotatable) mAdapter.get(mPager.getCurrentItem())).rotate(90f);
     }
 
     private static class DepthPageTransformer implements ViewPager.PageTransformer {
@@ -198,10 +197,5 @@ public class WebImagePreviewActivity extends AppCompatActivity implements Previe
 
     public void saveImage(String url) {
         NetUtil.download(this, url);
-    }
-
-    @Override
-    public void setRotatable(int index, Rotatable rotatable) {
-        mRotatables.put(index, rotatable);
     }
 }
