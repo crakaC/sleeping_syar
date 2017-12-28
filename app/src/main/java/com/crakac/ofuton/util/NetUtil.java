@@ -36,11 +36,10 @@ import java.util.Map;
 public class NetUtil {
     private static final int CONNECT_TIMEOUT = 5000;
     private static final int READ_TIMEOUT = 10000;
-
     private static final String ICON_CACHE_DIR = "icon";
     private static final String IMAGE_CACHE_DIR = "image";
-    private static final int THREAD_POOL_SIZE_FOR_FETCHING_ICONS = 5;
-    private static final int THREAD_POOL_SIZE_FOR_FETCHING_IMAGE = 5;
+    private static final int THREAD_POOL_SIZE_FOR_FETCHING_ICONS = 10;
+    private static final int THREAD_POOL_SIZE_FOR_FETCHING_IMAGE = 20;
     public static ImageLoader PREVIEW_LOADER, INLINE_PREVIEW_LOADER, ICON_LOADER;
     private static Cache sImageDiskCache;
 
