@@ -16,15 +16,15 @@ public class FavAction extends ClickAction {
     private twitter4j.Status selectedStatus;
 
     public FavAction(Context context, twitter4j.Status status) {
-        super(context, R.string.favorite, R.drawable.ic_star_white_36dp);
+        super(context, R.string.favorite, R.drawable.ic_fav);
         mContext = context;
         selectedStatus = status;
         if (selectedStatus.isFavorited()) {
             stringId = R.string.unfavorite;
-            iconId = R.drawable.ic_star_outline_white_36dp;
+            iconId = R.drawable.ic_fav_border;
         } else {
             stringId = R.string.favorite;
-            iconId = R.drawable.ic_star_white_36dp;
+            iconId = R.drawable.ic_fav;
         }
     }
 

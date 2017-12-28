@@ -10,7 +10,7 @@ import com.crakac.ofuton.activity.TweetActivity;
 public class ReplyAllAction extends ClickAction {
 	private twitter4j.Status status;
 	public ReplyAllAction(Context context, twitter4j.Status status) {
-		super(context, R.string.reply_all, R.drawable.ic_reply_all_white_36dp);
+		super(context, R.string.reply_all, R.drawable.ic_reply_all);
 		this.status = status;
 	}
 	@Override

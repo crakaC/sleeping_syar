@@ -20,7 +20,7 @@ public class CancelRetweetAction extends ClickAction {
      * @param context リソース呼び出し用
      */
     public CancelRetweetAction(Context context, twitter4j.Status status) {
-        super(context, 0, R.drawable.ic_repeat_white_36dp);
+        super(context, 0, R.drawable.ic_repeat);
         mContext = context;
         selectedStatus = status;
     }

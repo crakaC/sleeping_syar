@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/previewNav"
-    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/dark_gray">
@@ -13,11 +13,11 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
-        android:gravity="center"
         android:layout_toLeftOf="@+id/rotateLeft"
+        android:gravity="center"
         android:text="@string/dummy"
-        android:visibility="invisible"
-        android:textColor="@color/tab_text"/>
+        android:textColor="@color/tab_text"
+        android:visibility="invisible" />
 
     <ImageView
         android:id="@+id/download"
@@ -27,7 +27,8 @@
         android:background="@color/preview_nav_button_background"
         android:paddingBottom="@dimen/nav_button_margin"
         android:paddingTop="@dimen/nav_button_margin"
-        android:src="@drawable/ic_get_app_white_48dp"/>
+
+        app:srcCompat="@drawable/ic_get_app" />
 
     <ImageView
         android:id="@+id/rotateLeft"
@@ -37,7 +38,8 @@
         android:background="@color/preview_nav_button_background"
         android:paddingBottom="@dimen/nav_button_margin"
         android:paddingTop="@dimen/nav_button_margin"
-        android:src="@drawable/ic_rotate_left_white_48dp"/>
+
+        app:srcCompat="@drawable/ic_rotate_left" />
 
     <ImageView
         android:id="@+id/rotateRight"
@@ -47,5 +49,6 @@
         android:background="@color/preview_nav_button_background"
         android:paddingBottom="@dimen/nav_button_margin"
         android:paddingTop="@dimen/nav_button_margin"
-        android:src="@drawable/ic_rotate_right_white_48dp"/>
+
+        app:srcCompat="@drawable/ic_rotate_right" />
 </RelativeLayout>

@@ -4,7 +4,7 @@
     <item android:id="@+id/collapse"
         app:showAsAction="always"
         android:title="@string/less_expand"
-        android:icon="@drawable/ic_expand_less_white_36dp"/>
+        android:icon="@drawable/ic_expand_less"/>
 
     <item
         android:id="@+id/menu_relation"

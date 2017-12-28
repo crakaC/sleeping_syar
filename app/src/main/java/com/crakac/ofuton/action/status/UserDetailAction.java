@@ -13,18 +13,18 @@ public class UserDetailAction extends ClickAction {
 	private User user;
 	private String screenName;
 	public UserDetailAction(Context context, twitter4j.Status status) {
-		super(context, 0, R.drawable.ic_person_white_36dp);
+		super(context, 0, R.drawable.ic_person);
 		user = status.getUser();
 		screenName = user.getScreenName();
 	}
 
 	public UserDetailAction(Context context, String screenName) {
-		super(context, 0, R.drawable.ic_person_white_36dp);
+		super(context, 0, R.drawable.ic_person);
 		this.screenName = screenName;
 	}
 
 	public UserDetailAction(Context context, User user) {
-		super(context, 0, R.drawable.ic_person_white_36dp);
+		super(context, 0, R.drawable.ic_person);
 		this.user = user;
 		screenName = user.getScreenName();
 	}

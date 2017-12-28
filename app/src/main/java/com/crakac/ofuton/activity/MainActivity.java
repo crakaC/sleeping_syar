@@ -51,7 +51,6 @@ import com.crakac.ofuton.util.TwitterUtils;
 import com.crakac.ofuton.widget.BitmapImageView;
 import com.crakac.ofuton.widget.TapToScrollTopListener;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 

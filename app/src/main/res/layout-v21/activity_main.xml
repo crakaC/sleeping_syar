@@ -50,7 +50,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
             android:layout_margin="16dp"
-            android:src="@drawable/ic_create_white_48dp"
+            app:srcCompat="@drawable/ic_create"
             app:backgroundTint="@color/twitter_blue"
             app:rippleColor="@color/twitter_blue_bright" />
 

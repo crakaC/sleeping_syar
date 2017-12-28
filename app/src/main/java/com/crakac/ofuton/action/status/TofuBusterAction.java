@@ -10,7 +10,7 @@ import com.crakac.ofuton.util.AppUtil;
 public class TofuBusterAction extends ClickAction {
 	private String text;
 	public TofuBusterAction(Context context, twitter4j.Status status) {
-		super(context, R.string.tofu, R.drawable.ic_share_white_36dp);
+		super(context, R.string.tofu, R.drawable.ic_share);
 		if (status.isRetweet()){
 			this.text = status.getRetweetedStatus().getText();
 		} else {

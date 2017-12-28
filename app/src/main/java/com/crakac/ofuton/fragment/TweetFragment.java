@@ -218,7 +218,7 @@ public class TweetFragment extends Fragment implements View.OnClickListener {
     }
 
     private void enableTweetButton(boolean enabled) {
-        AppUtil.setImageViewEnabled(enabled, mTweetBtn, R.drawable.ic_send_white_48dp);
+        mTweetBtn.setEnabled(enabled);
     }
 
     private void appendPicture(Uri uri) {

@@ -14,7 +14,7 @@ import twitter4j.TwitterException;
 public class DestroyStatusAction extends ClickAction {
 	twitter4j.Status selectedStatus;
 	public DestroyStatusAction(Context context, twitter4j.Status status) {
-		super(context, R.string.destroy_status, R.drawable.ic_delete_white_36dp);
+		super(context, R.string.destroy_status, R.drawable.ic_delete);
 		selectedStatus = status;
 	}
 	@Override

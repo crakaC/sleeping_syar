@@ -204,8 +204,8 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
         mTweetBtn.setEnabled(hasValidContent);
 
         boolean canAppend = mAppendedImages.size() < MAX_APPEND_FILES;
-        AppUtil.setImageViewEnabled(canAppend, mAppendPicBtn, R.drawable.ic_insert_photo_white_48dp);
-        AppUtil.setImageViewEnabled(canAppend, mCameraBtn, R.drawable.ic_camera_alt_white_48dp);
+        AppUtil.setImageViewEnabled(canAppend, mAppendPicBtn, R.drawable.ic_insert_photo);
+        AppUtil.setImageViewEnabled(canAppend, mCameraBtn, R.drawable.ic_camera);
     }
 
     @Override

@@ -23,12 +23,11 @@
     <!--アイコン -->
     <com.crakac.ofuton.widget.BitmapImageView
         android:id="@+id/user_icon"
-        android:layout_margin="16dp"
         android:layout_width="80dp"
         android:layout_height="80dp"
-        android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
-        android:src="@drawable/ic_group_white_48dp" />
+        android:layout_alignParentTop="true"
+        android:layout_margin="16dp" />
 
     <TextView
         android:id="@+id/screenName"

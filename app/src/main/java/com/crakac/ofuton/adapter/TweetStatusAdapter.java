@@ -380,9 +380,9 @@ public class TweetStatusAdapter extends BaseAdapter {
         if (item.isFavorited() && item.isRetweeted()) {
             icon.setImageResource(R.drawable.ic_fav_and_retweet);
         } else if (item.isFavorited()) {
-            icon.setImageResource(R.drawable.ic_star_white_16dp);
+            icon.setImageResource(R.drawable.ic_fav);
         } else if (item.isRetweeted()) {
-            icon.setImageResource(R.drawable.ic_repeat_white_18dp);
+            icon.setImageResource(R.drawable.ic_repeat);
         } else {
             icon.setVisibility(View.GONE);
         }

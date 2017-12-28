@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -9,18 +9,20 @@
         android:id="@+id/image"
         android:layout_width="match_parent"
         android:layout_height="96dp"
-        android:scaleType="centerCrop"/>
+        android:scaleType="centerCrop" />
 
     <FrameLayout
         android:id="@+id/check"
-        android:background="@color/image_overlay"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/image_overlay">
+
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
             android:layout_gravity="bottom|right"
-            android:src="@drawable/ic_check_white_48dp"/>
+            android:layout_margin="8dp"
+
+            app:srcCompat="@drawable/ic_check" />
     </FrameLayout>
 </FrameLayout>

@@ -10,7 +10,6 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
@@ -392,19 +391,11 @@ public final class AppUtil {
         if (item.isEnabled() == enabled) return;
 
         item.setEnabled(enabled);
-        Drawable originalIcon = sContext.getResources().getDrawable(iconResId);
-        Drawable icon = enabled ? originalIcon : convertDrawableToGrayScale(originalIcon);
-        item.setImageDrawable(icon);
-
-    }
-
-    private static Drawable convertDrawableToGrayScale(Drawable drawable) {
-        if (drawable == null)
-            return null;
-
-        Drawable d = drawable.mutate();
-        d.setColorFilter(Color.GRAY, PorterDuff.Mode.SRC_IN);
-        return d;
+        if(enabled){
+            item.setColorFilter(null);
+        } else {
+            item.setColorFilter(Color.GRAY, PorterDuff.Mode.SRC_IN);
+        }
     }
 
     public static File createImageFile() {

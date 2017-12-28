@@ -2,31 +2,31 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/menu_account"
-        android:icon="@drawable/ic_group_white_48dp"
+        android:icon="@drawable/ic_group"
         android:title="@string/drawer_account" />
     <item
         android:id="@+id/menu_home"
-        android:icon="@drawable/ic_home_white_48dp"
+        android:icon="@drawable/ic_home"
         android:title="@string/drawer_home" />
     <item
         android:id="@+id/menu_mention"
-        android:icon="@drawable/ic_reply_white_48dp"
+        android:icon="@drawable/ic_reply"
         android:title="@string/drawer_mentions" />
     <item
         android:id="@+id/manu_favorite"
-        android:icon="@drawable/ic_star_white_48dp"
+        android:icon="@drawable/ic_fav"
         android:title="@string/drawer_favs" />
     <item
         android:id="@+id/menu_dm"
-        android:icon="@drawable/ic_email_white_48dp"
+        android:icon="@drawable/ic_email"
         android:title="@string/drawer_dms" />
     <item
         android:id="@+id/menu_list"
-        android:icon="@drawable/ic_list_white_48dp"
+        android:icon="@drawable/ic_list"
         android:title="@string/drawer_lists" />
     <item
         android:id="@+id/menu_setting"
-        android:icon="@drawable/ic_settings_white_48dp"
+        android:icon="@drawable/ic_settings"
         android:title="@string/drawer_settings" />
     <item
         android:id="@+id/syar"

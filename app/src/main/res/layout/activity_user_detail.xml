@@ -55,7 +55,7 @@
                     android:layout_height="48dp"
                     android:layout_alignBottom="@+id/icon"
                     android:layout_alignRight="@+id/icon"
-                    android:src="@drawable/ic_lock_grey600_48dp"
+                    android:tint="@color/light_gray" app:srcCompat="@drawable/ic_lock"
                     android:visibility="visible" />
 
                 <FrameLayout

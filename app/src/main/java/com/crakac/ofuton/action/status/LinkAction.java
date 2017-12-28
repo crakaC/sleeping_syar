@@ -9,7 +9,7 @@ import com.crakac.ofuton.R;
 public class LinkAction extends ClickAction {
 	private String url;
 	public LinkAction(Context context, String url) {
-		super(context, 0, R.drawable.ic_open_in_browser_white_36dp);
+		super(context, 0, R.drawable.ic_open_in_browser);
 		this.url = url;
 	}
 

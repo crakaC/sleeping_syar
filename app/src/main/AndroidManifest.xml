@@ -124,9 +124,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activity.PhotoPreviewActivity"
-            android:theme="@style/Theme.MyTrans" />
-        <activity
             android:name=".activity.ImagePreviewActivity"
             android:exported="true"
             android:multiprocess="true"
@@ -194,11 +191,6 @@
             android:name=".activity.LicenseActivity"
             android:label="License" />
         <activity
-            android:name=".activity.ImagePickActivity"
-            android:label="ImagePick"
-            android:launchMode="singleTask"
-            android:uiOptions="splitActionBarWhenNarrow"></activity>
-        <activity
             android:name=".activity.VideoPreviewActivity"
             android:label="@string/activity_video_preview" />
 
@@ -209,7 +201,7 @@
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths"></meta-data>
+                android:resource="@xml/file_paths" />
         </provider>
     </application>
 

@@ -1,4 +1,5 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:clipToPadding="false"
@@ -29,8 +30,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:clipToPadding="true"
-            android:orientation="horizontal">
-        </LinearLayout>
+            android:orientation="horizontal"></LinearLayout>
     </HorizontalScrollView>
 
 
@@ -48,20 +48,23 @@
             android:id="@+id/tweetInfoBtn"
             style="@style/imageButton"
             android:layout_marginRight="8dp"
-            android:src="@drawable/ic_question_answer_white_48dp"
-            android:visibility="gone" />
+
+            android:visibility="gone"
+            app:srcCompat="@drawable/ic_question_answer" />
 
         <ImageView
             android:id="@+id/appendPic"
             style="@style/imageButton"
             android:layout_marginRight="8dp"
-            android:src="@drawable/ic_insert_photo_white_48dp" />
+
+            app:srcCompat="@drawable/ic_insert_photo" />
 
         <ImageView
             android:id="@+id/picFromCamera"
             style="@style/imageButton"
             android:layout_marginRight="8dp"
-            android:src="@drawable/ic_camera_alt_white_48dp" />
+
+            app:srcCompat="@drawable/ic_camera" />
 
         <Button
             android:id="@+id/action_tweet"

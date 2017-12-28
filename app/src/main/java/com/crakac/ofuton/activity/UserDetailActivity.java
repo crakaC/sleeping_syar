@@ -627,10 +627,10 @@ public class UserDetailActivity extends AppCompatActivity {
     private void switchProfileExpansion(MenuItem menuItem) {
         if (mProfileView.getVisibility() == View.VISIBLE) {
             mProfileView.setVisibility(View.GONE);
-            menuItem.setIcon(R.drawable.ic_expand_more_white_36dp);
+            menuItem.setIcon(R.drawable.ic_expand_more);
         } else {
             mProfileView.setVisibility(View.VISIBLE);
-            menuItem.setIcon(R.drawable.ic_expand_less_white_36dp);
+            menuItem.setIcon(R.drawable.ic_expand_less);
         }
     }
 }

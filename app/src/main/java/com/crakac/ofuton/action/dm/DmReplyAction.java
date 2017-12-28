@@ -11,7 +11,7 @@ import com.crakac.ofuton.activity.ComposeDmActivity;
 public class DmReplyAction extends ClickAction {
 	private twitter4j.DirectMessage dm;
 	public DmReplyAction(Context context, twitter4j.DirectMessage dm) {
-		super(context, R.string.reply, R.drawable.ic_email_white_36dp);
+		super(context, R.string.reply, R.drawable.ic_email);
 		this.dm = dm;
 	}
 	@Override

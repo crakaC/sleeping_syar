@@ -1,13 +1,13 @@
-<RelativeLayout
-    style="@style/timeline"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="@style/timeline">
 
     <com.crakac.ofuton.widget.BitmapImageView
         android:id="@+id/icon"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"/>
+        android:layout_alignParentTop="true" />
 
     <LinearLayout
         android:id="@+id/nameAndLock"
@@ -27,15 +27,16 @@
             android:maxLines="1"
             android:text="@string/dummy"
             android:textColor="@color/twitter_blue"
-            android:textStyle="bold"/>
+            android:textStyle="bold" />
 
         <ImageView
             android:id="@+id/lockedIcon"
+            app:srcCompat="@drawable/ic_lock"
             android:layout_width="16dp"
             android:layout_height="16dp"
             android:padding="2dp"
-            android:src="@drawable/ic_lock_grey600_18dp"
-            android:visibility="visible"/>
+            android:tint="@color/light_gray"
+            android:visibility="visible" />
     </LinearLayout>
 
     <TextView
@@ -47,7 +48,7 @@
         android:ellipsize="end"
         android:maxLines="1"
         android:text="@string/dummy"
-        android:textColor="@color/twitter_blue"/>
+        android:textColor="@color/twitter_blue" />
 
     <TextView
         android:id="@+id/text"
@@ -61,7 +62,7 @@
         android:gravity="left|top"
         android:text="@string/dummy"
         android:textColor="@color/text"
-        android:textSize="12sp"/>
+        android:textSize="12sp" />
 
     <TextView
         android:id="@+id/info"
@@ -72,6 +73,6 @@
         android:gravity="left|top"
         android:text="@string/dummy"
         android:textColor="@color/sub_text"
-        android:textSize="10sp"/>
+        android:textSize="10sp" />
 
 </RelativeLayout>

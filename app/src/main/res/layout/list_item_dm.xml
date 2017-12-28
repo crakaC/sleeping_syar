@@ -1,4 +1,5 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/tweet_status"
     style="@style/timeline">
 
@@ -47,11 +48,12 @@
         android:id="@+id/lockedIcon"
         android:layout_width="16dp"
         android:layout_height="16dp"
-        android:padding="2dp"
         android:layout_alignTop="@+id/name"
         android:layout_toRightOf="@+id/name"
-        android:src="@drawable/ic_lock_grey600_18dp"
-        android:visibility="visible" />
+        android:padding="2dp"
+        android:tint="@color/light_gray"
+        android:visibility="visible"
+        app:srcCompat="@drawable/ic_lock" />
 
     <TextView
         android:id="@+id/sentTo"

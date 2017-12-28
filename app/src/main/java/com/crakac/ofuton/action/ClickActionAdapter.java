@@ -21,10 +21,8 @@ import com.crakac.ofuton.action.status.ClickAction;
 public class ClickActionAdapter extends ArrayAdapter<ClickAction> {
 	private LayoutInflater mInflater;
 
-	private static class ViewHolder {
-		TextView actionName;
-		ImageView icon;
-	}
+	private ImageView icon;
+	private TextView actionName;
 
 	public ClickActionAdapter(Context context) {
 		super(context, android.R.layout.simple_list_item_1);
@@ -34,21 +32,12 @@ public class ClickActionAdapter extends ArrayAdapter<ClickAction> {
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		ViewHolder holder;
-		if (convertView == null) {
-			convertView = mInflater.inflate(R.layout.status_action_item, null);
-			holder = new ViewHolder();
-			holder.actionName = convertView
-					.findViewById(R.id.action_name);
-			holder.icon = convertView
-					.findViewById(R.id.action_icon);
-			convertView.setTag(holder);
-		} else {
-			holder = (ViewHolder) convertView.getTag();
-		}
+		convertView = mInflater.inflate(R.layout.status_action_item, null);
+		actionName = convertView.findViewById(R.id.action_name);
+		icon =  convertView.findViewById(R.id.action_icon);
 		ClickAction item = getItem(position);
-		holder.actionName.setText(item.getText());
-		holder.icon.setImageResource(item.getIconId());
+		actionName.setText(item.getText());
+		icon.setImageResource(item.getIconId());
 		return convertView;
 	}
 }

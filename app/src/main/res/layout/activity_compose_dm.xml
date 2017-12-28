@@ -1,4 +1,5 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="8dp">
@@ -7,11 +8,12 @@
         android:id="@+id/input_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
         android:layout_above="@+id/navs"
+        android:layout_alignParentTop="true"
         android:gravity="left|top"
         android:inputType="textMultiLine"
-        android:textSize="13sp" >
+        android:textSize="13sp">
+
         <requestFocus />
     </EditText>
 
@@ -26,25 +28,25 @@
         android:id="@+id/navs"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
         android:gravity="right"
         android:orientation="horizontal"
-        android:padding="4dp" >
+        android:padding="4dp">
 
         <ImageView
             android:id="@+id/dmInfoBtn"
             style="@style/imageButton"
-            android:src="@drawable/ic_question_answer_white_48dp"
-            android:visibility="gone" />
+
+            android:visibility="gone"
+            app:srcCompat="@drawable/ic_question_answer" />
 
         <Button
+            android:id="@+id/sendBtn"
             android:layout_width="wrap_content"
             android:layout_height="48dp"
-            android:id="@+id/sendBtn"
             android:text="@string/send"
-            android:theme="@style/TweetButton"
-        />
+            android:theme="@style/TweetButton" />
     </LinearLayout>
 
 </RelativeLayout>
