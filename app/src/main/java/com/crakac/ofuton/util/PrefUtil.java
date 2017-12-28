@@ -65,7 +65,7 @@ public class PrefUtil {
     }
 
     public static float getLargeFontSize(){
-        return (float)Math.ceil(getFontSize() * 1.2);
+        return getFontSize() * 1.125f;
     }
 
     /**
@@ -74,7 +74,7 @@ public class PrefUtil {
      * @return
      */
     public static float getSubFontSize() {
-        return (float) Math.ceil(getFontSize() * 0.8);
+        return getFontSize() * 0.875f;
     }
 }
 
