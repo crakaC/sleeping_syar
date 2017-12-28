@@ -62,6 +62,7 @@
     <string name="unblock">ブロックを解除する</string>
     <string name="less_expand">プロフィールを折りたたむ</string>
     <string name="more_expand">プロフィールを表示する</string>
+    <string name="tweeted">つぶやきました</string>
 
     <string name="appended_image">添付画像</string>
     <string name="no_camera">カメラアプリがありません</string>

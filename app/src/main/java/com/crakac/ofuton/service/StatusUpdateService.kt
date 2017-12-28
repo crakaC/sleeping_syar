@@ -8,6 +8,7 @@ import android.net.Uri
 import android.support.v4.app.NotificationCompat
 import com.crakac.ofuton.C
 import com.crakac.ofuton.R
+import com.crakac.ofuton.util.AppUtil
 import com.crakac.ofuton.util.BitmapUtil
 import com.crakac.ofuton.util.TwitterUtils
 import twitter4j.StatusUpdate
@@ -45,8 +46,10 @@ class StatusUpdateService : IntentService("StatusUpdateService") {
         } catch (e: TwitterException) {
             builder.setProgress(0, 0, false).setContentText(getString(R.string.impossible)).setOngoing(false)
             notifyManager.notify(1, builder.build())
+            AppUtil.showToast(R.string.impossible)
             return
         }
+        AppUtil.showToast(R.string.tweeted)
         stopForeground(true)
     }
 }

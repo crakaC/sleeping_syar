@@ -256,7 +256,7 @@ public class TweetFragment extends Fragment implements View.OnClickListener {
             @Override
             protected void onPostExecute(twitter4j.Status result) {
                 if (result != null) {
-                    AppUtil.showToast("つぶやきました");
+                    AppUtil.showToast(R.string.tweeted);
                     clear();
                 } else {
                     AppUtil.showToast(R.string.impossible);
