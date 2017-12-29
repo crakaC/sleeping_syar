@@ -2,6 +2,7 @@ package com.crakac.ofuton.fragment;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -12,16 +13,18 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.ImageLoader.ImageContainer;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.crakac.ofuton.C;
 import com.crakac.ofuton.R;
 import com.crakac.ofuton.util.AppUtil;
 import com.crakac.ofuton.util.AsyncLoadBitmapTask;
+import com.crakac.ofuton.util.GlideApp;
 import com.crakac.ofuton.util.NetUtil;
-import com.crakac.ofuton.util.NetworkImageListener;
 import com.crakac.ofuton.widget.Rotatable;
-import com.github.chrisbanes.photoview.OnViewTapListener;
 import com.github.chrisbanes.photoview.PhotoViewAttacher;
 
 import twitter4j.MediaEntity;
@@ -33,7 +36,6 @@ public class ImagePreviewFragment extends Fragment implements Rotatable, AsyncLo
 
     protected ImageView mImageView;
     private PhotoViewAttacher mAttacher;
-    private ImageContainer mImageContainer;
     private ProgressBar mProgressBar;
     AsyncLoadBitmapTask mTask;
 
@@ -43,11 +45,8 @@ public class ImagePreviewFragment extends Fragment implements Rotatable, AsyncLo
         mImageView = root.findViewById(R.id.iv_photo);
         mProgressBar = root.findViewById(R.id.progress);
         mAttacher = new PhotoViewAttacher(mImageView);
-        mAttacher.setOnViewTapListener(new OnViewTapListener() {
-            @Override
-            public void onViewTap(View view, float x, float y) {
-                finishActivity();
-            }
+        mAttacher.setOnViewTapListener((v, x, y) -> {
+            finishActivity();
         });
 
         showProgress(true);
@@ -81,10 +80,7 @@ public class ImagePreviewFragment extends Fragment implements Rotatable, AsyncLo
         if (mImageView != null) {
             mImageView.setImageBitmap(null);
         }
-        if (mImageContainer != null) {
-            mImageContainer.cancelRequest();
-            mImageContainer = null;
-        }
+        Glide.with(this).clear(mImageView);
         if (mTask != null) {
             mTask.setOnLoadFinishedListener(null);
         }
@@ -96,20 +92,21 @@ public class ImagePreviewFragment extends Fragment implements Rotatable, AsyncLo
     }
 
     private void retrieveImage(String url) {
-        mImageContainer = NetUtil.fetchPreviewImageAsync(url, new NetworkImageListener(mImageView) {
+        GlideApp.with(this).load(url).listener(new RequestListener<Drawable>() {
             @Override
-            protected void onBitmap(Bitmap bitmap) {
+            public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
                 showProgress(false);
-                updatePhotoViewAttacher();
+                AppUtil.showToast(R.string.impossible);
+                return false;
             }
 
             @Override
-            protected void onError(VolleyError error) {
+            public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
                 showProgress(false);
-                AppUtil.showToast(R.string.impossible);
+                updatePhotoViewAttacher();
+                return false;
             }
-        });
-        mImageView.setTag(mImageContainer);
+        }).into(mImageView);
     }
 
     private void showProgress(boolean b) {

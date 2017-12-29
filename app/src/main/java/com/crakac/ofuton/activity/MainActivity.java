@@ -27,9 +27,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.crakac.ofuton.C;
 import com.crakac.ofuton.R;
 import com.crakac.ofuton.adapter.TweetStatusAdapter;
@@ -48,7 +50,6 @@ import com.crakac.ofuton.util.ReloadChecker;
 import com.crakac.ofuton.util.TweetButtonPosition;
 import com.crakac.ofuton.util.TwitterList;
 import com.crakac.ofuton.util.TwitterUtils;
-import com.crakac.ofuton.widget.BitmapImageView;
 import com.crakac.ofuton.widget.TapToScrollTopListener;
 
 import java.util.ArrayList;
@@ -376,8 +377,8 @@ public class MainActivity extends AppCompatActivity {
 
         View v = mNavigationView.getHeaderView(0);
         final TextView userName = v.findViewById(R.id.screenName);
-        final BitmapImageView iv = v.findViewById(R.id.user_icon);
-        final BitmapImageView bv = v.findViewById(R.id.background);
+        final ImageView iv = v.findViewById(R.id.user_icon);
+        final ImageView bv = v.findViewById(R.id.background);
         ParallelTask<Void, twitter4j.User> pt = new ParallelTask<Void, twitter4j.User>() {
             @Override
             protected void onPreExecute() {
@@ -397,8 +398,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             protected void onPostExecute(User user) {
                 if (user == null) return;
-                iv.setImageUrl(user.getOriginalProfileImageURLHttps(), NetUtil.PREVIEW_LOADER);
-                bv.setImageUrl(user.getProfileBannerURL(), NetUtil.PREVIEW_LOADER);
+                Glide.with(iv).load(user.getOriginalProfileImageURLHttps()).into(iv);
+                Glide.with(bv).load(user.getProfileBannerURL()).into(bv);
             }
         };
         bv.setOnClickListener(new OnClickListener() {

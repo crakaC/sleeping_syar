@@ -21,7 +21,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.android.volley.toolbox.NetworkImageView;
+import com.bumptech.glide.Glide;
 import com.crakac.ofuton.C;
 import com.crakac.ofuton.R;
 import com.crakac.ofuton.activity.AccountActivity;
@@ -99,21 +99,18 @@ public class AccountListFragment extends Fragment{
 					}
 				});
 			}
-			NetworkImageView icon = convertView.findViewById(R.id.accountIcon);
+			ImageView icon = convertView.findViewById(R.id.accountIcon);
 			ImageView check =  convertView.findViewById(R.id.checkMark);
 			ImageView remove =  convertView.findViewById(R.id.remove);
 			TextView screenName =  convertView.findViewById(R.id.accountName);
 
 			final Account user = (Account) getItem(position);
-			icon.setImageUrl(user.getIconUrl(), NetUtil.ICON_LOADER);
-			icon.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					if(TwitterUtils.getCurrentAccountId() != -1){
-						Intent i = new Intent(getActivity(), UserDetailActivity.class);
-						i.putExtra(C.SCREEN_NAME, user.getScreenName());
-						startActivity(i);
-					}
+			Glide.with(icon).load(user.getIconUrl()).into(icon);
+			icon.setOnClickListener( v -> {
+				if(TwitterUtils.getCurrentAccountId() != -1){
+					Intent i = new Intent(getActivity(), UserDetailActivity.class);
+					i.putExtra(C.SCREEN_NAME, user.getScreenName());
+					startActivity(i);
 				}
 			});
 			screenName.setText(user.getScreenName());

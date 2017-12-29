@@ -20,3 +20,9 @@
 -keep class twitter4j.** { *; }
 
 -keep class android.support.v7.widget.SearchView { *; }
+-keep public class * implements com.bumptech.glide.module.GlideModule
+-keep public class * extends com.bumptech.glide.module.AppGlideModule
+-keep public enum com.bumptech.glide.load.resource.bitmap.ImageHeaderParser$** {
+    **[] $VALUES;
+    public *;
+}

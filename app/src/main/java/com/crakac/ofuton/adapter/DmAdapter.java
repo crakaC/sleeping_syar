@@ -10,7 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.android.volley.toolbox.NetworkImageView;
+import com.bumptech.glide.Glide;
 import com.crakac.ofuton.R;
 import com.crakac.ofuton.util.AppUtil;
 import com.crakac.ofuton.util.NetUtil;
@@ -33,10 +33,12 @@ public class DmAdapter extends ArrayAdapter<DirectMessage> {
         return mViewConstructor.createView(item, convertView);
     }
 
-    public static class ViewConstructor{
+    public static class ViewConstructor {
         private LayoutInflater mInflater;
+        private Context mContext;
 
         public ViewConstructor(Context context) {
+            mContext = context;
             mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         }
 
@@ -56,7 +58,7 @@ public class DmAdapter extends ArrayAdapter<DirectMessage> {
                 convertView.setOnTouchListener(new View.OnTouchListener() {
                     @Override
                     public boolean onTouch(View v, MotionEvent event) {
-                        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                             v.getForeground().setHotspot(event.getX(), event.getY());
                         }
                         return false;
@@ -75,10 +77,10 @@ public class DmAdapter extends ArrayAdapter<DirectMessage> {
             holder.sentTo.setTextSize(fontSize);
 
             final String senderIconUrl = AppUtil.getIconURL(item.getSender());
-            holder.icon.setImageUrl(senderIconUrl, NetUtil.ICON_LOADER);
+            Glide.with(mContext).load(senderIconUrl).into(holder.icon);
 
             String recipientIconUrl = AppUtil.getIconURL(item.getRecipient());
-            holder.smallIcon.setImageUrl(recipientIconUrl, NetUtil.ICON_LOADER);
+            Glide.with(mContext).load(recipientIconUrl).into(holder.smallIcon);
 
             // ユーザー名＋スクリーンネーム
             holder.name.setText(item.getSender().getName() + " @" + item.getSenderScreenName());
@@ -107,8 +109,8 @@ public class DmAdapter extends ArrayAdapter<DirectMessage> {
             TextView text;
             TextView postedAt;
             TextView sentTo;
-            NetworkImageView icon;
-            NetworkImageView smallIcon;
+            ImageView icon;
+            ImageView smallIcon;
             ImageView lockedIcon;
         }
     }

@@ -23,7 +23,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.android.volley.toolbox.NetworkImageView;
+import com.bumptech.glide.Glide;
 import com.crakac.ofuton.C;
 import com.crakac.ofuton.R;
 import com.crakac.ofuton.adapter.TwitterListAdapter;
@@ -34,7 +34,6 @@ import com.crakac.ofuton.fragment.dialog.ListSelectDialogFragment;
 import com.crakac.ofuton.fragment.timeline.FavoriteTimelineFragment;
 import com.crakac.ofuton.fragment.timeline.UserTimelineFragment;
 import com.crakac.ofuton.util.AppUtil;
-import com.crakac.ofuton.util.NetUtil;
 import com.crakac.ofuton.util.ParallelTask;
 import com.crakac.ofuton.util.ProgressDialogFragment;
 import com.crakac.ofuton.util.RelativeTimeUpdater;
@@ -75,7 +74,7 @@ public class UserDetailActivity extends AppCompatActivity {
     private TwitterListAdapter mTwitterListAdapter;
     private ParallelTask<Void, List<UserList>> mLoadListTask;
     private TextView mBioText, mLocationText, mUrlText, mRelationText;
-    private NetworkImageView mIconImage, mHeaderImage;
+    private ImageView mIconImage, mHeaderImage;
     private ImageView mlockMark;
     private ProgressBar mloadingSpinner;
     private int mShortAnimeDuration;
@@ -204,7 +203,7 @@ public class UserDetailActivity extends AppCompatActivity {
         // ユーザーの情報
         mActionbar.setTitle(user.getName());
         mActionbar.setSubtitle("@" + user.getScreenName());
-        mIconImage.setImageUrl(user.getOriginalProfileImageURLHttps(), NetUtil.INLINE_PREVIEW_LOADER);
+        Glide.with(this).load(user.getOriginalProfileImageURLHttps()).into(mIconImage);
         mIconImage.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -214,7 +213,7 @@ public class UserDetailActivity extends AppCompatActivity {
                 overridePendingTransition(R.anim.fade_in, 0);
             }
         });
-        mHeaderImage.setImageUrl(user.getProfileBannerURL(), NetUtil.INLINE_PREVIEW_LOADER);
+        Glide.with(this).load(user.getProfileBannerURL()).into(mHeaderImage);
         if (user.isProtected()) {
             mlockMark.setVisibility(View.VISIBLE);
         } else {

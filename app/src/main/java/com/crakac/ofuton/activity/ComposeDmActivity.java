@@ -1,22 +1,18 @@
 package com.crakac.ofuton.activity;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.crakac.ofuton.C;
 import com.crakac.ofuton.R;
 import com.crakac.ofuton.fragment.dialog.DmInfoDialogFragment;
 import com.crakac.ofuton.util.AppUtil;
-import com.crakac.ofuton.util.NetUtil;
-import com.crakac.ofuton.util.NetworkImageListener;
 import com.crakac.ofuton.util.ParallelTask;
 import com.crakac.ofuton.util.TwitterUtils;
 
@@ -48,22 +44,13 @@ public class ComposeDmActivity extends FinishableActionbarActivity {
         String name = user.getName();
 
         mTwitter = TwitterUtils.getTwitterInstance();// Twitter周りのやつ
-        mInputText = (EditText) findViewById(R.id.input_text);// 入力欄
+        mInputText = findViewById(R.id.input_text);// 入力欄
         sendBtn = findViewById(R.id.sendBtn);// ツイートボタン
         infoBtn = findViewById(R.id.dmInfoBtn);// リプライ先表示ボタン
-        remaining = (TextView) findViewById(R.id.remainingText);// 残り文字数
+        remaining = findViewById(R.id.remainingText);// 残り文字数
 
         mActionbar = getSupportActionBar();
         mActionbar.setSubtitle("DM to " + name + " @" + screenName);
-        //
-        final ImageView icon = new ImageView(this);
-        NetUtil.fetchIconAsync(AppUtil.getIconURL(user), new NetworkImageListener(icon) {
-            @Override
-            public void onBitmap(Bitmap bm) {
-                AppUtil.setActionBarIcon(mActionbar, icon);
-            }
-        });
-        mActionbar.setIcon(icon.getDrawable());
 
         //DMへの返信だった場合は返信元を表示できるようにする
         if (replyDM != null) {

@@ -7,21 +7,7 @@ import android.os.Environment;
 import android.text.TextUtils;
 import android.util.Log;
 import android.webkit.MimeTypeMap;
-import android.widget.ImageView;
 
-import com.android.volley.Cache;
-import com.android.volley.Network;
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.BasicNetwork;
-import com.android.volley.toolbox.DiskBasedCache;
-import com.android.volley.toolbox.HttpStack;
-import com.android.volley.toolbox.HurlStack;
-import com.android.volley.toolbox.ImageLoader;
-import com.android.volley.toolbox.ImageLoader.ImageContainer;
-import com.android.volley.toolbox.ImageLoader.ImageListener;
-import com.crakac.ofuton.R;
-
-import java.io.File;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -34,78 +20,7 @@ import java.util.Locale;
 import java.util.Map;
 
 public class NetUtil {
-    private static final int CONNECT_TIMEOUT = 5000;
-    private static final int READ_TIMEOUT = 10000;
-    private static final String ICON_CACHE_DIR = "icon";
-    private static final String IMAGE_CACHE_DIR = "image";
-    private static final int THREAD_POOL_SIZE_FOR_FETCHING_ICONS = 10;
-    private static final int THREAD_POOL_SIZE_FOR_FETCHING_IMAGE = 20;
-    public static ImageLoader PREVIEW_LOADER, INLINE_PREVIEW_LOADER, ICON_LOADER;
-    private static Cache sImageDiskCache;
-
     private NetUtil() {
-    }
-
-    private static Cache createDiskCache(Context context, String cacheRoot, int cacheSize) {
-        File cacheDir = new File(context.getCacheDir(), cacheRoot);
-        return new DiskBasedCache(cacheDir, cacheSize);
-    }
-
-    private static RequestQueue newRequestQueue(Context context, String cacheRoot, int cacheSize, int threadPoolSize) {
-        File cacheDir = new File(context.getCacheDir(), cacheRoot);
-        return newRequestQueue(context, new DiskBasedCache(cacheDir, cacheSize), threadPoolSize);
-    }
-
-    private static RequestQueue newRequestQueue(Context context, Cache cache, int threadPoolSize) {
-        HttpStack stack = new HurlStack();
-
-        Network network = new BasicNetwork(stack);
-
-        RequestQueue queue = new RequestQueue(cache, network, threadPoolSize);
-        queue.start();
-
-        return queue;
-    }
-
-    public static void init(Context context) {
-        RequestQueue iconQueue = newRequestQueue(context, ICON_CACHE_DIR, 5 * 1024 * 1024, THREAD_POOL_SIZE_FOR_FETCHING_ICONS);
-        ICON_LOADER = new ImageLoader(iconQueue, new ImageLruCache());
-        sImageDiskCache = createDiskCache(context, IMAGE_CACHE_DIR, 50 * 1024 * 1024);
-        RequestQueue imageQueue = newRequestQueue(context, sImageDiskCache, THREAD_POOL_SIZE_FOR_FETCHING_IMAGE);
-        INLINE_PREVIEW_LOADER = new ImageLoader(imageQueue, new ImageLruCache());
-        PREVIEW_LOADER = new ImageLoader(newRequestQueue(context, sImageDiskCache, 3), new ImageLruCache());
-    }
-
-    public static ImageContainer fetchIconAsync(ImageView targetView, String requestUrl) {
-        return fetchIconAsync(targetView, requestUrl, android.R.color.transparent, R.drawable.ic_syar);
-    }
-
-    public static ImageContainer fetchIconAsync(ImageView targetView, String requestUrl, int defaultImageResId,
-                                                int errorImageResId) {
-        ImageListener listener = ImageLoader.getImageListener(targetView, defaultImageResId, errorImageResId);
-        return fetchIconAsync(requestUrl, listener);
-    }
-
-    public static ImageContainer fetchIconAsync(String requestUrl, ImageListener listener) {
-        return ICON_LOADER.get(requestUrl, listener);
-    }
-
-    public static ImageContainer fetchNetworkImageAsync(ImageView targetView, String requestUrl) {
-        return fetchNetworkImageAsync(targetView, requestUrl, android.R.color.transparent, android.R.color.transparent);
-    }
-
-    public static ImageContainer fetchNetworkImageAsync(ImageView targetView, String requestUrl, int defaultImageResId,
-                                                        int errorImageResId) {
-        ImageListener listener = ImageLoader.getImageListener(targetView, defaultImageResId, errorImageResId);
-        return fetchNetworkImageAsync(requestUrl, listener);
-    }
-
-    public static ImageContainer fetchNetworkImageAsync(String requestUrl, ImageListener listener) {
-        return INLINE_PREVIEW_LOADER.get(requestUrl, listener);
-    }
-
-    public static ImageContainer fetchPreviewImageAsync(String requestUrl, ImageListener listener) {
-        return PREVIEW_LOADER.get(requestUrl, listener);
     }
 
     synchronized private static String expandUrl(String urlString) throws IOException {
@@ -201,15 +116,6 @@ public class NetUtil {
                 return segments.get(0).equals("p");
             default:
                 return false;
-        }
-    }
-
-    public static byte[] getCache(String key) {
-        Cache.Entry entry = sImageDiskCache.get(key);
-        if (entry == null) {
-            return null;
-        } else {
-            return entry.data;
         }
     }
 

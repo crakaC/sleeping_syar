@@ -16,7 +16,6 @@ public class OfutonApp extends Application {
         super.onCreate();
         TwitterUtils.init(this);
         AppUtil.init(this);
-        NetUtil.init(this);
         PrefUtil.init(this);
         AppUtil.checkTofuBuster();
     }

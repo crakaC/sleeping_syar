@@ -13,7 +13,8 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.android.volley.toolbox.NetworkImageView;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.module.AppGlideModule;
 import com.crakac.ofuton.C;
 import com.crakac.ofuton.R;
 import com.crakac.ofuton.activity.UserDetailActivity;
@@ -55,8 +56,8 @@ public class TweetStatusAdapter extends BaseAdapter {
         View retweeterInfo;
         TextView via;
         TextView retweetedBy;
-        NetworkImageView icon;
-        NetworkImageView smallIcon;
+        ImageView icon;
+        ImageView smallIcon;
         ImageView favedAndRetweetedIcon;
         MultipleImagePreview imagePreview;
         ImageView lockedIcon;
@@ -362,9 +363,9 @@ public class TweetStatusAdapter extends BaseAdapter {
         return isMention;
     }
 
-    private static void setIcon(NetworkImageView icon, Status item) {
+    private static void setIcon(ImageView icon, Status item) {
         String url = AppUtil.getIconURL(item.getUser());
-        icon.setImageUrl(url, NetUtil.ICON_LOADER);
+        Glide.with(icon).load(url).into(icon);
     }
 
     private static void setLockIcon(ImageView lockedIcon, Status item) {

@@ -13,10 +13,11 @@
             android:layout_height="match_parent"
             android:layout_weight="1">
 
-            <com.crakac.ofuton.widget.BitmapImageView
+            <ImageView
                 android:id="@+id/imageL1"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:background="@color/transparent_black"
                 android:foreground="@drawable/image_ripple"
                 android:scaleType="centerCrop"
                 android:visibility="visible" />
@@ -38,11 +39,12 @@
             android:layout_height="@dimen/inline_preview_margin"
             android:visibility="visible" />
 
-        <com.crakac.ofuton.widget.BitmapImageView
+        <ImageView
             android:id="@+id/imageL2"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:background="@color/transparent_black"
             android:foreground="@drawable/image_ripple"
             android:scaleType="centerCrop"
             android:visibility="visible" />
@@ -53,11 +55,12 @@
             android:layout_height="@dimen/inline_preview_margin"
             android:visibility="visible" />
 
-        <com.crakac.ofuton.widget.BitmapImageView
+        <ImageView
             android:id="@+id/imageL3"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:background="@color/transparent_black"
             android:foreground="@drawable/image_ripple"
             android:scaleType="centerCrop"
             android:visibility="visible" />
@@ -77,11 +80,12 @@
         android:layout_weight="1"
         android:orientation="vertical">
 
-        <com.crakac.ofuton.widget.BitmapImageView
+        <ImageView
             android:id="@+id/imageC1"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:background="@color/transparent_black"
             android:foreground="@drawable/image_ripple"
             android:scaleType="centerCrop"
             android:visibility="visible" />
@@ -92,11 +96,12 @@
             android:layout_height="@dimen/inline_preview_margin"
             android:visibility="visible" />
 
-        <com.crakac.ofuton.widget.BitmapImageView
+        <ImageView
             android:id="@+id/imageC2"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:background="@color/transparent_black"
             android:foreground="@drawable/image_ripple"
             android:scaleType="centerCrop"
             android:visibility="visible" />
@@ -107,11 +112,12 @@
             android:layout_height="@dimen/inline_preview_margin"
             android:visibility="visible" />
 
-        <com.crakac.ofuton.widget.BitmapImageView
+        <ImageView
             android:id="@+id/imageC3"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:background="@color/transparent_black"
             android:foreground="@drawable/image_ripple"
             android:scaleType="centerCrop"
             android:visibility="visible" />
@@ -131,11 +137,12 @@
         android:layout_weight="1"
         android:orientation="vertical">
 
-        <com.crakac.ofuton.widget.BitmapImageView
+        <ImageView
             android:id="@+id/imageR1"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:background="@color/transparent_black"
             android:foreground="@drawable/image_ripple"
             android:scaleType="centerCrop"
             android:visibility="visible" />
@@ -146,11 +153,12 @@
             android:layout_height="@dimen/inline_preview_margin"
             android:visibility="visible" />
 
-        <com.crakac.ofuton.widget.BitmapImageView
+        <ImageView
             android:id="@+id/imageR2"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:background="@color/transparent_black"
             android:foreground="@drawable/image_ripple"
             android:scaleType="centerCrop"
             android:visibility="visible" />
@@ -161,11 +169,12 @@
             android:layout_height="@dimen/inline_preview_margin"
             android:visibility="visible" />
 
-        <com.crakac.ofuton.widget.BitmapImageView
+        <ImageView
             android:id="@+id/imageR3"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:background="@color/transparent_black"
             android:foreground="@drawable/image_ripple"
             android:scaleType="centerCrop"
             android:visibility="visible" />

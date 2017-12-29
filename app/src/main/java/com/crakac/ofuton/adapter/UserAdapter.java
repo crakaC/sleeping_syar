@@ -11,7 +11,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.android.volley.toolbox.NetworkImageView;
+import com.bumptech.glide.Glide;
 import com.crakac.ofuton.R;
 import com.crakac.ofuton.util.AppUtil;
 import com.crakac.ofuton.util.NetUtil;
@@ -25,7 +25,7 @@ public class UserAdapter extends ArrayAdapter<twitter4j.User> {
         TextView screenName;
         TextView text;
         TextView info;
-        NetworkImageView icon;
+        ImageView icon;
         ImageView lockedIcon;
     }
 
@@ -54,7 +54,7 @@ public class UserAdapter extends ArrayAdapter<twitter4j.User> {
             convertView.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
-                    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                         v.getForeground().setHotspot(event.getX(), event.getY());
                     }
                     return false;
@@ -72,7 +72,7 @@ public class UserAdapter extends ArrayAdapter<twitter4j.User> {
         holder.screenName.setTextSize(smallFontSize);
 
         String url = AppUtil.getIconURL(item);
-        holder.icon.setImageUrl(url, NetUtil.ICON_LOADER);
+        Glide.with(getContext()).load(url).into(holder.icon);
 
         holder.name.setText(item.getName());
         holder.screenName.setText(" @" + item.getScreenName());

@@ -19,7 +19,7 @@
         android:layout_height="160dp"
         android:layout_below="@id/toolbar"
         android:background="@color/dark_gray">
-        <com.crakac.ofuton.widget.BitmapImageView
+        <ImageView
             android:alpha="0.2"
             android:id="@+id/header_image"
             android:layout_width="match_parent"
@@ -37,7 +37,7 @@
                 android:layout_height="match_parent"
                 android:padding="4dp">
 
-                <com.crakac.ofuton.widget.BitmapImageView
+                <ImageView
                     android:id="@+id/icon"
                     android:layout_width="100dp"
                     android:layout_height="100dp"

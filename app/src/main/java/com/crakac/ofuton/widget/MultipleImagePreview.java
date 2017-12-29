@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.bumptech.glide.Glide;
 import com.crakac.ofuton.C;
 import com.crakac.ofuton.R;
 import com.crakac.ofuton.activity.ImagePreviewActivity;
@@ -28,11 +29,11 @@ import twitter4j.MediaEntity;
  * Created by kosukeshirakashi on 2014/09/09.
  */
 public class MultipleImagePreview extends LinearLayout {
-    private BitmapImageView imageL1, imageC1, imageR1, imageL2, imageC2, imageR2, imageL3, imageC3, imageR3;
+    private ImageView imageL1, imageC1, imageR1, imageL2, imageC2, imageR2, imageL3, imageC3, imageR3;
     private ImageView videoIcon;
     private LinearLayout mLeft, mCenter, mRight;
     private View separatorL1, separatorL2, separatorC1, separatorC2, separatorR1, separatorR2, virticalSeparatorLeft, virticalSeparatorRight;
-    private List<BitmapImageView> mImageViews;
+    private List<ImageView> mImageViews;
     private List<View> mSeparators;
     private List<LinearLayout> mBlocks;
 
@@ -65,7 +66,7 @@ public class MultipleImagePreview extends LinearLayout {
         imageC3 = v.findViewById(R.id.imageC3);
         imageR3 = v.findViewById(R.id.imageR3);
         mImageViews = Arrays.asList(imageL1, imageC1, imageR1, imageL2, imageC2, imageR2, imageL3, imageC3, imageR3);
-        if(Util.isPreLollipop()) {
+        if (Util.isPreLollipop()) {
             for (View iv : mImageViews) {
                 iv.setOnTouchListener(new ColorOverlayOnTouch());
             }
@@ -79,7 +80,7 @@ public class MultipleImagePreview extends LinearLayout {
         super.onMeasure(widthMeasureSpec, MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY));
     }
 
-    public List<BitmapImageView> getRequiredImageViews(int mediaNum) {
+    public List<ImageView> getRequiredImageViews(int mediaNum) {
         switch (mediaNum) {
             case 0:
                 return new ArrayList<>();
@@ -161,7 +162,7 @@ public class MultipleImagePreview extends LinearLayout {
         }
     }
 
-    private void hide(View... views){
+    private void hide(View... views) {
         for (View v : views) {
             v.setVisibility(View.GONE);
         }
@@ -173,7 +174,7 @@ public class MultipleImagePreview extends LinearLayout {
         }
     }
 
-    private void show(List<? extends View> views){
+    private void show(List<? extends View> views) {
         for (View v : views) {
             v.setVisibility(View.VISIBLE);
         }
@@ -181,50 +182,42 @@ public class MultipleImagePreview extends LinearLayout {
 
     public void setMediaEntities(final List<MediaEntity> mediaEntities) {
         initLayout(mediaEntities.size());
-        List<BitmapImageView> imageViews = getRequiredImageViews(mediaEntities.size());
+        List<ImageView> imageViews = getRequiredImageViews(mediaEntities.size());
         final ArrayList<String> mediaUrls = TwitterUtils.extractMediaUrls(mediaEntities);
         for (int i = 0; i < imageViews.size(); i++) {
-            final BitmapImageView imageView = imageViews.get(i);
+            final ImageView imageView = imageViews.get(i);
             final int position = i;
             imageView.setVisibility(View.VISIBLE);
             final MediaEntity me = mediaEntities.get(position);
-            if(hasVideoEntity(me)) {
+            if (hasVideoEntity(me)) {
                 videoIcon.setVisibility(View.VISIBLE);
-                imageView.setOnClickListener(new OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
+                imageView.setOnClickListener( v -> {
                     Context context = getContext();
-                    Intent intent = new Intent(context, VideoPreviewActivity.class);;
+                    Intent intent = new Intent(context, VideoPreviewActivity.class);
                     intent.putExtra(C.MEDIA_ENTITY, me);
                     context.startActivity(intent);
-                    }
                 });
             } else {
-                imageView.setOnClickListener(new OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Context context = getContext();
-                        Intent intent = new Intent(context, ImagePreviewActivity.class);
-                        intent.putExtra(C.MEDIA_ENTITY, (Serializable) mediaEntities);
-                        intent.putExtra(C.POSITION, position);
-                        context.startActivity(intent);
-                    }
+                imageView.setOnClickListener(v -> {
+                    Context context = getContext();
+                    Intent intent = new Intent(context, ImagePreviewActivity.class);
+                    intent.putExtra(C.MEDIA_ENTITY, (Serializable) mediaEntities);
+                    intent.putExtra(C.POSITION, position);
+                    context.startActivity(intent);
                 });
             }
-            imageView.setDefaultImageResId(R.color.transparent_black);
-            imageView.setErrorImageResId(R.color.transparent_black);
             String mediaUrl = mediaUrls.get(i);
-            imageView.setImageUrl(NetUtil.convertToImageFileUrl(mediaUrl), NetUtil.INLINE_PREVIEW_LOADER);
+            Glide.with(getContext()).load(NetUtil.convertToImageFileUrl(mediaUrl)).into(imageView);
         }
     }
 
     public void cleanUp() {
-        for (BitmapImageView view : mImageViews) {
-            view.cleanUp();
+        for (ImageView view : mImageViews) {
+            Glide.with(getContext()).clear(view);
         }
     }
 
-    private boolean hasVideoEntity(MediaEntity e){
+    private boolean hasVideoEntity(MediaEntity e) {
         return (e.getType().contains("gif") || e.getType().contains("video"));
     }
 }
