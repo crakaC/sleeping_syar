@@ -4,15 +4,15 @@ import android.app.IntentService
 import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.support.v4.app.NotificationCompat
 import com.crakac.ofuton.C
 import com.crakac.ofuton.R
 import com.crakac.ofuton.util.AppUtil
-import com.crakac.ofuton.util.BitmapUtil
 import com.crakac.ofuton.util.TwitterUtils
 import twitter4j.StatusUpdate
 import twitter4j.TwitterException
+import java.io.File
+import java.util.*
 
 class StatusUpdateService : IntentService("StatusUpdateService") {
     override fun onHandleIntent(intent: Intent) {
@@ -21,7 +21,7 @@ class StatusUpdateService : IntentService("StatusUpdateService") {
 
         val text = intent.getStringExtra(C.TEXT)
         val inReplyTo: Long = intent.getLongExtra(C.IN_REPLY_TO, -1)
-        val appendedImages = intent.getParcelableArrayListExtra<Uri>(C.ATTACHMENTS)
+        val appendedImages = intent.getSerializableExtra(C.ATTACHMENTS) as ArrayList<File>
 
         val twitter = TwitterUtils.getTwitterInstance()
 
@@ -32,9 +32,7 @@ class StatusUpdateService : IntentService("StatusUpdateService") {
         startForeground(1, builder.build())
         try {
             for (i in 0 until appendedImageCount) {
-                val appending = appendedImages[i];
-                val media = BitmapUtil.createTemporaryResizedImage(contentResolver, appending, C.MAX_APPEND_PICTURE_EDGE_LENGTH)
-                val m = twitter.uploadMedia(media)
+                val m = twitter.uploadMedia(appendedImages[i])
                 ids[i] = m.mediaId
             }
             val status = StatusUpdate(text)

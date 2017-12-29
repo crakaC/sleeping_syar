@@ -9,15 +9,12 @@ import android.view.Display;
 import android.widget.ImageView;
 
 import java.lang.ref.WeakReference;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 
 /**
  * Created by Kosuke on 2017/12/27.
  */
 
 public class AsyncLoadBitmapTask extends ParallelTask<Void, Bitmap> {
-    private static Executor sExecutor = Executors.newCachedThreadPool();
     private ContentResolver mContentResolver;
     private Uri mUri;
     private int mLongEdge;
@@ -60,7 +57,7 @@ public class AsyncLoadBitmapTask extends ParallelTask<Void, Bitmap> {
 
     @Override
     public ParallelTask<Void, Bitmap> executeParallel() {
-        return (ParallelTask<Void, Bitmap>) executeOnExecutor(sExecutor);
+        return (ParallelTask<Void, Bitmap>) executeOnExecutor(BitmapUtil.Executor);
     }
 
     public void setOnLoadFinishedListener(OnLoadFinishedListener listener){

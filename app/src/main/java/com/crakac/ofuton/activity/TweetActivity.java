@@ -21,6 +21,7 @@ import com.crakac.ofuton.R;
 import com.crakac.ofuton.service.StatusUpdateService;
 import com.crakac.ofuton.util.AppUtil;
 import com.crakac.ofuton.util.AsyncLoadBitmapTask;
+import com.crakac.ofuton.util.CreateAppendingFileTask;
 import com.crakac.ofuton.util.PrefUtil;
 import com.crakac.ofuton.util.SimpleTextChangeListener;
 import com.crakac.ofuton.util.TwitterUtils;
@@ -69,7 +70,7 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
 
     private LinearLayout mAppendedImageRoot;
     private ArrayList<Uri> mAppendedImages = new ArrayList<>(MAX_APPEND_FILES);
-    private ArrayList<AppendedImageView> mAppendedImageViews = new ArrayList<>(MAX_APPEND_FILES);
+    private ArrayList<File> mAppendedFiles = new ArrayList<>(MAX_APPEND_FILES);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,6 +107,8 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
             handleSendIntent(intent);
         } else if (Intent.ACTION_VIEW.equals(intent.getAction())) {
             handleViewIntent(intent);
+        } else if (Intent.ACTION_SEND_MULTIPLE.equals(intent.getAction())) {
+            handleSendMultipleIntent(intent);
         }
 
         // アクティビティ開始時の残り文字数をセットする．リプライ時やハッシュタグ時のときも140字にならないために．
@@ -113,17 +116,25 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
     }
 
     private void handleSendIntent(Intent intent) {
-        Bundle b = intent.getExtras();
-        if (b != null) {
-            String text = b.getString(Intent.EXTRA_TEXT);
-            if (text != null) {
-                mInputText.setText(text);
-                mInputText.setSelection(text.length());
-            }
-            Uri imageUri = (Uri) b.get(Intent.EXTRA_STREAM);
-            if (imageUri != null) {
-                appendPicture(imageUri);
-            }
+        String text = intent.getStringExtra(Intent.EXTRA_TEXT);
+        if (text != null) {
+            mInputText.setText(text);
+            mInputText.setSelection(text.length());
+        }
+        Uri imageUri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
+        if (imageUri != null) {
+            appendPicture(imageUri);
+        }
+    }
+
+    private void handleSendMultipleIntent(Intent intent) {
+        ArrayList<Uri> uris = intent.getParcelableArrayListExtra(Intent.EXTRA_STREAM);
+        if (uris == null) {
+            return;
+        }
+        int num = Math.min(uris.size(), MAX_APPEND_FILES);
+        for (int i = 0; i < num; i++) {
+            appendPicture(uris.get(i));
         }
     }
 
@@ -178,8 +189,14 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
     }
 
     private void removeAppendedImage(AppendedImageView v) {
+        for(int i = 0; i < mAppendedImageRoot.getChildCount(); i++){
+            if(mAppendedImageRoot.getChildAt(i).equals(v)){
+                mAppendedImages.remove(i);
+                mAppendedFiles.remove(i);
+                break;
+            }
+        }
         mAppendedImageRoot.removeView(v);
-        mAppendedImages.remove(v.getTag());
         updateState();
     }
 
@@ -200,8 +217,8 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
         int remainLength = MAX_TWEET_LENGTH - Util.getActualTextLength(text);
         getSupportActionBar().setSubtitle(String.valueOf(remainLength));
 
-        boolean hasValidContent = !(remainLength < 0 || (text.isEmpty() && mAppendedImages.isEmpty()));
-        mTweetBtn.setEnabled(hasValidContent);
+        boolean invalidContent = remainLength < 0 || (text.isEmpty() && mAppendedFiles.isEmpty()) || (mAppendedFiles.size() != mAppendedImages.size());
+        mTweetBtn.setEnabled(!invalidContent);
 
         boolean canAppend = mAppendedImages.size() < MAX_APPEND_FILES;
         AppUtil.setImageViewEnabled(canAppend, mAppendPicBtn, R.drawable.ic_insert_photo);
@@ -238,19 +255,13 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
 
     private void setUpThumbnails(List<Image> images) {
         for (Image image : images) {
-            setUpThumbnail(AppUtil.filePathToContentUri(image.getPath()));
-            mAppendedImages.add(AppUtil.filePathToContentUri(image.getPath()));
+            appendPicture(AppUtil.filePathToContentUri(image.getPath()));
         }
     }
 
     private AppendedImageView inflateThumbnail() {
         final AppendedImageView iv = new AppendedImageView(this);
         mAppendedImageRoot.addView(iv);
-        LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) iv.getLayoutParams();
-        lp.width = AppUtil.dpToPx(THUMBNAIL_SIZE);
-        lp.height = AppUtil.dpToPx(THUMBNAIL_SIZE);
-        iv.setLayoutParams(lp);
-
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             iv.getImageView().setOnTouchListener(new ColorOverlayOnTouch());
         }
@@ -260,7 +271,6 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
     private void setUpThumbnail(final Uri image) {
         final AppendedImageView view = inflateThumbnail();
         // set thumbnail
-        view.setTag(image);
         view.setOnAppendedImageListener(new AppendedImageView.OnAppendedImageClickListener() {
             @Override
             public void onClickCancel() {
@@ -275,18 +285,24 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
                 startActivity(i);
             }
         });
-        mAppendedImageViews.add(view);
-        new AsyncLoadBitmapTask(this, image, view.getImageView(), AppUtil.dpToPx(THUMBNAIL_SIZE)).executeParallel();
+        new CreateAppendingFileTask(this, image, (file) ->{
+            mAppendedFiles.add(file);
+            updateState();
+            AsyncLoadBitmapTask task = new AsyncLoadBitmapTask(this, image, view.getImageView(), AppUtil.dpToPx(THUMBNAIL_SIZE));
+            task.setOnLoadFinishedListener( (bm) -> view.clearProgress());
+            task.executeParallel();
+        }).executeParallel();
     }
 
     private void updateStatus() {
-        Intent i = new Intent(this, StatusUpdateService.class);
+        Intent i = new Intent(TweetActivity.this, StatusUpdateService.class);
         i.putExtra(C.TEXT, mInputText.getText().toString());
         if (mReplyId > 0) {
             i.putExtra(C.IN_REPLY_TO, mReplyId);
         }
-        i.putExtra(C.ATTACHMENTS, mAppendedImages);
+        i.putExtra(C.ATTACHMENTS, mAppendedFiles);
         startService(i);
+        finish();
     }
 
     @Override
@@ -330,7 +346,6 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
 
             case R.id.action_tweet:
                 updateStatus();
-                finish();
                 break;
         }
     }
