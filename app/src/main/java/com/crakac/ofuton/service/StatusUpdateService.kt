@@ -28,7 +28,7 @@ class StatusUpdateService : IntentService("StatusUpdateService") {
         val appendedImageCount = appendedImages.size
         val ids = LongArray(appendedImageCount)
 
-        builder.setSmallIcon(R.drawable.ic_send).setProgress(0, 0, true).setContentText("ツイート送信中").setOngoing(true)
+        builder.setSmallIcon(R.drawable.ic_send_white_24dp).setProgress(0, 0, true).setContentText("ツイート送信中").setOngoing(true)
         startForeground(1, builder.build())
         try {
             for (i in 0 until appendedImageCount) {
