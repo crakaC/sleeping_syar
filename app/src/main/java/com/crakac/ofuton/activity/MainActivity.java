@@ -42,10 +42,8 @@ import com.crakac.ofuton.fragment.timeline.FavoriteTimelineFragment;
 import com.crakac.ofuton.fragment.timeline.HomeTimelineFragment;
 import com.crakac.ofuton.fragment.timeline.MentionsTimelineFragment;
 import com.crakac.ofuton.util.AppUtil;
-import com.crakac.ofuton.util.NetUtil;
 import com.crakac.ofuton.util.ParallelTask;
 import com.crakac.ofuton.util.PrefUtil;
-import com.crakac.ofuton.util.RelativeTimeUpdater;
 import com.crakac.ofuton.util.ReloadChecker;
 import com.crakac.ofuton.util.TweetButtonPosition;
 import com.crakac.ofuton.util.TwitterList;
@@ -152,7 +150,6 @@ public class MainActivity extends AppCompatActivity {
         mTab = findViewById(R.id.tab);
         mPager = findViewById(R.id.pager);
         mAdapter = new TimelineFragmentPagerAdapter(this, mPager);
-        mPager.addOnPageChangeListener(new RelativeTimeUpdater(mAdapter));
         setPages(mAdapter);
         if (savedInstanceState == null) {
             mPager.setCurrentItem(getFragmentPosition(TAB_ID_HOME));// HomeTimelineの位置に合わせる
@@ -204,7 +201,7 @@ public class MainActivity extends AppCompatActivity {
         if (ReloadChecker.shouldSoftReload()) {
             ReloadChecker.reset();
             for (AbstractTimelineFragment f : getFragments()) {
-                f.getViews();
+                f.getAdapter().notifyDataSetChanged();
             }
         }
     }

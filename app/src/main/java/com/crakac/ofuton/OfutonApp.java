@@ -4,7 +4,6 @@ package com.crakac.ofuton;
 import android.app.Application;
 
 import com.crakac.ofuton.util.AppUtil;
-import com.crakac.ofuton.util.NetUtil;
 import com.crakac.ofuton.util.PrefUtil;
 import com.crakac.ofuton.util.TwitterUtils;
 

@@ -36,7 +36,6 @@ import com.crakac.ofuton.fragment.timeline.UserTimelineFragment;
 import com.crakac.ofuton.util.AppUtil;
 import com.crakac.ofuton.util.ParallelTask;
 import com.crakac.ofuton.util.ProgressDialogFragment;
-import com.crakac.ofuton.util.RelativeTimeUpdater;
 import com.crakac.ofuton.util.TwitterList;
 import com.crakac.ofuton.util.TwitterUtils;
 import com.crakac.ofuton.util.Util;
@@ -251,7 +250,6 @@ public class UserDetailActivity extends AppCompatActivity {
             mPagerAdapter.notifyDataSetChanged();
         }
         mPager.setOffscreenPageLimit(mPagerAdapter.getCount());// 全Fragmentを保持（onCreateViewが複数呼ばれるのを抑止）
-        mPager.addOnPageChangeListener(new RelativeTimeUpdater(mPagerAdapter));
         mTab.setupWithViewPager(mPager);
         mTab.addOnTabSelectedListener(new TapToScrollTopListener(mPagerAdapter, mPager));
     }

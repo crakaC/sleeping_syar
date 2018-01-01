@@ -17,7 +17,6 @@ import com.crakac.ofuton.fragment.search.LocalSearchFragment;
 import com.crakac.ofuton.fragment.search.TweetSearchFragment;
 import com.crakac.ofuton.fragment.search.UserSearchFragment;
 import com.crakac.ofuton.util.AppUtil;
-import com.crakac.ofuton.util.RelativeTimeUpdater;
 
 /**
  * Created by kosukeshirakashi on 2014/09/05.
@@ -40,7 +39,6 @@ public class SearchActivity extends FinishableActionbarActivity {
         mAdapter = new SearchFragmentPagerAdapter(this, mPager);
         setFragments();
         mPager.setOffscreenPageLimit(mAdapter.getCount());
-        mPager.addOnPageChangeListener(new RelativeTimeUpdater(mAdapter));
         mTab.setupWithViewPager(mPager);
     }
 

@@ -257,16 +257,6 @@ public abstract class AbstractTimelineFragment extends AbstractStatusFragment {
         }
     }
 
-    public void getViews() {
-        SparseArray<View> visibleItems = getVisibleItems();
-        for (int i = 0; i < visibleItems.size(); i++) {
-            int position = visibleItems.keyAt(i);
-            View v = visibleItems.get(position);
-            if(v.getTag() == null) continue; //avoid emptyView
-            mAdapter.getView(position, v, null);
-        }
-    }
-
     private SparseArray<View> getVisibleItems() {
         SparseArray<View> views = new SparseArray<>();
         try {

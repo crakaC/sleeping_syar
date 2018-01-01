@@ -1,10 +1,11 @@
 package com.crakac.ofuton.widget;
 
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 
 import com.crakac.ofuton.fragment.AbstractPtrFragment;
+import com.crakac.ofuton.fragment.adapter.SimpleFragmentPagerAdapter;
+import com.crakac.ofuton.fragment.timeline.AbstractTimelineFragment;
 
 /**
  * Created by Kosuke on 2017/12/23.
@@ -12,16 +13,19 @@ import com.crakac.ofuton.fragment.AbstractPtrFragment;
 
 public class TapToScrollTopListener implements TabLayout.OnTabSelectedListener {
 
-    FragmentPagerAdapter mAdapter;
+    SimpleFragmentPagerAdapter<AbstractPtrFragment> mAdapter;
     ViewPager mPager;
-    public TapToScrollTopListener(FragmentPagerAdapter pagerAdapter, ViewPager pager){
+    public TapToScrollTopListener(SimpleFragmentPagerAdapter<AbstractPtrFragment> pagerAdapter, ViewPager pager){
         mAdapter = pagerAdapter;
         mPager = pager;
     }
 
     @Override
     public void onTabSelected(TabLayout.Tab tab) {
-
+        AbstractPtrFragment f = (AbstractPtrFragment) mAdapter.instantiateItem(mPager, tab.getPosition());
+        if (f instanceof AbstractTimelineFragment) {
+                ((AbstractTimelineFragment) f).updateDisplayedTime();
+        }
     }
 
     @Override
