@@ -29,6 +29,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.crakac.ofuton.R;
 import com.crakac.ofuton.adapter.TweetStatusAdapter;
 
@@ -428,5 +429,9 @@ public final class AppUtil {
         Intent i = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
         i.setData(uri);
         sContext.sendBroadcast(i);
+    }
+
+    public static void setImage(ImageView target, String url) {
+        Glide.with(sContext).load(url).into(target);
     }
 }

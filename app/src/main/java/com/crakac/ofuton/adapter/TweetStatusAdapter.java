@@ -11,7 +11,6 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.crakac.ofuton.C;
 import com.crakac.ofuton.R;
 import com.crakac.ofuton.activity.UserDetailActivity;
@@ -193,7 +192,7 @@ public class TweetStatusAdapter extends BaseAdapter {
         }
         holder.text.setText(AppUtil.getColoredText(text, status));
         // アイコン
-        setIcon(holder.avatarIcon, status);
+        AppUtil.setImage(holder.avatarIcon, AppUtil.getIconURL(status.getUser()));
         // 鍵アイコン
         setLockIcon(holder.lockedIcon, status);
         // ☆
@@ -291,9 +290,7 @@ public class TweetStatusAdapter extends BaseAdapter {
         holder.via.setVisibility(View.GONE);
         // 必要な部分を表示
         holder.retweeterInfo.setVisibility(View.VISIBLE);
-
-        setIcon(holder.retweetAvatar, origStatus);
-
+        AppUtil.setImage(holder.retweetAvatar, AppUtil.getIconURL(origStatus.getUser()));
         holder.retweetedBy.setText(origStatus.getUser().getName() + " @" + origStatus.getUser().getScreenName() + " ("
                 + status.getRetweetCount() + ")");
 
@@ -339,11 +336,6 @@ public class TweetStatusAdapter extends BaseAdapter {
             }
         }
         return isMention;
-    }
-
-    private static void setIcon(ImageView icon, Status item) {
-        String url = AppUtil.getIconURL(item.getUser());
-        Glide.with(icon).load(url).into(icon);
     }
 
     private static void setLockIcon(ImageView lockedIcon, Status item) {

@@ -213,13 +213,13 @@ public class MultipleImagePreview extends LinearLayout {
 
     @Override
     protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
         cleanUp();
+        super.onDetachedFromWindow();
     }
 
     public void cleanUp() {
         for (ImageView view : mImageViews) {
-            Glide.with(this).clear(view);
+            Glide.with(view).clear(view);
         }
     }
 
