@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.net.Uri;
+import android.provider.MediaStore;
 import android.support.media.ExifInterface;
 import android.util.Log;
 import android.webkit.MimeTypeMap;
@@ -170,7 +171,7 @@ public class BitmapUtil {
         if(!extension.isEmpty())
             return extension;
 
-        Cursor c = cr.query(uri, new String[]{"MediaStore.MediaColumns.DISPLAY_NAME"}, null, null, null);
+        Cursor c = cr.query(uri, new String[]{MediaStore.Images.Media.DISPLAY_NAME}, null, null, null);
         if (c != null) {
             c.moveToFirst();
             extension = MimeTypeMap.getFileExtensionFromUrl(c.getString(0));
