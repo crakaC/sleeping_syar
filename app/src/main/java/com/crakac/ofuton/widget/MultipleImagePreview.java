@@ -207,13 +207,19 @@ public class MultipleImagePreview extends LinearLayout {
                 });
             }
             String mediaUrl = mediaUrls.get(i);
-            Glide.with(getContext()).load(NetUtil.convertToImageFileUrl(mediaUrl)).into(imageView);
+            Glide.with(this).load(NetUtil.convertToImageFileUrl(mediaUrl)).into(imageView);
         }
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        cleanUp();
     }
 
     public void cleanUp() {
         for (ImageView view : mImageViews) {
-            Glide.with(getContext()).clear(view);
+            Glide.with(this).clear(view);
         }
     }
 
