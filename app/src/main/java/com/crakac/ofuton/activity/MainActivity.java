@@ -90,20 +90,14 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         mTweetFragment = (TweetFragment) getSupportFragmentManager().findFragmentById(R.id.quick_tweet);
         mTweetBtn = findViewById(R.id.tweetEveryWhere);// 右下のツイートボタン
-        mTweetBtn.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, TweetActivity.class);
-                startActivity(intent);
-            }
+        mTweetBtn.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, TweetActivity.class);
+            startActivity(intent);
         });
-        mTweetBtn.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                mTweetBtn.hide();
-                mTweetFragment.show();
-                return true;
-            }
+        mTweetBtn.setOnLongClickListener(v -> {
+            mTweetBtn.hide();
+            mTweetFragment.show();
+            return true;
         });
 
 

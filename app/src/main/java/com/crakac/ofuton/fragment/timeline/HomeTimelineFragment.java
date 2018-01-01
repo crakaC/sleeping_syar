@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -86,12 +85,9 @@ public class HomeTimelineFragment extends AbstractTimelineFragment implements Co
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = super.onCreateView(inflater, container, savedInstanceState);
-        mListView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                mIsOverflowing = false;
-                return false;
-            }
+        mListView.setOnTouchListener((view, event) -> {
+            mIsOverflowing = false;
+            return false;
         });
         return v;
     }
@@ -177,32 +173,29 @@ public class HomeTimelineFragment extends AbstractTimelineFragment implements Co
         public void onStatus(final Status status) {
             if (mAdapter.getPosition(status) >= 0) return;
             mSinceId = status.getId();
-            mHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    insertQuietly(status);
-                    if (isFirstItemVisible() && isCurrentTab() && isResumed()) {
-                        mListView.smoothScrollToPosition(0);
-                        mIsOverflowing = true;
-                    } else if (mIsOverflowing) {
-                        mListView.smoothScrollToPosition(0);
-                    }
-                    if (PrefUtil.getBoolean(R.string.notification)) {
-                        if (PrefUtil.getBoolean(R.string.reply_notification)) {
-                            Status st = (status.isRetweet()) ? status.getRetweetedStatus() : status;
-                            for (UserMentionEntity ue : st.getUserMentionEntities()) {
-                                if (ue.getId() == TwitterUtils.getCurrentAccountId()) {
-                                    AppUtil.showStatus(st);
-                                    break;
-                                }
+            mHandler.post(() -> {
+                insertQuietly(status);
+                if (isFirstItemVisible() && isCurrentTab() && isResumed()) {
+                    mListView.smoothScrollToPosition(0);
+                    mIsOverflowing = true;
+                } else if (mIsOverflowing) {
+                    mListView.smoothScrollToPosition(0);
+                }
+                if (PrefUtil.getBoolean(R.string.notification)) {
+                    if (PrefUtil.getBoolean(R.string.reply_notification)) {
+                        Status st = (status.isRetweet()) ? status.getRetweetedStatus() : status;
+                        for (UserMentionEntity ue : st.getUserMentionEntities()) {
+                            if (ue.getId() == TwitterUtils.getCurrentAccountId()) {
+                                AppUtil.showStatus(st);
+                                break;
                             }
                         }
-                        if (PrefUtil.getBoolean(R.string.rt_notification)) {
-                            if (status.isRetweet()
-                                    && status.getRetweetedStatus().getUser().getId() == TwitterUtils
-                                    .getCurrentAccountId()) {
-                                AppUtil.showStatus(status);
-                            }
+                    }
+                    if (PrefUtil.getBoolean(R.string.rt_notification)) {
+                        if (status.isRetweet()
+                                && status.getRetweetedStatus().getUser().getId() == TwitterUtils
+                                .getCurrentAccountId()) {
+                            AppUtil.showStatus(status);
                         }
                     }
                     updateDisplayedTime();
@@ -247,12 +240,9 @@ public class HomeTimelineFragment extends AbstractTimelineFragment implements Co
                     && PrefUtil.getBoolean(R.string.fav_notification)) {
                 if (target.getId() == TwitterUtils.getCurrentAccountId()
                         && source.getId() != TwitterUtils.getCurrentAccountId()) {
-                    mHandler.post(new Runnable() {
-                        public void run() {
+                    mHandler.post(() ->
                             AppUtil.showToast(source.getName() + " (@" + source.getScreenName() + ")が\n"
-                                    + unfavoritedStatus.getText() + "\nをお気に入りにから削除しました");
-                        }
-                    });
+                                    + unfavoritedStatus.getText() + "\nをお気に入りにから削除しました"));
                 }
             }
         }
@@ -261,11 +251,9 @@ public class HomeTimelineFragment extends AbstractTimelineFragment implements Co
         public void onDirectMessage(final DirectMessage directMessage) {
             if (PrefUtil.getBoolean(R.string.notification)
                     && PrefUtil.getBoolean(R.string.dm_notification)) {
-                mHandler.post(new Runnable() {
-                    public void run() {
-                        AppUtil.showToast("@" + directMessage.getSenderScreenName() + "からダイレクトメッセージが届きました");
-                    }
-                });
+                mHandler.post(() ->
+                        AppUtil.showToast("@" + directMessage.getSenderScreenName() + "からダイレクトメッセージが届きました")
+                );
             }
         }
     }

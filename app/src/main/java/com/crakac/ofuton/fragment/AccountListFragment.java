@@ -29,7 +29,6 @@ import com.crakac.ofuton.activity.MainActivity;
 import com.crakac.ofuton.activity.UserDetailActivity;
 import com.crakac.ofuton.util.Account;
 import com.crakac.ofuton.util.DialogManager;
-import com.crakac.ofuton.util.NetUtil;
 import com.crakac.ofuton.util.ParallelTask;
 import com.crakac.ofuton.util.ReloadChecker;
 import com.crakac.ofuton.util.TwitterUtils;

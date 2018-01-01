@@ -5,24 +5,19 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.module.AppGlideModule;
 import com.crakac.ofuton.C;
 import com.crakac.ofuton.R;
 import com.crakac.ofuton.activity.UserDetailActivity;
 import com.crakac.ofuton.util.Account;
 import com.crakac.ofuton.util.AppUtil;
-import com.crakac.ofuton.util.NetUtil;
 import com.crakac.ofuton.util.PrefUtil;
-import com.crakac.ofuton.util.StatusClickListener;
 import com.crakac.ofuton.util.StatusPool;
 import com.crakac.ofuton.util.TwitterUtils;
 import com.crakac.ofuton.util.Util;
@@ -42,8 +37,6 @@ public class TweetStatusAdapter extends BaseAdapter {
     private static Account sUserAccount;
     private static boolean shouldShowPreview = false;
     private boolean mShouldPool = true;
-    private StatusClickListener mListener;
-    private static final String TAG = TweetStatusAdapter.class.getSimpleName();
 
     private ArrayList<Status> items = new ArrayList<>(50);
 
@@ -56,8 +49,8 @@ public class TweetStatusAdapter extends BaseAdapter {
         View retweeterInfo;
         TextView via;
         TextView retweetedBy;
-        ImageView icon;
-        ImageView smallIcon;
+        ImageView avatarIcon;
+        ImageView retweetAvatar;
         ImageView favedAndRetweetedIcon;
         MultipleImagePreview imagePreview;
         ImageView lockedIcon;
@@ -108,22 +101,13 @@ public class TweetStatusAdapter extends BaseAdapter {
         return items.indexOf(item);
     }
 
-    public void clear(){
+    public void clear() {
         items.clear();
     }
 
-    public Status getItemById(long id){
-        for (Status status: items) {
-            if(status.getId() == id){
-                return status;
-            }
-        }
-        return null;
-    }
-
     public int getPositionById(long id) {
-        for(int i = 0; i < items.size(); i++){
-            if(getItem(i).getId() == id){
+        for (int i = 0; i < items.size(); i++) {
+            if (getItem(i).getId() == id) {
                 return i;
             }
         }
@@ -137,7 +121,7 @@ public class TweetStatusAdapter extends BaseAdapter {
     }
 
     public void updateDisplayTime(int position, View view) {
-        if (view.getTag() == null) {
+        if (view.getTag() == null || items.size() <= position) {
             return;// フッタービューは弾く．
         }
         setPostedAtTime((ViewHolder) view.getTag(), getItem(position));
@@ -145,22 +129,19 @@ public class TweetStatusAdapter extends BaseAdapter {
 
     public static View createView(final Status item, View convertView) {
         ViewHolder holder;
-
         // レイアウトの構築
         if (convertView == null) {
             holder = new ViewHolder();
             convertView = sInflater.inflate(R.layout.list_item_tweet, null);
             setViewHolder(holder, convertView);
             convertView.setTag(holder);
-            convertView.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        v.getForeground().setHotspot(event.getX(), event.getY());
+            convertView.setOnTouchListener((v, event) -> {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                            v.getForeground().setHotspot(event.getX(), event.getY());
+                        }
+                        return false;
                     }
-                    return false;
-                }
-            });
+            );
 
         } else {
             holder = (ViewHolder) convertView.getTag();
@@ -175,14 +156,11 @@ public class TweetStatusAdapter extends BaseAdapter {
         optimizeFontSize(holder);
         setColors(holder, item);
         // アイコンクリック時の挙動を設定．ユーザー詳細に飛ばす．
-        holder.icon.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Context context = v.getContext();
-                Intent intent = new Intent(context, UserDetailActivity.class);
-                intent.putExtra(C.USER, (item.isRetweet()) ? item.getRetweetedStatus().getUser() : item.getUser());
-                context.startActivity(intent);
-            }
+        holder.avatarIcon.setOnClickListener(v -> {
+            Context context = v.getContext();
+            Intent intent = new Intent(context, UserDetailActivity.class);
+            intent.putExtra(C.USER, (item.isRetweet()) ? item.getRetweetedStatus().getUser() : item.getUser());
+            context.startActivity(intent);
         });
 
         setPostedAtTime(holder, item);
@@ -215,7 +193,7 @@ public class TweetStatusAdapter extends BaseAdapter {
         }
         holder.text.setText(AppUtil.getColoredText(text, status));
         // アイコン
-        setIcon(holder.icon, status);
+        setIcon(holder.avatarIcon, status);
         // 鍵アイコン
         setLockIcon(holder.lockedIcon, status);
         // ☆
@@ -294,12 +272,12 @@ public class TweetStatusAdapter extends BaseAdapter {
         holder.text = convertView.findViewById(R.id.text);
         holder.postedAt = convertView.findViewById(R.id.postedAt);
         holder.via = convertView.findViewById(R.id.via);
-        holder.icon = convertView.findViewById(R.id.icon);
-        if(Util.isPreLollipop()){
-            holder.icon.setOnTouchListener(new ColorOverlayOnTouch());
+        holder.avatarIcon = convertView.findViewById(R.id.icon);
+        if (Util.isPreLollipop()) {
+            holder.avatarIcon.setOnTouchListener(new ColorOverlayOnTouch());
         }
         holder.retweeterInfo = convertView.findViewById(R.id.retweeterInfo);
-        holder.smallIcon = convertView.findViewById(R.id.smallIcon);
+        holder.retweetAvatar = convertView.findViewById(R.id.smallIcon);
         holder.retweetedBy = convertView.findViewById(R.id.retweeted_by);
         holder.imagePreview = convertView.findViewById(R.id.inline_preview);
         holder.favedAndRetweetedIcon = convertView.findViewById(R.id.fav_and_rt_icon);
@@ -314,7 +292,7 @@ public class TweetStatusAdapter extends BaseAdapter {
         // 必要な部分を表示
         holder.retweeterInfo.setVisibility(View.VISIBLE);
 
-        setIcon(holder.smallIcon, origStatus);
+        setIcon(holder.retweetAvatar, origStatus);
 
         holder.retweetedBy.setText(origStatus.getUser().getName() + " @" + origStatus.getUser().getScreenName() + " ("
                 + status.getRetweetCount() + ")");

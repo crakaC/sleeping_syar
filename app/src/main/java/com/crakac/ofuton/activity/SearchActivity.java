@@ -75,7 +75,7 @@ public class SearchActivity extends FinishableActionbarActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.search, menu);
         MenuItem search = menu.findItem(R.id.search);
-        mSearchView = (SearchView) MenuItemCompat.getActionView(search);
+        mSearchView = (SearchView) search.getActionView();
         mSearchView.setOnQueryTextListener(mOnQueryTextListener);
         mSearchView.setIconified(false);
         mSearchView.clearFocus();
