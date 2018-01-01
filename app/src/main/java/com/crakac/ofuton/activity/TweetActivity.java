@@ -255,7 +255,7 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
 
     private void setUpThumbnails(List<Image> images) {
         for (Image image : images) {
-            appendPicture(AppUtil.filePathToContentUri(image.getPath()));
+            appendPicture(Uri.fromFile(new File(image.getPath())));
         }
     }
 

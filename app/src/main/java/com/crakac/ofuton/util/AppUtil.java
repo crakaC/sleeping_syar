@@ -424,11 +424,6 @@ public final class AppUtil {
         return FileProvider.getUriForFile(sContext, sContext.getString(R.string.file_provider_authority), file);
     }
 
-    public static Uri filePathToContentUri(String filePath) {
-        File file = new File(filePath);
-        return fileToContentUri(file);
-    }
-
     public static void sendMediaScanBroadcast(Uri uri) {
         Intent i = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
         i.setData(uri);
