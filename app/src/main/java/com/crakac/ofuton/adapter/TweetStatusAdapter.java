@@ -214,7 +214,6 @@ public class TweetStatusAdapter extends BaseAdapter {
             return;
         }
         imagePreview.setVisibility(View.VISIBLE);
-        imagePreview.cleanUp();
         imagePreview.setMediaEntities(mediaEntities);
     }
 

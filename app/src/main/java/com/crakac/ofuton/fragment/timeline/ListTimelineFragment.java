@@ -16,15 +16,12 @@ import twitter4j.TwitterException;
 
 public class ListTimelineFragment extends AbstractTimelineFragment {
 	private long listId;
-	private String listTitle;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		Bundle bundle = getArguments();
 		listId = bundle.getLong(C.LIST_ID);
-		listTitle = bundle.getString(C.LIST_TITLE);
-		Log.d("ListTimeline", "onCreateView:" + listTitle + ", list_id:" + listId);
 		return super.onCreateView(inflater, container, savedInstanceState);
 	}
 

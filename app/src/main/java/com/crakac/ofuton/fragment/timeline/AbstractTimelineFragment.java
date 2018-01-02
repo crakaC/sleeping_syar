@@ -32,7 +32,6 @@ public abstract class AbstractTimelineFragment extends AbstractStatusFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
-        Log.d(TAG, getTimelineName() + " onCreateView");
         return view;
     }
 
@@ -69,12 +68,10 @@ public abstract class AbstractTimelineFragment extends AbstractStatusFragment {
 
     protected void initTimeline() {
         if (mFetchStatusTask != null && mFetchStatusTask.getStatus() == AsyncTask.Status.RUNNING) {
-            Log.d(TAG + getTimelineName(), ":initTask is already running.");
             setEmptyViewLoading();
             return;
         }
         if (!mAdapter.isEmpty()) {
-            Log.d(TAG + getTimelineName(), ":mAdapter has items.");
             return;
         }
         initId();
@@ -85,14 +82,12 @@ public abstract class AbstractTimelineFragment extends AbstractStatusFragment {
     private void loadNewTweets() {
         // 読み込み中なら何もしない
         if (isRunning(mFetchStatusTask)) {
-            Log.d(TAG + getTimelineName(), "cannot loadNewTweets(): task is running.");
             setEmptyViewLoading();
             return;
         }
         // initTaskが走っておらず，中身がないときはinitTaskを呼ぶ
         if (mAdapter.isEmpty()) {
             setSwipeRefreshEnable(true);
-            Log.d(TAG + getTimelineName(), ":initTask hasn't run.");
             initTimeline();
             return;
         }
@@ -148,7 +143,6 @@ public abstract class AbstractTimelineFragment extends AbstractStatusFragment {
                 }
             } else {
                 failToGetStatuses();
-                Log.d(TAG + getTimelineName(), "fail to get Tilmeline");
             }
             updateDisplayedTime();
             setEmptyViewStandby();
@@ -157,7 +151,6 @@ public abstract class AbstractTimelineFragment extends AbstractStatusFragment {
 
         @Override
         protected void onCancelled() {
-            Log.d(TAG + getTimelineName(), "cancel initTask");
             setEmptyViewStandby();
             setFooterViewStandby();
         }
@@ -188,7 +181,6 @@ public abstract class AbstractTimelineFragment extends AbstractStatusFragment {
                 restorePosition();
             } else {
                 failToGetStatuses();
-                Log.d(TAG + getTimelineName(), "fail to get Tilmeline");
             }
             updateDisplayedTime();
             setSwipeWidgetRefreshing(false);
@@ -196,7 +188,6 @@ public abstract class AbstractTimelineFragment extends AbstractStatusFragment {
 
         @Override
         protected void onCancelled() {
-            Log.d(TAG + getTimelineName(), "cancel loadNewTask");
             setSwipeWidgetRefreshing(false);
         }
     }

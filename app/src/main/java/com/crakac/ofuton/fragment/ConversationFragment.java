@@ -47,7 +47,6 @@ public class ConversationFragment extends AbstractStatusFragment {
      */
     public void onStop() {
         super.onStop();
-        Log.d(TAG, "onStop()");
         if (isRunning(mLoadConversationTask)) {
             mLoadConversationTask.cancel(true);
             mLoadConversationTask = null;

@@ -18,7 +18,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -203,14 +202,11 @@ public class UserDetailActivity extends AppCompatActivity {
         mActionbar.setTitle(user.getName());
         mActionbar.setSubtitle("@" + user.getScreenName());
         Glide.with(this).load(user.getOriginalProfileImageURLHttps()).into(mIconImage);
-        mIconImage.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(UserDetailActivity.this, ImagePreviewActivity.class);
-                i.setData(Uri.parse(user.getOriginalProfileImageURL()));
-                startActivity(i);
-                overridePendingTransition(R.anim.fade_in, 0);
-            }
+        mIconImage.setOnClickListener(v -> {
+            Intent i = new Intent(UserDetailActivity.this, ImagePreviewActivity.class);
+            i.setData(Uri.parse(user.getOriginalProfileImageURL()));
+            startActivity(i);
+            overridePendingTransition(R.anim.fade_in, 0);
         });
         Glide.with(this).load(user.getProfileBannerURL()).into(mHeaderImage);
         if (user.isProtected()) {

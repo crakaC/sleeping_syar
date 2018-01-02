@@ -43,9 +43,7 @@ public class NetUtil {
             String key = it.next();
             sb.append(key).append(":").append(headers.get(key).toString()).append("\n");
         }
-        Log.d("ExpandUrl Header", sb.toString());
         if (location != null && location.startsWith("http")) {
-            Log.d("ExpandUrl", String.format("%s -> %s", urlString, location));
             final int tResponseCode = httpConn.getResponseCode();
             if (tResponseCode == HttpURLConnection.HTTP_MOVED_PERM
                     || tResponseCode == HttpURLConnection.HTTP_MOVED_TEMP) {

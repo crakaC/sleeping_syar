@@ -3,7 +3,6 @@ package com.crakac.ofuton.widget;
 import android.content.Context;
 import android.content.Intent;
 import android.util.AttributeSet;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -40,8 +39,7 @@ public class MultipleImagePreview extends LinearLayout {
     public MultipleImagePreview(Context context, AttributeSet attrs) {
         super(context, attrs);
         setGravity(LinearLayout.HORIZONTAL);
-        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View v = inflater.inflate(R.layout.inline_preview_layout, this);
+        View v = View.inflate(context, R.layout.inline_preview_layout, this);
         videoIcon = v.findViewById(R.id.videoIcon);
         mLeft = v.findViewById(R.id.left);
         mRight = v.findViewById(R.id.right);
@@ -183,7 +181,7 @@ public class MultipleImagePreview extends LinearLayout {
     public void setMediaEntities(final List<MediaEntity> mediaEntities) {
         initLayout(mediaEntities.size());
         List<ImageView> imageViews = getRequiredImageViews(mediaEntities.size());
-        final ArrayList<String> mediaUrls = TwitterUtils.extractMediaUrls(mediaEntities);
+        List<String> mediaUrls = TwitterUtils.extractMediaUrls(mediaEntities);
         for (int i = 0; i < imageViews.size(); i++) {
             final ImageView imageView = imageViews.get(i);
             final int position = i;
@@ -191,7 +189,7 @@ public class MultipleImagePreview extends LinearLayout {
             final MediaEntity me = mediaEntities.get(position);
             if (hasVideoEntity(me)) {
                 videoIcon.setVisibility(View.VISIBLE);
-                imageView.setOnClickListener( v -> {
+                imageView.setOnClickListener(v -> {
                     Context context = getContext();
                     Intent intent = new Intent(context, VideoPreviewActivity.class);
                     intent.putExtra(C.MEDIA_ENTITY, me);
@@ -207,19 +205,7 @@ public class MultipleImagePreview extends LinearLayout {
                 });
             }
             String mediaUrl = mediaUrls.get(i);
-            Glide.with(this).load(NetUtil.convertToImageFileUrl(mediaUrl)).into(imageView);
-        }
-    }
-
-    @Override
-    protected void onDetachedFromWindow() {
-        cleanUp();
-        super.onDetachedFromWindow();
-    }
-
-    public void cleanUp() {
-        for (ImageView view : mImageViews) {
-            Glide.with(view).clear(view);
+            Glide.with(this.getContext().getApplicationContext()).load(NetUtil.convertToImageFileUrl(mediaUrl)).into(imageView);
         }
     }
 
