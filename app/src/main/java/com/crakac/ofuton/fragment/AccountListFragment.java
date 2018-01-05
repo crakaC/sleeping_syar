@@ -21,13 +21,13 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.crakac.ofuton.C;
 import com.crakac.ofuton.R;
 import com.crakac.ofuton.activity.AccountActivity;
 import com.crakac.ofuton.activity.MainActivity;
 import com.crakac.ofuton.activity.UserDetailActivity;
 import com.crakac.ofuton.util.Account;
+import com.crakac.ofuton.util.AppUtil;
 import com.crakac.ofuton.util.DialogManager;
 import com.crakac.ofuton.util.ParallelTask;
 import com.crakac.ofuton.util.ReloadChecker;
@@ -104,7 +104,7 @@ public class AccountListFragment extends Fragment{
 			TextView screenName =  convertView.findViewById(R.id.accountName);
 
 			final Account user = (Account) getItem(position);
-			Glide.with(icon).load(user.getIconUrl()).into(icon);
+			AppUtil.setImage(icon, user.getIconUrl());
 			icon.setOnClickListener( v -> {
 				if(TwitterUtils.getCurrentAccountId() != -1){
 					Intent i = new Intent(getActivity(), UserDetailActivity.class);

@@ -7,11 +7,11 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-import com.bumptech.glide.Glide;
 import com.crakac.ofuton.C;
 import com.crakac.ofuton.R;
 import com.crakac.ofuton.activity.ImagePreviewActivity;
 import com.crakac.ofuton.activity.VideoPreviewActivity;
+import com.crakac.ofuton.util.AppUtil;
 import com.crakac.ofuton.util.NetUtil;
 import com.crakac.ofuton.util.TwitterUtils;
 import com.crakac.ofuton.util.Util;
@@ -205,7 +205,7 @@ public class MultipleImagePreview extends LinearLayout {
                 });
             }
             String mediaUrl = mediaUrls.get(i);
-            Glide.with(this.getContext().getApplicationContext()).load(NetUtil.convertToImageFileUrl(mediaUrl)).into(imageView);
+            AppUtil.setImage(imageView, NetUtil.convertToImageFileUrl(mediaUrl));
         }
     }
 

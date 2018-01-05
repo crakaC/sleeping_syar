@@ -25,13 +25,11 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.crakac.ofuton.C;
 import com.crakac.ofuton.R;
 import com.crakac.ofuton.adapter.TweetStatusAdapter;
@@ -389,18 +387,15 @@ public class MainActivity extends AppCompatActivity {
             @Override
             protected void onPostExecute(User user) {
                 if (user == null) return;
-                Glide.with(iv).load(user.getOriginalProfileImageURLHttps()).into(iv);
-                Glide.with(bv).load(user.getProfileBannerURL()).into(bv);
+                AppUtil.setImage(iv, user.getOriginalProfileImageURLHttps());
+                AppUtil.setImage(bv, user.getProfileBannerURL());
             }
         };
-        bv.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, UserDetailActivity.class);
-                intent.putExtra(C.SCREEN_NAME, TwitterUtils.getCurrentAccount().getScreenName());
-                startActivity(intent);
-                mDrawerLayout.closeDrawer(GravityCompat.START);
-            }
+        bv.setOnClickListener((view) -> {
+            Intent intent = new Intent(MainActivity.this, UserDetailActivity.class);
+            intent.putExtra(C.SCREEN_NAME, TwitterUtils.getCurrentAccount().getScreenName());
+            startActivity(intent);
+            mDrawerLayout.closeDrawer(GravityCompat.START);
         });
         pt.executeParallel();
     }

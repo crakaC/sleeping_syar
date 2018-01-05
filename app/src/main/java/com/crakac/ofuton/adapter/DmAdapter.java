@@ -10,7 +10,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.crakac.ofuton.R;
 import com.crakac.ofuton.util.AppUtil;
 import com.crakac.ofuton.util.PrefUtil;
@@ -76,10 +75,10 @@ public class DmAdapter extends ArrayAdapter<DirectMessage> {
             holder.sentTo.setTextSize(fontSize);
 
             final String senderIconUrl = AppUtil.getIconURL(item.getSender());
-            Glide.with(mContext).load(senderIconUrl).into(holder.icon);
+            AppUtil.setImage(holder.icon, senderIconUrl);
 
             String recipientIconUrl = AppUtil.getIconURL(item.getRecipient());
-            Glide.with(mContext).load(recipientIconUrl).into(holder.smallIcon);
+            AppUtil.setImage(holder.smallIcon, recipientIconUrl);
 
             // ユーザー名＋スクリーンネーム
             holder.name.setText(item.getSender().getName() + " @" + item.getSenderScreenName());

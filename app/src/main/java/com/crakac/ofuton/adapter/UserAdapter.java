@@ -10,7 +10,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.crakac.ofuton.R;
 import com.crakac.ofuton.util.AppUtil;
 import com.crakac.ofuton.util.PrefUtil;
@@ -68,7 +67,7 @@ public class UserAdapter extends ArrayAdapter<twitter4j.User> {
         holder.screenName.setTextSize(smallFontSize);
 
         String url = AppUtil.getIconURL(item);
-        Glide.with(getContext()).load(url).into(holder.icon);
+        AppUtil.setImage(holder.icon,url);
 
         holder.name.setText(item.getName());
         holder.screenName.setText(" @" + item.getScreenName());

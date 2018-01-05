@@ -22,7 +22,6 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.crakac.ofuton.C;
 import com.crakac.ofuton.R;
 import com.crakac.ofuton.adapter.TwitterListAdapter;
@@ -201,14 +200,14 @@ public class UserDetailActivity extends AppCompatActivity {
         // ユーザーの情報
         mActionbar.setTitle(user.getName());
         mActionbar.setSubtitle("@" + user.getScreenName());
-        Glide.with(this).load(user.getOriginalProfileImageURLHttps()).into(mIconImage);
+        AppUtil.setImage(mIconImage, user.getOriginalProfileImageURLHttps());
         mIconImage.setOnClickListener(v -> {
             Intent i = new Intent(UserDetailActivity.this, ImagePreviewActivity.class);
             i.setData(Uri.parse(user.getOriginalProfileImageURL()));
             startActivity(i);
             overridePendingTransition(R.anim.fade_in, 0);
         });
-        Glide.with(this).load(user.getProfileBannerURL()).into(mHeaderImage);
+        AppUtil.setImage(mHeaderImage, user.getProfileBannerURL());
         if (user.isProtected()) {
             mlockMark.setVisibility(View.VISIBLE);
         } else {
