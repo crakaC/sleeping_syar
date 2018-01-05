@@ -175,4 +175,9 @@ public class Util {
         return Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP;
     }
 
+    public static boolean isAfterOreo() {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.O;
+
+    }
+
 }

@@ -130,6 +130,7 @@
     <string name="show_accounts_in_tweet">言及されているユーザー</string>
     <string name="show_hashtag">ハッシュタグ</string>
 
+    <string name="sending_tweet">ツイート送信中</string>
     <string name="complete">完了</string>
     <string name="save_complete">画像を保存しました</string>
     <string name="cancel">キャンセル</string>
