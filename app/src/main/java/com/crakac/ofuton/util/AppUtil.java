@@ -20,7 +20,6 @@ import android.support.v7.widget.SearchView;
 import android.text.Html;
 import android.text.Spanned;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
@@ -197,31 +196,40 @@ public final class AppUtil {
      * ( ˘ω˘)スヤァとツイートするだけのやつ
      */
     public static void syar() {
-        syar(null);
+        String syar = generateSyar();
+        try {
+            TwitterUtils.getTwitterInstance().updateStatus(syar);
+        } catch (TwitterException e) {
+            e.printStackTrace();
+            showToast(R.string.something_wrong);
+            return;
+        }
+        showToast(syar);
+        incrementSyarCount();
     }
 
-    public static void syar(final SyarListener listener) {
+    private static void incrementSyarCount(){
+        PrefUtil.getSharedPreference().edit().putInt(getString(R.string.syar), getSyarCount() + 1).apply();
+    }
+
+    private static String generateSyar(){
+        StringBuilder sb = new StringBuilder();
+        Random r = new Random();
+        if (r.nextInt(10) == 0) {
+            sb.append("＿人人人人人人＿\n＞　( ˘ω˘)ｽﾔｧ　＜\n￣Y^Y^Y^Y^Y^Y￣");
+        } else {
+            sb.append(getString(R.string.syar));
+        }
+        return sb.toString();
+    }
+
+    private static int getSyarCount() {
+        return PrefUtil.getInt(R.string.syar);
+    }
+
+    public static void syarAsync() {
         ParallelTask<Void, twitter4j.Status> task = new ParallelTask<Void, twitter4j.Status>() {
-            String syar;
-
-            private int getSyarCount() {
-                return PrefUtil.getInt(R.string.syar);
-            }
-
-            @Override
-            protected void onPreExecute() {
-                if (listener != null) {
-                    listener.preSyar();
-                }
-                StringBuilder sb = new StringBuilder();
-                Random r = new Random();
-                if (r.nextInt(10) == 0) {
-                    sb.append("＿人人人人人人＿\n＞　( ˘ω˘)ｽﾔｧ　＜\n￣Y^Y^Y^Y^Y^Y￣");
-                } else {
-                    sb.append(getString(R.string.syar));
-                }
-                syar = sb.toString();
-            }
+            final String syar = generateSyar();
 
             @Override
             protected twitter4j.Status doInBackground() {
@@ -235,25 +243,15 @@ public final class AppUtil {
 
             @Override
             protected void onPostExecute(twitter4j.Status result) {
-                if (listener != null) {
-                    listener.postSyar();
-                }
                 if (result == null) {
                     AppUtil.showToast(R.string.something_wrong);
                 } else {
                     AppUtil.showToast(syar);
-                    PrefUtil.getSharedPreference().edit().putInt(getString(R.string.syar), getSyarCount() + 1).apply();
+                    incrementSyarCount();
                 }
             }
         };
         task.executeParallel();
-
-    }
-
-    public static int getMemoryMB() {
-        int memory = (int) (Runtime.getRuntime().maxMemory() / (1024 * 1024));
-        Log.w("memory MB", memory + "");
-        return memory;
     }
 
     public static void showView(View... views) {
@@ -379,13 +377,6 @@ public final class AppUtil {
 
     public static boolean existsTofuBuster() {
         return PrefUtil.getBoolean(R.string.pref_tofu);
-    }
-
-    public interface SyarListener {
-
-        void preSyar();
-
-        void postSyar();
     }
 
     public static void setImageViewEnabled(boolean enabled, ImageView item, int iconResId) {

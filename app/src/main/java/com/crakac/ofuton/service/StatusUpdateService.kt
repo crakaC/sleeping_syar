@@ -1,12 +1,9 @@
 package com.crakac.ofuton.service
 
 import android.app.IntentService
-import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
-import android.os.Build
-import android.support.annotation.RequiresApi
 import android.support.v4.app.NotificationCompat
 import com.crakac.ofuton.C
 import com.crakac.ofuton.R
@@ -19,12 +16,14 @@ import java.io.File
 import java.util.*
 
 class StatusUpdateService : IntentService("StatusUpdateService") {
-    private val channelId = "StatusUpdateService"
+    private val channelId = "status_update_service"
+    private val channelName = "StatusUpdateService"
+
     private val rand = Random()
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         if (Util.isAfterOreo()) {
-            createNotificationChannel()
+            Util.createNotificationChannel(this, channelId, channelName, NotificationManager.IMPORTANCE_DEFAULT)
         }
         return super.onStartCommand(intent, flags, startId)
     }
@@ -63,13 +62,5 @@ class StatusUpdateService : IntentService("StatusUpdateService") {
             return
         }
         AppUtil.showToast(R.string.tweeted)
-    }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    private fun createNotificationChannel(){
-        val channelName = "Status update service"
-        val channel = NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_DEFAULT)
-        val service = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        service.createNotificationChannel(channel)
     }
 }

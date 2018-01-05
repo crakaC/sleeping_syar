@@ -357,7 +357,7 @@ public class MainActivity extends AppCompatActivity {
                         startActivity(new Intent(MainActivity.this, SettingActivity.class));
                         break;
                     case R.id.syar:
-                        AppUtil.syar();
+                        AppUtil.syarAsync();
                         break;
                     default:
                         break;

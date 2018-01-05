@@ -1,11 +1,14 @@
 package com.crakac.ofuton.util;
 
 import android.app.Activity;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
@@ -180,4 +183,10 @@ public class Util {
 
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
+    public static void createNotificationChannel(Context context, String id, String name, int importance){
+        NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationChannel channel = new NotificationChannel(id, name, importance);
+        manager.createNotificationChannel(channel);
+    }
 }
