@@ -89,16 +89,18 @@ public class BitmapUtil {
         File tempFile = null;
         OutputStream os = null;
         try {
-            tempFile = File.createTempFile("TMP", ".jpg");
+            tempFile = File.createTempFile("TMP",  "." + format.toString());
             os = new BufferedOutputStream(new FileOutputStream(tempFile));
             os.write(bytes.toByteArray());
             os.flush();
             os.close();
-            ExifInterface srcExifInterface = new ExifInterface(cr.openInputStream(contentUri));
-            ExifInterface exifInterface = new ExifInterface(tempFile.toString());
-            String orientation = srcExifInterface.getAttribute(ExifInterface.TAG_ORIENTATION);
-            exifInterface.setAttribute(ExifInterface.TAG_ORIENTATION, orientation);
-            exifInterface.saveAttributes();
+            if(format == Bitmap.CompressFormat.JPEG) {
+                ExifInterface srcExifInterface = new ExifInterface(cr.openInputStream(contentUri));
+                ExifInterface exifInterface = new ExifInterface(tempFile.toString());
+                String orientation = srcExifInterface.getAttribute(ExifInterface.TAG_ORIENTATION);
+                exifInterface.setAttribute(ExifInterface.TAG_ORIENTATION, orientation);
+                exifInterface.saveAttributes();
+            }
         } catch (IOException e) {
             e.printStackTrace();
         } finally {

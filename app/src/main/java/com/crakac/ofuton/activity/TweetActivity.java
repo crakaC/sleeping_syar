@@ -2,10 +2,12 @@ package com.crakac.ofuton.activity;
 
 import android.Manifest;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.annotation.Nullable;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.ActionBar;
 import android.text.Editable;
@@ -16,12 +18,16 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.crakac.ofuton.C;
 import com.crakac.ofuton.R;
 import com.crakac.ofuton.service.StatusUpdateService;
 import com.crakac.ofuton.util.AppUtil;
-import com.crakac.ofuton.util.AsyncLoadBitmapTask;
 import com.crakac.ofuton.util.CreateAppendingFileTask;
+import com.crakac.ofuton.util.GlideApp;
 import com.crakac.ofuton.util.PrefUtil;
 import com.crakac.ofuton.util.SimpleTextChangeListener;
 import com.crakac.ofuton.util.TwitterUtils;
@@ -57,7 +63,6 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
     private static final int MAX_TWEET_LENGTH = 140;
     private static final String IMAGE_URI = "IMAGE_URI";
     private static final int MAX_APPEND_FILES = 4;
-    private static final int THUMBNAIL_SIZE = 120;//(dp)
 
     private EditText mInputText;
     private ImageView mAppendPicBtn, mCameraBtn, mInfoBtn;// つぶやくボタン，画像追加ボタン，リプライ元情報ボタン
@@ -288,9 +293,18 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
         new CreateAppendingFileTask(this, image, (file) ->{
             mAppendedFiles.add(file);
             updateState();
-            AsyncLoadBitmapTask task = new AsyncLoadBitmapTask(this, image, view.getImageView(), AppUtil.dpToPx(THUMBNAIL_SIZE));
-            task.setOnLoadFinishedListener( (bm) -> view.clearProgress());
-            task.executeParallel();
+            GlideApp.with(getApplicationContext()).load(file).listener(new RequestListener<Drawable>() {
+                @Override
+                public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                    return false;
+                }
+
+                @Override
+                public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                    view.clearProgress();
+                    return false;
+                }
+            }).into(view.getImageView());
         }).executeParallel();
     }
 

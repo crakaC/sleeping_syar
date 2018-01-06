@@ -7,7 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -27,13 +27,17 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.crakac.ofuton.C;
 import com.crakac.ofuton.R;
 import com.crakac.ofuton.activity.ImagePreviewActivity;
 import com.crakac.ofuton.fragment.dialog.TweetInfoDialogFragment;
 import com.crakac.ofuton.util.AppUtil;
-import com.crakac.ofuton.util.AsyncLoadBitmapTask;
 import com.crakac.ofuton.util.BitmapUtil;
+import com.crakac.ofuton.util.GlideApp;
 import com.crakac.ofuton.util.ParallelTask;
 import com.crakac.ofuton.util.TwitterUtils;
 import com.crakac.ofuton.util.Util;
@@ -222,15 +226,21 @@ public class TweetFragment extends Fragment implements View.OnClickListener {
     }
 
     private void appendPicture(Uri uri) {
-        AsyncLoadBitmapTask task = new AsyncLoadBitmapTask(getActivity(), uri, mAppendedImageView, AppUtil.dpToPx(96));
-        task.setOnLoadFinishedListener(new AsyncLoadBitmapTask.OnLoadFinishedListener() {
+        GlideApp.with(getActivity().getApplicationContext()).load(uri).listener(new RequestListener<Drawable>() {
             @Override
-            public void onLoadFinished(Bitmap bitmap) {
+            public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
                 enableTweetButton(true);
                 setRemainLength();
+                return false;
             }
-        });
-        task.executeParallel();
+
+            @Override
+            public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                enableTweetButton(true);
+                setRemainLength();
+                return false;
+            }
+        }).into(mAppendedImageView);
         mAppendedImageView.setVisibility(View.VISIBLE);
     }
 
