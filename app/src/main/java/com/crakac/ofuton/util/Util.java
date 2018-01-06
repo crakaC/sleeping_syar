@@ -187,6 +187,7 @@ public class Util {
     public static void createNotificationChannel(Context context, String id, String name, int importance){
         NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         NotificationChannel channel = new NotificationChannel(id, name, importance);
+        channel.enableVibration(false);
         manager.createNotificationChannel(channel);
     }
 }
