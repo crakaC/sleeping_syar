@@ -159,10 +159,7 @@ public class Util {
     }
 
     public static boolean clearFile(File file) {
-        if (file != null && file.exists()) {
-            return file.delete();
-        }
-        return false;
+        return file != null && file.exists() && file.delete();
     }
 
     public static String getValidVideoUrl(MediaEntity e) {
@@ -180,7 +177,6 @@ public class Util {
 
     public static boolean isAfterOreo() {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.O;
-
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

@@ -184,8 +184,9 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="ofuton"
-                    android:scheme="crakac" />
+                    android:path="/login/syar"
+                    android:host="crakac.com"
+                    android:scheme="https" />
             </intent-filter>
         </activity>
         <activity

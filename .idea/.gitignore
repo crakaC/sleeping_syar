@@ -1,3 +1,4 @@
 *.xml
 !/gradle.xml
 /dictionaries
+/caches

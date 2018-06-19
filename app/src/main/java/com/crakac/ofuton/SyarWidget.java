@@ -43,7 +43,7 @@ public class SyarWidget extends AppWidgetProvider {
         @Override
         public int onStartCommand(@Nullable Intent intent, int flags, int startId) {
             if (Util.isAfterOreo()) {
-                Util.createNotificationChannel(this, CHANNEL_ID, CHANNEL_NAME, NotificationManager.IMPORTANCE_DEFAULT);
+                Util.createNotificationChannel(this, CHANNEL_ID, CHANNEL_NAME, NotificationManager.IMPORTANCE_LOW);
             }
             NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID);
             builder.setSmallIcon(R.drawable.ic_send_white_24dp)

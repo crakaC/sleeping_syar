@@ -226,7 +226,7 @@ public class TweetFragment extends Fragment implements View.OnClickListener {
     }
 
     private void appendPicture(Uri uri) {
-        GlideApp.with(getActivity().getApplicationContext()).load(uri).listener(new RequestListener<Drawable>() {
+        GlideApp.with(this).load(uri).listener(new RequestListener<Drawable>() {
             @Override
             public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
                 enableTweetButton(true);
@@ -363,7 +363,6 @@ public class TweetFragment extends Fragment implements View.OnClickListener {
         if (mRootView == null) return;
         mRootView.setVisibility(View.GONE);
         clear();
-
     }
 
     public void clear() {
