@@ -184,7 +184,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:path="/login/syar"
+                    android:path="@string/callback_path"
                     android:host="crakac.com"
                     android:scheme="https" />
             </intent-filter>

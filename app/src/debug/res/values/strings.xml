@@ -3,4 +3,6 @@
     <string name="file_provider_authority">com.crakac.ofuton.debug.fileprovider</string>
     <string name="app_name">DebugBuild</string>
     <string name="syar">( ˘ω˘)debug...</string>
+    <string name="twitter_callback_url">https://crakac.com/login/debug</string>
+    <string name="callback_path">/login/debug</string>
 </resources>

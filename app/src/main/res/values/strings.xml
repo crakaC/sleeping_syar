@@ -22,6 +22,7 @@
     <string name="add_account">アカウントを追加</string>
     <string name="twitter_oauth">Twitter認証</string>
     <string name="twitter_callback_url">https://crakac.com/login/syar</string>
+    <string name="callback_path">/login/syar</string>
     <string name="connected">接続しました</string>
     <string name="disconnected">接続が切れました</string>
     <string name="dummy">xxxxxxxxxxxxxxxx</string>
