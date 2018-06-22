@@ -186,7 +186,7 @@
                 <data
                     android:path="@string/callback_path"
                     android:host="crakac.com"
-                    android:scheme="https" />
+                    android:scheme="ofuton" />
             </intent-filter>
         </activity>
         <activity
