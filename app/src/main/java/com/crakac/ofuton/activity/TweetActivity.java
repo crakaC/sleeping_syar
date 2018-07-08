@@ -166,6 +166,7 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
         // リプライ時は@screen_nameを事前に打ち込んでおき，リプライ先表示ボタンを有効にする
         if (mReplyName != null) {
             mInputText.setText(String.format(getString(R.string.reply_format), mReplyName));
+            mInputText.append(" "); //getStringで末尾のスペースが反映されなくなったので足す（Oreo以降？）
             // カーソルの位置を@~の後に
             mInputText.setSelection(mInputText.getText().toString().length());
             Status targetStatus = getTargetStatus();

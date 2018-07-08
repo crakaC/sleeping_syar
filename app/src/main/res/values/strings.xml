@@ -71,7 +71,7 @@
     <string name="something_wrong">何かがおかしいよ</string>
     <string name="impossible">無理でした</string>
     <string name="syar">( ˘ω˘)ｽﾔｧ</string>
-    <string name="reply_format">\@%s\ </string>
+    <string name="reply_format">\@%s</string>
     <string name="tweet">Tweet!</string>
     <string name="send">送信</string>
 
