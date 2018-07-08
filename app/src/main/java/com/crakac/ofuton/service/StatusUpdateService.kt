@@ -23,7 +23,7 @@ class StatusUpdateService : IntentService("StatusUpdateService") {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         if (Util.isAfterOreo()) {
-            Util.createNotificationChannel(this, channelId, channelName, NotificationManager.IMPORTANCE_LOW)
+            Util.createNotificationChannel(this, channelId, channelName, NotificationManager.IMPORTANCE_MIN)
         }
         return super.onStartCommand(intent, flags, startId)
     }
