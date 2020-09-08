@@ -2,19 +2,19 @@
 <selector
     xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:drawable="@color/twitter_blue"
+        android:color="@color/twitter_blue"
         android:state_pressed="false"
         android:state_enabled="true"
         />
     <item
-        android:drawable="@color/twitter_blue_dark"
+        android:color="@color/twitter_blue_dark"
         android:state_pressed="false"
         android:state_selected="false"/>
     <item
-        android:drawable="@color/twitter_blue_bright"
+        android:color="@color/twitter_blue_bright"
         android:state_pressed="true"/>
     <item
-        android:drawable="@color/twitter_blue_bright"
+        android:color="@color/twitter_blue_bright"
         android:state_pressed="false"
         android:state_selected="true"/>
 </selector>

@@ -17,7 +17,7 @@ public class PreviewNavigation extends RelativeLayout implements View.OnClickLis
     private View mRotateLeft, mRotateRight, mDownload;
     private NavigationListener mListener;
 
-    private int mImageNums = 1;
+    private int mImageNum = 1;
 
     public PreviewNavigation(Context context) {
         super(context);
@@ -55,15 +55,15 @@ public class PreviewNavigation extends RelativeLayout implements View.OnClickLis
     }
 
     public void setImageNums(int nums){
-        mImageNums = nums;
+        mImageNum = nums;
         if(nums > 1) {
-            mIndicatorText.setText(String.format("%d/%d", 1, mImageNums));
+            mIndicatorText.setText(String.format("%d/%d", 1, mImageNum));
             mIndicatorText.setVisibility(VISIBLE);
         }
     }
 
     public void setImageIndex(int index){
-        mIndicatorText.setText(String.format("%d/%d", index + 1, mImageNums));
+        mIndicatorText.setText(String.format("%d/%d", index + 1, mImageNum));
     }
 
     public void setNavigationListener(NavigationListener listener){
