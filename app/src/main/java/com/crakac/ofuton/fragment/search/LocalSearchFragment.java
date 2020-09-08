@@ -1,7 +1,7 @@
 package com.crakac.ofuton.fragment.search;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.crakac.ofuton.util.StatusPool;
 

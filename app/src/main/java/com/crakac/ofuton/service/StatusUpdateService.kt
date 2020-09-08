@@ -4,7 +4,7 @@ import android.app.IntentService
 import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
-import android.support.v4.app.NotificationCompat
+import androidx.core.app.NotificationCompat
 import com.crakac.ofuton.C
 import com.crakac.ofuton.R
 import com.crakac.ofuton.util.AppUtil
@@ -28,7 +28,8 @@ class StatusUpdateService : IntentService("StatusUpdateService") {
         return super.onStartCommand(intent, flags, startId)
     }
 
-    override fun onHandleIntent(intent: Intent) {
+    override fun onHandleIntent(intent: Intent?) {
+        if (intent == null) return
         val id = rand.nextInt()
         val notifyManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val builder = NotificationCompat.Builder(this, channelId)

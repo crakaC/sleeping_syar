@@ -1,7 +1,7 @@
 package com.crakac.ofuton.activity;
 
 import android.os.Bundle;
-import android.support.v4.app.FragmentTransaction;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.crakac.ofuton.C;
 import com.crakac.ofuton.R;

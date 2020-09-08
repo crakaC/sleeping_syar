@@ -22,7 +22,7 @@ open class TweetSearchFragment : AbstractTimelineFragment(), SearchActivity.Sear
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let { args ->
-            mQuery = args.getString(C.QUERY)
+            mQuery = args.getString(C.QUERY)!!
             mOptionQuery = args.getString(C.OPTION_QUERY)
             mResultType = args.getSerializable(C.TYPE) as Query.ResultType?
             mIsNeedLookUp = args.getBoolean(C.NEED_LOOK_UP, false)
@@ -31,7 +31,7 @@ open class TweetSearchFragment : AbstractTimelineFragment(), SearchActivity.Sear
             mResultType = Query.RECENT
         }
         if (savedInstanceState != null) {
-            mQuery = savedInstanceState.getString(C.QUERY)
+            mQuery = savedInstanceState.getString(C.QUERY)!!
             mOptionQuery = savedInstanceState.getString(C.OPTION_QUERY)
         }
     }

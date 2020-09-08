@@ -7,7 +7,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.net.Uri;
 import android.provider.MediaStore;
-import android.support.media.ExifInterface;
+import androidx.exifinterface.media.ExifInterface;
 import android.util.Log;
 import android.webkit.MimeTypeMap;
 
