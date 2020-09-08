@@ -1,6 +1,7 @@
 package com.crakac.ofuton.activity;
 
 import android.Manifest;
+import android.content.ContentUris;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -261,7 +262,7 @@ public class TweetActivity extends FinishableActionbarActivity implements View.O
 
     private void setUpThumbnails(List<Image> images) {
         for (Image image : images) {
-            appendPicture(Uri.fromFile(new File(image.getPath())));
+            appendPicture(ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, image.getId()));
         }
     }
 
